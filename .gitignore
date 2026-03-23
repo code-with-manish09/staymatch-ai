@@ -3,6 +3,11 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Django static and media
+assets/
+static_cdn/
+media/
+
 # C extensions
 *.so
 
