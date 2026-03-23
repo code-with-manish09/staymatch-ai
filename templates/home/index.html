@@ -1,11 +1,630 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>StayMatch — Find Your Perfect Flatmate</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --sage: #7C9A7E;
+    --cream: #F5F0E8;
+    --terracotta: #C4714F;
+    --charcoal: #2C2C2C;
+    --muted: #8A8680;
+    --card-bg: #FDFAF5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--cream);
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* Animated blob */
+  .blob {
+    position: absolute;
+    border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%;
+    filter: blur(60px);
+    animation: morph 10s ease-in-out infinite alternate;
+  }
+  @keyframes morph {
+    0% { border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%; }
+    50% { border-radius: 30% 70% 40% 60% / 60% 30% 70% 40%; }
+    100% { border-radius: 50% 50% 30% 70% / 40% 60% 50% 60%; }
+  }
+
+  /* Fade up animation */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.7s ease forwards; }
+  .delay-1 { animation-delay: 0.1s; opacity: 0; }
+  .delay-2 { animation-delay: 0.25s; opacity: 0; }
+  .delay-3 { animation-delay: 0.4s; opacity: 0; }
+  .delay-4 { animation-delay: 0.55s; opacity: 0; }
+  .delay-5 { animation-delay: 0.7s; opacity: 0; }
+
+  /* Marquee */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 28s linear infinite;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* Card hover */
+  .profile-card {
+    transition: transform 0.35s cubic-bezier(.22,.68,0,1.2), box-shadow 0.35s ease;
+  }
+  .profile-card:hover {
+    transform: translateY(-8px) rotate(-1deg);
+    box-shadow: 0 24px 48px rgba(44,44,44,0.13);
+  }
+
+  .feature-card {
+    transition: transform 0.3s ease, background 0.3s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    background: var(--charcoal);
+    color: var(--cream);
+  }
+  .feature-card:hover .feature-icon { background: var(--terracotta); color: #fff; }
+  .feature-card:hover p { color: #ccc; }
+
+  /* Step line */
+  .step-line {
+    position: absolute;
+    top: 28px; left: 100%;
+    width: calc(100% - 0px);
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--sage) 0, var(--sage) 6px, transparent 6px, transparent 12px);
+  }
+
+  /* CTA button */
+  .btn-primary {
+    background: var(--charcoal);
+    color: var(--cream);
+    padding: 14px 36px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    transition: background 0.25s, transform 0.2s;
+    display: inline-block;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary:hover { background: var(--terracotta); transform: scale(1.03); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--charcoal);
+    padding: 13px 30px;
+    border-radius: 100px;
+    font-weight: 500;
+    font-size: 15px;
+    border: 1.5px solid var(--charcoal);
+    transition: all 0.25s;
+    cursor: pointer;
+  }
+  .btn-outline:hover { background: var(--charcoal); color: var(--cream); }
+
+  /* Compatibility bar */
+  .compat-bar {
+    height: 6px;
+    border-radius: 99px;
+    background: #e5e0d6;
+    overflow: hidden;
+  }
+  .compat-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--sage), #a8c5aa);
+    transition: width 1s ease;
+  }
+
+  /* Nav pill active */
+  .nav-link {
+    position: relative;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    transition: color 0.2s;
+    text-decoration: none;
+    padding: 4px 0;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0;
+    width: 0; height: 1.5px;
+    background: var(--terracotta);
+    transition: width 0.25s;
+  }
+  .nav-link:hover { color: var(--charcoal); }
+  .nav-link:hover::after { width: 100%; }
+
+  .tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 500;
+    background: rgba(124,154,126,0.15);
+    color: var(--sage);
+    border: 1px solid rgba(124,154,126,0.3);
+  }
+
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(44,44,44,0.08);
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: center;
+  }
+
+  /* Map placeholder */
+  .map-placeholder {
+    background: linear-gradient(135deg, #e8f0e8 0%, #d4e4d6 40%, #c8deca 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .map-dot {
+    position: absolute;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    box-shadow: 0 0 0 4px rgba(196,113,79,0.25);
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(196,113,79,0.25); }
+    50% { box-shadow: 0 0 0 10px rgba(196,113,79,0.1); }
+  }
+  .map-pin {
+    position: absolute;
+    background: white;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    white-space: nowrap;
+    color: var(--charcoal);
+  }
+  .map-pin::after {
+    content: '';
+    position: absolute;
+    bottom: -5px; left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-bottom: none;
+    border-top-color: white;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: #ccc8be; border-radius: 99px; }
+</style>
 </head>
 <body>
-    <h1> homepage</h1>
+
+<!-- ═══════════════════════════ NAV ═══════════════════════════ -->
+<nav class="sticky top-0 z-50 bg-[var(--cream)] bg-opacity-90 backdrop-blur-md border-b border-black/[0.06]">
+  <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+    <!-- Logo -->
+    <a href="#" class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:var(--charcoal)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <span class="serif font-bold text-xl tracking-tight" style="color:var(--charcoal)">StayMatch - AI Flatmate Matching</span>
+    </a>
+    <!-- Links -->
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#" class="nav-link">How It Works</a>
+      <a href="#" class="nav-link">Browse Listings</a>
+      <a href="#" class="nav-link">Compatibility</a>
+      <a href="#" class="nav-link">About</a>
+    </div>
+    <!-- Auth -->
+    <div class="flex items-center gap-3">
+      <button class="btn-outline text-sm py-2 px-5">Log In</button>
+      <button class="btn-primary text-sm py-2 px-5">Sign Up Free</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<section class="relative min-h-screen flex items-center overflow-hidden pt-8">
+  <!-- Background blobs -->
+  <div class="blob w-96 h-96 opacity-30 top-[-80px] right-[10%]" style="background:var(--sage)"></div>
+  <div class="blob w-72 h-72 opacity-20 bottom-[10%] left-[5%]" style="background:var(--terracotta); animation-delay:-5s"></div>
+
+  <div class="max-w-6xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center w-full">
+    <!-- Left copy -->
+    <div>
+      <div class="tag fade-up delay-1 mb-5">✦ AI-Powered Flatmate Matching</div>
+      <h1 class="fade-up delay-2 text-6xl lg:text-7xl font-black leading-[1.05] mb-6" style="color:var(--charcoal)">
+        Find your<br/>
+        <em class="not-italic" style="color:var(--terracotta)">perfect</em><br/>
+        flatmate.
+      </h1>
+      <p class="fade-up delay-3 text-lg leading-relaxed mb-10 max-w-md" style="color:var(--muted)">
+        Post your preferences, let our AI calculate lifestyle compatibility, and connect with flatmates who actually match your habits — not just your budget.
+      </p>
+      <div class="fade-up delay-4 flex flex-wrap gap-3 mb-10">
+        <button class="btn-primary">Find My Match</button>
+        <button class="btn-outline">Post a Listing</button>
+      </div>
+      <!-- Micro-stats -->
+      <div class="fade-up delay-5 flex gap-8">
+        <div>
+          <div class="serif text-3xl font-bold" style="color:var(--charcoal)">12k+</div>
+          <div class="text-sm mt-0.5" style="color:var(--muted)">Active listings</div>
+        </div>
+        <div class="w-px" style="background:rgba(44,44,44,0.12)"></div>
+        <div>
+          <div class="serif text-3xl font-bold" style="color:var(--charcoal)">94%</div>
+          <div class="text-sm mt-0.5" style="color:var(--muted)">Match satisfaction</div>
+        </div>
+        <div class="w-px" style="background:rgba(44,44,44,0.12)"></div>
+        <div>
+          <div class="serif text-3xl font-bold" style="color:var(--charcoal)">8 cities</div>
+          <div class="text-sm mt-0.5" style="color:var(--muted)">Across India</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right — floating profile cards + compatibility preview -->
+    <div class="relative h-[480px] hidden lg:block">
+      <!-- Card 1 -->
+      <div class="profile-card absolute top-0 left-8 w-52 rounded-2xl p-4 shadow-lg" style="background:var(--card-bg); border:1px solid rgba(44,44,44,0.08)">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg" style="background:#e8d5c4">🧑‍💻</div>
+          <div>
+            <div class="font-semibold text-sm" style="color:var(--charcoal)">Arjun, 23</div>
+            <div class="text-xs" style="color:var(--muted)">Software Dev</div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-1 mb-3">
+          <span class="tag text-[10px] px-2 py-0.5">Night Owl</span>
+          <span class="tag text-[10px] px-2 py-0.5">Non-smoker</span>
+          <span class="tag text-[10px] px-2 py-0.5">Veg</span>
+        </div>
+        <div class="text-xs font-medium mb-1" style="color:var(--charcoal)">₹12,000–15,000/mo</div>
+        <div class="text-xs" style="color:var(--muted)">Koramangala, Bangalore</div>
+      </div>
+
+      <!-- Compatibility badge -->
+      <div class="absolute top-28 left-40 z-10 bg-white rounded-2xl shadow-xl px-4 py-3 border" style="border-color:rgba(124,154,126,0.3)">
+        <div class="text-xs font-medium mb-1" style="color:var(--muted)">Compatibility Score</div>
+        <div class="serif text-3xl font-bold" style="color:var(--sage)">92%</div>
+        <div class="text-[10px] mt-0.5" style="color:var(--muted)">Great match! ✨</div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="profile-card absolute top-16 right-0 w-56 rounded-2xl p-4 shadow-lg" style="background:var(--card-bg); border:1px solid rgba(44,44,44,0.08)">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg" style="background:#c8deca">👩‍🎓</div>
+          <div>
+            <div class="font-semibold text-sm" style="color:var(--charcoal)">Priya, 22</div>
+            <div class="text-xs" style="color:var(--muted)">MBA Student</div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-1 mb-3">
+          <span class="tag text-[10px] px-2 py-0.5">Early Bird</span>
+          <span class="tag text-[10px] px-2 py-0.5">Neat</span>
+          <span class="tag text-[10px] px-2 py-0.5">Female only</span>
+        </div>
+        <div class="text-xs font-medium mb-1" style="color:var(--charcoal)">₹10,000–13,000/mo</div>
+        <div class="text-xs" style="color:var(--muted)">Powai, Mumbai</div>
+      </div>
+
+      <!-- Mini compatibility breakdown -->
+      <div class="absolute bottom-4 left-0 right-8 rounded-2xl p-4 shadow-md" style="background:var(--card-bg); border:1px solid rgba(44,44,44,0.08)">
+        <div class="text-xs font-semibold mb-3" style="color:var(--charcoal)">Compatibility Breakdown</div>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2"><span class="text-xs w-24" style="color:var(--muted)">Sleep schedule</span><div class="compat-bar flex-1"><div class="compat-fill" style="width:88%"></div></div><span class="text-xs font-medium w-8 text-right" style="color:var(--sage)">88%</span></div>
+          <div class="flex items-center gap-2"><span class="text-xs w-24" style="color:var(--muted)">Cleanliness</span><div class="compat-bar flex-1"><div class="compat-fill" style="width:95%"></div></div><span class="text-xs font-medium w-8 text-right" style="color:var(--sage)">95%</span></div>
+          <div class="flex items-center gap-2"><span class="text-xs w-24" style="color:var(--muted)">Social habits</span><div class="compat-bar flex-1"><div class="compat-fill" style="width:78%"></div></div><span class="text-xs font-medium w-8 text-right" style="color:var(--sage)">78%</span></div>
+          <div class="flex items-center gap-2"><span class="text-xs w-24" style="color:var(--muted)">Budget range</span><div class="compat-bar flex-1"><div class="compat-fill" style="width:92%"></div></div><span class="text-xs font-medium w-8 text-right" style="color:var(--sage)">92%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ MARQUEE ═══════════════════════════ -->
+<div class="py-5 overflow-hidden border-y" style="border-color:rgba(44,44,44,0.08); background:var(--charcoal)">
+  <div class="marquee-track">
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:var(--cream)">✦ AI Compatibility Matching</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:var(--sage)">✦ In-App Messaging</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:var(--cream)">✦ Map View of Listings</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:#C4714F">✦ Verified Profiles</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:var(--cream)">✦ Gender Preference Filters</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:var(--sage)">✦ Budget Matching</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:var(--cream)">✦ Lifestyle Tags</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:#C4714F">✦ Students & Professionals</span>
+    <!-- Duplicate for seamless loop -->
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:var(--cream)">✦ AI Compatibility Matching</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:var(--sage)">✦ In-App Messaging</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:var(--cream)">✦ Map View of Listings</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:#C4714F">✦ Verified Profiles</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:var(--cream)">✦ Gender Preference Filters</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:var(--sage)">✦ Budget Matching</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:var(--cream)">✦ Lifestyle Tags</span>
+    <span class="text-sm font-medium px-8 whitespace-nowrap" style="color:#C4714F">✦ Students & Professionals</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ HOW IT WORKS ═══════════════════════════ -->
+<section class="py-28 max-w-6xl mx-auto px-6">
+  <div class="text-center mb-16">
+    <div class="tag mb-4">Simple Process</div>
+    <h2 class="serif text-5xl font-bold" style="color:var(--charcoal)">Find your flatmate<br/>in 3 easy steps</h2>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+    <!-- Step 1 -->
+    <div class="relative">
+      <div class="step-line hidden md:block" style="width:100%; left:56px;"></div>
+      <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm mb-5 serif" style="background:var(--charcoal); color:var(--cream)">01</div>
+      <h3 class="serif text-2xl font-bold mb-3" style="color:var(--charcoal)">Create Your Profile</h3>
+      <p class="leading-relaxed" style="color:var(--muted)">Post your budget, preferred area, gender preference, sleep schedule, and lifestyle habits in under 5 minutes.</p>
+    </div>
+    <!-- Step 2 -->
+    <div class="relative">
+      <div class="step-line hidden md:block" style="width:100%; left:56px;"></div>
+      <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm mb-5 serif" style="background:var(--terracotta); color:var(--cream)">02</div>
+      <h3 class="serif text-2xl font-bold mb-3" style="color:var(--charcoal)">AI Finds Your Matches</h3>
+      <p class="leading-relaxed" style="color:var(--muted)">Our algorithm scores compatibility across sleep, cleanliness, social habits, diet, and more — giving you a detailed breakdown.</p>
+    </div>
+    <!-- Step 3 -->
+    <div>
+      <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm mb-5 serif" style="background:var(--sage); color:#fff">03</div>
+      <h3 class="serif text-2xl font-bold mb-3" style="color:var(--charcoal)">Connect & Move In</h3>
+      <p class="leading-relaxed" style="color:var(--muted)">Message your matches directly in-app, browse their listing on the map view, and finalise your new home together.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ MAP SECTION ═══════════════════════════ -->
+<section class="py-16 max-w-6xl mx-auto px-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <!-- Map visual -->
+    <div class="map-placeholder rounded-3xl h-80 relative">
+      <!-- Grid lines -->
+      <svg class="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+        <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#4a7c4e" stroke-width="0.8"/></pattern></defs>
+        <rect width="100%" height="100%" fill="url(#grid)"/>
+      </svg>
+      <!-- Roads -->
+      <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="160" x2="100%" y2="160" stroke="#a8c5aa" stroke-width="3" opacity="0.6"/>
+        <line x1="200" y1="0" x2="200" y2="100%" stroke="#a8c5aa" stroke-width="3" opacity="0.6"/>
+        <line x1="350" y1="0" x2="350" y2="100%" stroke="#a8c5aa" stroke-width="2" opacity="0.4"/>
+        <line x1="0" y1="100" x2="100%" y2="220" stroke="#a8c5aa" stroke-width="2" opacity="0.35"/>
+      </svg>
+      <!-- Pins -->
+      <div class="map-pin" style="top:50px; left:130px">₹12k · Koramangala</div>
+      <div class="map-dot" style="top:80px; left:168px"></div>
+
+      <div class="map-pin" style="top:160px; left:240px">₹9k · Indiranagar</div>
+      <div class="map-dot" style="top:190px; left:278px"></div>
+
+      <div class="map-pin" style="top:90px; right:80px">₹15k · Whitefield</div>
+      <div class="map-dot" style="top:120px; right:118px"></div>
+
+      <div class="map-dot" style="bottom:80px; left:90px"></div>
+      <div class="map-pin" style="bottom:95px; left:52px">₹8k · BTM</div>
+
+      <!-- Overlay label -->
+      <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 text-sm font-semibold" style="color:var(--charcoal)">
+        🗺 48 listings near you
+      </div>
+    </div>
+    <!-- Copy -->
+    <div>
+      <div class="tag mb-4">Map View</div>
+      <h2 class="serif text-4xl font-bold mb-5" style="color:var(--charcoal)">See listings where<br/>it matters most.</h2>
+      <p class="leading-relaxed mb-6" style="color:var(--muted)">Browse available rooms and flatmates on an interactive map. Filter by area, budget, and compatibility score to find the perfect neighbourhood — before you even visit.</p>
+      <ul class="space-y-3">
+        <li class="flex items-center gap-3 text-sm" style="color:var(--charcoal)">
+          <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs" style="background:rgba(124,154,126,0.2); color:var(--sage)">✓</div>
+          Filter by distance from college / office
+        </li>
+        <li class="flex items-center gap-3 text-sm" style="color:var(--charcoal)">
+          <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs" style="background:rgba(124,154,126,0.2); color:var(--sage)">✓</div>
+          See compatibility score pins on the map
+        </li>
+        <li class="flex items-center gap-3 text-sm" style="color:var(--charcoal)">
+          <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs" style="background:rgba(124,154,126,0.2); color:var(--sage)">✓</div>
+          Cluster view for high-density areas
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FEATURES ═══════════════════════════ -->
+<section class="py-24" style="background: rgba(44,44,44,0.03)">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <div class="tag mb-4">Everything you need</div>
+      <h2 class="serif text-5xl font-bold" style="color:var(--charcoal)">Built for real flatmate life</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <div class="feature-card rounded-2xl p-7 cursor-pointer" style="background:var(--card-bg); border:1px solid rgba(44,44,44,0.07)">
+        <div class="feature-icon w-11 h-11 rounded-xl flex items-center justify-center mb-4 text-lg transition-all" style="background:rgba(124,154,126,0.15); color:var(--sage)">🤖</div>
+        <h3 class="font-semibold text-lg mb-2" style="color:inherit">AI Compatibility Score</h3>
+        <p class="text-sm leading-relaxed" style="color:var(--muted)">Multi-dimensional scoring across sleep, cleanliness, diet, noise, and socialising habits.</p>
+      </div>
+
+      <div class="feature-card rounded-2xl p-7 cursor-pointer" style="background:var(--card-bg); border:1px solid rgba(44,44,44,0.07)">
+        <div class="feature-icon w-11 h-11 rounded-xl flex items-center justify-center mb-4 text-lg transition-all" style="background:rgba(196,113,79,0.12); color:var(--terracotta)">💬</div>
+        <h3 class="font-semibold text-lg mb-2" style="color:inherit">In-App Messaging</h3>
+        <p class="text-sm leading-relaxed" style="color:var(--muted)">Chat directly with your matches. No sharing numbers until you're ready.</p>
+      </div>
+
+      <div class="feature-card rounded-2xl p-7 cursor-pointer" style="background:var(--card-bg); border:1px solid rgba(44,44,44,0.07)">
+        <div class="feature-icon w-11 h-11 rounded-xl flex items-center justify-center mb-4 text-lg transition-all" style="background:rgba(44,44,44,0.07); color:var(--charcoal)">🗺️</div>
+        <h3 class="font-semibold text-lg mb-2" style="color:inherit">Interactive Map View</h3>
+        <p class="text-sm leading-relaxed" style="color:var(--muted)">Visualise listings geographically. Find flats close to your campus or workplace.</p>
+      </div>
+
+      <div class="feature-card rounded-2xl p-7 cursor-pointer" style="background:var(--card-bg); border:1px solid rgba(44,44,44,0.07)">
+        <div class="feature-icon w-11 h-11 rounded-xl flex items-center justify-center mb-4 text-lg transition-all" style="background:rgba(124,154,126,0.15); color:var(--sage)">📊</div>
+        <h3 class="font-semibold text-lg mb-2" style="color:inherit">Detailed Breakdown Card</h3>
+        <p class="text-sm leading-relaxed" style="color:var(--muted)">See exactly why you match — with per-trait bars and written insights.</p>
+      </div>
+
+      <div class="feature-card rounded-2xl p-7 cursor-pointer" style="background:var(--card-bg); border:1px solid rgba(44,44,44,0.07)">
+        <div class="feature-icon w-11 h-11 rounded-xl flex items-center justify-center mb-4 text-lg transition-all" style="background:rgba(196,113,79,0.12); color:var(--terracotta)">🔒</div>
+        <h3 class="font-semibold text-lg mb-2" style="color:inherit">Gender Preference Filter</h3>
+        <p class="text-sm leading-relaxed" style="color:var(--muted)">Set strict gender preferences for your flat. We respect and enforce your boundaries.</p>
+      </div>
+
+      <div class="feature-card rounded-2xl p-7 cursor-pointer" style="background:var(--card-bg); border:1px solid rgba(44,44,44,0.07)">
+        <div class="feature-icon w-11 h-11 rounded-xl flex items-center justify-center mb-4 text-lg transition-all" style="background:rgba(44,44,44,0.07); color:var(--charcoal)">💰</div>
+        <h3 class="font-semibold text-lg mb-2" style="color:inherit">Smart Budget Matching</h3>
+        <p class="text-sm leading-relaxed" style="color:var(--muted)">Only see people in your actual budget range. No awkward conversations about money.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ STATS ═══════════════════════════ -->
+<section class="py-24 max-w-6xl mx-auto px-6">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+    <div class="stat-card">
+      <div class="serif text-4xl font-bold mb-1" style="color:var(--terracotta)">12k+</div>
+      <div class="text-sm" style="color:var(--muted)">Active Listings</div>
+    </div>
+    <div class="stat-card">
+      <div class="serif text-4xl font-bold mb-1" style="color:var(--sage)">94%</div>
+      <div class="text-sm" style="color:var(--muted)">Match Satisfaction</div>
+    </div>
+    <div class="stat-card">
+      <div class="serif text-4xl font-bold mb-1" style="color:var(--charcoal)">8</div>
+      <div class="text-sm" style="color:var(--muted)">Cities Covered</div>
+    </div>
+    <div class="stat-card">
+      <div class="serif text-4xl font-bold mb-1" style="color:var(--terracotta)">3 min</div>
+      <div class="text-sm" style="color:var(--muted)">Avg to First Match</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ TESTIMONIALS ═══════════════════════════ -->
+<section class="py-16 max-w-6xl mx-auto px-6">
+  <div class="tag text-center mb-4 mx-auto" style="width:fit-content">Real Stories</div>
+  <h2 class="serif text-4xl font-bold text-center mb-12" style="color:var(--charcoal)">Flatmates who found home</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <div class="rounded-2xl p-7" style="background:var(--charcoal); color:var(--cream)">
+      <div class="text-3xl mb-4">"</div>
+      <p class="text-sm leading-relaxed mb-6" style="color:#ccc8be">The compatibility breakdown was spot on. Me and my flatmate matched 89% and honestly it shows — we've never had a single argument about chores.</p>
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full flex items-center justify-center text-base" style="background:#3a3a3a">🧑‍💻</div>
+        <div>
+          <div class="text-sm font-semibold" style="color:var(--cream)">Rohan M.</div>
+          <div class="text-xs" style="color:#8A8680">Software Engineer, Pune</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl p-7" style="background:var(--card-bg); border:1px solid rgba(44,44,44,0.08)">
+      <div class="text-3xl mb-4" style="color:var(--sage)">"</div>
+      <p class="text-sm leading-relaxed mb-6" style="color:var(--muted)">As a female student moving alone, the gender filter and verified profiles gave me so much peace of mind. Found my flatmate in two days!</p>
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full flex items-center justify-center text-base" style="background:#e8f0e8">👩‍🎓</div>
+        <div>
+          <div class="text-sm font-semibold" style="color:var(--charcoal)">Sneha K.</div>
+          <div class="text-xs" style="color:var(--muted)">MBA Student, Mumbai</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl p-7" style="background:rgba(196,113,79,0.08); border:1px solid rgba(196,113,79,0.15)">
+      <div class="text-3xl mb-4" style="color:var(--terracotta)">"</div>
+      <p class="text-sm leading-relaxed mb-6" style="color:var(--muted)">The map view helped me find a flat literally 10 minutes from my office. Saved ₹4k/month in commute costs. Best decision ever.</p>
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full flex items-center justify-center text-base" style="background:#f5e8e0">🧑‍🏫</div>
+        <div>
+          <div class="text-sm font-semibold" style="color:var(--charcoal)">Aman T.</div>
+          <div class="text-xs" style="color:var(--muted)">UX Designer, Bangalore</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════ CTA BANNER ═══════════════════════════ -->
+<section class="py-20 mx-6 mb-16 rounded-3xl overflow-hidden relative" style="background:var(--charcoal)">
+  <div class="blob w-72 h-72 opacity-20 top-[-60px] right-[5%]" style="background:var(--terracotta); animation-delay:-3s"></div>
+  <div class="blob w-56 h-56 opacity-15 bottom-[-40px] left-[10%]" style="background:var(--sage);"></div>
+  <div class="max-w-2xl mx-auto px-6 text-center relative z-10">
+    <h2 class="serif text-5xl font-bold mb-5" style="color:var(--cream)">Your perfect flatmate<br/>is already here.</h2>
+    <p class="text-base mb-10 leading-relaxed" style="color:#8A8680">Join thousands of students and professionals finding compatible flatmates every week. Free to sign up. No hidden fees.</p>
+    <div class="flex flex-wrap gap-4 justify-center">
+      <button class="btn-primary" style="background:var(--terracotta)">Get Started — It's Free</button>
+      <button class="btn-outline" style="color:var(--cream); border-color:rgba(245,240,232,0.25)">Browse Listings</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<footer class="py-12 border-t" style="border-color:rgba(44,44,44,0.08)">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:var(--charcoal)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <span class="serif font-bold text-lg" style="color:var(--charcoal)">NestMate</span>
+        </div>
+        <p class="text-sm" style="color:var(--muted)">AI-powered flatmate matching for students & professionals.</p>
+      </div>
+      <div class="flex gap-8 flex-wrap">
+        <a href="#" class="nav-link">How it Works</a>
+        <a href="#" class="nav-link">Browse Listings</a>
+        <a href="#" class="nav-link">Privacy Policy</a>
+        <a href="#" class="nav-link">Contact</a>
+      </div>
+    </div>
+    <div class="mt-8 pt-6 border-t flex justify-between items-center flex-wrap gap-3" style="border-color:rgba(44,44,44,0.08)">
+      <p class="text-xs" style="color:var(--muted)">© 2026 NestMate. All rights reserved.</p>
+      <p class="text-xs" style="color:var(--muted)">Available in Bangalore · Mumbai · Delhi · Hyderabad · Pune · Chennai · Kolkata · Patna</p>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
