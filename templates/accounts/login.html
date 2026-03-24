@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NestMate Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+:root{
+  --navy:#0F1F3D;
+  --teal:#0EA5C9;
+  --teal2:#6EE7F7;
+  --white:#fff;
+  --muted:#6B7A99;
+}
+
+/* reset */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  font-family:'Instrument Sans',sans-serif;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#0F1F3D,#0EA5C9);
+  overflow:hidden;
+  padding:20px;
+}
+
+/* blobs */
+.blob{
+  position:absolute;
+  width:400px;
+  height:400px;
+  background:radial-gradient(circle,var(--teal2),transparent);
+  filter:blur(80px);
+  opacity:.5;
+  animation:float 10s infinite ease-in-out;
+}
+
+.blob:nth-child(1){top:-120px;left:-120px;}
+.blob:nth-child(2){bottom:-120px;right:-80px;animation-delay:2s;}
+
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-40px);}
+}
+
+/* card */
+.card{
+  width:100%;
+  max-width:380px;
+  padding:40px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.15);
+  box-shadow:0 20px 60px rgba(0,0,0,0.25);
+  color:#fff;
+  z-index:2;
+}
+
+/* logo */
+.logo{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:800;
+  font-size:26px;
+  margin-bottom:20px;
+}
+.logo span{color:var(--teal2);}
+
+/* heading */
+h2{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-size:28px;
+  margin-bottom:6px;
+}
+
+.sub{
+  font-size:13px;
+  color:rgba(255,255,255,.7);
+  margin-bottom:30px;
+}
+
+/* inputs */
+.input-box{
+  position:relative;
+  margin-bottom:22px;
+}
+
+.input-box input{
+  width:100%;
+  padding:14px 12px;
+  border:none;
+  outline:none;
+  border-radius:10px;
+  background:rgba(255,255,255,0.12);
+  color:#fff;
+  font-size:14px;
+}
+
+.input-box label{
+  position:absolute;
+  left:12px;
+  top:14px;
+  font-size:13px;
+  color:rgba(255,255,255,.6);
+  pointer-events:none;
+  transition:.25s;
+}
+
+.input-box input:focus + label,
+.input-box input:valid + label{
+  top:-8px;
+  left:10px;
+  font-size:11px;
+  background:rgba(15,31,61,.8);
+  padding:2px 6px;
+  border-radius:6px;
+}
+
+/* button */
+.btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--teal),var(--teal2));
+  color:#0F1F3D;
+  font-weight:700;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 25px rgba(14,165,201,.4);
+}
+
+/* divider */
+.divider{
+  text-align:center;
+  margin:20px 0;
+  font-size:12px;
+  color:rgba(255,255,255,.5);
+}
+
+/* social */
+.social{
+  display:flex;
+  gap:10px;
+}
+
+.social button{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  background:rgba(255,255,255,0.12);
+  color:#fff;
+  cursor:pointer;
+  font-size:13px;
+}
+
+/* footer */
+.footer{
+  margin-top:20px;
+  font-size:13px;
+  text-align:center;
+  color:rgba(255,255,255,.7);
+}
+
+.footer a{
+  color:var(--teal2);
+  text-decoration:none;
+}
+
+/* 🔥 RESPONSIVE MAGIC */
+@media (max-width:480px){
+
+  .card{
+    padding:28px 22px;
+    border-radius:16px;
+  }
+
+  h2{
+    font-size:24px;
+  }
+
+  .logo{
+    font-size:22px;
+  }
+
+  .blob{
+    width:260px;
+    height:260px;
+    filter:blur(60px);
+  }
+
+  .social{
+    flex-direction:column;
+  }
+}
+
+@media (max-height:600px){
+  body{
+    align-items:flex-start;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="blob"></div>
+<div class="blob"></div>
+
+<div class="card">
+
+  <div class="logo">Nest<span>Mate</span></div>
+
+  <h2>Welcome back ✨</h2>
+  <div class="sub">Your perfect flatmate is waiting.</div>
+
+  <form>
+    <div class="input-box">
+      <input type="email" required>
+      <label>Email address</label>
+    </div>
+
+    <div class="input-box">
+      <input type="password" required>
+      <label>Password</label>
+    </div>
+
+    <button class="btn">Log In →</button>
+  </form>
+
+  <div class="divider">or continue with</div>
+
+  <div class="social">
+    <button>Google</button>
+    <button>Apple</button>
+  </div>
+
+  <div class="footer">
+    New here? <a href="#">Create account</a>
+  </div>
+
+</div>
+
+</body>
+</html>
