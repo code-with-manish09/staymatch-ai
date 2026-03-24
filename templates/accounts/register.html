@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+
+        <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">
+
+            Create Account
+
+        </h2>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-4">
+
+            {% csrf_token %}
+
+            <input type="text" name="username" placeholder="Username"
+                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+
+            <input type="email" name="email" placeholder="Email"
+                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+
+            <input type="password" name="password" placeholder="Password"
+                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+
+            <input type="number" name="age" placeholder="Age"
+                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+
+            <select name="gender"
+                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                <option value="">Select Gender</option>
+
+                <option value="male">Male</option>
+
+                <option value="female">Female</option>
+
+                <option value="other">Other</option>
+
+            </select>
+
+            <input type="text" name="location" placeholder="Location"
+                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+
+            <input type="text" name="contacts" placeholder="Contact Number"
+                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+
+            <div>
+
+                <label class="block text-gray-600 mb-1">
+
+                    Profile Picture
+
+                </label>
+
+                <input type="file" name="profile_picture" class="w-full border p-2 rounded-lg">
+
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">
+
+                Register
+
+            </button>
+
+        </form>
+
+        <p class="text-center mt-4 text-gray-600">
+
+            Already have account?
+
+            <a href="{% url 'login' %}" class="text-blue-600 font-semibold">
+
+                Login
+
+            </a>
+
+        </p>
+
+    </div>
+
+</body>
+
+</html>
