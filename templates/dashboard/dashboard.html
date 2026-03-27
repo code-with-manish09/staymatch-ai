@@ -43,6 +43,36 @@ body::after{
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
   pointer-events:none;z-index:9998;opacity:.5;
 }
+/* ✅ SUCCESS (Green Glassmorphism - Premium Look) */
+.msg-success {
+    /* Glass Effect (Translucency & Blur) */
+    background: rgba(16, 185, 129, 0.1); /* Halka Green background */
+    backdrop-filter: blur(12px);          /* 🔥 Ye line glass banati hai */
+    -webkit-backdrop-filter: blur(12px); /* Safari support */
+    
+    /* Border & Shadow (Chamakeeli border) */
+    border: 1px solid rgba(16, 185, 129, 0.3); /* Green translucent border */
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.1); /* Halki si green chamak */
+
+    /* 🔥 TEXT COLOR FIX (White BG ke liye Dark Green) */
+    color: #0d7b56; 
+    
+    /* Layout & Font (Saaf aur readable) */
+    padding: 14px 22px;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: 'Instrument Sans', sans-serif;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    /* Animation (Niche se upar aane ke liye) */
+    animation: slideUp 0.5s ease forwards;
+    z-index: 1000; /* Taaki topbar ke upar rahe */
+}
+
 
 /* ── animations — same keyframes as landing ── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(32px);}to{opacity:1;transform:translateY(0);}}
@@ -481,7 +511,13 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 
 <!-- ════════════════════════════ MAIN ════════════════════════════ -->
 <main class="main">
-
+{% if messages %}
+  {% for message in messages %}
+    <div class="msg msg-success">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
   <!-- TOPBAR -->
   <div class="topbar">
     <div class="search-wrap">
@@ -1147,6 +1183,17 @@ function spawnConfetti(){
   }
   setTimeout(spawnConfetti,3200);
 }
+
+setTimeout(()=>{
+  document.querySelectorAll('.msg').forEach(msg=>{
+    msg.style.opacity = "0";
+    msg.style.transition = "0.3s";
+    
+    setTimeout(()=>{
+      msg.remove();
+    },500);
+  });
+},2000); // 🔥 1000ms = 1 sec
 </script>
 </body>
 </html>

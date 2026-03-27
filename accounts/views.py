@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .models import Profile
-from django.contrib import auth
+from django.contrib import auth ,messages
 
 def register(request):
     if request.method == 'POST':
@@ -46,9 +46,9 @@ def register(request):
     return render(request, 'accounts/register.html')
        #==========login views =========== 
 
+
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib import auth
+from django.contrib import auth, messages
 
 def login(request):
     if request.method == 'POST':
@@ -56,12 +56,14 @@ def login(request):
         password = request.POST.get('password')
 
         user = auth.authenticate(username=username, password=password)
+
         if user is not None:
             auth.login(request, user)
-            return redirect('dashboard')  # Login success → dashboard
-        else:
-            # Wrong credentials → error message
-            return render(request, 'accounts/login.html', {'error': 'Invalid username or password'})
+            messages.success(request, "Login successful 🚀")
+            return redirect('dashboard')
 
-    # GET request → show login page
+        else:
+            messages.error(request, "Invalid username or password ❌")
+            return redirect('login')   # 🔥 IMPORTANT CHANGE
+
     return render(request, 'accounts/login.html')

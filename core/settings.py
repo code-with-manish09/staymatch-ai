@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+from django.contrib.messages import constants as messages
 from pathlib import Path
 import os
 
@@ -135,3 +135,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')
 # 4. Media settings (Check kar lo sahi hain)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'red-500',   # Tailwind red color
+    messages.SUCCESS: 'emerald-500', # Tailwind green (emerald) color
+}

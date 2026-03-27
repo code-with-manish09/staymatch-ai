@@ -210,6 +210,32 @@ h2{
     align-items:flex-start;
   }
 }
+/* 🔥 MESSAGE STYLES (ADD AT END) */
+
+.msg{
+  backdrop-filter: blur(12px);
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:18px;
+  font-size:13px;
+  text-align:center;
+  animation:fadeIn 0.4s ease;
+}
+
+/* ❌ ERROR (red glass) */
+.msg-error{
+  background: rgba(255, 80, 80, 0.12);
+  border: 1px solid rgba(255, 80, 80, 0.4);
+  color: #ffd6d6;
+  box-shadow: 0 0 15px rgba(255,80,80,0.2);
+}
+
+
+/* animation */
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(-5px);}
+  to{opacity:1; transform:translateY(0);}
+}
 </style>
 </head>
 
@@ -225,8 +251,29 @@ h2{
   <h2>Welcome back ✨</h2>
   <div class="sub">Your perfect flatmate is waiting.</div>
 
-  <form method ="POST" action="{% url 'login' %}">
+  <form method ="POST" action="{% url 'login' %}" autocomplete="off">
     {% csrf_token %}
+    {% if messages %}
+  {% for message in messages %}
+    
+    {% if message.tags == 'error' %}
+      <div class="msg msg-error">
+        {{ message }}
+      </div>
+
+    {% elif message.tags == 'success' %}
+      <div class="msg msg-success">
+        {{ message }}
+      </div>
+
+    {% else %}
+      <div class="msg">
+        {{ message }}
+      </div>
+    {% endif %}
+
+  {% endfor %}
+{% endif %}
     <div class="input-box">
       <input type="text" name="username" required>
       <label>Username</label>
@@ -252,6 +299,18 @@ h2{
   </div>
 
 </div>
+<script>
+setTimeout(()=>{
+  document.querySelectorAll('.msg').forEach(msg=>{
+    msg.style.opacity = "0";
+    msg.style.transition = "0.3s";
+    
+    setTimeout(()=>{
+      msg.remove();
+    },300);
+  });
+},1000); // 🔥 1000ms = 1 sec
+</script>
 
 </body>
 </html>
