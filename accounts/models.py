@@ -1,19 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-#==========profile model ===========
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 
-class Profile(User):
     name = models.CharField(max_length=100)
-    age = models.IntegerField()
+    age = models.IntegerField(null=True, blank=True)
+
     GENDER_CHOICES = (
-        ('male', 'Male'),
-        ('female', 'Female'),
-        ('other', 'Other')
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Other', 'Other')
     )
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES , null=True , blank= True)
-    location = models.CharField(max_length=100)
-    contacts = models.CharField(max_length=100)
-    profile_picture = models.ImageField(upload_to = 'profile_pictures/' , null = True , blank= True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
+
+    location = models.CharField(max_length=100, null=True, blank=True)
+    contacts = models.CharField(max_length=100, null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+
     def __str__(self):
-        return self.username
+        return f"{self.user.username}'s Profile" if self.user else self.name

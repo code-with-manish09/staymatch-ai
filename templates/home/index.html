@@ -266,8 +266,8 @@ footer{
     <a href="#" class="nav-a">Blog</a>
   </div>
   <div style="display:flex;gap:10px;align-items:center;">
-    <button class="btn-outline" style="padding:9px 20px;font-size:14px;">Log In</button>
-    <button class="btn-primary" style="padding:10px 22px;font-size:14px;">Get Started →</button>
+    <a href="{% url 'login' %}" class="btn-outline" style="padding:9px 20px;font-size:14px;">Log In</a>
+    <a href="{% url 'register' %}" class="btn-primary" style="padding:10px 22px;font-size:14px;">Get Started →</a>
   </div>
 </nav>
 

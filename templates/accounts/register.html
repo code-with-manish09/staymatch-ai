@@ -1,97 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NestMate Register</title>
 
-    <meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{
+  --navy:#0F1F3D;
+  --teal:#0EA5C9;
+  --teal2:#6EE7F7;
+  --white:#fff;
+}
 
-    <title>Register</title>
+/* reset */
+*{margin:0;padding:0;box-sizing:border-box;}
 
-    <script src="https://cdn.tailwindcss.com"></script>
+body{
+  font-family:'Instrument Sans',sans-serif;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#0F1F3D,#0EA5C9);
+  overflow:hidden;
+  padding:20px;
+}
 
+/* blobs */
+.blob{
+  position:absolute;
+  width:400px;
+  height:400px;
+  background:radial-gradient(circle,var(--teal2),transparent);
+  filter:blur(80px);
+  opacity:.5;
+  animation:float 10s infinite ease-in-out;
+  z-index: 1;
+}
+.blob:nth-child(1){top:-120px;left:-120px;}
+.blob:nth-child(2){bottom:-120px;right:-80px;animation-delay:2s;}
+
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-40px);}
+}
+
+/* card */
+.card{
+  width:100%;
+  max-width:420px;
+  max-height:90vh;
+  overflow-y:auto;
+  padding:30px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.15);
+  box-shadow:0 20px 60px rgba(0,0,0,0.25);
+  color:#fff;
+  z-index:2;
+}
+
+/* scrollbar */
+.card::-webkit-scrollbar{ width:6px; }
+.card::-webkit-scrollbar-thumb{
+  background:linear-gradient(var(--teal), var(--teal2));
+  border-radius:10px;
+}
+
+/* inputs styling */
+.input-box{
+  position:relative;
+  margin-bottom:16px;
+}
+
+.input-box input,
+.input-box select{
+  width:100%;
+  padding:13px 12px;
+  border:none;
+  outline:none;
+  border-radius:10px;
+  background:rgba(255,255,255,0.12);
+  color:#fff;
+  font-size:14px;
+  appearance: none; /* 🔥 Removes default arrows from Age and Gender */
+}
+
+/* Age Input Arrows Removal */
+.input-box input::-webkit-outer-spin-button,
+.input-box input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Dropdown Options Theme Match */
+.input-box select option {
+    background-color: #16294a; /* Navy Theme */
+    color: #fff;
+}
+
+/* Dropdown theme match */
+.input-box select {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    padding: 13px 12px;
+    border-radius: 10px;
+    border: none;
+    appearance: none; /* removes default arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.input-box select option {
+    background-color: rgba(15,31,61,0.95); /* navy-ish like your theme */
+    color: #fff;
+}
+
+/* Arrow icon for select (optional, matches theme) */
+.input-box select::-ms-expand {
+    display: none; /* remove default arrow on IE/Edge */
+}
+
+/* 🔥 CUSTOM FILE UPLOAD BUTTON 🔥 */
+.file-upload-wrapper {
+  margin-bottom: 20px;
+}
+.file-upload-wrapper p {
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: rgba(255,255,255,0.8);
+}
+.custom-file-upload {
+  display: inline-block;
+  width: 100%;
+  padding: 12px;
+  background: rgba(255,255,255,0.1);
+  border: 1px dashed rgba(255,255,255,0.3);
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.3s;
+}
+.custom-file-upload:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: var(--teal2);
+}
+#file-input {
+  display: none; /* Hide the ugly default button */
+}
+
+/* button */
+.btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--teal),var(--teal2));
+  color:#0F1F3D;
+  font-weight:700;
+  cursor:pointer;
+  transition:.3s;
+  margin-top: 10px;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 25px rgba(14,165,201,.4);
+}
+
+.logo{ font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:24px; margin-bottom:10px; }
+.logo span{color:var(--teal2);}
+h2{ font-family:'Bricolage Grotesque',sans-serif; font-size:26px; }
+.sub{ font-size:13px; color:rgba(255,255,255,.7); margin-bottom:20px; }
+.footer{ margin-top:16px; font-size:13px; text-align:center; color:rgba(255,255,255,.7); }
+.footer a{ color:var(--teal2); text-decoration:none; }
+</style>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body>
 
-    <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+<div class="blob"></div>
+<div class="blob"></div>
 
-        <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">
+<div class="card">
+  <div class="logo">Nest<span>Mate</span></div>
+  <h2>Create account 🚀</h2>
+  <div class="sub">Find your perfect flatmate faster.</div>
 
-            Create Account
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
 
-        </h2>
-
-        <form method="POST" enctype="multipart/form-data" class="space-y-4">
-
-            {% csrf_token %}
-
-            <input type="text" name="username" placeholder="Username"
-                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-
-            <input type="email" name="email" placeholder="Email"
-                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-
-            <input type="password" name="password" placeholder="Password"
-                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-
-            <input type="number" name="age" placeholder="Age"
-                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-
-            <select name="gender"
-                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-
-                <option value="">Select Gender</option>
-
-                <option value="male">Male</option>
-
-                <option value="female">Female</option>
-
-                <option value="other">Other</option>
-
-            </select>
-
-            <input type="text" name="location" placeholder="Location"
-                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-
-            <input type="text" name="contacts" placeholder="Contact Number"
-                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-
-            <div>
-
-                <label class="block text-gray-600 mb-1">
-
-                    Profile Picture
-
-                </label>
-
-                <input type="file" name="profile_picture" class="w-full border p-2 rounded-lg">
-
-            </div>
-
-            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">
-
-                Register
-
-            </button>
-
-        </form>
-
-        <p class="text-center mt-4 text-gray-600">
-
-            Already have account?
-
-            <a href="{% url 'login' %}" class="text-blue-600 font-semibold">
-
-                Login
-
-            </a>
-
-        </p>
-
+    <div class="input-box">
+      <input type="text" name="username" required>
+      <label>username</label>
     </div>
 
-</body>
+    <div class="input-box">
+      <input type="text" name="full_name" required>
+      <label>Full Name</label>
+    </div>
 
+    <div class="input-box">
+      <input type="number" name="age" required>
+      <label>Age</label>
+    </div>
+
+    <div class="input-box">
+      <select name="gender" required>
+        <option value="" disabled selected hidden></option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+      <label>Gender</label>
+    </div>
+
+    <div class="input-box">
+      <input type="text" name="location" required>
+      <label>Location</label>
+    </div>
+
+    <div class="input-box">
+      <input type="tel" name="contact" required>
+      <label>Contact Number</label>
+    </div>
+
+    <div class="file-upload-wrapper">
+      <p>Profile Media</p>
+      <label for="file-input" class="custom-file-upload">
+         <span>📁 Choose Image/Video</span>
+      </label>
+      <input id="file-input" type="file" name="profile_media" accept="image/*,video/*" onchange="updateFileName(this)">
+      <p id="file-name" style="font-size: 11px; margin-top: 5px; color: var(--teal2);"></p>
+    </div>
+
+    <div class="input-box">
+      <input type="email" name="email" required>
+      <label>Email address</label>
+    </div>
+
+    <div class="input-box">
+      <input type="password" name="password" required>
+      <label>Password</label>
+    </div>
+
+    <button type="submit" class="btn">Register →</button>
+  </form>
+
+  <div class="footer">
+    Already have an account? <a href="{% url 'login' %}">Log in</a>
+  </div>
+</div>
+
+<script>
+  // File select hone par naam dikhane ke liye
+  function updateFileName(input) {
+    const fileName = input.files[0].name;
+    document.getElementById('file-name').textContent = "Selected: " + fileName;
+  }
+</script>
+
+</body>
 </html>
