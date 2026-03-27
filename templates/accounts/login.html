@@ -225,11 +225,11 @@ h2{
   <h2>Welcome back ✨</h2>
   <div class="sub">Your perfect flatmate is waiting.</div>
 
-  <form method =POST action="{% url 'login' %}">
-    {%csrf_token %}
+  <form method ="POST" action="{% url 'login' %}">
+    {% csrf_token %}
     <div class="input-box">
-      <input type="email" name="username" required>
-      <label>Email address</label>
+      <input type="text" name="username" required>
+      <label>Username</label>
     </div>
 
     <div class="input-box">
