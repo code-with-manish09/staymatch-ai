@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .models import Profile
-from django.contrib import auth ,messages
+from django.contrib import auth, messages
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+
 
 def register(request):
     if request.method == 'POST':
@@ -15,40 +18,31 @@ def register(request):
         email     = request.POST.get('email')
         password  = request.POST.get('password')
         
-        # Photo/Video ke liye request.FILES zaroori hai
         profile_media = request.FILES.get('profile_media')
 
-        # 2. Check karo agar User pehle se exists karta hai
         if User.objects.filter(username=username).exists():
             return render(request, 'accounts/register.html', {'error': 'username already registered!'})
 
-        # 3. Pehle Django ka Official 'User' banao (Security ke liye create_user zaroori hai)
-        # User create
         new_user = User.objects.create_user(
-        username=username, 
-        email=email, 
-        password=password
-     )
+            username=username, 
+            email=email, 
+            password=password
+        )
 
-# Profile create (correct)
         Profile.objects.create(
-        user=new_user,
-        name=full_name,
-        age=age,
-       gender=gender,
-       location=location,
-       contacts=contact,
-       profile_picture=profile_media
-   )
-        print(f"Mubarak ho! {full_name} ka data save ho gaya.")
-        return redirect('login') # Registration ke baad Login page par bhej do
+            user=new_user,
+            name=full_name,
+            age=age,
+            gender=gender,
+            location=location,
+            contact=contact,
+            image=profile_media or 'default.jpg'
+        )
+
+        return redirect('login')
 
     return render(request, 'accounts/register.html')
-       #==========login views =========== 
 
-
-from django.shortcuts import render, redirect
-from django.contrib import auth, messages
 
 def login(request):
     if request.method == 'POST':
@@ -59,11 +53,22 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            messages.success(request, "Login successful 🚀")
             return redirect('dashboard')
-
         else:
             messages.error(request, "Invalid username or password ❌")
-            return redirect('login')   # 🔥 IMPORTANT CHANGE
+            return render(request, 'accounts/login.html')
 
     return render(request, 'accounts/login.html')
+
+@csrf_exempt
+@login_required
+def dashboard(request):
+    user = request.user
+    try:
+        profile = user.profile
+    except Profile.DoesNotExist:
+        profile = None
+    return render(request, 'accounts/dashboard.html', {
+        'user': user,
+        'profile': profile
+        })

@@ -499,14 +499,14 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   <a class="nav-item" onclick="showSec('settings')">
     <span class="nav-icon">⚙️</span> Settings
   </a>
-
   <div class="sb-user">
-    <img src="https://randomuser.me/api/portraits/men/81.jpg" alt="Rahul"/>
+    <img src="{{ profile.image.url }}" alt="Profile">
     <div>
-      <div class="sb-user-name">Rahul Singh</div>
-      <div class="sb-user-role">SWE · Bangalore</div>
+      <div class="sb-user-name">{{ user.username }}</div>
+      <div class="sb-user-name">{{ profile.location }}</div>
     </div>
   </div>
+</div>
 </aside>
 
 <!-- ════════════════════════════ MAIN ════════════════════════════ -->
@@ -531,24 +531,28 @@ input[type=range]{width:100%;accent-color:var(--teal);}
       <div class="icon-btn" onclick="showSec('messages')">
         💬<div class="badge"></div>
       </div>
-      <div class="user-pill" onclick="showSec('profile')">
-        <img src="https://randomuser.me/api/portraits/men/81.jpg" class="avatar" style="width:30px;height:30px;" alt="Rahul"/>
-        <span style="font-size:13px;font-weight:600;color:var(--navy);">Rahul</span>
-      </div>
-    </div>
-  </div>
+<div class="user-pill" onclick="showSec('profile')">
+  <img src="{{ profile.image.url }}" 
+       class="avatar" 
+       style="width:30px;height:30px;" 
+       alt="{{ user.username }}">
+
+  <span style="font-size:13px;font-weight:600;color:var(--navy);">
+    {{ user.username }}
+  </span>
+</div>
 
   <!-- CONTENT -->
   <div class="content">
 
     <!-- ══ DISCOVER ══ -->
     <div id="sec-discover">
+      <img src="{{ profile.image.url }}"
+      class="avatar"
 
-      <!-- Welcome Banner -->
-      <div class="welcome-banner fu d1">
-        <img src="https://randomuser.me/api/portraits/men/81.jpg" class="avatar" style="width:54px;height:54px;border:3px solid var(--teal);flex-shrink:0;" alt="Rahul"/>
-        <div style="flex:1;position:relative;z-index:1;">
-          <div class="wb-name">Hey Rahul, welcome back 👋</div>
+<div class="wb-name">
+  Hey {{ user.username }}, welcome back 👋
+</div>
           <div class="wb-sub">3 new high-compatibility matches found today — go connect!</div>
           <div class="wb-chips">
             <span class="wb-chip">🌙 Night Owl</span>
@@ -922,9 +926,26 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 
     <div id="sec-profile" style="display:none;">
       <div class="feat-card" style="text-align:center;padding:56px 28px;">
-        <img src="https://randomuser.me/api/portraits/men/81.jpg" class="avatar" style="width:80px;height:80px;margin-bottom:16px;" alt="Rahul"/>
-        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);">Rahul Singh</div>
-        <p style="color:var(--muted);font-size:14px;margin:8px 0 20px;">Software Engineer · Bangalore · Vibe Score: 87</p>
+        <img src="{{ profile.image.url }}"
+        class="avatar"
+        style="width:80px;height:80px;margin-bottom:16px;"
+        alt="{{ user.username }}">
+        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);">
+          {{ user.username }}
+        </div>
+        <p style="color:var(--muted);font-size:14px;margin:8px 0 20px;">
+          {{ profile.gender }} · {{ profile.location }} · Age: {{ profile.age }}
+        </p>
+
+<div class="display" style="font-size:22px;font-weight:800;color:var(--navy);">
+  {{ profile.name }}
+</div>
+
+<p style="color:var(--muted);font-size:14px;margin:8px 0 20px;">{{ profile.gender }} · {{ profile.location }} · Age: {{ profile.age }}
+</p>
+
+
+
         <button class="btn-teal" style="font-size:14px;padding:11px 28px;" onclick="showSec('discover')">← Back</button>
       </div>
     </div>
