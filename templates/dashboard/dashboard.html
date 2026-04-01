@@ -501,10 +501,15 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   </a>
 
   <div class="sb-user">
-    <img src="https://randomuser.me/api/portraits/men/81.jpg" alt="Rahul"/>
+    {% if profile.profile_picture %}
+      <img src="{{ profile.profile_picture.url }}" alt="{{ user.username }}"/>
+    {% else %}
+    <img src="https://randomuser.me/api/portraits/men/81.jpg" alt="{{ user.username }}"/>
+    {% endif %}
     <div>
-      <div class="sb-user-name">Rahul Singh</div>
-      <div class="sb-user-role">SWE · Bangalore</div>
+      <div class="sb-user-name">{{ user.username }}</div>
+      <div class="sb-user-role">{{ profile.profession|default:"Developer" }}· 
+        {{ profile.location|default:"Bangalore" }}</div>
     </div>
   </div>
 </aside>
@@ -532,8 +537,8 @@ input[type=range]{width:100%;accent-color:var(--teal);}
         💬<div class="badge"></div>
       </div>
       <div class="user-pill" onclick="showSec('profile')">
-        <img src="https://randomuser.me/api/portraits/men/81.jpg" class="avatar" style="width:30px;height:30px;" alt="Rahul"/>
-        <span style="font-size:13px;font-weight:600;color:var(--navy);">Rahul</span>
+        <img src="https://randomuser.me/api/portraits/men/81.jpg" class="avatar" style="width:30px;height:30px;" alt="{{ user.username }}"/>
+        <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ user.username }}</span>
       </div>
     </div>
   </div>
@@ -546,9 +551,13 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 
       <!-- Welcome Banner -->
       <div class="welcome-banner fu d1">
-        <img src="https://randomuser.me/api/portraits/men/81.jpg" class="avatar" style="width:54px;height:54px;border:3px solid var(--teal);flex-shrink:0;" alt="Rahul"/>
+        {% if profile.profile_picture %}
+          <img src="{{ profile.profile_picture.url }}" class="avatar" style="width:54px;height:54px;border:3px solid var(--teal);flex-shrink:0;" alt="{{ user.username }}"/>
+        {% else %}
+        <img src="https://randomuser.me/api/portraits/men/81.jpg" class="avatar" style="width:54px;height:54px;border:3px solid var(--teal);flex-shrink:0;" alt="{{ user.username }}"/>
+        {% endif %}
         <div style="flex:1;position:relative;z-index:1;">
-          <div class="wb-name">Hey Rahul, welcome back 👋</div>
+          <div class="wb-name">Hey {{ user.username }} welcome back 👋</div>
           <div class="wb-sub">3 new high-compatibility matches found today — go connect!</div>
           <div class="wb-chips">
             <span class="wb-chip">🌙 Night Owl</span>
@@ -919,15 +928,32 @@ input[type=range]{width:100%;accent-color:var(--teal);}
         <button class="btn-teal" style="font-size:14px;padding:11px 28px;margin-top:12px;" onclick="showSec('discover')">← Back</button>
       </div>
     </div>
+<div id="sec-profile" style="display:none;">
+    <div class="feat-card" style="text-align:center;padding:56px 28px;">
+        
+        {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" class="avatar" 
+                 style="width:80px;height:80px;margin-bottom:16px; border-radius: 50%; object-fit: cover;" 
+                 alt="{{ user.username }}"/>
+        {% else %}
+            <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=0D8ABC&color=fff" 
+                 class="avatar" style="width:80px;height:80px;margin-bottom:16px; border-radius: 50%;" 
+                 alt="Default Avatar"/>
+        {% endif %}
 
-    <div id="sec-profile" style="display:none;">
-      <div class="feat-card" style="text-align:center;padding:56px 28px;">
-        <img src="https://randomuser.me/api/portraits/men/81.jpg" class="avatar" style="width:80px;height:80px;margin-bottom:16px;" alt="Rahul"/>
-        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);">Rahul Singh</div>
-        <p style="color:var(--muted);font-size:14px;margin:8px 0 20px;">Software Engineer · Bangalore · Vibe Score: 87</p>
+        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);">
+            {{ user.username }}
+        </div>
+
+        <p style="color:var(--muted);font-size:14px;margin:8px 0 20px;">
+            {{ profile.profession|default:"Developer" }} · 
+            {{ profile.location|default:"Location Not Set" }} · 
+            Vibe Score: {{ profile.vibe_score|default:"0" }}
+        </p>
+
         <button class="btn-teal" style="font-size:14px;padding:11px 28px;" onclick="showSec('discover')">← Back</button>
-      </div>
     </div>
+</div>
 
     <div id="sec-settings" style="display:none;">
       <div class="feat-card" style="text-align:center;padding:56px 28px;">
