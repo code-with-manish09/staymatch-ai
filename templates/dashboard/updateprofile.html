@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NestMate — Edit Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy:      '#0F1F3D',
+        navy2:     '#162444',
+        teal:      '#0EA5C9',
+        'teal-lt': '#E0F4FB',
+        amber:     '#F59E0B',
+        'amber-lt':'#FEF3C7',
+        coral:     '#F25C54',
+        sage:      '#5B8C6E',
+        'sage-lt': '#EAF2ED',
+        muted:     '#6B7A99',
+        off:       '#F6F7FB',
+        bdr:       '#E4E8F0',
+      },
+      fontFamily: {
+        display: ['"Bricolage Grotesque"', 'sans-serif'],
+        sans:    ['"Instrument Sans"', 'sans-serif'],
+      },
+      boxShadow: {
+        card:  '0 4px 24px rgba(15,31,61,0.10)',
+        card2: '0 12px 40px rgba(15,31,61,0.14)',
+      },
+      keyframes: {
+        fadeUp: { from:{opacity:'0',transform:'translateY(24px)'}, to:{opacity:'1',transform:'translateY(0)'} },
+        gradPan:{ '0%,100%':{backgroundPosition:'0% 50%'}, '50%':{backgroundPosition:'100% 50%'} },
+      },
+      animation: {
+        fadeUp:  'fadeUp .55s ease forwards',
+        gradPan: 'gradPan 5s ease infinite',
+      },
+    }
+  }
+}
+</script>
+<style>
+body { font-family:'Instrument Sans',sans-serif; }
+.font-display { font-family:'Bricolage Grotesque',sans-serif; }
+
+/* Noise overlay */
+body::after {
+  content:''; position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:9998; opacity:.5;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:#F6F7FB; }
+::-webkit-scrollbar-thumb { background:#0EA5C9; border-radius:99px; }
+
+/* Grad text */
+.grad-text {
+  background: linear-gradient(120deg,#0EA5C9,#0F1F3D);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:gradPan 5s ease infinite;
+}
+
+/* Animation delays */
+.delay-1{ animation-delay:.06s; opacity:0; }
+.delay-2{ animation-delay:.14s; opacity:0; }
+.delay-3{ animation-delay:.22s; opacity:0; }
+.delay-4{ animation-delay:.30s; opacity:0; }
+
+/* Styled input */
+.nm-input {
+  width:100%;
+  background:#F6F7FB;
+  border:1.5px solid #E4E8F0;
+  border-radius:12px;
+  padding:12px 16px;
+  font-size:14px;
+  color:#0F1F3D;
+  font-family:'Instrument Sans',sans-serif;
+  outline:none;
+  transition:border-color .2s, box-shadow .2s;
+}
+.nm-input:focus {
+  border-color:#0EA5C9;
+  box-shadow:0 0 0 3px rgba(14,165,201,.12);
+}
+.nm-input:disabled {
+  opacity:.55;
+  cursor:not-allowed;
+  background:#EEF0F5;
+}
+.nm-input::placeholder { color:#6B7A99; }
+
+/* Input wrapper for icon */
+.input-icon-wrap { position:relative; }
+.input-icon-wrap .icon {
+  position:absolute; left:14px; top:50%; transform:translateY(-50%);
+  font-size:15px; pointer-events:none; line-height:1;
+}
+.input-icon-wrap .nm-input { padding-left:40px; }
+
+/* Label */
+.nm-label {
+  display:block;
+  font-size:12px;
+  font-weight:600;
+  color:#6B7A99;
+  letter-spacing:.05em;
+  margin-bottom:6px;
+  text-transform:uppercase;
+}
+
+/* Avatar upload */
+.avatar-ring {
+  width:104px; height:104px;
+  border-radius:50%;
+  border:3px solid #0EA5C9;
+  padding:3px;
+  position:relative;
+  flex-shrink:0;
+}
+.avatar-ring img {
+  width:100%; height:100%;
+  border-radius:50%;
+  object-fit:cover;
+  display:block;
+}
+.avatar-camera {
+  position:absolute; bottom:2px; right:2px;
+  width:30px; height:30px;
+  border-radius:50%;
+  background:#0F1F3D;
+  border:2.5px solid #fff;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  transition:background .2s, transform .2s;
+}
+.avatar-camera:hover { background:#0EA5C9; transform:scale(1.08); }
+.avatar-camera svg { width:14px; height:14px; fill:#fff; }
+
+/* Section divider */
+.sec-divider {
+  display:flex; align-items:center; gap:10px;
+  margin:8px 0 20px;
+}
+.sec-divider span {
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:700; font-size:13px;
+  color:#0F1F3D; white-space:nowrap; letter-spacing:.02em;
+}
+.sec-divider::before,.sec-divider::after {
+  content:''; flex:1; height:1px; background:#E4E8F0;
+}
+
+/* Progress ring */
+.prog-wrap { display:flex; align-items:center; gap:8px; }
+.prog-bar { flex:1; height:6px; background:#E4E8F0; border-radius:99px; overflow:hidden; }
+.prog-fill { height:100%; background:linear-gradient(90deg,#0EA5C9,#6EE7F7); border-radius:99px; transition:width .5s ease; }
+
+/* Save btn */
+.save-btn {
+  width:100%; padding:15px;
+  border-radius:12px;
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:800; font-size:15px;
+  letter-spacing:.02em;
+  color:#fff;
+  background:#0F1F3D;
+  border:none; cursor:pointer;
+  transition:background .25s, transform .2s, box-shadow .2s;
+  box-shadow:0 4px 16px rgba(15,31,61,.22);
+}
+.save-btn:hover {
+  background:#0EA5C9;
+  transform:translateY(-2px);
+  box-shadow:0 8px 28px rgba(14,165,201,.30);
+}
+.save-btn:active { transform:translateY(0); }
+
+/* Discard btn */
+.discard-btn {
+  width:100%; padding:14px;
+  border-radius:12px;
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:700; font-size:14px;
+  color:#6B7A99;
+  background:transparent;
+  border:1.5px solid #E4E8F0;
+  cursor:pointer;
+  transition:border-color .2s, color .2s;
+}
+.discard-btn:hover { border-color:#0F1F3D; color:#0F1F3D; }
+
+/* Badge pill */
+.badge { display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:99px; font-size:11px; font-weight:700; }
+
+/* Toast */
+.toast { position:fixed; bottom:24px; right:24px; z-index:9999; background:#0F1F3D; color:#fff; border-radius:14px; padding:14px 20px; display:flex; align-items:center; gap:12px; box-shadow:0 8px 32px rgba(15,31,61,.25); transform:translateY(80px); opacity:0; transition:all .4s cubic-bezier(.22,.68,0,1.2); max-width:300px; }
+.toast.show { transform:translateY(0); opacity:1; }
+
+/* Back link */
+.back-link {
+  display:inline-flex; align-items:center; gap:7px;
+  font-size:13px; font-weight:600; color:#6B7A99;
+  text-decoration:none; cursor:pointer;
+  transition:color .2s;
+}
+.back-link:hover { color:#0F1F3D; }
+.back-link svg { width:16px; height:16px; }
+
+/* Gender select arrow */
+select.nm-input { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7A99' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:calc(100% - 14px) 50%; padding-right:38px; }
+
+/* Responsive helpers */
+@media (max-width:480px) {
+  .avatar-ring { width:88px; height:88px; }
+}
+</style>
+</head>
+<body class="bg-off min-h-screen py-8 px-4">
+
+  <!-- ════ EDIT PROFILE SECTION ════ -->
+  <div class="max-w-2xl mx-auto">
+
+    <!-- Back link -->
+    <a class="back-link mb-5 block animate-fadeUp delay-1" href="#" onclick="history.back()">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Dashboard
+    </a>
+
+    <!-- Header -->
+    <div class="mb-6 animate-fadeUp delay-1">
+      <div class="inline-flex items-center gap-2 bg-teal-lt text-teal text-[11px] font-bold px-3 py-1.5 rounded-full mb-2 tracking-[.04em]">
+        ✏️ EDIT PROFILE
+      </div>
+      <h1 class="font-display font-extrabold text-[26px] sm:text-[30px] text-navy leading-tight">
+        Your <span class="grad-text">Profile</span> Settings
+      </h1>
+      <p class="text-muted text-[13px] mt-1">Keep your info fresh — better profile = better matches.</p>
+    </div>
+
+    <!-- Profile Completeness -->
+    <div class="bg-white border border-bdr rounded-[16px] px-5 py-4 mb-5 shadow-card animate-fadeUp delay-1 flex flex-col sm:flex-row sm:items-center gap-3">
+      <div class="flex-1">
+        <div class="text-[12px] font-semibold text-muted mb-2">Profile Completeness</div>
+        <div class="prog-wrap">
+          <div class="prog-bar"><div class="prog-fill" style="width:72%"></div></div>
+          <span class="text-[12px] font-bold text-teal flex-shrink-0">72%</span>
+        </div>
+        <div class="text-[11px] text-muted mt-1.5">Add Contact Number &amp; Bio to reach 100%</div>
+      </div>
+      <div class="flex flex-wrap gap-1.5 sm:flex-col sm:items-end sm:gap-1">
+        <span class="badge bg-blue-50 text-blue-700 border border-blue-200">🎓 Student Verified</span>
+        <span class="badge bg-teal-lt text-teal">🧠 Quiz Done</span>
+      </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="bg-white border border-bdr rounded-[24px] shadow-card2 overflow-hidden animate-fadeUp delay-2">
+
+      <!-- Card header strip -->
+      <div class="h-[6px]" style="background:linear-gradient(90deg,#0F1F3D,#0EA5C9,#6EE7F7)"></div>
+
+      <div class="p-5 sm:p-8">
+
+        <!-- ── Avatar Upload ── -->
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5 mb-7">
+          <div class="avatar-ring flex-shrink-0">
+            <img id="avatarPreview" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile Picture"/>
+            <label class="avatar-camera" for="avatarInput" title="Change photo">
+              <!-- Camera icon -->
+              <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17 5h-2.5l-1.2-2H6.7L5.5 5H3a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm-7 9a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/>
+              </svg>
+            </label>
+            <input type="file" id="avatarInput" accept="image/*" class="hidden" onchange="previewAvatar(event)"/>
+          </div>
+          <div class="text-center sm:text-left">
+            <div class="font-display font-bold text-[17px] text-navy">Rohan Verma</div>
+            <div class="text-[13px] text-muted mt-0.5">@rohan_v · Bangalore</div>
+            <div class="text-[11px] text-muted mt-2 leading-relaxed max-w-[220px]">Click the camera icon to upload a new profile photo. JPG, PNG or WebP — max 5 MB.</div>
+            <button onclick="document.getElementById('avatarInput').click()" class="mt-2.5 inline-flex items-center gap-1.5 text-[12px] font-bold text-teal border border-teal/30 bg-teal-lt px-4 py-1.5 rounded-full hover:bg-teal hover:text-white transition-all">
+              📷 Change Photo
+            </button>
+          </div>
+        </div>
+
+        <!-- ── Account Info ── -->
+        <div class="sec-divider"><span>👤 Account Info</span></div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+
+          <!-- Username (read-only) -->
+          <div>
+            <label class="nm-label" for="username">Username</label>
+            <div class="input-icon-wrap">
+              <span class="icon">🔒</span>
+              <input id="username" type="text" class="nm-input" value="rohan_v" disabled/>
+            </div>
+            <p class="text-[11px] text-muted mt-1.5">Username cannot be changed.</p>
+          </div>
+
+          <!-- Full Name -->
+          <div>
+            <label class="nm-label" for="fullname">Full Name</label>
+            <div class="input-icon-wrap">
+              <span class="icon">✍️</span>
+              <input id="fullname" type="text" class="nm-input" placeholder="e.g. Rohan Verma" value="Rohan Verma"/>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="sm:col-span-2">
+            <label class="nm-label" for="email">Email Address</label>
+            <div class="input-icon-wrap">
+              <span class="icon">📧</span>
+              <input id="email" type="email" class="nm-input" placeholder="you@example.com" value="rohan.v@gmail.com"/>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ── Personal Details ── -->
+        <div class="sec-divider"><span>📋 Personal Details</span></div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+
+          <!-- Age -->
+          <div>
+            <label class="nm-label" for="age">Age</label>
+            <div class="input-icon-wrap">
+              <span class="icon">🎂</span>
+              <input id="age" type="number" class="nm-input" placeholder="e.g. 23" min="18" max="60" value="23"/>
+            </div>
+          </div>
+
+          <!-- Gender -->
+          <div>
+            <label class="nm-label" for="gender">Gender</label>
+            <select id="gender" class="nm-input">
+              <option value="" disabled>Select gender</option>
+              <option value="male" selected>Male</option>
+              <option value="female">Female</option>
+              <option value="non-binary">Non-binary</option>
+              <option value="prefer-not">Prefer not to say</option>
+            </select>
+          </div>
+
+          <!-- Location -->
+          <div>
+            <label class="nm-label" for="location">Location / City</label>
+            <div class="input-icon-wrap">
+              <span class="icon">📍</span>
+              <input id="location" type="text" class="nm-input" placeholder="e.g. Koramangala, Bangalore" value="Bangalore"/>
+            </div>
+          </div>
+
+          <!-- Contact -->
+          <div>
+            <label class="nm-label" for="contact">Contact Number</label>
+            <div class="input-icon-wrap">
+              <span class="icon">📞</span>
+              <input id="contact" type="tel" class="nm-input" placeholder="+91 98765 43210"/>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ── Preferences ── -->
+        <div class="sec-divider"><span>🏠 Flatmate Preferences</span></div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+
+          <!-- Budget -->
+          <div>
+            <label class="nm-label" for="budget">Budget (₹/month)</label>
+            <div class="input-icon-wrap">
+              <span class="icon">💰</span>
+              <input id="budget" type="number" class="nm-input" placeholder="e.g. 14000" value="14000"/>
+            </div>
+          </div>
+
+          <!-- Preferred Area -->
+          <div>
+            <label class="nm-label" for="pref-area">Preferred Area</label>
+            <div class="input-icon-wrap">
+              <span class="icon">🗺️</span>
+              <input id="pref-area" type="text" class="nm-input" placeholder="e.g. Koramangala, HSR" value="Koramangala"/>
+            </div>
+          </div>
+
+          <!-- Lifestyle -->
+          <div>
+            <label class="nm-label" for="lifestyle">Sleep Schedule</label>
+            <select id="lifestyle" class="nm-input">
+              <option value="" disabled>Select</option>
+              <option value="early">🌅 Early Bird (up by 6am)</option>
+              <option value="night" selected>🌙 Night Owl (up till 2am)</option>
+              <option value="flexible">🔄 Flexible</option>
+              <option value="shift">🌀 Shift Worker</option>
+            </select>
+          </div>
+
+          <!-- Food Pref -->
+          <div>
+            <label class="nm-label" for="food">Food Preference</label>
+            <select id="food" class="nm-input">
+              <option value="" disabled>Select</option>
+              <option value="veg">🥗 Pure Veg</option>
+              <option value="nonveg" selected>🍗 Non-Veg</option>
+              <option value="vegan">🌿 Vegan</option>
+              <option value="any">😋 No Preference</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Bio -->
+        <div class="mb-6">
+          <label class="nm-label" for="bio">Bio / About You</label>
+          <textarea id="bio" class="nm-input" rows="3" style="resize:vertical; min-height:80px;" placeholder="Tell potential flatmates about yourself — hobbies, work, lifestyle…">Night owl, SWE at a startup, into gaming and indie music. Looking for a chill flat with good vibes 🎮</textarea>
+          <div class="flex justify-between mt-1.5">
+            <p class="text-[11px] text-muted">Max 200 characters</p>
+            <span class="text-[11px] text-muted" id="bioCount">94/200</span>
+          </div>
+        </div>
+
+        <!-- ── Vibe Tags ── -->
+        <div class="sec-divider"><span>✨ Vibe Tags</span></div>
+
+        <div class="mb-7">
+          <p class="text-[12px] text-muted mb-3">Select all that apply — these show on your profile card.</p>
+          <div class="flex flex-wrap gap-2" id="vibeTags">
+            <button type="button" class="vibe-tag on" onclick="toggleVibe(this)">🌙 Night Owl</button>
+            <button type="button" class="vibe-tag on" onclick="toggleVibe(this)">🎮 Gaming</button>
+            <button type="button" class="vibe-tag" onclick="toggleVibe(this)">📚 Study Friendly</button>
+            <button type="button" class="vibe-tag on" onclick="toggleVibe(this)">🍕 Foodie</button>
+            <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🐶 Pet-friendly</button>
+            <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🚇 Near Metro</button>
+            <button type="button" class="vibe-tag on" onclick="toggleVibe(this)">💻 Tech</button>
+            <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🎵 Music</button>
+            <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🏃 Fitness</button>
+            <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🌿 Vegan</button>
+            <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🌅 Early Bird</button>
+            <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🔇 Low Noise</button>
+          </div>
+        </div>
+
+        <!-- ── Buttons ── -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button class="save-btn sm:flex-[2]" onclick="handleSave()">
+            💾 Save Changes
+          </button>
+          <button class="discard-btn sm:flex-[1]" onclick="handleDiscard()">
+            Discard
+          </button>
+        </div>
+
+        <!-- Bottom note -->
+        <p class="text-[11px] text-muted text-center mt-4 leading-relaxed">
+          🔒 Your info is encrypted and visible only to verified NestMate users.
+        </p>
+
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="mt-4 bg-white border border-red-200 rounded-[16px] px-5 py-4 shadow-card animate-fadeUp delay-3">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <div class="font-display font-bold text-[14px] text-red-700 mb-0.5">⚠️ Danger Zone</div>
+          <p class="text-[12px] text-red-400">Permanently delete your account and all data.</p>
+        </div>
+        <button onclick="showToast('⚠️ Action Required','Please confirm via email before account deletion.')" class="flex-shrink-0 text-[12px] font-bold text-red-600 border border-red-300 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-lg transition-colors">
+          Delete Account
+        </button>
+      </div>
+    </div>
+
+    <div class="h-10"></div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div id="tIcon" style="font-size:20px;flex-shrink:0">🎉</div>
+    <div>
+      <div class="font-display font-bold text-[14px]" id="tTitle">Saved!</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:2px" id="tSub">Your profile has been updated.</div>
+    </div>
+  </div>
+
+  <!-- Vibe tag styles (not in Tailwind) -->
+  <style>
+  .vibe-tag {
+    display:inline-flex; align-items:center; gap:4px;
+    padding:7px 14px; border-radius:99px; font-size:12px; font-weight:700;
+    border:1.5px solid #E4E8F0;
+    background:#F6F7FB; color:#6B7A99;
+    cursor:pointer; transition:all .2s;
+  }
+  .vibe-tag:hover { border-color:#0EA5C9; color:#0EA5C9; background:#E0F4FB; }
+  .vibe-tag.on { background:#0EA5C9; color:#fff; border-color:#0EA5C9; }
+  </style>
+
+<script>
+// Avatar preview
+function previewAvatar(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{ document.getElementById('avatarPreview').src=ev.target.result; };
+  reader.readAsDataURL(file);
+}
+
+// Vibe tag toggle
+function toggleVibe(el){
+  el.classList.toggle('on');
+}
+
+// Bio char count
+const bioEl=document.getElementById('bio');
+const bioCount=document.getElementById('bioCount');
+function updateCount(){ bioCount.textContent=bioEl.value.length+'/200'; }
+bioEl.addEventListener('input',updateCount);
+updateCount();
+
+// Toast
+let _tt;
+function showToast(title,sub,icon='🎉'){
+  document.getElementById('tTitle').textContent=title;
+  document.getElementById('tSub').textContent=sub;
+  document.getElementById('tIcon').textContent=icon;
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(_tt);
+  _tt=setTimeout(()=>t.classList.remove('show'),3600);
+}
+
+// Save
+function handleSave(){
+  showToast('Profile Saved!','Your changes are live on NestMate 🏠','💾');
+}
+
+// Discard
+function handleDiscard(){
+  if(confirm('Discard all unsaved changes?')) showToast('Discarded','No changes were saved.','🔄');
+}
+</script>
+</body>
+</html>

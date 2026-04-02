@@ -5,848 +5,564 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>NestMate — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy:    '#0F1F3D',
+        navy2:   '#162444',
+        teal:    '#0EA5C9',
+        'teal-lt':'#E0F4FB',
+        amber:   '#F59E0B',
+        'amber-lt':'#FEF3C7',
+        coral:   '#F25C54',
+        sage:    '#5B8C6E',
+        'sage-lt':'#EAF2ED',
+        muted:   '#6B7A99',
+        off:     '#F6F7FB',
+        bdr:     '#E4E8F0',
+      },
+      fontFamily: {
+        display: ['"Bricolage Grotesque"', 'sans-serif'],
+        sans:    ['"Instrument Sans"', 'sans-serif'],
+      },
+      boxShadow: {
+        card:  '0 4px 24px rgba(15,31,61,0.10)',
+        card2: '0 12px 40px rgba(15,31,61,0.14)',
+      },
+      keyframes: {
+        fadeUp:      { from:{opacity:'0',transform:'translateY(32px)'}, to:{opacity:'1',transform:'translateY(0)'} },
+        pulse2:      { '0%,100%':{opacity:'1',transform:'scale(1)'}, '50%':{opacity:'.7',transform:'scale(.94)'} },
+        gradPan:     { '0%,100%':{backgroundPosition:'0% 50%'}, '50%':{backgroundPosition:'100% 50%'} },
+        typing:      { '0%,100%':{opacity:'1'}, '50%':{opacity:'.3'} },
+        confettiFall:{ '0%':{transform:'translateY(-10px) rotate(0deg)',opacity:'1'}, '100%':{transform:'translateY(100px) rotate(540deg)',opacity:'0'} },
+        popIn:       { '0%':{transform:'scale(.5)',opacity:'0'}, '70%':{transform:'scale(1.1)'}, '100%':{transform:'scale(1)',opacity:'1'} },
+        spin2:       { to:{transform:'rotate(360deg)'} },
+        floatA:      { '0%,100%':{transform:'translateY(0) rotate(-2deg)'}, '50%':{transform:'translateY(-12px) rotate(-2deg)'} },
+      },
+      animation: {
+        fadeUp:       'fadeUp .6s ease forwards',
+        pulse2:       'pulse2 2s ease infinite',
+        gradPan:      'gradPan 5s ease infinite',
+        typing:       'typing 1.1s ease infinite',
+        confettiFall: 'confettiFall 1s ease-out forwards',
+        popIn:        'popIn .5s cubic-bezier(.22,.68,0,1.2)',
+        spin2:        'spin2 .8s linear infinite',
+      },
+    }
+  }
+}
+</script>
 <style>
-/* ══════════ EXACT SAME ROOT AS LANDING PAGE ══════════ */
-:root {
-  --navy:    #0F1F3D;
-  --navy2:   #162444;
-  --teal:    #0EA5C9;
-  --teal-lt: #E0F4FB;
-  --amber:   #F59E0B;
-  --amber-lt:#FEF3C7;
-  --coral:   #F25C54;
-  --green:   #10B981;
-  --sage:    #5B8C6E;
-  --sage-lt: #EAF2ED;
-  --white:   #FFFFFF;
-  --off:     #F6F7FB;
-  --border:  #E4E8F0;
-  --txt:     #0F1F3D;
-  --muted:   #6B7A99;
-  --card-sh: 0 4px 24px rgba(15,31,61,0.10);
-  --card-sh2:0 12px 40px rgba(15,31,61,0.14);
-}
+/* Fonts */
+body { font-family: 'Instrument Sans', sans-serif; }
+.font-display { font-family: 'Bricolage Grotesque', sans-serif; }
 
-*{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:'Instrument Sans',sans-serif;background:var(--off);color:var(--txt);overflow-x:hidden;}
-.display{font-family:'Bricolage Grotesque',sans-serif;}
-
-/* scrollbar — same as landing */
-::-webkit-scrollbar{width:5px;}
-::-webkit-scrollbar-track{background:var(--off);}
-::-webkit-scrollbar-thumb{background:var(--teal);border-radius:99px;}
-
-/* noise overlay — same as landing */
-body::after{
-  content:'';position:fixed;inset:0;
+/* Noise overlay */
+body::after {
+  content:''; position:fixed; inset:0;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
-  pointer-events:none;z-index:9998;opacity:.5;
-}
-/* ✅ SUCCESS (Green Glassmorphism - Premium Look) */
-.msg-success {
-    /* Glass Effect (Translucency & Blur) */
-    background: rgba(16, 185, 129, 0.1); /* Halka Green background */
-    backdrop-filter: blur(12px);          /* 🔥 Ye line glass banati hai */
-    -webkit-backdrop-filter: blur(12px); /* Safari support */
-    
-    /* Border & Shadow (Chamakeeli border) */
-    border: 1px solid rgba(16, 185, 129, 0.3); /* Green translucent border */
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.1); /* Halki si green chamak */
-
-    /* 🔥 TEXT COLOR FIX (White BG ke liye Dark Green) */
-    color: #0d7b56; 
-    
-    /* Layout & Font (Saaf aur readable) */
-    padding: 14px 22px;
-    font-weight: 700;
-    font-size: 14px;
-    font-family: 'Instrument Sans', sans-serif;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    
-    /* Animation (Niche se upar aane ke liye) */
-    animation: slideUp 0.5s ease forwards;
-    z-index: 1000; /* Taaki topbar ke upar rahe */
+  pointer-events:none; z-index:9998; opacity:.5;
 }
 
+/* Scrollbar */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:#F6F7FB; }
+::-webkit-scrollbar-thumb { background:#0EA5C9; border-radius:99px; }
 
-/* ── animations — same keyframes as landing ── */
-@keyframes fadeUp{from{opacity:0;transform:translateY(32px);}to{opacity:1;transform:translateY(0);}}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.7;transform:scale(.94);}}
-@keyframes gradPan{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
-@keyframes blobMorph{0%,100%{border-radius:60% 40% 70% 30%/50% 60% 40% 50%;}50%{border-radius:40% 60% 30% 70%/60% 40% 70% 30%;}}
-@keyframes typing{0%,100%{opacity:1;}50%{opacity:.3;}}
-@keyframes confettiFall{0%{transform:translateY(-10px) rotate(0deg);opacity:1;}100%{transform:translateY(100px) rotate(540deg);opacity:0;}}
-@keyframes popIn{0%{transform:scale(.5);opacity:0;}70%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;}}
-@keyframes spin{to{transform:rotate(360deg);}}
-@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-@keyframes slideUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-
-.fu{animation:fadeUp .6s ease forwards;opacity:0;}
-.d1{animation-delay:.06s}.d2{animation-delay:.14s}.d3{animation-delay:.22s}.d4{animation-delay:.30s}.d5{animation-delay:.38s}
-
-/* gradient text — same as landing */
-.grad{
-  background:linear-gradient(120deg,var(--teal),var(--navy));
-  background-size:200% auto;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;animation:gradPan 5s ease infinite;
+/* Gradient text */
+.grad-text {
+  background: linear-gradient(120deg, #0EA5C9, #0F1F3D);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradPan 5s ease infinite;
 }
 
-/* ── same chip/tag from landing ── */
-.tag{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:99px;font-size:12px;font-weight:600;}
-.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:99px;font-size:11px;font-weight:600;white-space:nowrap;}
+/* Animation delays */
+.delay-1 { animation-delay: .06s; opacity:0; }
+.delay-2 { animation-delay: .14s; opacity:0; }
+.delay-3 { animation-delay: .22s; opacity:0; }
+.delay-4 { animation-delay: .30s; opacity:0; }
+.delay-5 { animation-delay: .38s; opacity:0; }
 
-/* section-label — same as landing */
-.section-label{
-  display:inline-flex;align-items:center;gap:7px;
-  background:var(--teal-lt);color:var(--teal);
-  padding:6px 16px;border-radius:99px;
-  font-size:12px;font-weight:700;letter-spacing:.04em;margin-bottom:20px;
-}
+/* Bar fill gradient */
+.bar-fill-teal { background: linear-gradient(90deg, #0EA5C9, #6EE7F7); }
+.bar-fill-amber { background: linear-gradient(90deg, #F59E0B, #EF4444); }
+.bar-fill-green { background: linear-gradient(90deg, #10B981, #6EE7B7); }
+.bar-fill-gold  { background: linear-gradient(90deg, #F59E0B, #FCD34D); }
 
-/* avatar — same as landing */
-.avatar{border-radius:50%;object-fit:cover;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.12);}
+/* Noise bar */
+.noise-low  { background: #10B981; }
+.noise-mid  { background: #F59E0B; }
+.noise-high { background: #F25C54; }
 
-/* online dot — same as landing */
-.online{width:10px;height:10px;background:var(--green);border-radius:50%;border:2px solid #fff;animation:pulse 2s ease infinite;}
+/* Modal overlay */
+.modal-overlay { opacity:0; pointer-events:none; transition: opacity .3s; }
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal-overlay .modal { transform: scale(.95); transition: transform .3s; }
+.modal-overlay.open .modal { transform: scale(1); }
 
-/* bar track — same as landing */
-.bar-track{height:6px;background:#EEF0F6;border-radius:99px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),#6EE7F7);}
+/* Step dot */
+.sdot { height:4px; border-radius:99px; background:#E4E8F0; transition: all .3s; width:30px; display:inline-block; }
+.sdot.done { background:#0EA5C9; }
+.sdot.active { background:#0EA5C9; width:48px; }
 
-/* person-card — EXACT SAME as landing */
-.person-card{
-  background:#fff;border:1px solid var(--border);border-radius:20px;
-  box-shadow:var(--card-sh);
-  transition:transform .35s cubic-bezier(.22,.68,0,1.2),box-shadow .3s;
-  overflow:hidden;position:relative;
-}
-.person-card:hover{transform:translateY(-6px);box-shadow:var(--card-sh2);}
+/* Toast */
+.toast { transform: translateY(80px); opacity:0; transition: all .4s cubic-bezier(.22,.68,0,1.2); }
+.toast.show { transform: translateY(0); opacity:1; }
 
-/* feat-card — same as landing */
-.feat-card{
-  background:#fff;border:1px solid var(--border);border-radius:18px;
-  padding:28px;transition:all .25s;
-}
-.feat-card:hover{box-shadow:var(--card-sh2);transform:translateY(-3px);}
-.feat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;}
+/* Welcome banner blob */
+.wb-blob1 { position:absolute; top:-60px; right:-40px; width:220px; height:220px; border-radius:50%; background: radial-gradient(circle, rgba(14,165,201,.2), transparent); pointer-events:none; }
+.wb-blob2 { position:absolute; bottom:-40px; right:200px; width:180px; height:180px; border-radius:50%; background: radial-gradient(circle, rgba(245,158,11,.12), transparent); pointer-events:none; }
 
-/* bubble — same as landing */
-.bubble-recv{background:var(--off);color:var(--txt);padding:10px 15px;border-radius:18px 18px 18px 4px;font-size:13px;line-height:1.55;max-width:260px;}
-.bubble-sent{background:var(--navy);color:#fff;padding:10px 15px;border-radius:18px 18px 4px 18px;font-size:13px;line-height:1.55;max-width:260px;}
+/* Backdrop blur fallback */
+.topbar-bg { background: rgba(255,255,255,.95); backdrop-filter: blur(18px); }
 
-/* buttons — same as landing */
-.btn-primary{background:var(--navy);color:#fff;padding:13px 28px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:background .2s,transform .2s,box-shadow .2s;letter-spacing:-.01em;}
-.btn-primary:hover{background:#1a3260;transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,31,61,.2);}
-.btn-teal{background:var(--teal);color:#fff;padding:13px 28px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:all .2s;}
-.btn-teal:hover{background:#0993b3;transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,165,201,.3);}
-.btn-outline{background:transparent;color:var(--navy);padding:12px 24px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:14px;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;}
-.btn-outline:hover{border-color:var(--navy);background:var(--off);}
-.btn-sm{padding:8px 18px;border-radius:8px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;border:none;cursor:pointer;transition:all .2s;}
-.btn-sm-teal{background:var(--teal);color:#fff;}
-.btn-sm-teal:hover{background:#0993b3;transform:translateY(-1px);}
-.btn-sm-navy{background:var(--navy);color:#fff;}
-.btn-sm-navy:hover{background:#1a3260;transform:translateY(-1px);}
-.btn-sm-out{background:transparent;color:var(--navy);border:1.5px solid var(--border);}
-.btn-sm-out:hover{border-color:var(--navy);}
-
-/* ═══════════════════════════════════════ */
-/* DASHBOARD-SPECIFIC LAYOUT              */
-/* ═══════════════════════════════════════ */
-
-.app{display:flex;min-height:100vh;}
-
-/* ── SIDEBAR ── same navy as landing footer */
-.sidebar{
-  width:248px;background:var(--navy);
-  display:flex;flex-direction:column;
-  position:fixed;top:0;left:0;bottom:0;z-index:300;
-  border-right:1px solid rgba(255,255,255,.06);
-}
-.sidebar-logo{
-  padding:22px 20px 18px;
-  border-bottom:1px solid rgba(255,255,255,.07);
-  display:flex;align-items:center;gap:8px;
-}
-.logo-text{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:21px;color:#fff;letter-spacing:-.02em;}
-.logo-dot{color:var(--teal);}
-
-.sb-section{padding:20px 14px 6px;font-size:10px;font-weight:700;color:rgba(255,255,255,.25);letter-spacing:.1em;text-transform:uppercase;}
-
-.nav-item{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 14px;border-radius:10px;margin:1px 8px;
-  font-size:14px;font-weight:500;color:rgba(255,255,255,.5);
-  cursor:pointer;transition:all .2s;text-decoration:none;
-}
-.nav-item:hover{background:rgba(255,255,255,.07);color:#fff;}
-.nav-item.active{background:var(--teal);color:#fff;font-weight:600;}
-.nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
-.nav-badge{margin-left:auto;background:var(--coral);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;min-width:18px;text-align:center;}
-.nav-badge.amber{background:var(--amber);}
-.nav-badge.teal{background:var(--teal);}
-
-.sb-user{
-  margin-top:auto;padding:14px 16px;
-  border-top:1px solid rgba(255,255,255,.07);
-  display:flex;align-items:center;gap:10px;
-}
-.sb-user img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--teal);}
-.sb-user-name{font-size:13px;font-weight:700;color:#fff;}
-.sb-user-role{font-size:11px;color:rgba(255,255,255,.35);margin-top:1px;}
-
-/* ── MAIN ── */
-.main{margin-left:248px;flex:1;min-height:100vh;display:flex;flex-direction:column;}
-
-/* ── TOPBAR — same feel as landing nav ── */
-.topbar{
-  height:66px;background:rgba(255,255,255,.95);
-  backdrop-filter:blur(18px);
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 28px;position:sticky;top:0;z-index:200;
-}
-.search-wrap{
-  display:flex;align-items:center;gap:8px;
-  background:var(--off);border:1px solid var(--border);
-  border-radius:10px;padding:9px 16px;width:300px;
-}
-.search-wrap input{border:none;background:transparent;outline:none;font-size:14px;font-family:'Instrument Sans',sans-serif;color:var(--txt);width:100%;}
-.search-wrap input::placeholder{color:var(--muted);}
-.topbar-right{display:flex;align-items:center;gap:10px;}
-.icon-btn{
-  width:38px;height:38px;border-radius:10px;border:1px solid var(--border);
-  background:#fff;display:flex;align-items:center;justify-content:center;
-  font-size:17px;cursor:pointer;transition:all .2s;position:relative;
-}
-.icon-btn:hover{background:var(--off);}
-.icon-btn .badge{position:absolute;top:5px;right:5px;width:8px;height:8px;background:var(--coral);border-radius:50%;border:1.5px solid #fff;}
-.user-pill{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;background:#fff;}
-.user-pill:hover{background:var(--off);}
-
-/* ── CONTENT ── */
-.content{padding:24px 28px;flex:1;}
-
-/* ── WELCOME BANNER — uses same gradient as person-card headers ── */
-.welcome-banner{
-  background:linear-gradient(135deg,var(--navy),#1a3260);
-  border-radius:20px;padding:22px 28px;
-  display:flex;align-items:center;gap:20px;
-  margin-bottom:24px;position:relative;overflow:hidden;
-  box-shadow:var(--card-sh2);
-}
-.welcome-banner::before{
-  content:'';position:absolute;top:-60px;right:-40px;
-  width:220px;height:220px;border-radius:50%;
-  background:radial-gradient(circle,rgba(14,165,201,.2),transparent);pointer-events:none;
-}
-.welcome-banner::after{
-  content:'';position:absolute;bottom:-40px;right:200px;
-  width:180px;height:180px;border-radius:50%;
-  background:radial-gradient(circle,rgba(245,158,11,.12),transparent);pointer-events:none;
-}
-.wb-name{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:#fff;}
-.wb-sub{font-size:13px;color:rgba(255,255,255,.5);margin-top:3px;}
-.wb-chips{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
-.wb-chip{background:rgba(255,255,255,.1);color:rgba(255,255,255,.75);font-size:11px;font-weight:600;padding:4px 11px;border-radius:99px;}
-.vibe-score{text-align:center;flex-shrink:0;position:relative;z-index:1;}
-.vibe-num{font-family:'Bricolage Grotesque',sans-serif;font-size:44px;font-weight:800;color:var(--teal);line-height:1;}
-.vibe-lbl{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;}
-
-/* ── STATS ROW ── same card style */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
-.stat-card{
-  background:#fff;border:1px solid var(--border);border-radius:18px;
-  padding:18px 20px;box-shadow:var(--card-sh);
-  display:flex;align-items:center;gap:14px;
-}
-.stat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.stat-val{font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:var(--navy);line-height:1;}
-.stat-lbl{font-size:12px;color:var(--muted);margin-top:2px;}
-.stat-trend{font-size:11px;font-weight:600;margin-top:4px;}
-.trend-up{color:var(--green);}
-.trend-dn{color:var(--coral);}
-
-/* ── FILTER BAR ── */
-.filter-bar{
-  background:#fff;border:1px solid var(--border);border-radius:14px;
-  padding:14px 20px;display:flex;align-items:center;gap:10px;
-  margin-bottom:22px;box-shadow:var(--card-sh);flex-wrap:wrap;
-}
-.filter-lbl{font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;}
-.filter-select{
-  background:var(--off);border:1px solid var(--border);border-radius:8px;
-  padding:7px 12px;font-size:13px;font-family:'Instrument Sans',sans-serif;
-  color:var(--txt);cursor:pointer;outline:none;
-}
-.filter-chip{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:6px 13px;border-radius:99px;font-size:12px;font-weight:600;
-  background:var(--teal-lt);color:var(--teal);
-  cursor:pointer;transition:all .2s;white-space:nowrap;border:1.5px solid transparent;
-}
-.filter-chip:hover,.filter-chip.on{background:var(--teal);color:#fff;}
-.btn-vibe{
-  margin-left:auto;
-  background:var(--navy);color:#fff;
-  border:none;border-radius:10px;
-  padding:10px 20px;
-  font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;
-  cursor:pointer;transition:all .25s;white-space:nowrap;
-  box-shadow:0 4px 16px rgba(15,31,61,.2);
-}
-.btn-vibe:hover{background:var(--teal);transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,165,201,.3);}
-
-/* ── SEC HEADER ── */
-.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.sec-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:18px;color:var(--navy);}
-.sec-link{font-size:13px;color:var(--teal);font-weight:600;cursor:pointer;text-decoration:none;}
-.sec-link:hover{color:var(--navy);}
-
-/* ── ROOM CARDS — exact same as landing person-card ── */
-.rooms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px;}
-.room-card{
-  background:#fff;border:1px solid var(--border);border-radius:20px;
-  overflow:hidden;box-shadow:var(--card-sh);
-  transition:transform .35s cubic-bezier(.22,.68,0,1.2),box-shadow .3s;
-}
-.room-card:hover{transform:translateY(-6px);box-shadow:var(--card-sh2);}
-.room-img{height:160px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--teal-lt),var(--off));}
-.room-img img{width:100%;height:100%;object-fit:cover;display:block;}
-
-/* match badge — same style as landing "⚡ 94% match" */
-.match-badge{
-  position:absolute;top:12px;right:12px;
-  background:var(--navy);color:#fff;
-  font-family:'Bricolage Grotesque',sans-serif;
-  font-size:12px;font-weight:800;
-  padding:4px 12px;border-radius:99px;
-  display:flex;align-items:center;gap:4px;
-}
-.match-badge.teal{background:var(--teal);}
-.match-badge.amber{background:var(--amber);color:#000;}
-
-.room-save{
-  position:absolute;top:12px;left:12px;
-  width:30px;height:30px;border-radius:50%;
-  background:rgba(255,255,255,.9);
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;cursor:pointer;transition:all .2s;
-  border:1px solid rgba(0,0,0,.06);
-}
-.room-save:hover{transform:scale(1.1);}
-.room-type{
-  position:absolute;bottom:12px;left:12px;
-  background:rgba(15,31,61,.7);backdrop-filter:blur(6px);
-  color:#fff;font-size:10px;font-weight:700;
-  padding:3px 10px;border-radius:6px;letter-spacing:.03em;
-}
-.room-body{padding:16px 18px;}
-.room-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);margin-bottom:3px;}
-.room-loc{font-size:12px;color:var(--muted);margin-bottom:10px;}
-.room-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
-.room-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);}
-.room-price{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:16px;color:var(--navy);}
-.room-price small{font-size:11px;font-weight:400;color:var(--muted);}
-.av-stack{display:flex;align-items:center;margin-top:4px;}
-.av-stack img{width:20px;height:20px;border-radius:50%;object-fit:cover;border:2px solid #fff;margin-left:-5px;}
-.av-stack img:first-child{margin-left:0;}
-
-/* ── BOTTOM GRID ── */
-.bottom-grid{display:grid;grid-template-columns:1fr 340px;gap:18px;margin-bottom:24px;}
-
-/* ── TRENDING — same testi card style */
-.trending-wrap{background:#fff;border:1px solid var(--border);border-radius:20px;padding:22px;box-shadow:var(--card-sh);}
-.trend-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
-.trend-item:last-child{border-bottom:none;padding-bottom:0;}
-.trend-rank{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:var(--border);width:26px;flex-shrink:0;text-align:center;}
-.trend-rank.gold{color:var(--amber);}
-.trend-img{width:50px;height:50px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--teal-lt);}
-.trend-name{font-weight:600;font-size:13px;color:var(--navy);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.trend-sub{font-size:11px;color:var(--muted);}
-.trend-pct{flex-shrink:0;background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;}
-
-/* ── MESSAGES — same as landing chat mock ── */
-.msg-panel{background:#fff;border:1px solid var(--border);border-radius:20px;box-shadow:var(--card-sh);overflow:hidden;display:flex;flex-direction:column;}
-.msg-header{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.msg-scroll{flex:1;overflow-y:auto;}
-.msg-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .2s;}
-.msg-item:hover{background:var(--off);}
-.msg-item.active{background:var(--teal-lt);border-left:3px solid var(--teal);}
-.msg-av{position:relative;flex-shrink:0;}
-.msg-av img{width:38px;height:38px;border-radius:50%;object-fit:cover;}
-.msg-name{font-weight:600;font-size:13px;color:var(--navy);display:flex;align-items:center;justify-content:space-between;}
-.msg-time{font-size:10px;color:var(--muted);font-weight:400;}
-.msg-preview{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
-.msg-unread{background:var(--teal);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:99px;flex-shrink:0;}
-.typing-bar{
-  padding:10px 16px;border-top:1px solid var(--border);
-  background:var(--teal-lt);display:flex;align-items:center;gap:8px;
-}
-
-/* ── MODAL ── */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(15,31,61,.45);
-  backdrop-filter:blur(8px);z-index:1000;
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .3s;
-}
-.modal-overlay.open{opacity:1;pointer-events:all;}
-.modal{
-  background:#fff;border-radius:20px;width:520px;max-width:92vw;
-  box-shadow:var(--card-sh2);
-  transform:scale(.95);transition:transform .3s;
-  max-height:90vh;overflow-y:auto;
-}
-.modal-overlay.open .modal{transform:scale(1);}
-.modal-head{padding:24px 28px 0;display:flex;align-items:flex-start;justify-content:space-between;}
-.modal-close{width:32px;height:32px;border-radius:8px;background:var(--off);border:1.5px solid var(--border);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.modal-body{padding:20px 28px 28px;}
-
-/* step dots */
-.step-dots{display:flex;gap:6px;margin-bottom:22px;}
-.sdot{height:4px;border-radius:99px;background:var(--border);transition:all .3s;width:30px;}
-.sdot.done{background:var(--teal);}
-.sdot.active{background:var(--teal);width:48px;}
-
-.q-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;color:var(--navy);margin-bottom:4px;}
-.q-sub{font-size:14px;color:var(--muted);margin-bottom:18px;line-height:1.6;}
-
-.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
-.opt{
-  border:1.5px solid var(--border);border-radius:12px;
-  padding:14px;cursor:pointer;transition:all .2s;text-align:center;
-}
-.opt:hover{border-color:var(--teal);background:var(--teal-lt);}
-.opt.picked{border-color:var(--teal);background:var(--teal-lt);box-shadow:0 0 0 1px var(--teal);}
-.opt-icon{font-size:24px;margin-bottom:6px;}
-.opt-label{font-size:13px;font-weight:700;color:var(--navy);}
-.opt-sub{font-size:11px;color:var(--muted);margin-top:2px;}
-
-.range-val{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:24px;color:var(--teal);text-align:center;margin-bottom:4px;}
-input[type=range]{width:100%;accent-color:var(--teal);}
-.range-lbs{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;}
-
-/* spinner */
-.spinner{width:44px;height:44px;border:3px solid var(--teal-lt);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
-
-/* result */
-.result-badge{
-  background:var(--teal-lt);border-radius:16px;padding:20px;
-  display:flex;align-items:center;gap:16px;margin-top:16px;
-  border:1px solid rgba(14,165,201,.2);
-}
-.result-score{font-family:'Bricolage Grotesque',sans-serif;font-size:52px;font-weight:800;color:var(--teal);line-height:1;flex-shrink:0;}
-
-/* insight box */
-.insight{background:var(--off);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.65;margin-top:14px;border:1px solid var(--border);}
-
-/* ── TOAST ── */
-.toast{
-  position:fixed;bottom:24px;right:24px;z-index:900;
-  background:var(--navy);color:#fff;border-radius:14px;
-  padding:14px 18px;display:flex;align-items:center;gap:12px;
-  box-shadow:0 8px 32px rgba(15,31,61,.25);
-  transform:translateY(80px);opacity:0;
-  transition:all .4s cubic-bezier(.22,.68,0,1.2);max-width:300px;
-}
-.toast.show{transform:translateY(0);opacity:1;}
-.toast-icon{font-size:20px;flex-shrink:0;}
-.toast-title{font-weight:700;font-size:14px;font-family:'Bricolage Grotesque',sans-serif;}
-.toast-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px;}
+/* Sidebar overlay for mobile */
+.sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(15,31,61,.5); z-index:290; }
+.sidebar-overlay.open { display:block; }
 </style>
 </head>
-<body>
-<div class="app">
+<body class="bg-off text-navy overflow-x-hidden">
 
-<!-- ════════════════════════════ SIDEBAR ════════════════════════════ -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-text">Stay<span class="logo-dot">Match</span></div>
+<!-- Mobile sidebar overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside id="sidebar" class="fixed top-0 left-0 bottom-0 w-[248px] bg-navy flex flex-col z-[300] border-r border-white/[.06] -translate-x-full lg:translate-x-0 transition-transform duration-300">
+
+  <!-- Logo -->
+  <div class="px-5 py-[22px] border-b border-white/[.07] flex items-center gap-2">
+    <span class="font-display font-extrabold text-[21px] text-white tracking-tight">Nest<span class="text-teal">Mate</span></span>
   </div>
 
-  <div class="sb-section">Main</div>
-  <a class="nav-item active" onclick="showSec('discover')">
-    <span class="nav-icon">🏠</span> Discover Rooms
-  </a>
-  <a class="nav-item" onclick="showSec('matches')">
-    <span class="nav-icon">⚡</span> My Matches
-    <span class="nav-badge teal">4</span>
-  </a>
-  <a class="nav-item" onclick="showSec('saved')">
-    <span class="nav-icon">🔖</span> Saved Rooms
-    <span class="nav-badge amber">7</span>
-  </a>
+  <!-- Nav -->
+  <div class="flex-1 overflow-y-auto pb-4">
+    <p class="px-4 pt-5 pb-1.5 text-[10px] font-bold text-white/25 tracking-[.1em] uppercase">Main</p>
+    <a class="nav-item active flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl mx-2 my-0.5 text-sm font-medium text-white/50 cursor-pointer hover:bg-white/[.07] hover:text-white transition-all" onclick="showSec('discover');closeSidebar()">
+      <span class="text-base w-5 text-center">🏠</span> Discover Rooms
+    </a>
+    <a class="nav-item flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl mx-2 my-0.5 text-sm font-medium text-white/50 cursor-pointer hover:bg-white/[.07] hover:text-white transition-all" onclick="showSec('matches');closeSidebar()">
+      <span class="text-base w-5 text-center">⚡</span> My Matches
+      <span class="ml-auto bg-teal text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">4</span>
+    </a>
+    <a class="nav-item flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl mx-2 my-0.5 text-sm font-medium text-white/50 cursor-pointer hover:bg-white/[.07] hover:text-white transition-all" onclick="showSec('saved');closeSidebar()">
+      <span class="text-base w-5 text-center">🔖</span> Saved Rooms
+      <span class="ml-auto bg-amber text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">7</span>
+    </a>
 
-  <div class="sb-section">Connect</div>
-  <a class="nav-item" onclick="showSec('messages')">
-    <span class="nav-icon">💬</span> Messages
-    <span class="nav-badge">3</span>
-  </a>
-  <a class="nav-item" onclick="showSec('notifications')">
-    <span class="nav-icon">🔔</span> Notifications
-  </a>
+    <p class="px-4 pt-5 pb-1.5 text-[10px] font-bold text-white/25 tracking-[.1em] uppercase">Connect</p>
+    <a class="nav-item flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl mx-2 my-0.5 text-sm font-medium text-white/50 cursor-pointer hover:bg-white/[.07] hover:text-white transition-all" onclick="showSec('messages');closeSidebar()">
+      <span class="text-base w-5 text-center">💬</span> Messages
+      <span class="ml-auto bg-coral text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">3</span>
+    </a>
+    <a class="nav-item flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl mx-2 my-0.5 text-sm font-medium text-white/50 cursor-pointer hover:bg-white/[.07] hover:text-white transition-all" onclick="showSec('notifications');closeSidebar()">
+      <span class="text-base w-5 text-center">🔔</span> Notifications
+    </a>
 
-  <div class="sb-section">Account</div>
-  <a class="nav-item" onclick="showSec('profile')">
-    <span class="nav-icon">👤</span> My Profile
-  </a>
-  <a class="nav-item" onclick="showSec('settings')">
-    <span class="nav-icon">⚙️</span> Settings
-  </a>
+    <p class="px-4 pt-5 pb-1.5 text-[10px] font-bold text-white/25 tracking-[.1em] uppercase">AI Features</p>
+    <a class="nav-item flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl mx-2 my-0.5 text-sm font-medium text-white/50 cursor-pointer hover:bg-white/[.07] hover:text-white transition-all" onclick="showSec('quiz');closeSidebar()">
+      <span class="text-base w-5 text-center">🧠</span> Personality Quiz
+      <span class="ml-auto bg-teal text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">New</span>
+    </a>
+    <a class="nav-item flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl mx-2 my-0.5 text-sm font-medium text-white/50 cursor-pointer hover:bg-white/[.07] hover:text-white transition-all" onclick="showSec('safety');closeSidebar()">
+      <span class="text-base w-5 text-center">🛡️</span> Safety Ratings
+    </a>
+    <a class="nav-item flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl mx-2 my-0.5 text-sm font-medium text-white/50 cursor-pointer hover:bg-white/[.07] hover:text-white transition-all" onclick="showSec('addroom');closeSidebar()">
+      <span class="text-base w-5 text-center">➕</span> Post a Room
+    </a>
 
-  <div class="sb-user">
-    <img src="https://randomuser.me/api/portraits/men/81.jpg" alt="Rahul"/>
-    <div>
-      <div class="sb-user-name">Rahul Singh</div>
-      <div class="sb-user-role">SWE · Bangalore</div>
+    <p class="px-4 pt-5 pb-1.5 text-[10px] font-bold text-white/25 tracking-[.1em] uppercase">Account</p>
+    <a class="nav-item flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl mx-2 my-0.5 text-sm font-medium text-white/50 cursor-pointer hover:bg-white/[.07] hover:text-white transition-all" onclick="showSec('profile');closeSidebar()">
+      <span class="text-base w-5 text-center">👤</span> My Profile
+    </a>
+    <a class="nav-item flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl mx-2 my-0.5 text-sm font-medium text-white/50 cursor-pointer hover:bg-white/[.07] hover:text-white transition-all" onclick="showSec('settings');closeSidebar()">
+      <span class="text-base w-5 text-center">⚙️</span> Settings
+    </a>
+  </div>
+
+  <!-- User -->
+  {% if profile.profile_picture %}
+  <img src="{{ profile.profile_picture.url }}" alt="User"/>
+  {% else %}
+  <img src="/media/default.jpg" alt="Default"/>
+  {% endif %}
+  <div>
+    <div class="sb-user-name">{{ profile.name }}</div>
+    <div class="sb-user-role">{{ profile.location }}
     </div>
-  </div>
 </aside>
 
-<!-- ════════════════════════════ MAIN ════════════════════════════ -->
-<main class="main">
-{% if messages %}
-  {% for message in messages %}
-    <div class="msg msg-success">
-      {{ message }}
-    </div>
-  {% endfor %}
-{% endif %}
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="lg:ml-[248px] flex flex-col min-h-screen">
+
   <!-- TOPBAR -->
-  <div class="topbar">
-    <div class="search-wrap">
-      <span style="font-size:15px;color:var(--muted);">🔍</span>
-      <input type="text" placeholder="Search rooms, areas, flatmates…"/>
+  <div class="topbar-bg sticky top-0 z-[200] border-b border-bdr h-[66px] flex items-center justify-between px-4 md:px-7">
+    <!-- Hamburger (mobile) -->
+    <button class="lg:hidden flex items-center justify-center w-9 h-9 rounded-xl border border-bdr bg-white mr-3" onclick="openSidebar()">
+      <svg width="18" height-="18" viewBox="0 0 18 18" fill="none"><rect y="2" width="18" height="2" rx="1" fill="#0F1F3D"/><rect y="8" width="18" height="2" rx="1" fill="#0F1F3D"/><rect y="14" width="18" height="2" rx="1" fill="#0F1F3D"/></svg>
+    </button>
+    <!-- Search -->
+    <div class="flex items-center gap-2 bg-off border border-bdr rounded-[10px] px-4 py-2.5 w-full max-w-[300px]">
+      <span class="text-[15px] text-muted">🔍</span>
+      <input type="text" placeholder="Search rooms, areas, flatmates…" class="bg-transparent border-none outline-none text-[14px] text-navy w-full placeholder-muted font-sans"/>
     </div>
-    <div class="topbar-right">
-      <div class="icon-btn" onclick="showToast('3 New Matches!','Priya, Sneha & Dev match your vibe 🎉')">
-        🔔<div class="badge"></div>
-      </div>
-      <div class="icon-btn" onclick="showSec('messages')">
-        💬<div class="badge"></div>
-      </div>
-      <div class="user-pill" onclick="showSec('profile')">
-        <img src="https://randomuser.me/api/portraits/men/81.jpg" class="avatar" style="width:30px;height:30px;" alt="Rahul"/>
-        <span style="font-size:13px;font-weight:600;color:var(--navy);">Rahul</span>
-      </div>
+    <!-- Right -->
+    <div class="flex items-center gap-2.5 ml-3">
+      <button class="w-[38px] h-[38px] rounded-[10px] border border-bdr bg-white flex items-center justify-center text-[17px] hover:bg-off transition-colors relative" onclick="showToast('3 New Matches!','Priya, Sneha &amp; Dev match your vibe 🎉')">
+        🔔<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-coral rounded-full border-2 border-white"></span>
+      </button>
+      <button class="w-[38px] h-[38px] rounded-[10px] border border-bdr bg-white flex items-center justify-center text-[17px] hover:bg-off transition-colors relative" onclick="showSec('messages')">
+        💬<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-coral rounded-full border-2 border-white"></span>
+      </button>
+      <button class="hidden sm:flex items-center gap-2 px-3 py-1 pr-3 pl-1 border border-bdr rounded-[10px] bg-white hover:bg-off transition-colors" onclick="showSec('profile')">
+        {% if profile.profile_picture %}
+        <img src="{{ profile.profile_picture.url }}" class="avatar" style="width:30px;height:30px;">
+        {% else %}
+        <img src="/media/default.jpg" class="avatar" style="width:30px;height:30px;">
+        {% endif %}
+        <span>{{ profile.name }}</span>
+        <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ profile.name }}</span>
+      </button>
     </div>
   </div>
 
   <!-- CONTENT -->
-  <div class="content">
+  <div class="p-4 md:p-6 lg:p-7 flex-1">
 
     <!-- ══ DISCOVER ══ -->
     <div id="sec-discover">
 
       <!-- Welcome Banner -->
-      <div class="welcome-banner fu d1">
-        <img src="https://randomuser.me/api/portraits/men/81.jpg" class="avatar" style="width:54px;height:54px;border:3px solid var(--teal);flex-shrink:0;" alt="Rahul"/>
-        <div style="flex:1;position:relative;z-index:1;">
-          <div class="wb-name">Hey Rahul, welcome back 👋</div>
-          <div class="wb-sub">3 new high-compatibility matches found today — go connect!</div>
-          <div class="wb-chips">
-            <span class="wb-chip">🌙 Night Owl</span>
-            <span class="wb-chip">🎮 Gaming</span>
-            <span class="wb-chip">🍕 Foodie</span>
-            <span class="wb-chip">💻 Tech</span>
+      <div class="animate-fadeUp delay-1 relative overflow-hidden rounded-[20px] p-5 md:p-7 flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6 shadow-card2" style="background:linear-gradient(135deg,#0F1F3D,#1a3260);">
+        <div class="wb-blob1"></div>
+        <div class="wb-blob2"></div>
+        {% if profile.profile_picture %}
+        <img src="{{ profile.profile_picture.url }}" class="avatar" style="width:30px;height:30px;">
+        {% else %}
+        <img src="/media/default.jpg" class="avatar" style="width:30px;height:30px;">
+        {% endif %}
+        <div class="flex-1 z-10">
+          <div class="font-display font-extrabold text-lg md:text-xl text-white">Hey {{ profile.name }}, welcome back 👋</div>
+          <div class="text-[13px] text-white/50 mt-1">3 new high-compatibility matches found today — go connect!</div>
+          <div class="flex flex-wrap gap-1.5 mt-2.5">
+            <span class="bg-white/10 text-white/75 text-[11px] font-semibold px-3 py-1 rounded-full">🌙 Night Owl</span>
+            <span class="bg-white/10 text-white/75 text-[11px] font-semibold px-3 py-1 rounded-full">🎮 Gaming</span>
+            <span class="bg-white/10 text-white/75 text-[11px] font-semibold px-3 py-1 rounded-full">🍕 Foodie</span>
+            <span class="bg-white/10 text-white/75 text-[11px] font-semibold px-3 py-1 rounded-full">💻 Tech</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5 mt-2">
+            <span class="inline-flex items-center gap-1 bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-200">🎓 Student Verified</span>
+            <span class="inline-flex items-center gap-1 bg-teal-lt text-teal text-[10px] font-bold px-2 py-0.5 rounded-full">🧠 Personality Quiz Done</span>
+            <span class="inline-flex items-center gap-1 bg-green-50 text-green-600 text-[10px] font-bold px-2 py-0.5 rounded-full">Phase 1 Active</span>
           </div>
         </div>
-        <div class="vibe-score" style="position:relative;z-index:1;">
-          <div class="vibe-num">87</div>
-          <div class="vibe-lbl">Vibe Score</div>
+        <div class="text-center z-10 flex-shrink-0">
+          <div class="font-display font-extrabold text-[44px] leading-none text-teal">87</div>
+          <div class="text-[11px] text-white/40 mt-0.5">Vibe Score</div>
         </div>
       </div>
 
-      <!-- Stats -->
-      <div class="stats-row fu d2">
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--teal-lt);">🤖</div>
-          <div>
-            <div class="stat-val">24</div>
-            <div class="stat-lbl">AI Matches Found</div>
-            <div class="stat-trend trend-up">↑ 6 new today</div>
-          </div>
+      <!-- Stats Row -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 animate-fadeUp delay-2">
+        <div class="bg-white border border-bdr rounded-[18px] p-4 md:p-5 shadow-card flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-xl bg-teal-lt flex items-center justify-center text-xl flex-shrink-0">🤖</div>
+          <div><div class="font-display font-extrabold text-2xl text-navy">24</div><div class="text-[12px] text-muted mt-0.5">AI Matches Found</div><div class="text-[11px] font-semibold text-green-500 mt-1">↑ 6 new today</div></div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--amber-lt);">👁</div>
-          <div>
-            <div class="stat-val">142</div>
-            <div class="stat-lbl">Profile Views</div>
-            <div class="stat-trend trend-up">↑ 18 this week</div>
-          </div>
+        <div class="bg-white border border-bdr rounded-[18px] p-4 md:p-5 shadow-card flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-xl bg-amber-lt flex items-center justify-center text-xl flex-shrink-0">👁</div>
+          <div><div class="font-display font-extrabold text-2xl text-navy">142</div><div class="text-[12px] text-muted mt-0.5">Profile Views</div><div class="text-[11px] font-semibold text-green-500 mt-1">↑ 18 this week</div></div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#F0FDF4;">💬</div>
-          <div>
-            <div class="stat-val">8</div>
-            <div class="stat-lbl">Active Chats</div>
-            <div class="stat-trend trend-up">3 unread</div>
-          </div>
+        <div class="bg-white border border-bdr rounded-[18px] p-4 md:p-5 shadow-card flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center text-xl flex-shrink-0">💬</div>
+          <div><div class="font-display font-extrabold text-2xl text-navy">8</div><div class="text-[12px] text-muted mt-0.5">Active Chats</div><div class="text-[11px] font-semibold text-green-500 mt-1">3 unread</div></div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#FFF1F2;">🔖</div>
-          <div>
-            <div class="stat-val">7</div>
-            <div class="stat-lbl">Saved Rooms</div>
-            <div class="stat-trend trend-dn">2 price dropped</div>
-          </div>
+        <div class="bg-white border border-bdr rounded-[18px] p-4 md:p-5 shadow-card flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center text-xl flex-shrink-0">🔖</div>
+          <div><div class="font-display font-extrabold text-2xl text-navy">7</div><div class="text-[12px] text-muted mt-0.5">Saved Rooms</div><div class="text-[11px] font-semibold text-coral mt-1">2 price dropped</div></div>
+        </div>
+      </div>
+
+      <!-- AI Features Quick Access -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 animate-fadeUp delay-2">
+        <div onclick="showSec('quiz')" class="bg-white border border-bdr rounded-[14px] p-4 cursor-pointer text-center shadow-card hover:border-teal transition-all hover:shadow-card2 hover:-translate-y-0.5">
+          <div class="text-2xl mb-1.5">🧠</div>
+          <div class="font-bold text-[12px] text-navy">Personality Quiz</div>
+          <div class="text-[10px] text-teal font-semibold mt-0.5">Take Quiz →</div>
+        </div>
+        <div onclick="showSec('safety')" class="bg-white border border-bdr rounded-[14px] p-4 cursor-pointer text-center shadow-card hover:border-teal transition-all hover:shadow-card2 hover:-translate-y-0.5">
+          <div class="text-2xl mb-1.5">🛡️</div>
+          <div class="font-bold text-[12px] text-navy">Safety Centre</div>
+          <div class="text-[10px] text-teal font-semibold mt-0.5">View Scores →</div>
+        </div>
+        <div onclick="showSec('addroom')" class="bg-white border border-bdr rounded-[14px] p-4 cursor-pointer text-center shadow-card hover:border-teal transition-all hover:shadow-card2 hover:-translate-y-0.5">
+          <div class="text-2xl mb-1.5">💰</div>
+          <div class="font-bold text-[12px] text-navy">AI Rent Suggest</div>
+          <div class="text-[10px] text-teal font-semibold mt-0.5">Post a Room →</div>
+        </div>
+        <div onclick="openVibe()" class="bg-navy border border-navy rounded-[14px] p-4 cursor-pointer text-center shadow-card hover:shadow-card2 hover:-translate-y-0.5 transition-all">
+          <div class="text-2xl mb-1.5">✨</div>
+          <div class="font-bold text-[12px] text-white">Find Your Vibe</div>
+          <div class="text-[10px] text-teal font-semibold mt-0.5">AI Match →</div>
         </div>
       </div>
 
       <!-- Filter Bar -->
-      <div class="filter-bar fu d3">
-        <span class="filter-lbl">🔍 Filters:</span>
-        <select class="filter-select">
-          <option>📍 All Cities</option>
-          <option>Bangalore</option>
-          <option>Mumbai</option>
-          <option>Delhi</option>
-          <option>Hyderabad</option>
-          <option>Pune</option>
+      <div class="bg-white border border-bdr rounded-[14px] px-4 md:px-5 py-3.5 flex flex-wrap items-center gap-2 md:gap-2.5 mb-5 shadow-card animate-fadeUp delay-3">
+        <span class="text-[13px] font-semibold text-muted whitespace-nowrap">🔍 Filters:</span>
+        <select class="bg-off border border-bdr rounded-lg px-3 py-1.5 text-[13px] text-navy cursor-pointer outline-none font-sans">
+          <option>📍 All Cities</option><option>Bangalore</option><option>Mumbai</option><option>Delhi</option><option>Hyderabad</option><option>Pune</option>
         </select>
-        <select class="filter-select">
-          <option>💰 Any Budget</option>
-          <option>Under ₹8,000</option>
-          <option>₹8k – ₹12k</option>
-          <option>₹12k – ₹18k</option>
-          <option>₹18k+</option>
+        <select class="bg-off border border-bdr rounded-lg px-3 py-1.5 text-[13px] text-navy cursor-pointer outline-none font-sans">
+          <option>💰 Any Budget</option><option>Under ₹8,000</option><option>₹8k – ₹12k</option><option>₹12k – ₹18k</option><option>₹18k+</option>
         </select>
-        <select class="filter-select">
-          <option>👤 Any Gender</option>
-          <option>Male only</option>
-          <option>Female only</option>
+        <select class="bg-off border border-bdr rounded-lg px-3 py-1.5 text-[13px] text-navy cursor-pointer outline-none font-sans">
+          <option>👤 Any Gender</option><option>Male only</option><option>Female only</option>
         </select>
-        <div class="filter-chip on" onclick="this.classList.toggle('on')">🌙 Night Owl</div>
-        <div class="filter-chip" onclick="this.classList.toggle('on')">🐶 Pet-friendly</div>
-        <div class="filter-chip" onclick="this.classList.toggle('on')">🚇 Near Metro</div>
-        <div class="filter-chip" onclick="this.classList.toggle('on')">🏋️ Gym</div>
-        <button class="btn-vibe" onclick="openVibe()">✨ Find Your Vibe</button>
+        <button class="filter-chip on inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-teal text-white transition-all" onclick="toggleChip(this)">🌙 Night Owl</button>
+        <button class="filter-chip inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-teal-lt text-teal transition-all hover:bg-teal hover:text-white" onclick="toggleChip(this)">🐶 Pet-friendly</button>
+        <button class="filter-chip inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-teal-lt text-teal transition-all hover:bg-teal hover:text-white" onclick="toggleChip(this)">🚇 Near Metro</button>
+        <button class="filter-chip inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-teal-lt text-teal transition-all hover:bg-teal hover:text-white" onclick="toggleChip(this)">📚 Study Friendly</button>
+        <button class="filter-chip inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-teal-lt text-teal transition-all hover:bg-teal hover:text-white" onclick="toggleChip(this)">🔇 Low Noise</button>
+        <button class="ml-auto bg-navy hover:bg-teal text-white font-display font-bold text-[14px] px-5 py-2.5 rounded-[10px] transition-all hover:-translate-y-0.5 shadow-[0_4px_16px_rgba(15,31,61,.2)] whitespace-nowrap" onclick="openVibe()">✨ Find Your Vibe</button>
       </div>
 
       <!-- Room Listings -->
-      <div class="sec-hd fu d4">
-        <div class="sec-title">🏠 Recommended for You</div>
-        <a class="sec-link">View all 48 listings →</a>
+      <div class="flex items-center justify-between mb-4 animate-fadeUp delay-4">
+        <h2 class="font-display font-bold text-[18px] text-navy">🏠 Recommended for You</h2>
+        <a class="text-[13px] text-teal font-semibold cursor-pointer hover:text-navy">View all 48 listings →</a>
       </div>
-      <div class="rooms-grid fu d4">
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 mb-7 animate-fadeUp delay-4">
 
         <!-- Room 1 -->
-        <div class="room-card">
-          <div class="room-img">
-            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" alt="Room" onerror="this.style.display='none'"/>
-            <div class="match-badge teal">⚡ 95% Match</div>
-            <div class="room-save" id="sv1" onclick="toggleSave('sv1')">🤍</div>
-            <div class="room-type">2BHK · Furnished</div>
+        <div class="bg-white border border-bdr rounded-[20px] overflow-hidden shadow-card hover:-translate-y-1.5 hover:shadow-card2 transition-all duration-300">
+          <div class="h-40 relative overflow-hidden bg-gradient-to-br from-teal-lt to-off">
+            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" class="w-full h-full object-cover block" alt="Room" onerror="this.style.display='none'"/>
+            <div class="absolute top-3 right-3 bg-teal text-white font-display text-[12px] font-extrabold px-3 py-1 rounded-full flex items-center gap-1">⚡ 95% Match</div>
+            <button class="absolute top-3 left-3 w-[30px] h-[30px] rounded-full bg-white/90 flex items-center justify-center text-sm border border-black/[.06] hover:scale-110 transition-transform" id="sv1" onclick="toggleSave('sv1')">🤍</button>
+            <div class="absolute bottom-3 left-3 bg-navy/70 backdrop-blur text-white text-[10px] font-bold px-2.5 py-1 rounded-md tracking-wide">2BHK · Furnished</div>
           </div>
-          <div class="room-body">
-            <div class="room-title">Modern 2BHK in Koramangala</div>
-            <div class="room-loc">📍 5th Block, Koramangala · Bangalore</div>
-            <div class="room-chips">
-              <div class="chip" style="background:#EBF9FD;color:var(--teal);">🎮 Gamers</div>
-              <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🌙 Night owl</div>
-              <div class="chip" style="background:var(--amber-lt);color:#B45309;">🍕 Foodie</div>
+          <div class="p-4 md:p-[18px]">
+            <div class="flex items-start justify-between mb-1">
+              <div class="font-display font-bold text-[15px] text-navy">Modern 2BHK in Koramangala</div>
+              <span class="flex-shrink-0 ml-1.5 mt-0.5 bg-amber-lt text-amber text-[10px] font-bold px-2 py-0.5 rounded-full border border-yellow-200">✅ Verified</span>
             </div>
-            <div class="room-footer">
+            <div class="text-[12px] text-muted mb-2">📍 5th Block, Koramangala · Bangalore</div>
+            <div class="flex items-center gap-2 mb-1.5">
+              <div class="text-amber text-[12px] tracking-wide">★★★★★</div>
+              <span class="text-[11px] text-muted">Safety 4.8</span>
+              <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-green-50 text-green-600">🧹 Very Clean</span>
+            </div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-[10px] text-muted w-[52px] flex-shrink-0">🔇 Noise</span>
+              <div class="flex-1 h-[4px] bg-bdr rounded-full overflow-hidden"><div class="h-full rounded-full noise-low" style="width:20%"></div></div>
+              <span class="text-[10px] font-bold text-green-500">Low</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-2.5">
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-teal-lt text-teal">🎮 Gamers</span>
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-teal-lt text-teal">🌙 Night owl</span>
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-green-50 text-green-600">📚 Study Friendly</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 mb-2.5">
+              <span class="inline-flex items-center gap-1 bg-sage-lt text-sage text-[11px] font-bold px-2.5 py-1 rounded-md">🤖 AI Fair: ₹13,200</span>
+              <span class="flex items-center gap-1 text-[11px] font-bold text-green-500">🌿 Env <span>8.4/10</span></span>
+            </div>
+            <div class="flex items-center justify-between pt-3 border-t border-bdr">
               <div>
-                <div class="room-price">₹14,000 <small>/mo</small></div>
-                <div class="av-stack">
-                  <img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""/>
-                  <img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""/>
-                  <span style="font-size:10px;color:var(--muted);margin-left:6px;">2 interested</span>
+                <div class="font-display font-extrabold text-[16px] text-navy">₹14,000 <small class="text-[11px] font-normal text-muted">/mo</small></div>
+                <div class="flex items-center mt-1">
+                  <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-5 h-5 rounded-full object-cover border-2 border-white" alt=""/>
+                  <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-5 h-5 rounded-full object-cover border-2 border-white -ml-1.5" alt=""/>
+                  <span class="text-[10px] text-muted ml-1.5">2 interested</span>
                 </div>
               </div>
-              <button class="btn-sm btn-sm-teal" onclick="showToast('Request Sent!','Arjun will hear from you soon 🎉')">Connect</button>
+              <button class="bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[13px] px-4 py-2 rounded-lg transition-all hover:-translate-y-px" onclick="showToast('Request Sent!','Arjun will hear from you soon 🎉')">Connect</button>
             </div>
           </div>
         </div>
 
-        <!-- Room 2 — featured, same teal border as landing TOP MATCH -->
-        <div class="room-card" style="border-color:var(--teal);box-shadow:0 0 0 1px var(--teal),var(--card-sh2);">
-          <div style="position:absolute;top:14px;right:14px;z-index:2;background:var(--amber);color:#000;font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;letter-spacing:.04em;">TOP PICK</div>
-          <div class="room-img">
-            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&q=80" alt="Room" onerror="this.style.display='none'"/>
-            <div class="room-save saved" id="sv2" onclick="toggleSave('sv2')">❤️</div>
-            <div class="room-type">1BHK · Semi-furnished</div>
+        <!-- Room 2 — Featured -->
+        <div class="bg-white border border-teal rounded-[20px] overflow-hidden shadow-[0_0_0_1px_#0EA5C9,0_12px_40px_rgba(15,31,61,0.14)] hover:-translate-y-1.5 transition-all duration-300 relative">
+          <div class="absolute top-[14px] right-[14px] z-[2] bg-amber text-black text-[10px] font-bold px-2.5 py-1 rounded-md tracking-[.04em]">TOP PICK</div>
+          <div class="h-40 relative overflow-hidden bg-gradient-to-br from-teal-lt to-off">
+            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&q=80" class="w-full h-full object-cover block" alt="Room" onerror="this.style.display='none'"/>
+            <button class="absolute top-3 left-3 w-[30px] h-[30px] rounded-full bg-white/90 flex items-center justify-center text-sm border border-black/[.06] hover:scale-110 transition-transform" id="sv2" onclick="toggleSave('sv2')">❤️</button>
+            <div class="absolute bottom-3 left-3 bg-navy/70 backdrop-blur text-white text-[10px] font-bold px-2.5 py-1 rounded-md tracking-wide">1BHK · Semi-furnished</div>
           </div>
-          <div class="room-body">
-            <div class="room-title">Cozy 1BHK near HSR Metro</div>
-            <div class="room-loc">📍 Sector 1, HSR Layout · Bangalore</div>
-            <div class="room-chips">
-              <div class="chip" style="background:#F0FDF4;color:#059669;">🏃 Fitness</div>
-              <div class="chip" style="background:#F5F3FF;color:#7C3AED;">💻 WFH</div>
-              <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🚇 Metro</div>
+          <div class="p-4 md:p-[18px]">
+            <div class="flex items-start justify-between mb-1">
+              <div class="font-display font-bold text-[15px] text-navy">Cozy 1BHK near HSR Metro</div>
+              <span class="flex-shrink-0 ml-1.5 mt-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-200">🎓 Student</span>
             </div>
-            <div class="room-footer">
+            <div class="text-[12px] text-muted mb-2">📍 Sector 1, HSR Layout · Bangalore</div>
+            <div class="flex items-center gap-2 mb-1.5">
+              <div class="text-amber text-[12px]">★★★★☆</div>
+              <span class="text-[11px] text-muted">Safety 4.2</span>
+              <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-green-50 text-green-600">🧹 Clean</span>
+            </div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-[10px] text-muted w-[52px] flex-shrink-0">🔊 Noise</span>
+              <div class="flex-1 h-[4px] bg-bdr rounded-full overflow-hidden"><div class="h-full rounded-full noise-mid" style="width:45%"></div></div>
+              <span class="text-[10px] font-bold text-amber">Medium</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-2.5">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-green-50 text-green-600">🏃 Fitness</span>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-teal-lt text-teal">💻 WFH</span>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-teal-lt text-teal">🚇 Metro</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 mb-2.5">
+              <span class="inline-flex items-center gap-1 bg-sage-lt text-sage text-[11px] font-bold px-2.5 py-1 rounded-md">🤖 AI Fair: ₹11,800</span>
+              <span class="text-[11px] font-bold text-green-500">🌿 Env 7.1/10</span>
+            </div>
+            <div class="flex items-center justify-between pt-3 border-t border-bdr">
               <div>
-                <div class="room-price">₹12,500 <small>/mo</small></div>
-                <div class="av-stack">
-                  <img src="https://randomuser.me/api/portraits/women/65.jpg" alt=""/>
-                  <span style="font-size:10px;color:var(--muted);margin-left:6px;">1 interested</span>
+                <div class="font-display font-extrabold text-[16px] text-navy">₹12,500 <small class="text-[11px] font-normal text-muted">/mo</small></div>
+                <div class="flex items-center mt-1">
+                  <img src="https://randomuser.me/api/portraits/women/65.jpg" class="w-5 h-5 rounded-full object-cover border-2 border-white" alt=""/>
+                  <span class="text-[10px] text-muted ml-1.5">1 interested</span>
                 </div>
               </div>
-              <button class="btn-sm btn-sm-teal" onclick="showToast('Request Sent!','Priya will hear from you 🎉')">Connect</button>
+              <button class="bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[13px] px-4 py-2 rounded-lg transition-all hover:-translate-y-px" onclick="showToast('Request Sent!','Priya will hear from you 🎉')">Connect</button>
             </div>
           </div>
         </div>
 
         <!-- Room 3 -->
-        <div class="room-card">
-          <div class="room-img">
-            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&q=80" alt="Room" onerror="this.style.display='none'"/>
-            <div class="match-badge">🎯 88% Match</div>
-            <div class="room-save" id="sv3" onclick="toggleSave('sv3')">🤍</div>
-            <div class="room-type">3BHK · Furnished</div>
+        <div class="bg-white border border-bdr rounded-[20px] overflow-hidden shadow-card hover:-translate-y-1.5 hover:shadow-card2 transition-all duration-300">
+          <div class="h-40 relative overflow-hidden bg-gradient-to-br from-teal-lt to-off">
+            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&q=80" class="w-full h-full object-cover block" alt="Room" onerror="this.style.display='none'"/>
+            <div class="absolute top-3 right-3 bg-navy text-white font-display text-[12px] font-extrabold px-3 py-1 rounded-full flex items-center gap-1">🎯 88% Match</div>
+            <button class="absolute top-3 left-3 w-[30px] h-[30px] rounded-full bg-white/90 flex items-center justify-center text-sm border border-black/[.06] hover:scale-110 transition-transform" id="sv3" onclick="toggleSave('sv3')">🤍</button>
+            <div class="absolute bottom-3 left-3 bg-navy/70 backdrop-blur text-white text-[10px] font-bold px-2.5 py-1 rounded-md tracking-wide">3BHK · Furnished</div>
           </div>
-          <div class="room-body">
-            <div class="room-title">Spacious 3BHK in Indiranagar</div>
-            <div class="room-loc">📍 100ft Road, Indiranagar · Bangalore</div>
-            <div class="room-chips">
-              <div class="chip" style="background:var(--amber-lt);color:#B45309;">🌅 Early Bird</div>
-              <div class="chip" style="background:#F0FDF4;color:#059669;">🌿 Vegan</div>
-              <div class="chip" style="background:#EBF9FD;color:var(--teal);">📚 Books</div>
+          <div class="p-4 md:p-[18px]">
+            <div class="flex items-start justify-between mb-1">
+              <div class="font-display font-bold text-[15px] text-navy">Spacious 3BHK in Indiranagar</div>
+              <span class="flex-shrink-0 ml-1.5 mt-0.5 bg-amber-lt text-amber text-[10px] font-bold px-2 py-0.5 rounded-full border border-yellow-200">✅ Verified</span>
             </div>
-            <div class="room-footer">
+            <div class="text-[12px] text-muted mb-2">📍 100ft Road, Indiranagar · Bangalore</div>
+            <div class="flex items-center gap-2 mb-1.5">
+              <div class="text-amber text-[12px]">★★★★★</div>
+              <span class="text-[11px] text-muted">Safety 4.9</span>
+              <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-green-50 text-green-600">🧹 Spotless</span>
+            </div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-[10px] text-muted w-[52px] flex-shrink-0">🔇 Noise</span>
+              <div class="flex-1 h-[4px] bg-bdr rounded-full overflow-hidden"><div class="h-full rounded-full noise-low" style="width:15%"></div></div>
+              <span class="text-[10px] font-bold text-green-500">Very Low</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-2.5">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-lt text-amber">🌅 Early Bird</span>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-green-50 text-green-600">📚 Study Friendly</span>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-teal-lt text-teal">🌿 Vegan</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 mb-2.5">
+              <span class="inline-flex items-center gap-1 bg-sage-lt text-sage text-[11px] font-bold px-2.5 py-1 rounded-md">🤖 AI Fair: ₹17,500</span>
+              <span class="text-[11px] font-bold text-green-500">🌿 Env 9.1/10</span>
+            </div>
+            <div class="flex items-center justify-between pt-3 border-t border-bdr">
               <div>
-                <div class="room-price">₹18,000 <small>/mo</small></div>
-                <div class="av-stack">
-                  <img src="https://randomuser.me/api/portraits/men/45.jpg" alt=""/>
-                  <img src="https://randomuser.me/api/portraits/women/68.jpg" alt=""/>
-                  <img src="https://randomuser.me/api/portraits/men/76.jpg" alt=""/>
-                  <span style="font-size:10px;color:var(--muted);margin-left:6px;">3 interested</span>
+                <div class="font-display font-extrabold text-[16px] text-navy">₹18,000 <small class="text-[11px] font-normal text-muted">/mo</small></div>
+                <div class="flex items-center mt-1">
+                  <img src="https://randomuser.me/api/portraits/men/45.jpg" class="w-5 h-5 rounded-full object-cover border-2 border-white" alt=""/>
+                  <img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-5 h-5 rounded-full object-cover border-2 border-white -ml-1.5" alt=""/>
+                  <img src="https://randomuser.me/api/portraits/men/76.jpg" class="w-5 h-5 rounded-full object-cover border-2 border-white -ml-1.5" alt=""/>
+                  <span class="text-[10px] text-muted ml-1.5">3 interested</span>
                 </div>
               </div>
-              <button class="btn-sm btn-sm-navy" onclick="showToast('Request Sent!','Team will hear from you 🎉')">Connect</button>
+              <button class="bg-navy hover:bg-[#1a3260] text-white font-display font-bold text-[13px] px-4 py-2 rounded-lg transition-all hover:-translate-y-px" onclick="showToast('Request Sent!','Team will hear from you 🎉')">Connect</button>
             </div>
           </div>
         </div>
 
       </div>
 
-      <!-- Bottom: Trending + Messages -->
-      <div class="bottom-grid fu d5">
+      <!-- Bottom Grid: Trending + Messages -->
+      <div class="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-4 md:gap-5 mb-6 animate-fadeUp delay-5">
 
-        <!-- Trending — same card style as testi -->
-        <div class="trending-wrap">
-          <div class="sec-hd" style="margin-bottom:4px;">
-            <div class="sec-title">🔥 Trending Rooms</div>
-            <a class="sec-link">See all →</a>
+        <!-- Trending -->
+        <div class="bg-white border border-bdr rounded-[20px] p-5 md:p-[22px] shadow-card">
+          <div class="flex items-center justify-between mb-1">
+            <h3 class="font-display font-bold text-[18px] text-navy">🔥 Trending Rooms</h3>
+            <a class="text-[13px] text-teal font-semibold cursor-pointer hover:text-navy">See all →</a>
           </div>
-          <p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Most viewed in last 24 hours</p>
-
-          <div class="trend-item">
-            <div class="trend-rank gold">1</div>
-            <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=80&q=70" class="trend-img" alt=""/>
-            <div style="flex:1;min-width:0;">
-              <div class="trend-name">Studio in Whitefield</div>
-              <div class="trend-sub">₹9,500 · Bangalore · 1 bed</div>
+          <p class="text-[12px] text-muted mb-3.5">Most viewed in last 24 hours</p>
+          <div class="divide-y divide-bdr">
+            <div class="flex items-center gap-3 py-3">
+              <div class="font-display font-extrabold text-xl text-amber w-6 text-center flex-shrink-0">1</div>
+              <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=80&q=70" class="w-[50px] h-[50px] rounded-[10px] object-cover flex-shrink-0" alt=""/>
+              <div class="flex-1 min-w-0"><div class="font-semibold text-[13px] text-navy truncate">Studio in Whitefield</div><div class="text-[11px] text-muted">₹9,500 · Bangalore · 1 bed</div></div>
+              <div class="flex-shrink-0 bg-teal-lt text-teal text-[11px] font-bold px-2 py-1 rounded-md">91% ⚡</div>
             </div>
-            <div class="trend-pct">91% ⚡</div>
-          </div>
-          <div class="trend-item">
-            <div class="trend-rank gold">2</div>
-            <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=80&q=70" class="trend-img" alt=""/>
-            <div style="flex:1;min-width:0;">
-              <div class="trend-name">2BHK in Andheri West</div>
-              <div class="trend-sub">₹22,000 · Mumbai · 2 bed</div>
+            <div class="flex items-center gap-3 py-3">
+              <div class="font-display font-extrabold text-xl text-amber w-6 text-center flex-shrink-0">2</div>
+              <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=80&q=70" class="w-[50px] h-[50px] rounded-[10px] object-cover flex-shrink-0" alt=""/>
+              <div class="flex-1 min-w-0"><div class="font-semibold text-[13px] text-navy truncate">2BHK in Andheri West</div><div class="text-[11px] text-muted">₹22,000 · Mumbai · 2 bed</div></div>
+              <div class="flex-shrink-0 bg-teal-lt text-teal text-[11px] font-bold px-2 py-1 rounded-md">87%</div>
             </div>
-            <div class="trend-pct">87%</div>
-          </div>
-          <div class="trend-item">
-            <div class="trend-rank">3</div>
-            <img src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=80&q=70" class="trend-img" alt=""/>
-            <div style="flex:1;min-width:0;">
-              <div class="trend-name">PG in Lajpat Nagar</div>
-              <div class="trend-sub">₹11,000 · Delhi · 1 bed</div>
+            <div class="flex items-center gap-3 py-3">
+              <div class="font-display font-extrabold text-xl text-bdr w-6 text-center flex-shrink-0">3</div>
+              <img src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=80&q=70" class="w-[50px] h-[50px] rounded-[10px] object-cover flex-shrink-0" alt=""/>
+              <div class="flex-1 min-w-0"><div class="font-semibold text-[13px] text-navy truncate">PG in Lajpat Nagar</div><div class="text-[11px] text-muted">₹11,000 · Delhi · 1 bed</div></div>
+              <div class="flex-shrink-0 bg-teal-lt text-teal text-[11px] font-bold px-2 py-1 rounded-md">84%</div>
             </div>
-            <div class="trend-pct">84%</div>
-          </div>
-          <div class="trend-item">
-            <div class="trend-rank">4</div>
-            <img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=80&q=70" class="trend-img" alt=""/>
-            <div style="flex:1;min-width:0;">
-              <div class="trend-name">1BHK in Powai</div>
-              <div class="trend-sub">₹17,500 · Mumbai · 1 bed</div>
+            <div class="flex items-center gap-3 py-3">
+              <div class="font-display font-extrabold text-xl text-bdr w-6 text-center flex-shrink-0">4</div>
+              <img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=80&q=70" class="w-[50px] h-[50px] rounded-[10px] object-cover flex-shrink-0" alt=""/>
+              <div class="flex-1 min-w-0"><div class="font-semibold text-[13px] text-navy truncate">1BHK in Powai</div><div class="text-[11px] text-muted">₹17,500 · Mumbai · 1 bed</div></div>
+              <div class="flex-shrink-0 bg-teal-lt text-teal text-[11px] font-bold px-2 py-1 rounded-md">79%</div>
             </div>
-            <div class="trend-pct">79%</div>
-          </div>
-          <div class="trend-item">
-            <div class="trend-rank">5</div>
-            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=80&q=70" class="trend-img" alt=""/>
-            <div style="flex:1;min-width:0;">
-              <div class="trend-name">3BHK in Banjara Hills</div>
-              <div class="trend-sub">₹28,000 · Hyderabad · 3 bed</div>
+            <div class="flex items-center gap-3 pt-3">
+              <div class="font-display font-extrabold text-xl text-bdr w-6 text-center flex-shrink-0">5</div>
+              <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=80&q=70" class="w-[50px] h-[50px] rounded-[10px] object-cover flex-shrink-0" alt=""/>
+              <div class="flex-1 min-w-0"><div class="font-semibold text-[13px] text-navy truncate">3BHK in Banjara Hills</div><div class="text-[11px] text-muted">₹28,000 · Hyderabad · 3 bed</div></div>
+              <div class="flex-shrink-0 bg-teal-lt text-teal text-[11px] font-bold px-2 py-1 rounded-md">76%</div>
             </div>
-            <div class="trend-pct">76%</div>
           </div>
         </div>
 
-        <!-- Messages — same as landing chat mock -->
-        <div class="msg-panel">
-          <div class="msg-header">
-            <div class="sec-title" style="font-size:16px;">💬 Messages</div>
-            <button class="btn-sm btn-sm-teal" style="font-size:12px;">+ New</button>
+        <!-- Messages Panel -->
+        <div class="bg-white border border-bdr rounded-[20px] shadow-card overflow-hidden flex flex-col">
+          <div class="px-[18px] py-4 border-b border-bdr flex items-center justify-between">
+            <h3 class="font-display font-bold text-[16px] text-navy">💬 Messages</h3>
+            <button class="bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[12px] px-3.5 py-1.5 rounded-lg transition-all">+ New</button>
           </div>
-          <div class="msg-scroll">
-            <div class="msg-item active">
-              <div class="msg-av">
-                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Riya"/>
-                <div class="online" style="position:absolute;bottom:0;right:0;"></div>
-              </div>
-              <div style="flex:1;min-width:0;">
-                <div class="msg-name">Riya Sharma <span class="msg-time">2m</span></div>
-                <div class="msg-preview">OBSESSED 😭 ok we def need to be flatmates</div>
-              </div>
-              <div class="msg-unread">2</div>
+          <div class="flex-1 overflow-y-auto">
+            <div class="flex items-center gap-2.5 px-4 py-2.5 border-l-[3px] border-teal bg-teal-lt cursor-pointer">
+              <div class="relative flex-shrink-0"><img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-[38px] h-[38px] rounded-full object-cover" alt="Riya"/><div class="absolute bottom-0 right-0 w-[9px] h-[9px] bg-green-400 rounded-full border-2 border-white animate-pulse2"></div></div>
+              <div class="flex-1 min-w-0"><div class="flex items-center justify-between font-semibold text-[13px] text-navy">Riya Sharma<span class="text-[10px] text-muted font-normal">2m</span></div><div class="text-[11px] text-muted truncate mt-0.5">OBSESSED 😭 ok we def need to be flatmates</div></div>
+              <div class="flex-shrink-0 bg-teal text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">2</div>
             </div>
-            <div class="msg-item">
-              <div class="msg-av">
-                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Arjun"/>
-              </div>
-              <div style="flex:1;min-width:0;">
-                <div class="msg-name">Arjun Mehta <span class="msg-time">1h</span></div>
-                <div class="msg-preview">haha same!! are you into gaming? 🎮</div>
-              </div>
-              <div class="msg-unread">1</div>
+            <div class="flex items-center gap-2.5 px-4 py-2.5 cursor-pointer hover:bg-off transition-colors">
+              <div class="relative flex-shrink-0"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-[38px] h-[38px] rounded-full object-cover" alt="Arjun"/></div>
+              <div class="flex-1 min-w-0"><div class="flex items-center justify-between font-semibold text-[13px] text-navy">Arjun Mehta<span class="text-[10px] text-muted font-normal">1h</span></div><div class="text-[11px] text-muted truncate mt-0.5">haha same!! are you into gaming? 🎮</div></div>
+              <div class="flex-shrink-0 bg-teal text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">1</div>
             </div>
-            <div class="msg-item">
-              <div class="msg-av">
-                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Priya"/>
-                <div class="online" style="position:absolute;bottom:0;right:0;"></div>
-              </div>
-              <div style="flex:1;min-width:0;">
-                <div class="msg-name">Priya Nair <span class="msg-time">3h</span></div>
-                <div class="msg-preview">The flat is still available! Come visit 🏠</div>
-              </div>
+            <div class="flex items-center gap-2.5 px-4 py-2.5 cursor-pointer hover:bg-off transition-colors">
+              <div class="relative flex-shrink-0"><img src="https://randomuser.me/api/portraits/women/65.jpg" class="w-[38px] h-[38px] rounded-full object-cover" alt="Priya"/><div class="absolute bottom-0 right-0 w-[9px] h-[9px] bg-green-400 rounded-full border-2 border-white animate-pulse2"></div></div>
+              <div class="flex-1 min-w-0"><div class="flex items-center justify-between font-semibold text-[13px] text-navy">Priya Nair<span class="text-[10px] text-muted font-normal">3h</span></div><div class="text-[11px] text-muted truncate mt-0.5">The flat is still available! Come visit 🏠</div></div>
             </div>
-            <div class="msg-item">
-              <div class="msg-av"><img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Rohan"/></div>
-              <div style="flex:1;min-width:0;">
-                <div class="msg-name">Rohan M. <span class="msg-time">1d</span></div>
-                <div class="msg-preview">Let me know when you're free to visit!</div>
-              </div>
+            <div class="flex items-center gap-2.5 px-4 py-2.5 cursor-pointer hover:bg-off transition-colors">
+              <div class="flex-shrink-0"><img src="https://randomuser.me/api/portraits/men/45.jpg" class="w-[38px] h-[38px] rounded-full object-cover" alt="Rohan"/></div>
+              <div class="flex-1 min-w-0"><div class="flex items-center justify-between font-semibold text-[13px] text-navy">Rohan M.<span class="text-[10px] text-muted font-normal">1d</span></div><div class="text-[11px] text-muted truncate mt-0.5">Let me know when you're free to visit!</div></div>
             </div>
-            <div class="msg-item">
-              <div class="msg-av"><img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Sneha"/></div>
-              <div style="flex:1;min-width:0;">
-                <div class="msg-name">Sneha K. <span class="msg-time">2d</span></div>
-                <div class="msg-preview">We matched 92%, should we chat? 👋</div>
-              </div>
+            <div class="flex items-center gap-2.5 px-4 py-2.5 cursor-pointer hover:bg-off transition-colors">
+              <div class="flex-shrink-0"><img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-[38px] h-[38px] rounded-full object-cover" alt="Sneha"/></div>
+              <div class="flex-1 min-w-0"><div class="flex items-center justify-between font-semibold text-[13px] text-navy">Sneha K.<span class="text-[10px] text-muted font-normal">2d</span></div><div class="text-[11px] text-muted truncate mt-0.5">We matched 92%, should we chat? 👋</div></div>
             </div>
           </div>
-          <!-- typing — same as landing -->
-          <div class="typing-bar">
-            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="avatar" style="width:22px;height:22px;" alt="Riya"/>
-            <span style="font-size:12px;color:var(--teal);font-weight:600;">Riya is typing</span>
-            <div style="display:flex;gap:3px;align-items:center;margin-left:2px;">
-              <div style="width:5px;height:5px;background:var(--teal);border-radius:50%;animation:typing 1.1s ease infinite;"></div>
-              <div style="width:5px;height:5px;background:var(--teal);border-radius:50%;animation:typing 1.1s ease infinite .2s;"></div>
-              <div style="width:5px;height:5px;background:var(--teal);border-radius:50%;animation:typing 1.1s ease infinite .4s;"></div>
+          <!-- Typing bar -->
+          <div class="px-4 py-2.5 border-t border-bdr bg-teal-lt flex items-center gap-2">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-[22px] h-[22px] rounded-full object-cover border-2 border-white" alt="Riya"/>
+            <span class="text-[12px] text-teal font-semibold">Riya is typing</span>
+            <div class="flex gap-[3px] items-center ml-0.5">
+              <div class="w-[5px] h-[5px] bg-teal rounded-full animate-typing"></div>
+              <div class="w-[5px] h-[5px] bg-teal rounded-full animate-typing" style="animation-delay:.2s"></div>
+              <div class="w-[5px] h-[5px] bg-teal rounded-full animate-typing" style="animation-delay:.4s"></div>
             </div>
           </div>
         </div>
@@ -854,235 +570,437 @@ input[type=range]{width:100%;accent-color:var(--teal);}
       </div>
     </div><!-- /sec-discover -->
 
-    <!-- ══ PLACEHOLDER SECTIONS ══ -->
-    <div id="sec-matches" style="display:none;">
-      <div class="feat-card" style="text-align:center;padding:56px 28px;">
-        <div style="font-size:48px;margin-bottom:14px;">⚡</div>
-        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;">Your AI Matches</div>
-        <p style="color:var(--muted);font-size:14px;margin-bottom:20px;">4 high-compatibility flatmates found for you today.</p>
-        <button class="btn-teal" style="font-size:14px;padding:11px 28px;" onclick="showSec('discover')">← Back to Discover</button>
+    <!-- ══ MATCHES ══ -->
+    <div id="sec-matches" class="hidden">
+      <div class="bg-white border border-bdr rounded-[18px] p-14 text-center shadow-card">
+        <div class="text-5xl mb-3.5">⚡</div>
+        <div class="font-display font-extrabold text-[22px] text-navy mb-2">Your AI Matches</div>
+        <p class="text-muted text-[14px] mb-5">4 high-compatibility flatmates found for you today.</p>
+        <button class="bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[14px] px-7 py-3 rounded-[10px] transition-all" onclick="showSec('discover')">← Back to Discover</button>
       </div>
     </div>
 
-    <div id="sec-saved" style="display:none;">
-      <div class="sec-hd"><div class="sec-title">🔖 Saved Rooms (7)</div></div>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;">
-        <div class="feat-card" style="display:flex;gap:14px;align-items:center;padding:16px;">
-          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=80&q=70" style="width:54px;height:54px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-          <div style="min-width:0;">
-            <div style="font-weight:700;font-size:13px;color:var(--navy);">Modern 2BHK · Koramangala</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:2px;">₹14,000/mo · 95% match</div>
-            <div style="font-size:11px;color:var(--green);margin-top:4px;font-weight:600;">● Available now</div>
-          </div>
+    <!-- ══ SAVED ══ -->
+    <div id="sec-saved" class="hidden">
+      <div class="flex items-center justify-between mb-4"><h2 class="font-display font-bold text-[18px] text-navy">🔖 Saved Rooms (7)</h2></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-5">
+        <div class="bg-white border border-bdr rounded-[14px] p-4 flex gap-3.5 items-center shadow-card hover:shadow-card2 hover:-translate-y-0.5 transition-all cursor-pointer">
+          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=80&q=70" class="w-[54px] h-[54px] rounded-[10px] object-cover flex-shrink-0" alt=""/>
+          <div class="min-w-0"><div class="font-bold text-[13px] text-navy">Modern 2BHK · Koramangala</div><div class="text-[12px] text-muted mt-0.5">₹14,000/mo · 95% match</div><div class="text-[11px] text-green-500 font-semibold mt-1">● Available now</div></div>
         </div>
-        <div class="feat-card" style="display:flex;gap:14px;align-items:center;padding:16px;">
-          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=80&q=70" style="width:54px;height:54px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-          <div style="min-width:0;">
-            <div style="font-weight:700;font-size:13px;color:var(--navy);">Cozy 1BHK · HSR Layout</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:2px;">₹12,500/mo · Top Pick</div>
-            <div style="font-size:11px;color:var(--coral);margin-top:4px;font-weight:600;">↓ Price dropped ₹500</div>
-          </div>
+        <div class="bg-white border border-bdr rounded-[14px] p-4 flex gap-3.5 items-center shadow-card hover:shadow-card2 hover:-translate-y-0.5 transition-all cursor-pointer">
+          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=80&q=70" class="w-[54px] h-[54px] rounded-[10px] object-cover flex-shrink-0" alt=""/>
+          <div class="min-w-0"><div class="font-bold text-[13px] text-navy">Cozy 1BHK · HSR Layout</div><div class="text-[12px] text-muted mt-0.5">₹12,500/mo · Top Pick</div><div class="text-[11px] text-coral font-semibold mt-1">↓ Price dropped ₹500</div></div>
         </div>
-        <div class="feat-card" style="display:flex;gap:14px;align-items:center;padding:16px;">
-          <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=80&q=70" style="width:54px;height:54px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-          <div style="min-width:0;">
-            <div style="font-weight:700;font-size:13px;color:var(--navy);">Spacious 3BHK · Indiranagar</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:2px;">₹18,000/mo · 88% match</div>
-            <div style="font-size:11px;color:var(--green);margin-top:4px;font-weight:600;">● Available now</div>
-          </div>
+        <div class="bg-white border border-bdr rounded-[14px] p-4 flex gap-3.5 items-center shadow-card hover:shadow-card2 hover:-translate-y-0.5 transition-all cursor-pointer">
+          <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=80&q=70" class="w-[54px] h-[54px] rounded-[10px] object-cover flex-shrink-0" alt=""/>
+          <div class="min-w-0"><div class="font-bold text-[13px] text-navy">Spacious 3BHK · Indiranagar</div><div class="text-[12px] text-muted mt-0.5">₹18,000/mo · 88% match</div><div class="text-[11px] text-green-500 font-semibold mt-1">● Available now</div></div>
         </div>
-        <div class="feat-card" style="display:flex;gap:14px;align-items:center;padding:16px;">
-          <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=80&q=70" style="width:54px;height:54px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-          <div style="min-width:0;">
-            <div style="font-weight:700;font-size:13px;color:var(--navy);">Studio · Whitefield</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:2px;">₹9,500/mo · 91% match</div>
-            <div style="font-size:11px;color:var(--amber);margin-top:4px;font-weight:600;">⏰ Only 2 days left</div>
-          </div>
+        <div class="bg-white border border-bdr rounded-[14px] p-4 flex gap-3.5 items-center shadow-card hover:shadow-card2 hover:-translate-y-0.5 transition-all cursor-pointer">
+          <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=80&q=70" class="w-[54px] h-[54px] rounded-[10px] object-cover flex-shrink-0" alt=""/>
+          <div class="min-w-0"><div class="font-bold text-[13px] text-navy">Studio · Whitefield</div><div class="text-[12px] text-muted mt-0.5">₹9,500/mo · 91% match</div><div class="text-[11px] text-amber font-semibold mt-1">⏰ Only 2 days left</div></div>
         </div>
       </div>
-      <button class="btn-outline" onclick="showSec('discover')">← Back to Discover</button>
+      <button class="border-[1.5px] border-bdr hover:border-navy text-navy bg-transparent font-display font-semibold text-[14px] px-6 py-3 rounded-[10px] transition-all" onclick="showSec('discover')">← Back to Discover</button>
     </div>
 
-    <div id="sec-messages" style="display:none;">
-      <div class="feat-card" style="text-align:center;padding:56px 28px;">
-        <div style="font-size:48px;margin-bottom:14px;">💬</div>
-        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;">Messages</div>
-        <p style="color:var(--muted);font-size:14px;margin-bottom:20px;">3 unread conversations waiting.</p>
-        <button class="btn-teal" style="font-size:14px;padding:11px 28px;" onclick="showSec('discover')">← Back</button>
+    <!-- ══ MESSAGES ══ -->
+    <div id="sec-messages" class="hidden">
+      <div class="bg-white border border-bdr rounded-[18px] p-14 text-center shadow-card">
+        <div class="text-5xl mb-3.5">💬</div>
+        <div class="font-display font-extrabold text-[22px] text-navy mb-2">Messages</div>
+        <p class="text-muted text-[14px] mb-5">3 unread conversations waiting.</p>
+        <button class="bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[14px] px-7 py-3 rounded-[10px] transition-all" onclick="showSec('discover')">← Back</button>
       </div>
     </div>
 
-    <div id="sec-notifications" style="display:none;">
-      <div class="feat-card" style="text-align:center;padding:56px 28px;">
-        <div style="font-size:48px;margin-bottom:14px;">🔔</div>
-        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;">Notifications</div>
-        <button class="btn-teal" style="font-size:14px;padding:11px 28px;margin-top:12px;" onclick="showSec('discover')">← Back</button>
+    <!-- ══ NOTIFICATIONS ══ -->
+    <div id="sec-notifications" class="hidden">
+      <div class="bg-white border border-bdr rounded-[18px] p-14 text-center shadow-card">
+        <div class="text-5xl mb-3.5">🔔</div>
+        <div class="font-display font-extrabold text-[22px] text-navy mb-2">Notifications</div>
+        <button class="bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[14px] px-7 py-3 rounded-[10px] mt-3 transition-all" onclick="showSec('discover')">← Back</button>
       </div>
     </div>
 
-    <div id="sec-profile" style="display:none;">
-      <div class="feat-card" style="text-align:center;padding:56px 28px;">
-        <img src="https://randomuser.me/api/portraits/men/81.jpg" class="avatar" style="width:80px;height:80px;margin-bottom:16px;" alt="Rahul"/>
-        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);">Rahul Singh</div>
-        <p style="color:var(--muted);font-size:14px;margin:8px 0 20px;">Software Engineer · Bangalore · Vibe Score: 87</p>
-        <button class="btn-teal" style="font-size:14px;padding:11px 28px;" onclick="showSec('discover')">← Back</button>
+    <!-- ══ PROFILE ══ -->
+    <div id="sec-profile" class="hidden">
+      <div class="bg-white border border-bdr rounded-[18px] p-6 md:p-7 shadow-card max-w-xl">
+        <div class="flex items-center gap-4 mb-5">
+          {% if profile.profile_picture %}
+          <img src="{{ profile.profile_picture.url }}" class="avatar" style="width:30px;height:30px;">
+          {% else %}
+          <img src="/media/default.jpg" class="avatar" style="width:30px;height:30px;">
+          {% endif %}
+          <div class="flex-1">
+            <div class="font-display font-extrabold text-xl text-navy">{{ profile.name }}</div>
+            <div class="text-[13px] text-muted mt-0.5">Software Engineer · {{ profile.location }} · {{ profile.age }}</div>
+            <div class="flex flex-wrap gap-1.5 mt-2">
+              <span class="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-200">🎓 Student Verified</span>
+              <span class="bg-teal-lt text-teal text-[10px] font-bold px-2 py-0.5 rounded-full">🧠 Quiz Done</span>
+              <span class="bg-amber-lt text-amber text-[10px] font-bold px-2 py-0.5 rounded-full border border-yellow-200">✅ ID Verified</span>
+            </div>
+          </div>
+          <div class="text-center flex-shrink-0">
+            <div class="font-display font-extrabold text-[36px] leading-none text-teal">87</div>
+            <div class="text-[11px] text-muted">Vibe Score</div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <div class="text-[12px] font-bold text-muted tracking-[.05em] mb-2">MUTUAL INTERESTS</div>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="bg-teal-lt text-teal text-[11px] font-bold px-2.5 py-1 rounded-md border border-teal/25">🎮 Gaming</span>
+            <span class="bg-teal-lt text-teal text-[11px] font-bold px-2.5 py-1 rounded-md border border-teal/25">🌙 Night Owl</span>
+            <span class="bg-teal-lt text-teal text-[11px] font-bold px-2.5 py-1 rounded-md border border-teal/25">🍕 Foodie</span>
+            <span class="bg-off text-navy text-[11px] font-bold px-2.5 py-1 rounded-md border border-bdr">💻 Tech</span>
+            <span class="bg-off text-navy text-[11px] font-bold px-2.5 py-1 rounded-md border border-bdr">🎵 Music</span>
+          </div>
+        </div>
+        <div class="bg-off rounded-xl p-3.5 mb-3.5">
+          <div class="text-[12px] font-bold text-muted tracking-[.05em] mb-2.5">PROFILE RATINGS</div>
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2"><span class="text-[12px] text-muted w-24">Cleanliness</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:90%"></div></div><span class="text-[11px] font-bold text-teal">9/10</span></div>
+            <div class="flex items-center gap-2"><span class="text-[12px] text-muted w-24">Noise Level</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full noise-mid rounded-full" style="width:40%"></div></div><span class="text-[11px] font-bold text-amber">Medium</span></div>
+            <div class="flex items-center gap-2"><span class="text-[12px] text-muted w-24">Reliability</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:95%"></div></div><span class="text-[11px] font-bold text-teal">9.5/10</span></div>
+          </div>
+        </div>
+        <div class="bg-red-50 border border-red-200 rounded-[10px] p-3 flex items-start gap-2.5 mb-4">
+          <span class="text-[18px] flex-shrink-0">🆘</span>
+          <div class="text-[12px] text-red-800 font-semibold leading-relaxed">Emergency Contact: Priya Singh (Sister) · +91 98765 XXXXX<br/><span class="font-normal text-red-600">Auto-notified if no check-in after property visit</span></div>
+        </div>
+        <button class="bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[14px] px-7 py-3 rounded-[10px] transition-all" onclick="showSec('discover')">← Back to Discover</button>
       </div>
     </div>
 
-    <div id="sec-settings" style="display:none;">
-      <div class="feat-card" style="text-align:center;padding:56px 28px;">
-        <div style="font-size:48px;margin-bottom:14px;">⚙️</div>
-        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;">Settings</div>
-        <button class="btn-teal" style="font-size:14px;padding:11px 28px;margin-top:12px;" onclick="showSec('discover')">← Back</button>
+    <!-- ══ SETTINGS ══ -->
+    <div id="sec-settings" class="hidden">
+      <div class="bg-white border border-bdr rounded-[18px] p-14 text-center shadow-card">
+        <div class="text-5xl mb-3.5">⚙️</div>
+        <div class="font-display font-extrabold text-[22px] text-navy mb-2">Settings</div>
+        <button class="bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[14px] px-7 py-3 rounded-[10px] mt-3 transition-all" onclick="showSec('discover')">← Back</button>
       </div>
+    </div>
+
+    <!-- ══ PERSONALITY QUIZ ══ -->
+    <div id="sec-quiz" class="hidden">
+      <div class="flex items-center justify-between mb-1"><h2 class="font-display font-bold text-[18px] text-navy">🧠 Personality Quiz Matching</h2><span class="bg-teal-lt text-teal text-[12px] font-bold px-4 py-1.5 rounded-full">AI Feature</span></div>
+      <p class="text-[14px] text-muted mb-5 leading-relaxed">Answer 8 quick questions. Our AI builds your compatibility profile and matches you with people who truly vibe — beyond just budget.</p>
+      <div class="bg-white border border-bdr rounded-[18px] p-6 mb-4 shadow-card">
+        <div class="flex items-center justify-between mb-4">
+          <div class="font-display font-bold text-[16px] text-navy">Your Personality Profile</div>
+          <div class="bg-teal-lt text-teal text-[12px] font-bold px-3 py-1 rounded-full">Quiz Complete ✓</div>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-4">
+          <div class="text-center bg-off rounded-xl p-3.5"><div class="text-2xl mb-1">🌙</div><div class="text-[11px] font-bold text-navy">Night Owl</div><div class="text-[10px] text-muted mt-0.5">Sleep Pattern</div></div>
+          <div class="text-center bg-off rounded-xl p-3.5"><div class="text-2xl mb-1">📚</div><div class="text-[11px] font-bold text-navy">Ambivert</div><div class="text-[10px] text-muted mt-0.5">Social Style</div></div>
+          <div class="text-center bg-off rounded-xl p-3.5"><div class="text-2xl mb-1">🍕</div><div class="text-[11px] font-bold text-navy">Non-Veg</div><div class="text-[10px] text-muted mt-0.5">Food Pref.</div></div>
+          <div class="text-center bg-off rounded-xl p-3.5"><div class="text-2xl mb-1">🔇</div><div class="text-[11px] font-bold text-navy">Moderate</div><div class="text-[10px] text-muted mt-0.5">Noise Level</div></div>
+        </div>
+        <button class="w-full bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[14px] py-3 rounded-[10px] transition-all" onclick="showToast('Retaking Quiz…','Your new results will update matches 🎯')">Retake Quiz →</button>
+      </div>
+      <div class="flex items-center justify-between mb-4"><h3 class="font-display font-bold text-[16px] text-navy">🎯 Personality-Based Matches</h3></div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
+        <div class="bg-white border border-bdr rounded-[16px] p-[18px] shadow-card">
+          <div class="flex items-center gap-2.5 mb-3"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-11 h-11 rounded-full object-cover border-2 border-white shadow-sm" alt="Arjun"/><div><div class="font-bold text-[14px] text-navy">Arjun Mehta</div><div class="text-[11px] text-muted">23 · SWE · Bangalore</div></div></div>
+          <div class="flex flex-col gap-1.5 mb-3">
+            <div class="flex items-center gap-1.5"><span class="text-[10px] text-muted w-[72px]">Personality</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:96%"></div></div><span class="text-[10px] font-bold text-teal">96%</span></div>
+            <div class="flex items-center gap-1.5"><span class="text-[10px] text-muted w-[72px]">Lifestyle</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:91%"></div></div><span class="text-[10px] font-bold text-teal">91%</span></div>
+            <div class="flex items-center gap-1.5"><span class="text-[10px] text-muted w-[72px]">Interests</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:88%"></div></div><span class="text-[10px] font-bold text-teal">88%</span></div>
+          </div>
+          <button class="w-full bg-teal text-white font-display font-bold text-[12px] py-2 rounded-lg transition-all hover:bg-[#0993b3]" onclick="showToast('Request Sent!','Arjun received your request 🎉')">Connect</button>
+        </div>
+        <div class="bg-white border border-bdr rounded-[16px] p-[18px] shadow-card">
+          <div class="flex items-center gap-2.5 mb-3"><img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-11 h-11 rounded-full object-cover border-2 border-white shadow-sm" alt="Riya"/><div><div class="font-bold text-[14px] text-navy">Riya Sharma</div><div class="text-[11px] text-muted">22 · UX · Mumbai</div></div></div>
+          <div class="flex flex-col gap-1.5 mb-3">
+            <div class="flex items-center gap-1.5"><span class="text-[10px] text-muted w-[72px]">Personality</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:93%"></div></div><span class="text-[10px] font-bold text-teal">93%</span></div>
+            <div class="flex items-center gap-1.5"><span class="text-[10px] text-muted w-[72px]">Lifestyle</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:89%"></div></div><span class="text-[10px] font-bold text-teal">89%</span></div>
+            <div class="flex items-center gap-1.5"><span class="text-[10px] text-muted w-[72px]">Interests</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:97%"></div></div><span class="text-[10px] font-bold text-teal">97%</span></div>
+          </div>
+          <button class="w-full bg-teal text-white font-display font-bold text-[12px] py-2 rounded-lg transition-all hover:bg-[#0993b3]" onclick="showToast('Request Sent!','Riya received your request 🎉')">Connect</button>
+        </div>
+        <div class="bg-white border border-bdr rounded-[16px] p-[18px] shadow-card">
+          <div class="flex items-center gap-2.5 mb-3"><img src="https://randomuser.me/api/portraits/women/65.jpg" class="w-11 h-11 rounded-full object-cover border-2 border-white shadow-sm" alt="Priya"/><div><div class="font-bold text-[14px] text-navy">Priya Nair</div><div class="text-[11px] text-muted">24 · Doctor · Delhi</div></div></div>
+          <div class="flex flex-col gap-1.5 mb-3">
+            <div class="flex items-center gap-1.5"><span class="text-[10px] text-muted w-[72px]">Personality</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:79%"></div></div><span class="text-[10px] font-bold text-teal">79%</span></div>
+            <div class="flex items-center gap-1.5"><span class="text-[10px] text-muted w-[72px]">Lifestyle</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:84%"></div></div><span class="text-[10px] font-bold text-teal">84%</span></div>
+            <div class="flex items-center gap-1.5"><span class="text-[10px] text-muted w-[72px]">Interests</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:71%"></div></div><span class="text-[10px] font-bold text-teal">71%</span></div>
+          </div>
+          <button class="w-full bg-navy text-white font-display font-bold text-[12px] py-2 rounded-lg transition-all hover:bg-[#1a3260]" onclick="showToast('Request Sent!','Priya received your request 🎉')">Connect</button>
+        </div>
+      </div>
+      <button class="border-[1.5px] border-bdr hover:border-navy text-navy bg-transparent font-display font-semibold text-[14px] px-6 py-3 rounded-[10px] transition-all" onclick="showSec('discover')">← Back to Discover</button>
+    </div>
+     </div>
+     <a href="{% url 'update_profile' %}"
+     class="border-[1.5px] border-bdr hover:border-navy text-navy bg-transparent font-display font-semibold text-[14px] px-6 py-3 rounded-[10px] transition-all">
+     ← Update Profile
+    </a>
+    </div>
+
+    <!-- ══ SAFETY ══ -->
+    <div id="sec-safety" class="hidden">
+      <div class="flex items-center justify-between mb-1"><h2 class="font-display font-bold text-[18px] text-navy">🛡️ Safety & Verification Centre</h2><span class="bg-teal-lt text-teal text-[12px] font-bold px-4 py-1.5 rounded-full">AI Feature</span></div>
+      <p class="text-[14px] text-muted mb-5 leading-relaxed">Every listing and profile is scored by our AI Safety Engine. Verified badges, safety ratings, and emergency contacts — all in one place.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-white border border-bdr rounded-[18px] p-5 md:p-[22px] shadow-card">
+          <div class="flex items-center gap-3 mb-4"><div class="w-11 h-11 rounded-xl bg-teal-lt flex items-center justify-center text-[22px]">🎓</div><div><div class="font-bold text-[15px] text-navy">Student Verified</div><div class="text-[12px] text-muted">IIT Bangalore · 2024</div></div><div class="ml-auto bg-green-50 text-green-600 text-[11px] font-bold px-2.5 py-1 rounded-md">✓ Active</div></div>
+          <p class="text-[13px] text-muted leading-relaxed mb-3.5">Your student verification badge is active. Verified users get 3× more connection requests.</p>
+          <div class="bg-off rounded-[10px] px-3.5 py-2.5 text-[12px] text-navy font-semibold">🏅 Badge visible on your profile</div>
+        </div>
+        <div class="bg-white border border-bdr rounded-[18px] p-5 md:p-[22px] shadow-card">
+          <div class="flex items-center gap-3 mb-4"><div class="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center text-[22px]">🚨</div><div><div class="font-bold text-[15px] text-navy">Emergency Contact</div><div class="text-[12px] text-muted">Safety Feature</div></div></div>
+          <p class="text-[13px] text-muted leading-relaxed mb-3.5">Add an emergency contact. NestMate can notify them instantly if needed.</p>
+          <button class="w-full bg-navy hover:bg-[#1a3260] text-white font-display font-bold text-[13px] py-2.5 rounded-[10px] transition-all" onclick="showToast('Contact Added!','Emergency contact saved securely 🔒')">+ Add Emergency Contact</button>
+        </div>
+      </div>
+      <h3 class="font-display font-bold text-[16px] text-navy mb-3">🏠 Listing Safety Scores</h3>
+      <div class="flex flex-col gap-3 mb-5">
+        <div class="bg-white border border-bdr rounded-[14px] px-4 md:px-5 py-4 shadow-card flex items-center gap-4"><img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=60&q=70" class="w-[52px] h-[52px] rounded-[10px] object-cover flex-shrink-0" alt=""/><div class="flex-1 min-w-0"><div class="font-bold text-[13px] text-navy">Modern 2BHK · Koramangala</div><div class="flex flex-wrap gap-1.5 mt-1.5"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-green-50 text-green-600">✓ Verified Owner</span><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-teal-lt text-teal">📸 Real Photos</span><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-lt text-amber">📚 Study Friendly</span></div></div><div class="text-center flex-shrink-0"><div class="font-display font-extrabold text-[26px] text-green-500">9.2</div><div class="text-[10px] text-muted">Safety Score</div></div></div>
+        <div class="bg-white border border-bdr rounded-[14px] px-4 md:px-5 py-4 shadow-card flex items-center gap-4"><img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=60&q=70" class="w-[52px] h-[52px] rounded-[10px] object-cover flex-shrink-0" alt=""/><div class="flex-1 min-w-0"><div class="font-bold text-[13px] text-navy">Cozy 1BHK · HSR Layout</div><div class="flex flex-wrap gap-1.5 mt-1.5"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-green-50 text-green-600">✓ Verified Owner</span><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-green-50 text-green-600">🌟 Clean 4.8</span><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-teal-lt text-teal">🔇 Low Noise</span></div></div><div class="text-center flex-shrink-0"><div class="font-display font-extrabold text-[26px] text-green-500">8.7</div><div class="text-[10px] text-muted">Safety Score</div></div></div>
+        <div class="bg-white border border-bdr rounded-[14px] px-4 md:px-5 py-4 shadow-card flex items-center gap-4"><img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=60&q=70" class="w-[52px] h-[52px] rounded-[10px] object-cover flex-shrink-0" alt=""/><div class="flex-1 min-w-0"><div class="font-bold text-[13px] text-navy">Spacious 3BHK · Indiranagar</div><div class="flex flex-wrap gap-1.5 mt-1.5"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-lt text-amber">⚠️ Unverified Owner</span><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-teal-lt text-teal">📸 Real Photos</span></div></div><div class="text-center flex-shrink-0"><div class="font-display font-extrabold text-[26px] text-amber">6.4</div><div class="text-[10px] text-muted">Safety Score</div></div></div>
+      </div>
+      <div class="rounded-[16px] p-5 flex items-center gap-4 mb-5" style="background:linear-gradient(135deg,#0F1F3D,#1a3260)"><div class="text-[32px] flex-shrink-0">🤖</div><div class="flex-1"><div class="font-display font-bold text-[15px] text-white mb-1">AI Fake Listing Detection</div><div class="text-[12px] text-white/50 leading-relaxed">Our ML model scans every listing for fake photos, inflated prices, and suspicious patterns — 24/7.</div></div><div class="bg-teal text-white text-[11px] font-bold px-3 py-1 rounded-md flex-shrink-0">Active ✓</div></div>
+      <button class="border-[1.5px] border-bdr hover:border-navy text-navy bg-transparent font-display font-semibold text-[14px] px-6 py-3 rounded-[10px] transition-all" onclick="showSec('discover')">← Back to Discover</button>
+    </div>
+
+    <!-- ══ POST A ROOM ══ -->
+    <div id="sec-addroom" class="hidden">
+      <div class="flex items-center justify-between mb-1"><h2 class="font-display font-bold text-[18px] text-navy">➕ Post a Room</h2><span class="bg-teal-lt text-teal text-[12px] font-bold px-4 py-1.5 rounded-full">Room Listing Module</span></div>
+      <p class="text-[14px] text-muted mb-5 leading-relaxed">Fill in your room details. Our AI will suggest the optimal rent price based on location, amenities, and current market data.</p>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="bg-white border border-bdr rounded-[18px] p-5 md:p-6 shadow-card">
+          <div class="font-display font-bold text-[16px] text-navy mb-4">Room Details</div>
+          <div class="flex flex-col gap-3.5">
+            <div><div class="text-[12px] font-semibold text-muted mb-1.5">Room Title</div><input class="w-full bg-off border border-bdr rounded-lg px-3.5 py-2.5 text-[14px] text-navy outline-none font-sans" placeholder="e.g. 2BHK Furnished in Koramangala"/></div>
+            <div class="grid grid-cols-2 gap-2.5">
+              <div><div class="text-[12px] font-semibold text-muted mb-1.5">City</div><select class="w-full bg-off border border-bdr rounded-lg px-3 py-2.5 text-[13px] text-navy cursor-pointer outline-none font-sans"><option>Bangalore</option><option>Mumbai</option><option>Delhi</option></select></div>
+              <div><div class="text-[12px] font-semibold text-muted mb-1.5">BHK Type</div><select class="w-full bg-off border border-bdr rounded-lg px-3 py-2.5 text-[13px] text-navy cursor-pointer outline-none font-sans"><option>1BHK</option><option>2BHK</option><option>3BHK</option><option>Studio</option></select></div>
+            </div>
+            <div><div class="text-[12px] font-semibold text-muted mb-1.5">Monthly Rent (₹)</div><input type="number" class="w-full bg-off border border-bdr rounded-lg px-3.5 py-2.5 text-[14px] text-navy outline-none font-sans" placeholder="e.g. 14000"/></div>
+            <div><div class="text-[12px] font-semibold text-muted mb-1.5">Description</div><textarea class="w-full bg-off border border-bdr rounded-lg px-3.5 py-2.5 text-[13px] text-navy outline-none font-sans resize-none h-[80px]" placeholder="Describe the room, amenities, house rules…"></textarea></div>
+            <div>
+              <div class="text-[12px] font-semibold text-muted mb-2">Room Tags</div>
+              <div class="flex flex-wrap gap-1.5">
+                <button class="filter-chip on inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-teal text-white transition-all" onclick="toggleChip(this)">📚 Study Friendly</button>
+                <button class="filter-chip inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-teal-lt text-teal transition-all hover:bg-teal hover:text-white" onclick="toggleChip(this)">🔇 Low Noise</button>
+                <button class="filter-chip inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-teal-lt text-teal transition-all hover:bg-teal hover:text-white" onclick="toggleChip(this)">🐶 Pet Friendly</button>
+                <button class="filter-chip inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-teal-lt text-teal transition-all hover:bg-teal hover:text-white" onclick="toggleChip(this)">🚇 Near Metro</button>
+                <button class="filter-chip inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-teal-lt text-teal transition-all hover:bg-teal hover:text-white" onclick="toggleChip(this)">📶 WiFi</button>
+              </div>
+            </div>
+            <button class="w-full bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[14px] py-3.5 rounded-[10px] transition-all" onclick="showToast('Room Posted!','Your listing is live and visible to matches 🏠')">Post Room Listing →</button>
+          </div>
+        </div>
+        <div class="flex flex-col gap-4">
+          <div class="bg-white border border-bdr rounded-[18px] p-5 md:p-[22px] shadow-card">
+            <div class="flex items-center gap-2.5 mb-3.5"><div class="w-[38px] h-[38px] rounded-[10px] bg-teal-lt flex items-center justify-center text-[18px]">🤖</div><div class="font-display font-bold text-[15px] text-navy">AI Rent Price Suggestion</div></div>
+            <div class="bg-off rounded-xl p-4 text-center mb-3.5"><div class="text-[12px] text-muted mb-1">Suggested Price Range</div><div class="font-display font-extrabold text-[28px] text-teal">₹13,000 – ₹16,000</div><div class="text-[11px] text-muted mt-1">Based on 48 similar listings in Koramangala</div></div>
+            <div class="flex flex-col gap-1.5 text-[12px] text-muted">
+              <div class="flex justify-between"><span>Market average</span><span class="font-semibold text-navy">₹14,200</span></div>
+              <div class="flex justify-between"><span>Similar 2BHK furnished</span><span class="font-semibold text-navy">₹13,800 – ₹15,500</span></div>
+              <div class="flex justify-between"><span>Demand this week</span><span class="font-semibold text-green-500">High ↑</span></div>
+            </div>
+          </div>
+          <div class="bg-white border border-bdr rounded-[18px] p-5 md:p-[22px] shadow-card">
+            <div class="flex items-center gap-2.5 mb-3.5"><div class="w-[38px] h-[38px] rounded-[10px] bg-green-50 flex items-center justify-center text-[18px]">🌿</div><div class="font-display font-bold text-[15px] text-navy">Room Environment Score</div></div>
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center gap-2"><span class="text-[11px] text-muted w-[90px]">Cleanliness</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-green rounded-full" style="width:90%"></div></div><span class="text-[11px] font-bold text-green-500">90%</span></div>
+              <div class="flex items-center gap-2"><span class="text-[11px] text-muted w-[90px]">Noise Level</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:75%"></div></div><span class="text-[11px] font-bold text-teal">Low</span></div>
+              <div class="flex items-center gap-2"><span class="text-[11px] text-muted w-[90px]">Study Friendly</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-gold rounded-full" style="width:95%"></div></div><span class="text-[11px] font-bold text-amber">95%</span></div>
+              <div class="flex items-center gap-2"><span class="text-[11px] text-muted w-[90px]">Safety Rating</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-green rounded-full" style="width:92%"></div></div><span class="text-[11px] font-bold text-green-500">9.2</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4"><button class="border-[1.5px] border-bdr hover:border-navy text-navy bg-transparent font-display font-semibold text-[14px] px-6 py-3 rounded-[10px] transition-all" onclick="showSec('discover')">← Back to Discover</button></div>
     </div>
 
   </div><!-- /content -->
-</main>
 </div>
 
-<!-- ════════ VIBE MODAL ════════ -->
-<div class="modal-overlay" id="vibeModal" onclick="closeVibe(event)">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-head">
+<!-- ═══════════════ VIBE MODAL ═══════════════ -->
+<div class="modal-overlay fixed inset-0 bg-navy/45 backdrop-blur-lg z-[1000] flex items-center justify-center p-4" id="vibeModal" onclick="closeVibe(event)">
+  <div class="modal bg-white rounded-[20px] w-full max-w-[520px] shadow-card2 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="flex items-start justify-between px-7 pt-6">
       <div>
-        <div class="section-label" style="margin-bottom:6px;">STEP <span id="stepN">1</span> OF 4</div>
-        <div class="display" style="font-size:20px;font-weight:800;color:var(--navy);">✨ Find Your Vibe</div>
+        <div class="inline-flex items-center gap-1.5 bg-teal-lt text-teal px-4 py-1.5 rounded-full text-[12px] font-bold tracking-[.04em] mb-1.5">STEP <span id="stepN">1</span> OF 5</div>
+        <div class="font-display font-extrabold text-[20px] text-navy">✨ Find Your Vibe</div>
       </div>
-      <button class="modal-close" onclick="closeVibe()">✕</button>
+      <button class="w-8 h-8 rounded-lg bg-off border-[1.5px] border-bdr cursor-pointer text-[16px] flex items-center justify-center flex-shrink-0 mt-1" onclick="closeVibe()">✕</button>
     </div>
-    <div class="modal-body">
-      <div class="step-dots">
+    <div class="px-7 pb-7 pt-5">
+      <div class="flex gap-1.5 mb-5">
         <div class="sdot active" id="sd0"></div>
         <div class="sdot" id="sd1"></div>
         <div class="sdot" id="sd2"></div>
         <div class="sdot" id="sd3"></div>
+        <div class="sdot" id="sd4"></div>
       </div>
 
-      <!-- Step 1 — Sleep -->
+      <!-- Step 1 -->
       <div id="sv1">
-        <div class="q-title">🌙 What's your sleep cycle?</div>
-        <div class="q-sub">Most common source of flatmate conflict — be honest!</div>
-        <div class="opt-grid">
-          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🌅</div><div class="opt-label">Early Bird</div><div class="opt-sub">Sleep by 10pm, up by 6am</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🌙</div><div class="opt-label">Night Owl</div><div class="opt-sub">Up till 2am, sleep till late</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🔄</div><div class="opt-label">Flexible</div><div class="opt-sub">Depends on the day</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🌀</div><div class="opt-label">Shift Worker</div><div class="opt-sub">Irregular schedule</div></div>
+        <div class="font-display font-bold text-[20px] text-navy mb-1">🌙 What's your sleep cycle?</div>
+        <div class="text-[14px] text-muted mb-4 leading-relaxed">Most common source of flatmate conflict — be honest!</div>
+        <div class="grid grid-cols-2 gap-2.5 mb-4">
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all picked" onclick="pick(this)"><div class="text-2xl mb-1.5">🌅</div><div class="font-bold text-[13px] text-navy">Early Bird</div><div class="text-[11px] text-muted mt-0.5">Sleep by 10pm, up by 6am</div></div>
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all" onclick="pick(this)"><div class="text-2xl mb-1.5">🌙</div><div class="font-bold text-[13px] text-navy">Night Owl</div><div class="text-[11px] text-muted mt-0.5">Up till 2am, sleep till late</div></div>
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all" onclick="pick(this)"><div class="text-2xl mb-1.5">🔄</div><div class="font-bold text-[13px] text-navy">Flexible</div><div class="text-[11px] text-muted mt-0.5">Depends on the day</div></div>
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all" onclick="pick(this)"><div class="text-2xl mb-1.5">🌀</div><div class="font-bold text-[13px] text-navy">Shift Worker</div><div class="text-[11px] text-muted mt-0.5">Irregular schedule</div></div>
         </div>
-        <button class="btn-teal" style="width:100%;padding:13px;font-size:14px;" onclick="goStep(2)">Next →</button>
+        <button class="w-full bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[14px] py-3.5 rounded-[10px] transition-all" onclick="goStep(2)">Next →</button>
       </div>
 
-      <!-- Step 2 — Food -->
-      <div id="sv2" style="display:none;">
-        <div class="q-title">🍽️ Food preferences?</div>
-        <div class="q-sub">Shared kitchens need shared understanding!</div>
-        <div class="opt-grid">
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🥗</div><div class="opt-label">Pure Veg</div><div class="opt-sub">No meat/eggs at home</div></div>
-          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🍗</div><div class="opt-label">Non-Veg</div><div class="opt-sub">Cook anything</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🌿</div><div class="opt-label">Vegan</div><div class="opt-sub">No animal products</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">😋</div><div class="opt-label">No Preference</div><div class="opt-sub">Totally flexible</div></div>
+      <!-- Step 2 -->
+      <div id="sv2" class="hidden">
+        <div class="font-display font-bold text-[20px] text-navy mb-1">🍽️ Food preferences?</div>
+        <div class="text-[14px] text-muted mb-4">Shared kitchens need shared understanding!</div>
+        <div class="grid grid-cols-2 gap-2.5 mb-4">
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all" onclick="pick(this)"><div class="text-2xl mb-1.5">🥗</div><div class="font-bold text-[13px] text-navy">Pure Veg</div><div class="text-[11px] text-muted mt-0.5">No meat/eggs at home</div></div>
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all picked" onclick="pick(this)"><div class="text-2xl mb-1.5">🍗</div><div class="font-bold text-[13px] text-navy">Non-Veg</div><div class="text-[11px] text-muted mt-0.5">Cook anything</div></div>
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all" onclick="pick(this)"><div class="text-2xl mb-1.5">🌿</div><div class="font-bold text-[13px] text-navy">Vegan</div><div class="text-[11px] text-muted mt-0.5">No animal products</div></div>
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all" onclick="pick(this)"><div class="text-2xl mb-1.5">😋</div><div class="font-bold text-[13px] text-navy">No Preference</div><div class="text-[11px] text-muted mt-0.5">Totally flexible</div></div>
         </div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(1)">← Back</button>
-          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(3)">Next →</button>
-        </div>
-      </div>
-
-      <!-- Step 3 — Noise -->
-      <div id="sv3" style="display:none;">
-        <div class="q-title">🔊 Noise & social vibe?</div>
-        <div class="q-sub">How quiet or lively do you want home to be?</div>
-        <div style="margin-bottom:18px;">
-          <div class="range-val" id="noiseV">5 — Moderate</div>
-          <input type="range" min="1" max="10" value="5" oninput="setNoise(this.value)"/>
-          <div class="range-lbs"><span>🤫 Library quiet</span><span>🎉 Party house</span></div>
-        </div>
-        <div class="opt-grid" style="grid-template-columns:repeat(3,1fr);">
-          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">📚</div><div class="opt-label">Introvert</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">⚖️</div><div class="opt-label">Ambivert</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🎉</div><div class="opt-label">Extrovert</div></div>
-        </div>
-        <div style="display:flex;gap:10px;margin-top:16px;">
-          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(2)">← Back</button>
-          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(4)">Next →</button>
+        <div class="flex gap-2.5">
+          <button class="border-[1.5px] border-bdr hover:border-navy text-navy bg-transparent font-display font-semibold text-[14px] px-5 py-3 rounded-[10px] transition-all" onclick="goStep(1)">← Back</button>
+          <button class="flex-1 bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[14px] py-3 rounded-[10px] transition-all" onclick="goStep(3)">Next →</button>
         </div>
       </div>
 
-      <!-- Step 4 — Budget -->
-      <div id="sv4" style="display:none;">
-        <div class="q-title">💰 Monthly budget?</div>
-        <div class="q-sub">Your max rent contribution including utilities.</div>
-        <div style="margin-bottom:18px;">
-          <div class="range-val" id="budgetV">₹12,000</div>
-          <input type="range" min="5000" max="40000" step="1000" value="12000" oninput="setBudget(this.value)"/>
-          <div class="range-lbs"><span>₹5,000</span><span>₹40,000</span></div>
+      <!-- Step 3 -->
+      <div id="sv3" class="hidden">
+        <div class="font-display font-bold text-[20px] text-navy mb-1">🔊 Noise & social vibe?</div>
+        <div class="text-[14px] text-muted mb-4">How quiet or lively do you want home to be?</div>
+        <div class="mb-4">
+          <div class="font-display font-extrabold text-[24px] text-teal text-center mb-1" id="noiseV">5 — Moderate</div>
+          <input type="range" min="1" max="10" value="5" class="w-full accent-teal" oninput="setNoise(this.value)"/>
+          <div class="flex justify-between text-[12px] text-muted mt-1.5"><span>🤫 Library quiet</span><span>🎉 Party house</span></div>
         </div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(3)">← Back</button>
-          <button class="btn-primary" style="flex:1;padding:12px;font-size:14px;" onclick="runAI()">🤖 Run AI Match →</button>
+        <div class="grid grid-cols-3 gap-2.5 mb-4">
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all picked" onclick="pick(this)"><div class="text-2xl mb-1.5">📚</div><div class="font-bold text-[13px] text-navy">Introvert</div></div>
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all" onclick="pick(this)"><div class="text-2xl mb-1.5">⚖️</div><div class="font-bold text-[13px] text-navy">Ambivert</div></div>
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all" onclick="pick(this)"><div class="text-2xl mb-1.5">🎉</div><div class="font-bold text-[13px] text-navy">Extrovert</div></div>
+        </div>
+        <div class="flex gap-2.5">
+          <button class="border-[1.5px] border-bdr hover:border-navy text-navy bg-transparent font-display font-semibold text-[14px] px-5 py-3 rounded-[10px] transition-all" onclick="goStep(2)">← Back</button>
+          <button class="flex-1 bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[14px] py-3 rounded-[10px] transition-all" onclick="goStep(4)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div id="sv4" class="hidden">
+        <div class="font-display font-bold text-[20px] text-navy mb-1">💰 Monthly budget?</div>
+        <div class="text-[14px] text-muted mb-4">Your max rent contribution including utilities.</div>
+        <div class="mb-4">
+          <div class="font-display font-extrabold text-[24px] text-teal text-center mb-1" id="budgetV">₹12,000</div>
+          <input type="range" min="5000" max="40000" step="1000" value="12000" class="w-full accent-teal" oninput="setBudget(this.value)"/>
+          <div class="flex justify-between text-[12px] text-muted mt-1.5"><span>₹5,000</span><span>₹40,000</span></div>
+        </div>
+        <div class="flex gap-2.5">
+          <button class="border-[1.5px] border-bdr hover:border-navy text-navy bg-transparent font-display font-semibold text-[14px] px-5 py-3 rounded-[10px] transition-all" onclick="goStep(3)">← Back</button>
+          <button class="flex-1 bg-navy hover:bg-[#1a3260] text-white font-display font-bold text-[14px] py-3 rounded-[10px] transition-all" onclick="goStep(5)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 5 — Personality -->
+      <div id="sv5" class="hidden">
+        <div class="font-display font-bold text-[20px] text-navy mb-1">🧠 Personality Quiz</div>
+        <div class="text-[14px] text-muted mb-4">How do you describe yourself at home?</div>
+        <div class="grid grid-cols-2 gap-2.5 mb-4">
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all" onclick="pick(this)"><div class="text-2xl mb-1.5">🧘</div><div class="font-bold text-[13px] text-navy">The Zen One</div><div class="text-[11px] text-muted mt-0.5">Calm, minimalist</div></div>
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all picked" onclick="pick(this)"><div class="text-2xl mb-1.5">🎯</div><div class="font-bold text-[13px] text-navy">The Planner</div><div class="text-[11px] text-muted mt-0.5">Structured, reliable</div></div>
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all" onclick="pick(this)"><div class="text-2xl mb-1.5">🎨</div><div class="font-bold text-[13px] text-navy">The Creative</div><div class="text-[11px] text-muted mt-0.5">Spontaneous, artsy</div></div>
+          <div class="opt border-[1.5px] border-bdr rounded-xl p-3.5 cursor-pointer text-center hover:border-teal hover:bg-teal-lt transition-all" onclick="pick(this)"><div class="text-2xl mb-1.5">🚀</div><div class="font-bold text-[13px] text-navy">The Hustler</div><div class="text-[11px] text-muted mt-0.5">Ambitious, fast-paced</div></div>
+        </div>
+        <div class="flex gap-2.5">
+          <button class="border-[1.5px] border-bdr hover:border-navy text-navy bg-transparent font-display font-semibold text-[14px] px-5 py-3 rounded-[10px] transition-all" onclick="goStep(4)">← Back</button>
+          <button class="flex-1 bg-navy hover:bg-[#1a3260] text-white font-display font-bold text-[14px] py-3 rounded-[10px] transition-all" onclick="runAI()">🤖 Run AI Match →</button>
         </div>
       </div>
 
       <!-- Loading -->
-      <div id="sv-loading" style="display:none;text-align:center;padding:36px 0;">
-        <div class="spinner"></div>
-        <div class="display" style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:6px;">Analysing your vibe…</div>
-        <div style="font-size:13px;color:var(--muted);line-height:1.6;">AI is scoring compatibility across 8 dimensions<br/>against 12,000+ active profiles</div>
+      <div id="sv-loading" class="hidden text-center py-9">
+        <div class="w-11 h-11 border-[3px] border-teal-lt border-t-teal rounded-full animate-spin2 mx-auto mb-4"></div>
+        <div class="font-display font-bold text-[18px] text-navy mb-1.5">Analysing your vibe…</div>
+        <div class="text-[13px] text-muted leading-relaxed">AI is scoring compatibility across 8 dimensions<br/>against 12,000+ active profiles</div>
       </div>
 
       <!-- Result -->
-      <div id="sv-result" style="display:none;">
-        <div style="text-align:center;margin-bottom:18px;">
-          <div style="font-size:36px;margin-bottom:8px;animation:popIn .5s ease;">🎉</div>
-          <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);">Your Vibe Score: <span style="color:var(--teal);">87</span></div>
-          <div style="font-size:13px;color:var(--muted);margin-top:4px;">Top 12% among all Bangalore profiles</div>
+      <div id="sv-result" class="hidden">
+        <div class="text-center mb-4">
+          <div class="text-[36px] mb-2 animate-popIn">🎉</div>
+          <div class="font-display font-extrabold text-[22px] text-navy">Your Vibe Score: <span class="text-teal">87</span></div>
+          <div class="text-[13px] text-muted mt-1">Top 12% among all Bangalore profiles</div>
         </div>
-        <div class="result-badge">
-          <div class="result-score">92%</div>
-          <div style="flex:1;">
-            <div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:12px;">Top Match — Riya Sharma</div>
-            <div style="display:flex;flex-direction:column;gap:7px;">
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:78px;">Sleep</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:91%;"></div></div><span style="font-size:11px;font-weight:700;color:var(--teal);width:28px;text-align:right;">91%</span></div>
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:78px;">Social</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:88%;"></div></div><span style="font-size:11px;font-weight:700;color:var(--teal);width:28px;text-align:right;">88%</span></div>
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:78px;">Budget</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:95%;"></div></div><span style="font-size:11px;font-weight:700;color:var(--teal);width:28px;text-align:right;">95%</span></div>
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:78px;">Lifestyle</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:85%;background:linear-gradient(90deg,#F59E0B,#EF4444);"></div></div><span style="font-size:11px;font-weight:700;color:var(--amber);width:28px;text-align:right;">85%</span></div>
+        <div class="bg-teal-lt border border-teal/20 rounded-[16px] p-5 flex items-start gap-4 mb-3">
+          <div class="font-display font-extrabold text-[52px] text-teal leading-none flex-shrink-0">92%</div>
+          <div class="flex-1">
+            <div class="font-bold text-[14px] text-navy mb-3">Top Match — Riya Sharma</div>
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center gap-2"><span class="text-[11px] text-muted w-[78px]">Sleep</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:91%"></div></div><span class="text-[11px] font-bold text-teal">91%</span></div>
+              <div class="flex items-center gap-2"><span class="text-[11px] text-muted w-[78px]">Social</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:88%"></div></div><span class="text-[11px] font-bold text-teal">88%</span></div>
+              <div class="flex items-center gap-2"><span class="text-[11px] text-muted w-[78px]">Budget</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-teal rounded-full" style="width:95%"></div></div><span class="text-[11px] font-bold text-teal">95%</span></div>
+              <div class="flex items-center gap-2"><span class="text-[11px] text-muted w-[78px]">Lifestyle</span><div class="flex-1 h-1.5 bg-bdr rounded-full overflow-hidden"><div class="h-full bar-fill-amber rounded-full" style="width:85%"></div></div><span class="text-[11px] font-bold text-amber">85%</span></div>
             </div>
           </div>
         </div>
-        <div class="insight">
-          <strong style="color:var(--navy);">🤖 AI Insight:</strong> You and Riya are both night owls who love indie music and have a similar social pace. Budget ranges overlap perfectly at ₹10k–14k. Predicted cohabitation harmony: <strong style="color:var(--teal);">Very High.</strong>
+        <div class="bg-off border border-bdr rounded-[10px] px-3.5 py-3 text-[12px] text-muted leading-relaxed mb-3">
+          <strong class="text-navy">🤖 AI Insight:</strong> You and Riya are both night owls who love indie music and have a similar social pace. Budget ranges overlap perfectly at ₹10k–14k. Predicted cohabitation harmony: <strong class="text-teal">Very High.</strong>
         </div>
-        <div style="display:flex;gap:10px;margin-top:16px;">
-          <button class="btn-outline" style="padding:12px 18px;font-size:13px;" onclick="closeVibe()">Close</button>
-          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="closeVibe();showToast('Connected!','Request sent to Riya Sharma 🎉')">Connect with Riya →</button>
+        <div class="bg-red-50 border border-red-200 rounded-[10px] p-3 flex items-start gap-2.5 mb-3">
+          <span class="text-[18px] flex-shrink-0">🆘</span>
+          <div class="text-[12px] text-red-800 font-semibold leading-relaxed">Emergency Contact Active — Your trusted contact will be notified if you don't check in after a visit.</div>
+        </div>
+        <div class="bg-gradient-to-r from-teal-lt to-off border border-teal/20 rounded-[10px] p-3 flex items-center gap-2.5 mb-4 cursor-pointer hover:shadow-card transition-all" onclick="showToast('AI Assistant','Coming in Phase 4 🤖')">
+          <span class="text-[20px]">🤖</span>
+          <div class="flex-1"><div class="font-bold text-[13px] text-navy">AI Chat Assistant</div><div class="text-[11px] text-muted">Coming soon — ask AI any question about your match</div></div>
+          <div class="text-[11px] text-teal font-bold flex-shrink-0">Phase 4 →</div>
+        </div>
+        <div class="flex gap-2.5">
+          <button class="border-[1.5px] border-bdr hover:border-navy text-navy bg-transparent font-display font-semibold text-[13px] px-4 py-3 rounded-[10px] transition-all" onclick="closeVibe()">Close</button>
+          <button class="flex-1 bg-teal hover:bg-[#0993b3] text-white font-display font-bold text-[14px] py-3 rounded-[10px] transition-all" onclick="closeVibe();showToast('Connected!','Request sent to Riya Sharma 🎉')">Connect with Riya →</button>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast">
-  <div class="toast-icon" id="tIcon">🎉</div>
+<div class="toast fixed bottom-6 right-6 z-[900] bg-navy text-white rounded-[14px] px-[18px] py-3.5 flex items-center gap-3 shadow-[0_8px_32px_rgba(15,31,61,.25)] max-w-[300px]" id="toast">
+  <div class="text-[20px] flex-shrink-0" id="tIcon">🎉</div>
   <div>
-    <div class="toast-title" id="tTitle">Match Found!</div>
-    <div class="toast-sub" id="tSub">Riya Sharma has 95% compatibility with you.</div>
+    <div class="font-display font-bold text-[14px]" id="tTitle">Match Found!</div>
+    <div class="text-[12px] text-white/50 mt-0.5" id="tSub">Riya Sharma has 95% compatibility with you.</div>
   </div>
 </div>
 
+<style>
+/* Active nav item */
+.nav-item.active { background: #0EA5C9 !important; color: #fff !important; font-weight: 600; }
+/* Opt picked */
+.opt.picked { border-color: #0EA5C9 !important; background: #E0F4FB !important; box-shadow: 0 0 0 1px #0EA5C9; }
+/* Hidden util */
+.hidden { display: none !important; }
+</style>
+
 <script>
+// ── SIDEBAR MOBILE ──
+function openSidebar(){ document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('sidebarOverlay').classList.add('open'); }
+function closeSidebar(){ document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebarOverlay').classList.remove('open'); }
+
 // ── NAV ──
 function showSec(id){
-  ['discover','matches','saved','messages','notifications','profile','settings'].forEach(s=>{
+  ['discover','matches','saved','messages','notifications','profile','settings','quiz','safety','addroom'].forEach(s=>{
     const el=document.getElementById('sec-'+s);
-    if(el) el.style.display=s===id?'':'none';
+    if(el){ if(s===id) el.classList.remove('hidden'); else el.classList.add('hidden'); }
   });
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
   const t=document.querySelector(`.nav-item[onclick*="${id}"]`);
   if(t) t.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
+
+// ── FILTER CHIP TOGGLE ──
+function toggleChip(el){ el.classList.toggle('on'); if(el.classList.contains('on')){ el.classList.replace('bg-teal-lt','bg-teal'); el.classList.replace('text-teal','text-white'); } else { el.classList.replace('bg-teal','bg-teal-lt'); el.classList.replace('text-white','text-teal'); } }
 
 // ── SAVE ──
 function toggleSave(id){
@@ -1092,21 +1010,18 @@ function toggleSave(id){
 }
 
 // ── VIBE MODAL ──
-function openVibe(){document.getElementById('vibeModal').classList.add('open');resetVibe();}
-function closeVibe(e){if(!e||e.target===document.getElementById('vibeModal'))document.getElementById('vibeModal').classList.remove('open');}
+function openVibe(){ document.getElementById('vibeModal').classList.add('open'); resetVibe(); }
+function closeVibe(e){ if(!e||e.target===document.getElementById('vibeModal')) document.getElementById('vibeModal').classList.remove('open'); }
 
 function resetVibe(){
   goStep(1);
-  ['sv-loading','sv-result'].forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';});
+  ['sv-loading','sv-result'].forEach(s=>{ const el=document.getElementById(s); if(el) el.classList.add('hidden'); });
 }
 
 function goStep(n){
-  [1,2,3,4].forEach(i=>{
-    const el=document.getElementById('sv'+i);
-    if(el) el.style.display=i===n?'':'none';
-  });
-  document.getElementById('stepN').textContent=Math.min(n,4);
-  for(let i=0;i<4;i++){
+  [1,2,3,4,5].forEach(i=>{ const el=document.getElementById('sv'+i); if(el){ if(i===n) el.classList.remove('hidden'); else el.classList.add('hidden'); } });
+  document.getElementById('stepN').textContent=Math.min(n,5);
+  for(let i=0;i<5;i++){
     const d=document.getElementById('sd'+i);
     if(!d) continue;
     d.className='sdot';
@@ -1115,24 +1030,18 @@ function goStep(n){
   }
 }
 
-function pick(el){
-  el.closest('.opt-grid').querySelectorAll('.opt').forEach(o=>o.classList.remove('picked'));
-  el.classList.add('picked');
-}
+function pick(el){ el.closest('.grid').querySelectorAll('.opt').forEach(o=>o.classList.remove('picked')); el.classList.add('picked'); }
 
-function setNoise(v){
-  const lbls=['','Dead Quiet','Very Quiet','Quiet','Mostly Quiet','Moderate','Lively','Active','Loud','Very Loud','Party Mode'];
-  document.getElementById('noiseV').textContent=v+' — '+lbls[v];
-}
-function setBudget(v){document.getElementById('budgetV').textContent='₹'+Number(v).toLocaleString('en-IN');}
+function setNoise(v){ const lbls=['','Dead Quiet','Very Quiet','Quiet','Mostly Quiet','Moderate','Lively','Active','Loud','Very Loud','Party Mode']; document.getElementById('noiseV').textContent=v+' — '+lbls[v]; }
+function setBudget(v){ document.getElementById('budgetV').textContent='₹'+Number(v).toLocaleString('en-IN'); }
 
 function runAI(){
-  [1,2,3,4].forEach(i=>{const el=document.getElementById('sv'+i);if(el)el.style.display='none';});
-  document.getElementById('sv-loading').style.display='';
+  [1,2,3,4,5].forEach(i=>{ const el=document.getElementById('sv'+i); if(el) el.classList.add('hidden'); });
+  document.getElementById('sv-loading').classList.remove('hidden');
   document.getElementById('stepN').textContent='…';
   setTimeout(()=>{
-    document.getElementById('sv-loading').style.display='none';
-    document.getElementById('sv-result').style.display='';
+    document.getElementById('sv-loading').classList.add('hidden');
+    document.getElementById('sv-result').classList.remove('hidden');
     fireConfetti();
   },2200);
 }
@@ -1141,12 +1050,7 @@ function fireConfetti(){
   const colors=['#0EA5C9','#F59E0B','#10B981','#F25C54','#0F1F3D'];
   for(let i=0;i<24;i++){
     const p=document.createElement('div');
-    p.style.cssText=`position:fixed;top:28%;left:${18+Math.random()*64}%;
-      width:${5+Math.random()*7}px;height:${5+Math.random()*7}px;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      border-radius:${Math.random()>.5?'50%':'3px'};
-      animation:confettiFall ${.8+Math.random()*1}s ease-out ${Math.random()*.6}s forwards;
-      pointer-events:none;z-index:2000;`;
+    p.style.cssText=`position:fixed;top:28%;left:${18+Math.random()*64}%;width:${5+Math.random()*7}px;height:${5+Math.random()*7}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>.5?'50%':'3px'};animation:confettiFall ${.8+Math.random()*1}s ease-out ${Math.random()*.6}s forwards;pointer-events:none;z-index:2000;`;
     document.body.appendChild(p);
     setTimeout(()=>p.remove(),2200);
   }
@@ -1164,36 +1068,7 @@ function showToast(title,sub,icon='🎉'){
   _tt=setTimeout(()=>t.classList.remove('show'),3600);
 }
 
-// Welcome toast
 setTimeout(()=>showToast('3 New Matches!','Priya, Sneha & Dev match your vibe 🎉'),1400);
-
-// confetti on hero match badge
-function spawnConfetti(){
-  const box=document.getElementById('confettiBox');if(!box)return;
-  box.innerHTML='';
-  const c=['#0EA5C9','#F59E0B','#10B981','#F25C54','#0F1F3D'];
-  for(let i=0;i<18;i++){
-    const p=document.createElement('div');
-    p.style.cssText=`position:absolute;left:${Math.random()*100}%;
-      width:${4+Math.random()*6}px;height:${4+Math.random()*6}px;
-      background:${c[Math.floor(Math.random()*c.length)]};
-      border-radius:${Math.random()>.5?'50%':'2px'};
-      animation:confettiFall ${.8+Math.random()*.9}s ease-out ${Math.random()*.7}s forwards;`;
-    box.appendChild(p);
-  }
-  setTimeout(spawnConfetti,3200);
-}
-
-setTimeout(()=>{
-  document.querySelectorAll('.msg').forEach(msg=>{
-    msg.style.opacity = "0";
-    msg.style.transition = "0.3s";
-    
-    setTimeout(()=>{
-      msg.remove();
-    },500);
-  });
-},2000); // 🔥 1000ms = 1 sec
 </script>
 </body>
 </html>
