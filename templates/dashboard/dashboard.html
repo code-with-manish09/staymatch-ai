@@ -536,10 +536,19 @@ input[type=range]{width:100%;accent-color:var(--teal);}
       <div class="icon-btn" onclick="showSec('messages')">
         💬<div class="badge"></div>
       </div>
-      <div class="user-pill" onclick="showSec('profile')">
-        <img src="https://randomuser.me/api/portraits/men/81.jpg" class="avatar" style="width:30px;height:30px;" alt="{{ user.username }}"/>
-        <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ user.username }}</span>
-      </div>
+      <div class="user-pill" onclick="showSec('profile')" style="display: flex; align-items: center; cursor: pointer;">
+    
+    {% if request.user.profile.profile_picture %}
+        <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:30px; height:30px; border-radius: 50%; object-fit: cover;" alt="{{ user.username }}"/>
+    {% else %}
+        <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px; height:30px; border-radius: 50%;" alt="{{ user.username }}"/>
+    {% endif %}
+
+    <span style="font-size:13px; font-weight:600; color:var(--navy); margin-left: 8px;">
+        {{ user.username }}
+    </span>
+
+</div>>
     </div>
   </div>
 
@@ -936,10 +945,10 @@ input[type=range]{width:100%;accent-color:var(--teal);}
                  style="width:80px;height:80px;margin-bottom:16px; border-radius: 50%; object-fit: cover;" 
                  alt="{{ user.username }}"/>
         {% else %}
-            <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=0D8ABC&color=fff" 
+            <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" 
                  class="avatar" style="width:80px;height:80px;margin-bottom:16px; border-radius: 50%;" 
-                 alt="Default Avatar"/>
-        {% endif %}
+                 alt="Default Avatar"/>     
+                    {% endif %}
 
         <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);">
             {{ user.username }}

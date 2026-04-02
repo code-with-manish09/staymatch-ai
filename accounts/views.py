@@ -1,33 +1,51 @@
+import logging
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.contrib import messages
 from .models import Profile
-from django.contrib import auth ,messages
+from django.contrib import auth
 
+# 1. Logger setup (Professional error tracking ke liye)
+logger = logging.getLogger(__name__)
 
 def register(request):
     if request.method == 'POST':
-        # 1. Data capture
+        # Data Capture
         username = request.POST.get('username')
-        full_name = request.POST.get('full_name', '')
-        age = request.POST.get('age', '0')
-        gender = request.POST.get('gender', '')
-        location = request.POST.get('location', '')
-        contact = request.POST.get('contact', '')
-        email = request.POST.get('email', '')
+        email    = request.POST.get('email', '')
         password = request.POST.get('password')
+        full_name = request.POST.get('full_name', '')
+        age       = request.POST.get('age', '0')
+        gender    = request.POST.get('gender', '')
+        location  = request.POST.get('location', '')
+        contact   = request.POST.get('contact', '')
         profile_media = request.FILES.get('profile_media')
 
-        # 2. Check existing user
+        # 2. Input Validation (Security check)
+        if not username or not password:
+            return render(request, 'accounts/register.html', {
+                'error': 'Username and password are required.'
+            })
+
+        # 3. Check existing user
         if User.objects.filter(username=username).exists():
-            return render(request, 'accounts/register.html', {'error': 'Username already exists!'})
+            return render(request, 'accounts/register.html', {
+                'error': 'Username already exists!'
+            })
 
         try:
-            # 3. User Create
-            new_user = User.objects.create_user(username=username, email=email, password=password)
-            user_profile, created = Profile.objects.get_or_create(user=new_user)
-            user_profile.name = full_name
+            # 4. User Create
+            new_user = User.objects.create_user(
+                username=username, 
+                email=email, 
+                password=password
+            )
             
-            # Safe Age Conversion
+            # 5. Profile Handle (Signal-safe 'get_or_create')
+            user_profile, created = Profile.objects.get_or_create(user=new_user)
+            
+            # Data Fill
+            user_profile.name = full_name
             if age and str(age).isdigit():
                 user_profile.age = int(age)
             
@@ -40,19 +58,22 @@ def register(request):
                 
             user_profile.save()
             
-            print(f"--- SUCCESS: {username} registered and profile saved! ---")
+            # 6. Success Logic
+            messages.success(request, f"Account created for {username}!")
             return redirect('login') 
 
         except Exception as e:
-            # Ye lines terminal mein poora sach bol dengi
-            import traceback
-            traceback.print_exc() 
-            return render(request, 'accounts/register.html', {'error': f"Fatal Error: {e}"})
+            # 7. Logging (Terminal mein poora traceback dikhega, par user ko nahi)
+            logger.exception("Registration failed for user: %s", username)
+            
+            # User ko sirf generic message dikhao (Cybersecurity safety)
+            return render(request, 'accounts/register.html', {
+                'error': "Registration failed due to a system error. Please try again."
+            })
 
+    # GET Request
     return render(request, 'accounts/register.html')
-
-from django.shortcuts import render, redirect
-from django.contrib import auth, messages
+#-------------------------- LOGIN VIEW -----------------------------------
 
 def login(request):
     if request.method == 'POST':
