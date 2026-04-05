@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import Profile
 from django.contrib import auth
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout as auth_logout   
+
 
 # 1. Logger setup (Professional error tracking ke liye)
 logger = logging.getLogger(__name__)
@@ -74,8 +77,9 @@ def register(request):
     # GET Request
     return render(request, 'accounts/register.html')
 #-------------------------- LOGIN VIEW -----------------------------------
-
+ 
 def login(request):
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -92,3 +96,10 @@ def login(request):
             return redirect('login')   # 🔥 IMPORTANT CHANGE
 
     return render(request, 'accounts/login.html')
+
+#-------------------------- LOGOUT VIEW ----------------------------------- 
+@login_required
+def logout(request):
+    auth.logout(request)
+    messages.success(request, "You have been logged out. See you soon! 👋")
+    return redirect('login')
