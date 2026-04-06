@@ -1,7 +1,4 @@
 import logging
-from os import name
-from tkinter.font import names
-from urllib import request
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -51,7 +48,7 @@ def register(request):
             user_profile, created = Profile.objects.get_or_create(user=new_user)
             
             # Data Fill
-            user_profile.name = full_name
+            user_profile.full_name = full_name
             if age and str(age).isdigit():
                 user_profile.age = int(age)
             
@@ -108,13 +105,15 @@ def update_profile(request):
 
     if request.method == 'POST':
         # 2. Data Capture (Make sure name matches your HTML)
-        full_name = request.POST.get('full_name')  # HTML mein agar 'fullname' hai to
+        full_name = request.POST.get('full_name', '').strip()
         email     = request.POST.get('email')
         age       = request.POST.get('age')
         gender    = request.POST.get('gender')
         location  = request.POST.get('location')
         contact   = request.POST.get('contact')
         profile_picture = request.FILES.get('profile_picture') # HTML input name
+        if gender:
+            gender = gender.title()
 
         # 3. Update User Model
         if email:
@@ -131,7 +130,8 @@ def update_profile(request):
         request.user.save()
 
         # 4. Update Profile Model
-        user_profile.full_name = full_name
+        if full_name:
+            user_profile.full_name = full_name
         if age and str(age).isdigit():
             user_profile.age = int(age)
             
