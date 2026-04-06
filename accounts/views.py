@@ -1,4 +1,7 @@
 import logging
+from os import name
+from tkinter.font import names
+from urllib import request
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -22,7 +25,7 @@ def register(request):
         gender    = request.POST.get('gender', '')
         location  = request.POST.get('location', '')
         contact   = request.POST.get('contact', '')
-        profile_media = request.FILES.get('profile_media')
+        profile_picture = request.FILES.get('profile_picture')
 
         # 2. Input Validation (Security check)
         if not username or not password:
@@ -56,8 +59,8 @@ def register(request):
             user_profile.location = location
             user_profile.contacts = contact
             
-            if profile_media:
-                user_profile.profile_picture = profile_media
+            if profile_picture:
+                user_profile.profile_picture = profile_picture
                 
             user_profile.save()
             
@@ -97,6 +100,59 @@ def login(request):
 
     return render(request, 'accounts/login.html')
 
+#-------------------------- UPDATE PROFILE VIEW -----------------------------------
+@login_required
+def update_profile(request):
+    # 1. 'get_or_create' use karo taaki 'Profile Not Found' kabhi na aaye
+    user_profile, created = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        # 2. Data Capture (Make sure name matches your HTML)
+        full_name = request.POST.get('full_name')  # HTML mein agar 'fullname' hai to
+        email     = request.POST.get('email')
+        age       = request.POST.get('age')
+        gender    = request.POST.get('gender')
+        location  = request.POST.get('location')
+        contact   = request.POST.get('contact')
+        profile_picture = request.FILES.get('profile_picture') # HTML input name
+
+        # 3. Update User Model
+        if email:
+            request.user.email = email
+        
+        if full_name:
+             names = full_name.split(' ')
+             request.user.first_name = names[0]
+             if len(names) > 1:
+                 request.user.last_name = " ".join(names[1:])
+             else:
+                 request.user.last_name = "" # Clear last name if only one name given
+        
+        request.user.save()
+
+        # 4. Update Profile Model
+        user_profile.full_name = full_name
+        if age and str(age).isdigit():
+            user_profile.age = int(age)
+            
+        user_profile.gender = gender
+        user_profile.location = location
+        user_profile.contacts = contact
+        
+        if profile_picture :
+            user_profile.profile_picture = profile_picture
+            
+        user_profile.save()
+
+        messages.success(request, 'Profile updated successfully! ✨')
+        return redirect('dashboard')
+
+    # 5. GET Request
+    context = {
+        'profile': user_profile,
+        'user': request.user
+    }
+    return render(request, 'accounts/update_profile.html', context)
 #-------------------------- LOGOUT VIEW ----------------------------------- 
 @login_required
 def logout(request):

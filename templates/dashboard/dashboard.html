@@ -1131,7 +1131,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 
           <div style="flex:1;min-width:180px;">
             <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:2px;">
-               {{ request.user.profile.name|default:request.user.username }} -->
+               <!-- {{ request.user.profile.name|default:request.user.username }} --> 
               {{ request.user.username|default:"@username" }}
             </div>
             <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">
@@ -1185,7 +1185,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
               <div class="profile-field-label">Full Name</div>
               <div class="profile-field-value">
                 <span style="font-size:16px;">👤</span>
-                 {{ request.user.profile.name|default:"—" }} 
+                 {{ request.user.profile.full_name|default:user.username }} 
               </div>
             </div>
 
@@ -1289,11 +1289,11 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 
         <!-- Action Buttons -->
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn-teal"
+          <a href="{% url 'update_profile' %}" class="btn-teal"
                   style="flex:1;min-width:160px;font-size:14px;padding:12px 20px;"
                   onclick="showToast('Edit Profile','Redirecting to profile editor ✏️')">
             ✏️ Edit Profile Info
-          </button>
+          </a>
           <button class="btn-outline"
                   style="padding:12px 20px;font-size:14px;"
                   onclick="showSec('discover')">
