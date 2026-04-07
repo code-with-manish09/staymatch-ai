@@ -650,10 +650,10 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 
       <!-- Welcome Banner -->
       <div class="welcome-banner fu d1">
-        {% if profile.profile_picture %}
-          <img src="{{ profile.profile_picture.url }}" class="avatar" style="width:54px;height:54px;border:3px solid var(--teal);flex-shrink:0;" alt="{{ user.username }}"/>
+        {% if request.user.profile.profile_picture %}
+        <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:30px; height:30px; border-radius: 50%; object-fit: cover;" alt="{{ user.username }}"/>
         {% else %}
-        <img src="https://randomuser.me/api/portraits/men/81.jpg" class="avatar" style="width:54px;height:54px;border:3px solid var(--teal);flex-shrink:0;" alt="{{ user.username }}"/>
+        <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px; height:30px; border-radius: 50%;" alt="{{ user.username }}"/>
         {% endif %}
         <div style="flex:1;position:relative;z-index:1;">
           <div class="wb-name">Hey {{ user.username }}, welcome back 👋</div>
@@ -1120,13 +1120,10 @@ input[type=range]{width:100%;accent-color:var(--teal);}
         <!-- Avatar Row -->
         <div style="display:flex;align-items:center;gap:18px;margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid var(--border);flex-wrap:wrap;">
           <!-- Avatar with Django template check -->
-          {% if request.user.profile.profile_picture %} 
-          <img src="{{ request.user.profile.profile_picture.url }}"
-               class="avatar"
-               style="width:84px;height:84px;border:3px solid var(--teal);flex-shrink:0;"
-               alt="Profile Picture"/>
-           {% else %}
-          <div style="width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,var(--teal-lt),var(--teal));display:flex;align-items:center;justify-content:center;font-size:34px;flex-shrink:0;border:3px solid var(--teal);">👤</div>
+          {% if request.user.profile.profile_picture %}
+          <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:30px; height:30px; border-radius: 50%; object-fit: cover;" alt="{{ user.username }}"/>
+          {% else %}
+          <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px; height:30px; border-radius: 50%;" alt="{{ user.username }}"/>
           {% endif %} 
 
           <div style="flex:1;min-width:180px;">
