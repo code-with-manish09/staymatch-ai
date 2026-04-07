@@ -645,7 +645,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
         <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px; height:30px; border-radius: 50%;" alt="{{ user.username }}"/>
         {% endif %}
         <div style="flex:1;position:relative;z-index:1;">
-          <div class="wb-name">Hey {{ user.username }}, welcome back 👋</div>
+          <div class="wb-name">Hey {{ request.user.profile.full_name }}, welcome back 👋</div>
           <div class="wb-sub">3 new high-compatibility matches found today — go connect!</div>
           <div class="wb-chips">
             <span class="wb-chip">🌙 Night Owl</span>
@@ -1118,7 +1118,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
           <div style="flex:1;min-width:180px;">
             <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:2px;">
                <!-- {{ request.user.profile.name|default:request.user.username }} --> 
-              {{ request.user.username|default:"@username" }}
+              {{ request.user.profile.full_name }}
             </div>
             <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">
                @{{ request.user.username }} 
