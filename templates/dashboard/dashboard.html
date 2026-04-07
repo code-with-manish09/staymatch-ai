@@ -33,7 +33,6 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--off);color:var(--
 .display{font-family:'Bricolage Grotesque',sans-serif;}
 
 ::-webkit-scrollbar{width:5px;}
-::-webkit-scrollbar-track{background:var(--off);}
 ::-webkit-scrollbar-thumb{background:var(--teal);border-radius:99px;}
 
 body::after{
@@ -150,6 +149,7 @@ body::after{
   position:fixed;top:0;left:0;bottom:0;z-index:300;
   border-right:1px solid rgba(255,255,255,.06);
   transition:transform .3s cubic-bezier(.22,.68,0,1.2);
+  overflow-y:auto;
 }
 .sidebar-logo{
   padding:22px 20px 18px;
@@ -191,9 +191,9 @@ body::after{
   border-top:1px solid rgba(255,255,255,.07);
   display:flex;align-items:center;gap:10px;
 }
-.sb-user img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--teal);}
-.sb-user-name{font-size:13px;font-weight:700;color:#fff;}
-.sb-user-role{font-size:11px;color:rgba(255,255,255,.35);margin-top:1px;}
+.sb-user-name{font-size:14px;font-weight:700;color:#fff;}
+.sb-user-role{font-size:11px;color:rgba(255,255,255,.35);margin-top:2px;}
+
 
 /* mobile sidebar overlay */
 .sidebar-overlay{
@@ -270,6 +270,7 @@ body::after{
 .vibe-score{text-align:center;flex-shrink:0;position:relative;z-index:1;}
 .vibe-num{font-family:'Bricolage Grotesque',sans-serif;font-size:44px;font-weight:800;color:var(--teal);line-height:1;}
 .vibe-lbl{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;}
+
 
 /* ── STATS ROW ── */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
@@ -591,18 +592,6 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   <a class="nav-item-logout" href="{% url 'logout' %}" style="margin:4px 8px 8px;">
     <span class="nav-icon">🚪</span> Logout
   </a>
-
- <div class="sb-user">
-    {% if profile.profile_picture %}
-      <img src="{{ profile.profile_picture.url }}" alt="{{ user.username }}"/>
-    {% else %}
-    <img src="https://randomuser.me/api/portraits/men/81.jpg" alt="{{ user.username }}"/>
-    {% endif %}
-    <div>
-      <div class="sb-user-name">{{user.username}}</div>
-      <div class="sb-user-role">{{ profile.profession|default:"Developer" }}</div>
-    </div>
-  </div>
 </aside>
 
 <!-- ════════════════════════════ MAIN ════════════════════════════ -->
@@ -1286,11 +1275,11 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 
         <!-- Action Buttons -->
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <a href="{% url 'update_profile' %}" class="btn-teal"
-                  style="flex:1;min-width:160px;font-size:14px;padding:12px 20px;"
-                  onclick="showToast('Edit Profile','Redirecting to profile editor ✏️')">
-            ✏️ Edit Profile Info
-          </a>
+          <a href="{% url 'update_profile' %}"
+          style="background:#0EA5C9;color:white;padding:11px 22px;border-radius:12px;
+          font-weight:600;font-size:14px;text-decoration:none;display:inline-block;">
+          Update Profile
+         </a>
           <button class="btn-outline"
                   style="padding:12px 20px;font-size:14px;"
                   onclick="showSec('discover')">
