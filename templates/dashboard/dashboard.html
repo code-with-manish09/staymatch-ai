@@ -576,9 +576,9 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   <a class="nav-item" onclick="showSec('safety')">
     <span class="nav-icon">🛡️</span> Safety Ratings
   </a>
-  <a class="nav-item" onclick="showSec('addroom')">
+ <a href="{% url 'post_room' %}" class="nav-item">
     <span class="nav-icon">➕</span> Post a Room
-  </a>
+</a>
 
   <div class="sb-section">Account</div>
   <a class="nav-item" onclick="showSec('profile')">
@@ -765,53 +765,54 @@ input[type=range]{width:100%;accent-color:var(--teal);}
       </div>
       <div class="rooms-grid fu d4">
 
-        <!-- Room 1 -->
         <div class="room-card">
-          <div class="room-img">
-            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" alt="Room" onerror="this.style.display='none'"/>
-            <div class="match-badge teal">⚡ 95% Match</div>
-            <div class="room-save" id="sv1" onclick="toggleSave('sv1')">🤍</div>
-            <div class="room-type">2BHK · Furnished</div>
-          </div>
-          <div class="room-body">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:3px;">
-              <div class="room-title" style="margin-bottom:0;">Modern 2BHK in Koramangala</div>
-              <span class="verified-badge gold" style="flex-shrink:0;margin-left:6px;margin-top:2px;">✅ Verified</span>
-            </div>
-            <div class="room-loc">📍 5th Block, Koramangala · Bangalore</div>
-            <div class="safety-row">
-              <div class="safety-stars">★★★★★</div>
-              <span class="safety-lbl">Safety 4.8</span>
-              <span class="clean-pill">🧹 Very Clean</span>
-            </div>
-            <div class="noise-bar-wrap" style="margin-bottom:8px;">
-              <span style="font-size:10px;color:var(--muted);width:52px;flex-shrink:0;">🔇 Noise</span>
-              <div class="noise-bar-track"><div class="noise-bar-fill noise-low" style="width:20%;"></div></div>
-              <span style="font-size:10px;color:var(--green);font-weight:700;">Low</span>
-            </div>
-            <div class="room-chips">
-              <div class="chip mutual-chip match">🎮 Gamers</div>
-              <div class="chip mutual-chip match">🌙 Night owl</div>
-              <div class="chip" style="background:#F0FDF4;color:#059669;">📚 Study Friendly</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-              <div class="ai-price-pill">🤖 AI Fair: ₹13,200</div>
-              <div class="env-score">🌿 Env <span>8.4/10</span></div>
-            </div>
-            <div class="room-footer">
-              <div>
-                <div class="room-price">₹14,000 <small>/mo</small></div>
-                <div class="av-stack">
-                  <img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""/>
-                  <img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""/>
-                  <span style="font-size:10px;color:var(--muted);margin-left:6px;">2 interested</span>
-                </div>
-              </div>
-              <button class="btn-sm btn-sm-teal" onclick="showToast('Request Sent!','Arjun will hear from you soon 🎉')">Connect</button>
-            </div>
-          </div>
+  <div class="room-img">
+    <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" alt="Room" onerror="this.style.display='none'"/>
+    <div class="match-badge teal">⚡ 95% Match</div>
+    <div class="room-save" id="sv1" onclick="toggleSave('sv1')">🤍</div>
+    <div class="room-type">2BHK · Furnished</div>
+  </div>
+  <div class="room-body">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:3px;">
+      <div class="room-title" style="margin-bottom:0;">Modern 2BHK in Koramangala</div>
+      <span class="verified-badge gold" style="flex-shrink:0;margin-left:6px;margin-top:2px;">✅ Verified</span>
+    </div>
+    <div class="room-loc">📍 5th Block, Koramangala · Bangalore</div>
+    <div class="safety-row">
+      <div class="safety-stars">★★★★★</div>
+      <span class="safety-lbl">Safety 4.8</span>
+      <span class="clean-pill">🧹 Very Clean</span>
+    </div>
+    <div class="noise-bar-wrap" style="margin-bottom:8px;">
+      <span style="font-size:10px;color:var(--muted);width:52px;flex-shrink:0;">🔇 Noise</span>
+      <div class="noise-bar-track"><div class="noise-bar-fill noise-low" style="width:20%;"></div></div>
+      <span style="font-size:10px;color:var(--green);font-weight:700;">Low</span>
+    </div>
+    <div class="room-chips">
+      <div class="chip mutual-chip match">🎮 Gamers</div>
+      <div class="chip mutual-chip match">🌙 Night owl</div>
+      <div class="chip" style="background:#F0FDF4;color:#059669;">📚 Study Friendly</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <div class="ai-price-pill">🤖 AI Fair: ₹13,200</div>
+      <div class="env-score">🌿 Env <span>8.4/10</span></div>
+    </div>
+    <div class="room-footer">
+      <div>
+        <div class="room-price">₹14,000 <small>/mo</small></div>
+        <div class="av-stack">
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""/>
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""/>
+          <span style="font-size:10px;color:var(--muted);margin-left:6px;">2 interested</span>
         </div>
-
+      </div>
+      
+      <a href="{% url 'room_details' %}" class="btn-sm btn-sm-teal" style="text-decoration: none; text-align: center; display: inline-block;">
+        View Details
+      </a>
+    </div>
+  </div>
+</div>
         <!-- Room 2 — TOP PICK -->
         <div class="room-card" style="border-color:var(--teal);box-shadow:0 0 0 1px var(--teal),var(--card-sh2);position:relative;">
           <div style="position:absolute;top:14px;right:14px;z-index:2;background:var(--amber);color:#000;font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;letter-spacing:.04em;">TOP PICK</div>
@@ -1346,7 +1347,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
             <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:var(--muted);width:72px;">Lifestyle</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:91%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--teal);">91%</span></div>
             <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:var(--muted);width:72px;">Interests</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:88%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--teal);">88%</span></div>
           </div>
-          <button class="btn-sm btn-sm-teal" style="width:100%;font-size:12px;" onclick="showToast('Request Sent!','Arjun received your connect request 🎉')">Connect</button>
+          <button class="btn-sm btn-sm-teal" style="width:100%;font-size:12px;" onclick="showToast('Request Sent!','Arjun received your connect request 🎉')">connect</button>
         </div>
         <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--card-sh);">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">

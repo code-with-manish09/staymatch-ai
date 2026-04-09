@@ -1,0 +1,1202 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ room.title|default:"Cozy Private Room near Koramangala Metro" }} — StayMatch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ══════════════════════════════════════════
+       CSS VARIABLES — identical to form page
+    ══════════════════════════════════════════ */
+    :root {
+      --navy:     #0F1F3D;
+      --teal:     #0EA5C9;
+      --teal-lt:  #E0F4FB;
+      --amber:    #F59E0B;
+      --amber-lt: #FEF3C7;
+      --green:    #10B981;
+      --white:    #FFFFFF;
+      --off:      #F6F7FB;
+      --border:   #E4E8F0;
+      --txt:      #0F1F3D;
+      --muted:    #6B7A99;
+      --card-sh:  0 4px 24px rgba(15,31,61,.10);
+      --card-sh2: 0 12px 40px rgba(15,31,61,.14);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      background: var(--white);
+      color: var(--txt);
+      overflow-x: hidden;
+    }
+
+    .display { font-family: 'Bricolage Grotesque', sans-serif; }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--off); }
+    ::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 99px; }
+
+    /* noise overlay */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9998; opacity: .5;
+    }
+
+    /* ══ ANIMATIONS ══ */
+    @keyframes fadeUp   { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes gradPan  { 0%,100% { background-position:0% 50%; } 50% { background-position:100% 50%; } }
+    @keyframes slideDown{ from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes blobMorph{ 0%,100%{border-radius:60% 40% 70% 30%/50% 60% 40% 50%;} 50%{border-radius:40% 60% 30% 70%/60% 40% 70% 30%;} }
+    @keyframes shimmer  { 0%{background-position:-400px 0;} 100%{background-position:400px 0;} }
+    @keyframes pulse    { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+
+    .fu { animation: fadeUp .6s ease forwards; opacity: 0; }
+    .d1 { animation-delay: .06s } .d2 { animation-delay: .14s }
+    .d3 { animation-delay: .24s } .d4 { animation-delay: .36s }
+    .d5 { animation-delay: .48s }
+
+    .grad {
+      background: linear-gradient(120deg, var(--teal), var(--navy));
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradPan 5s ease infinite;
+    }
+
+    /* ══ NAV ══ */
+    nav {
+      position: sticky; top: 0; z-index: 500;
+      height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:22px; letter-spacing:-.02em; color:var(--navy); text-decoration:none; }
+    .nav-links { display:flex; gap:36px; }
+    .nav-a { font-size:14px; font-weight:500; color:var(--muted); text-decoration:none; transition:color .2s; }
+    .nav-a:hover, .nav-a.active { color:var(--navy); }
+    .hamburger { display:none; flex-direction:column; justify-content:center; gap:5px; background:none; border:none; cursor:pointer; padding:6px; width:36px; height:36px; }
+    .hamburger span { display:block; width:22px; height:2px; background:var(--navy); border-radius:2px; transition:all .3s ease; transform-origin:center; }
+    .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity:0; transform:scaleX(0); }
+    .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-nav { display:none; position:fixed; top:68px; left:0; right:0; background:rgba(255,255,255,.97); backdrop-filter:blur(18px); border-bottom:1px solid var(--border); padding:20px 24px 28px; flex-direction:column; gap:4px; z-index:499; animation:slideDown .25s ease forwards; }
+    .mobile-nav.open { display:flex; }
+    .mobile-nav .nav-a { font-size:16px; padding:10px 0; border-bottom:1px solid var(--border); }
+    .mobile-nav-btns { display:flex; gap:10px; margin-top:16px; }
+
+    /* ══ BUTTONS ══ */
+    .btn-primary { background:var(--navy); color:#fff; padding:13px 28px; border-radius:10px; font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:15px; border:none; cursor:pointer; transition:all .2s; letter-spacing:-.01em; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+    .btn-primary:hover { background:#1a3260; transform:translateY(-2px); box-shadow:0 8px 24px rgba(15,31,61,.2); }
+    .btn-teal { background:var(--teal); color:#fff; padding:13px 28px; border-radius:10px; font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:15px; border:none; cursor:pointer; transition:all .2s; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+    .btn-teal:hover { background:#0993b3; transform:translateY(-2px); box-shadow:0 8px 24px rgba(14,165,201,.3); }
+    .btn-outline { background:transparent; color:var(--navy); padding:12px 24px; border-radius:10px; font-family:'Bricolage Grotesque',sans-serif; font-weight:600; font-size:14px; border:1.5px solid var(--border); cursor:pointer; transition:all .2s; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+    .btn-outline:hover { border-color:var(--navy); background:var(--off); }
+    .btn-ghost { background:transparent; color:var(--muted); padding:10px 16px; border-radius:10px; font-family:'Instrument Sans',sans-serif; font-weight:500; font-size:13px; border:1.5px solid var(--border); cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; gap:6px; }
+    .btn-ghost:hover { color:var(--navy); border-color:var(--navy); }
+
+    /* ══ CONTAINER ══ */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+
+    /* ══ SECTION LABEL ══ */
+    .section-label { display:inline-flex; align-items:center; gap:7px; background:var(--teal-lt); color:var(--teal); padding:6px 16px; border-radius:99px; font-size:12px; font-weight:700; letter-spacing:.04em; }
+
+    /* ══ BREADCRUMB ══ */
+    .breadcrumb { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); flex-wrap:wrap; }
+    .breadcrumb a { color:var(--muted); text-decoration:none; transition:color .2s; }
+    .breadcrumb a:hover { color:var(--teal); }
+    .breadcrumb-sep { color:var(--border); font-size:11px; }
+
+    /* ══════════════════════════════════════
+       GALLERY
+    ══════════════════════════════════════ */
+    .gallery-section { position:relative; background:var(--navy); overflow:hidden; }
+
+    /* Main slider */
+    .gallery-slider { position:relative; height: 520px; overflow:hidden; cursor:grab; }
+    .gallery-slider:active { cursor:grabbing; }
+    .gallery-track { display:flex; height:100%; transition:transform .45s cubic-bezier(.4,0,.2,1); will-change:transform; }
+    .gallery-slide { flex-shrink:0; width:100%; height:100%; position:relative; overflow:hidden; }
+    .gallery-slide img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s ease; }
+    .gallery-slide:hover img { transform:scale(1.02); }
+
+    /* slide gradient overlay */
+    .gallery-slide::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(to top, rgba(15,31,61,.7) 0%, transparent 50%);
+      pointer-events:none;
+    }
+
+    /* nav arrows */
+    .gallery-arrow {
+      position:absolute; top:50%; transform:translateY(-50%); z-index:10;
+      width:48px; height:48px; border-radius:50%;
+      background:rgba(255,255,255,.15); backdrop-filter:blur(12px);
+      border:1px solid rgba(255,255,255,.2); color:#fff; font-size:18px;
+      cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center;
+    }
+    .gallery-arrow:hover { background:rgba(255,255,255,.28); transform:translateY(-50%) scale(1.08); }
+    .gallery-arrow.prev { left:20px; }
+    .gallery-arrow.next { right:20px; }
+
+    /* counter badge */
+    .gallery-counter {
+      position:absolute; bottom:20px; right:20px; z-index:10;
+      background:rgba(15,31,61,.6); backdrop-filter:blur(10px);
+      color:#fff; font-size:13px; font-weight:600;
+      padding:6px 14px; border-radius:99px;
+      border:1px solid rgba(255,255,255,.15);
+    }
+
+    /* dot nav */
+    .gallery-dots { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); z-index:10; display:flex; gap:6px; }
+    .gallery-dot { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.4); cursor:pointer; transition:all .3s; }
+    .gallery-dot.active { background:#fff; width:22px; border-radius:99px; }
+
+    /* thumbnail strip */
+    .gallery-thumbs { display:flex; gap:8px; padding:12px 16px; background:rgba(15,31,61,.8); backdrop-filter:blur(10px); overflow-x:auto; scrollbar-width:none; }
+    .gallery-thumbs::-webkit-scrollbar { display:none; }
+    .gallery-thumb { flex-shrink:0; width:80px; height:56px; border-radius:8px; overflow:hidden; cursor:pointer; border:2px solid transparent; transition:all .2s; opacity:.6; }
+    .gallery-thumb:hover { opacity:.85; }
+    .gallery-thumb.active { border-color:var(--teal); opacity:1; }
+    .gallery-thumb img { width:100%; height:100%; object-fit:cover; }
+
+    /* ══════════════════════════════════════
+       LISTING HEADER STRIP
+    ══════════════════════════════════════ */
+    .listing-header {
+      background:var(--white);
+      border-bottom:1px solid var(--border);
+      padding:28px 0;
+    }
+    .listing-header-inner { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+
+    .listing-title {
+      font-family:'Bricolage Grotesque',sans-serif;
+      font-weight:800; font-size:clamp(22px,3vw,34px);
+      color:var(--navy); line-height:1.1; letter-spacing:-.025em;
+      margin-bottom:10px;
+    }
+    .listing-meta { display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:14px; }
+    .listing-meta-item { display:flex; align-items:center; gap:6px; font-size:14px; color:var(--muted); font-weight:500; }
+    .listing-meta-item .dot { width:4px; height:4px; border-radius:50%; background:var(--border); }
+
+    .listing-tags { display:flex; flex-wrap:wrap; gap:8px; }
+    .tag { display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:99px; font-size:12px; font-weight:600; white-space:nowrap; }
+    .tag-teal   { background:var(--teal-lt); color:var(--teal); }
+    .tag-amber  { background:var(--amber-lt); color:#B45309; }
+    .tag-green  { background:#D1FAE5; color:#065F46; }
+    .tag-navy   { background:#EEF2FF; color:var(--navy); }
+
+    /* price block */
+    .price-block { text-align:right; flex-shrink:0; }
+    .price-main { font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:clamp(28px,3.5vw,42px); color:var(--navy); letter-spacing:-.03em; line-height:1; }
+    .price-sub  { font-size:13px; color:var(--muted); margin-top:4px; }
+    .price-deposit { display:inline-flex; align-items:center; gap:4px; margin-top:8px; font-size:12px; font-weight:600; color:var(--muted); background:var(--off); padding:4px 12px; border-radius:99px; border:1px solid var(--border); }
+
+    /* ══════════════════════════════════════
+       PAGE BODY GRID
+    ══════════════════════════════════════ */
+    .page-body { padding: 40px 0 80px; }
+    .body-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ══ CARDS ══ */
+    .detail-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 32px;
+      box-shadow: var(--card-sh);
+    }
+    .card-title {
+      font-family:'Bricolage Grotesque',sans-serif;
+      font-weight:700; font-size:17px; color:var(--navy);
+      margin-bottom:20px; padding-bottom:14px;
+      border-bottom:1px solid var(--border);
+      display:flex; align-items:center; gap:10px;
+    }
+    .card-icon { width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+
+    /* ══ AMENITIES ══ */
+    .amenity-chips { display:flex; flex-wrap:wrap; gap:10px; }
+    .amenity-chip {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 16px; border-radius:12px;
+      background:var(--off); border:1.5px solid var(--border);
+      font-size:13px; font-weight:600; color:var(--navy);
+      transition:all .2s;
+    }
+    .amenity-chip:hover { border-color:var(--teal); background:var(--teal-lt); color:var(--teal); }
+    .amenity-chip .chip-icon { font-size:18px; line-height:1; }
+
+    /* ══ INCLUDED IN RENT ══ */
+    .included-grid { display:flex; flex-wrap:wrap; gap:8px; }
+    .incl-pill { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:99px; background:#D1FAE5; color:#065F46; font-size:12px; font-weight:600; }
+    .incl-pill-no { background:#FEE2E2; color:#991B1B; }
+
+    /* ══ DESCRIPTION ══ */
+    .description-text { font-size:15px; line-height:1.85; color:var(--muted); }
+    .description-text p { margin-bottom:12px; }
+    .description-text p:last-child { margin-bottom:0; }
+
+    /* ══ HOUSE RULES ══ */
+    .rules-list { display:flex; flex-direction:column; gap:10px; }
+    .rule-item { display:flex; align-items:flex-start; gap:12px; padding:12px 16px; background:var(--off); border-radius:12px; border:1px solid var(--border); font-size:14px; color:var(--navy); line-height:1.5; }
+    .rule-icon { flex-shrink:0; font-size:16px; margin-top:1px; }
+
+    /* ══ LOCATION DETAILS ══ */
+    .location-pills { display:flex; flex-wrap:wrap; gap:10px; }
+    .loc-pill { display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border-radius:12px; background:var(--off); border:1.5px solid var(--border); font-size:13px; font-weight:600; color:var(--navy); }
+    .loc-pill .loc-icon { font-size:17px; }
+
+    /* map placeholder */
+    .map-placeholder {
+      height:200px; border-radius:14px; overflow:hidden; margin-top:16px;
+      background: linear-gradient(135deg, #e0f4fb 0%, #f6f7fb 100%);
+      border:1.5px solid var(--border);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:10px; color:var(--muted); font-size:14px; font-weight:500;
+      position:relative;
+    }
+    .map-pin-anim { font-size:36px; animation:pulse 2s ease infinite; }
+
+    /* ══ MATCH LOGIC — USP ══ */
+    .match-card {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a3260 100%);
+      border-radius: 20px;
+      padding: 28px 32px;
+      color: #fff;
+      box-shadow: 0 12px 40px rgba(15,31,61,.22);
+      position: relative;
+      overflow: hidden;
+    }
+    .match-card::before {
+      content:''; position:absolute; width:300px; height:300px;
+      background:radial-gradient(circle,rgba(14,165,201,.18),transparent 70%);
+      top:-100px; right:-80px; border-radius:50%;
+      animation:blobMorph 12s ease infinite;
+    }
+    .match-card-title {
+      font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:18px;
+      margin-bottom:6px; position:relative;
+    }
+    .match-card-sub { font-size:13px; color:rgba(255,255,255,.55); margin-bottom:24px; position:relative; }
+
+    /* score rings */
+    .match-score-row { display:flex; gap:20px; justify-content:center; margin-bottom:24px; position:relative; }
+    .match-ring-wrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .match-ring {
+      width:72px; height:72px; border-radius:50%;
+      background: conic-gradient(var(--teal) calc(var(--pct,70) * 1%), rgba(255,255,255,.12) 0);
+      display:flex; align-items:center; justify-content:center;
+      position:relative;
+    }
+    .match-ring::after { content:''; position:absolute; width:54px; height:54px; border-radius:50%; background:#1a3260; }
+    .match-ring-val { position:relative; z-index:1; font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:15px; color:#fff; }
+    .match-ring-label { font-size:11px; color:rgba(255,255,255,.55); font-weight:600; text-align:center; max-width:70px; line-height:1.3; }
+
+    /* preference rows */
+    .pref-rows { display:flex; flex-direction:column; gap:14px; position:relative; }
+    .pref-row { display:flex; flex-direction:column; gap:7px; }
+    .pref-row-header { display:flex; justify-content:space-between; align-items:center; }
+    .pref-label { font-size:12px; font-weight:700; color:rgba(255,255,255,.6); letter-spacing:.03em; }
+    .pref-value { font-size:13px; font-weight:600; color:#fff; }
+
+    /* cleanliness bar */
+    .clean-bar-track { height:8px; background:rgba(255,255,255,.12); border-radius:99px; overflow:hidden; }
+    .clean-bar-fill  { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--teal),#67e8f9); transition:width 1s cubic-bezier(.4,0,.2,1); }
+
+    /* schedule pill */
+    .sched-pill { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:99px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); font-size:12px; font-weight:600; color:#fff; }
+
+    /* guest pill */
+    .guest-pill { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:99px; font-size:12px; font-weight:600; }
+    .guest-ok  { background:rgba(16,185,129,.18); color:#6EE7B7; border:1px solid rgba(16,185,129,.25); }
+    .guest-no  { background:rgba(239,68,68,.15); color:#FCA5A5; border:1px solid rgba(239,68,68,.2); }
+    .guest-flex{ background:rgba(245,158,11,.15); color:#FCD34D; border:1px solid rgba(245,158,11,.2); }
+
+    /* preference tags */
+    .pref-tags { display:flex; flex-wrap:wrap; gap:6px; }
+    .pref-tag { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:8px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); font-size:12px; color:rgba(255,255,255,.75); font-weight:600; }
+
+    /* compatibility CTA inside match card */
+    .match-cta { margin-top:20px; padding-top:18px; border-top:1px solid rgba(255,255,255,.1); position:relative; }
+    .match-cta-text { font-size:12px; color:rgba(255,255,255,.5); margin-bottom:10px; line-height:1.5; }
+    .btn-match { background:linear-gradient(90deg,var(--teal),#38bdf8); color:#fff; border:none; padding:12px 24px; border-radius:10px; font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:14px; cursor:pointer; width:100%; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .btn-match:hover { filter:brightness(1.1); transform:translateY(-2px); box-shadow:0 8px 24px rgba(14,165,201,.35); }
+
+    /* ══ SIDEBAR ══ */
+    .sidebar { display:flex; flex-direction:column; gap:20px; }
+
+    /* sticky wrapper */
+    .sidebar-sticky { position:sticky; top:88px; display:flex; flex-direction:column; gap:20px; }
+
+    /* owner card */
+    .owner-card {
+      background:#fff; border:1px solid var(--border); border-radius:20px;
+      padding:24px; box-shadow:var(--card-sh2);
+      overflow:hidden; position:relative;
+    }
+    .owner-card::before {
+      content:''; position:absolute; top:-60px; right:-60px;
+      width:180px; height:180px; border-radius:50%;
+      background:radial-gradient(circle,rgba(14,165,201,.07),transparent 70%);
+    }
+    .owner-avatar-wrap { display:flex; justify-content:center; margin-bottom:16px; position:relative; }
+    .owner-avatar {
+      width:80px; height:80px; border-radius:50%; overflow:hidden;
+      border:3px solid var(--teal-lt); box-shadow:0 4px 16px rgba(14,165,201,.2);
+      background:linear-gradient(135deg,var(--teal),var(--navy));
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:28px; color:#fff;
+    }
+    .owner-avatar img { width:100%; height:100%; object-fit:cover; }
+    .verified-badge {
+      position:absolute; bottom:2px; right:calc(50% - 52px);
+      width:24px; height:24px; border-radius:50%;
+      background:var(--green); border:2px solid #fff;
+      display:flex; align-items:center; justify-content:center;
+      font-size:11px; color:#fff;
+    }
+    .owner-name { font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:18px; color:var(--navy); text-align:center; margin-bottom:4px; }
+    .owner-role { font-size:13px; color:var(--muted); text-align:center; margin-bottom:16px; }
+    .owner-stats { display:flex; justify-content:center; gap:0; border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:20px; }
+    .owner-stat { flex:1; text-align:center; padding:12px 8px; border-right:1px solid var(--border); }
+    .owner-stat:last-child { border-right:none; }
+    .owner-stat-val { font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:18px; color:var(--navy); line-height:1; margin-bottom:3px; }
+    .owner-stat-label { font-size:10px; color:var(--muted); font-weight:600; letter-spacing:.03em; text-transform:uppercase; }
+
+    .owner-btns { display:flex; flex-direction:column; gap:10px; }
+    .owner-divider { display:flex; align-items:center; gap:10px; font-size:11px; color:var(--muted); font-weight:600; letter-spacing:.04em; }
+    .owner-divider::before, .owner-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    .owner-contact-row { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:10px; border:1.5px solid var(--border); cursor:pointer; transition:all .2s; text-decoration:none; }
+    .owner-contact-row:hover { border-color:var(--teal); background:var(--teal-lt); }
+    .owner-contact-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .owner-contact-text { font-size:13px; font-weight:600; color:var(--navy); }
+    .owner-contact-sub  { font-size:11px; color:var(--muted); }
+
+    /* quick facts card */
+    .quick-facts { background:#fff; border:1px solid var(--border); border-radius:20px; padding:22px; box-shadow:var(--card-sh); }
+    .qf-title { font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:14px; color:var(--navy); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+    .qf-list { display:flex; flex-direction:column; gap:10px; }
+    .qf-item { display:flex; align-items:center; justify-content:space-between; font-size:13px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+    .qf-item:last-child { padding-bottom:0; border-bottom:none; }
+    .qf-key { color:var(--muted); font-weight:500; display:flex; align-items:center; gap:6px; }
+    .qf-val { color:var(--navy); font-weight:600; }
+
+    /* report/share */
+    .action-row { display:flex; gap:8px; }
+    .action-row .btn-ghost { flex:1; font-size:12px; padding:9px 12px; }
+
+    /* ══ SIMILAR LISTINGS ══ */
+    .similar-section { background:var(--off); padding:60px 0; }
+    .similar-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:32px; }
+
+    .room-card {
+      background:#fff; border:1px solid var(--border); border-radius:20px;
+      overflow:hidden; box-shadow:var(--card-sh); transition:all .3s; cursor:pointer; text-decoration:none; display:block; color:inherit;
+    }
+    .room-card:hover { transform:translateY(-6px); box-shadow:var(--card-sh2); }
+    .room-card-img { height:160px; overflow:hidden; position:relative; }
+    .room-card-img img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
+    .room-card:hover .room-card-img img { transform:scale(1.06); }
+    .room-card-badge { position:absolute; top:10px; left:10px; background:var(--amber); color:#fff; font-size:10px; font-weight:700; padding:3px 9px; border-radius:6px; letter-spacing:.04em; }
+    .room-card-body { padding:16px 18px; }
+    .room-card-title { font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:15px; color:var(--navy); margin-bottom:5px; line-height:1.3; }
+    .room-card-location { font-size:12px; color:var(--muted); margin-bottom:10px; }
+    .room-card-footer { display:flex; justify-content:space-between; align-items:center; padding-top:10px; border-top:1px solid var(--border); }
+    .room-card-price { font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:16px; color:var(--navy); }
+    .room-card-type { font-size:11px; font-weight:600; color:var(--teal); background:var(--teal-lt); padding:3px 9px; border-radius:6px; }
+
+    /* ══ FOOTER ══ */
+    footer { background:var(--navy); color:rgba(255,255,255,.55); padding:48px 0 32px; }
+
+    /* ══ STICKY MOBILE BAR ══ */
+    .mobile-sticky-bar {
+      display:none; position:fixed; bottom:0; left:0; right:0; z-index:400;
+      background:rgba(255,255,255,.95); backdrop-filter:blur(20px);
+      border-top:1px solid var(--border);
+      padding:12px 20px; gap:12px; align-items:center;
+    }
+    .msb-price { flex:1; }
+    .msb-price-main { font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:20px; color:var(--navy); line-height:1; }
+    .msb-price-sub  { font-size:11px; color:var(--muted); }
+
+    /* ══ TOAST ══ */
+    .toast {
+      position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(20px);
+      background:var(--navy); color:#fff; padding:12px 24px; border-radius:12px;
+      font-size:14px; font-weight:600; z-index:999;
+      opacity:0; transition:all .3s; pointer-events:none;
+      display:flex; align-items:center; gap:8px;
+      box-shadow:0 8px 32px rgba(15,31,61,.25);
+    }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media(max-width:1024px) {
+      nav { padding:0 28px; }
+      .container { padding:0 28px; }
+      .body-grid { grid-template-columns:1fr; }
+      .sidebar-sticky { position:static; }
+      .gallery-slider { height:400px; }
+      .similar-grid { grid-template-columns:repeat(2,1fr); }
+    }
+
+    @media(max-width:768px) {
+      nav { padding:0 20px; height:60px; }
+      .nav-links, .nav-desktop-btns { display:none; }
+      .hamburger { display:flex; }
+      .container { padding:0 20px; }
+      .gallery-slider { height:280px; }
+      .gallery-thumbs { display:none; }
+      .listing-header-inner { flex-direction:column; }
+      .price-block { text-align:left; }
+      .detail-card { padding:20px; }
+      .match-card { padding:20px; }
+      .match-score-row { gap:12px; }
+      .similar-grid { grid-template-columns:1fr; }
+      .mobile-sticky-bar { display:flex; }
+      .page-body { padding-bottom:100px; }
+      .owner-btns .btn-teal { display:none; }
+      .gallery-arrow { width:38px; height:38px; font-size:14px; }
+    }
+
+    @media(max-width:480px) {
+      .gallery-slider { height:220px; }
+      .listing-title { font-size:22px; }
+      .match-score-row { justify-content:space-around; }
+      .match-ring { width:58px; height:58px; }
+      .match-ring::after { width:42px; height:42px; }
+      .match-ring-val { font-size:13px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="index.html" class="nav-logo">Stay<span class="grad">Match</span></a>
+  <div class="nav-links">
+    <a href="#" class="nav-a active">Discover</a>
+    <a href="#" class="nav-a">How It Works</a>
+    <a href="#" class="nav-a">List a Room</a>
+    <a href="#" class="nav-a">About</a>
+  </div>
+  <div class="nav-desktop-btns" style="display:flex;gap:10px;align-items:center;">
+    <a href="#" class="btn-outline" style="padding:9px 20px;font-size:14px;">Log In</a>
+    <a href="#" class="btn-primary" style="padding:10px 22px;font-size:14px;">Get Started →</a>
+  </div>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="#" class="nav-a active">Discover</a>
+  <a href="#" class="nav-a">How It Works</a>
+  <a href="#" class="nav-a">List a Room</a>
+  <a href="#" class="nav-a">About</a>
+  <div class="mobile-nav-btns">
+    <a href="#" class="btn-outline" style="flex:1;">Log In</a>
+    <a href="#" class="btn-primary" style="flex:1;">Get Started →</a>
+  </div>
+</div>
+
+
+<!-- ══ GALLERY ══ -->
+<div class="gallery-section fu d1">
+  <div class="gallery-slider" id="gallerySlider">
+    <div class="gallery-track" id="galleryTrack">
+      <!-- Django: {% for photo in room.photos.all %} -->
+      <!-- photo 1 -->
+      <div class="gallery-slide">
+        <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1400&q=80" alt="{{ room.title|default:'Room photo 1' }}" />
+      </div>
+      <!-- photo 2 -->
+      <div class="gallery-slide">
+        <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1400&q=80" alt="{{ room.title|default:'Room photo 2' }}" />
+      </div>
+      <!-- photo 3 -->
+      <div class="gallery-slide">
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400&q=80" alt="{{ room.title|default:'Room photo 3' }}" />
+      </div>
+      <!-- photo 4 -->
+      <div class="gallery-slide">
+        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1400&q=80" alt="{{ room.title|default:'Room photo 4' }}" />
+      </div>
+      <!-- photo 5 -->
+      <div class="gallery-slide">
+        <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1400&q=80" alt="{{ room.title|default:'Room photo 5' }}" />
+      </div>
+      <!-- Django: {% endfor %} -->
+    </div>
+
+    <button class="gallery-arrow prev" id="prevBtn" aria-label="Previous photo">&#8592;</button>
+    <button class="gallery-arrow next" id="nextBtn" aria-label="Next photo">&#8594;</button>
+
+    <div class="gallery-dots" id="galleryDots"></div>
+    <div class="gallery-counter" id="galleryCounter">1 / 5</div>
+  </div>
+
+  <!-- thumbnail strip -->
+  <div class="gallery-thumbs" id="galleryThumbs">
+    <!-- Django: {% for photo in room.photos.all %} -->
+    <div class="gallery-thumb active" data-index="0" onclick="goToSlide(0)">
+      <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=200&q=70" alt="thumb" />
+    </div>
+    <div class="gallery-thumb" data-index="1" onclick="goToSlide(1)">
+      <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=200&q=70" alt="thumb" />
+    </div>
+    <div class="gallery-thumb" data-index="2" onclick="goToSlide(2)">
+      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&q=70" alt="thumb" />
+    </div>
+    <div class="gallery-thumb" data-index="3" onclick="goToSlide(3)">
+      <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=200&q=70" alt="thumb" />
+    </div>
+    <div class="gallery-thumb" data-index="4" onclick="goToSlide(4)">
+      <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=200&q=70" alt="thumb" />
+    </div>
+    <!-- Django: {% endfor %} -->
+  </div>
+</div>
+
+
+<!-- ══ LISTING HEADER ══ -->
+<div class="listing-header fu d2">
+  <div class="container">
+    <!-- breadcrumb -->
+    <div class="breadcrumb" style="margin-bottom:16px;">
+      <a href="#">Home</a>
+      <span class="breadcrumb-sep">›</span>
+      <a href="#">Bangalore</a>
+      <span class="breadcrumb-sep">›</span>
+      <a href="#">Koramangala</a>
+      <span class="breadcrumb-sep">›</span>
+      <!-- Django: {{ room.title }} -->
+      <span style="color:var(--navy);font-weight:600;">Cozy Private Room near Koramangala Metro</span>
+    </div>
+
+    <div class="listing-header-inner">
+      <!-- left: title + meta -->
+      <div>
+        <!-- Django: {{ room.title }} -->
+        <h1 class="listing-title">Cozy Private Room near Koramangala Metro</h1>
+
+        <div class="listing-meta">
+          <!-- Django: {{ room.city }} · {{ room.locality }} -->
+          <span class="listing-meta-item">📍 Koramangala, Bangalore</span>
+          <span class="listing-meta-item"><span class="dot"></span></span>
+          <!-- Django: {{ room.room_type }} -->
+          <span class="listing-meta-item">🏠 Private Room</span>
+          <span class="listing-meta-item"><span class="dot"></span></span>
+          <!-- Django: {{ room.bhk_config }} -->
+          <span class="listing-meta-item">🏢 3 BHK · Floor 3 of 6</span>
+          <span class="listing-meta-item"><span class="dot"></span></span>
+          <span class="listing-meta-item" style="color:var(--green);font-weight:600;">● Listed 2 days ago</span>
+        </div>
+
+        <div class="listing-tags">
+          <!-- Django: {{ room.furnishing_status }} -->
+          <span class="tag tag-teal">✨ Fully Furnished</span>
+          <!-- Django: {% if room.available_from <= today %}Available Now{% else %}Available from {{ room.available_from }}{% endif %} -->
+          <span class="tag tag-green">📅 Available Now</span>
+          <!-- Django: {{ room.minimum_stay }} -->
+          <span class="tag tag-navy">🗓 Min. 3 months</span>
+          <!-- Django: {{ room.gender_preference }} -->
+          <span class="tag tag-amber">👥 Any Gender</span>
+        </div>
+      </div>
+
+      <!-- right: price -->
+      <div class="price-block">
+        <div class="price-main">
+          <!-- Django: ₹{{ room.rent|intcomma }} -->
+          ₹12,000
+        </div>
+        <div class="price-sub">per month</div>
+        <div style="margin-top:8px;display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+          <!-- Django: {{ room.security_deposit }} -->
+          <div class="price-deposit">🔐 2 months deposit</div>
+          <!-- Django: {{ room.maintenance }} -->
+          <div class="price-deposit" style="background:#EBF9FD;border-color:#B3E8F5;color:var(--teal);">⚡ Maintenance included</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ PAGE BODY ══ -->
+<section class="page-body">
+  <div class="container">
+    <div class="body-grid">
+
+      <!-- ══ LEFT COLUMN ══ -->
+      <div style="display:flex;flex-direction:column;gap:24px;">
+
+        <!-- AMENITIES -->
+        <div class="detail-card fu d2">
+          <div class="card-title">
+            <div class="card-icon" style="background:var(--teal-lt);">✨</div>
+            Amenities &amp; Features
+          </div>
+          <!-- Django: {% for amenity in room.amenities.all %} -->
+          <div class="amenity-chips">
+            <div class="amenity-chip"><span class="chip-icon">📶</span> High-Speed WiFi</div>
+            <div class="amenity-chip"><span class="chip-icon">🛏️</span> Bed &amp; Mattress</div>
+            <div class="amenity-chip"><span class="chip-icon">🍳</span> Kitchen Access</div>
+            <div class="amenity-chip"><span class="chip-icon">❄️</span> Air Conditioning</div>
+            <div class="amenity-chip"><span class="chip-icon">🧺</span> Washing Machine</div>
+            <div class="amenity-chip"><span class="chip-icon">🔒</span> 24h Security</div>
+            <div class="amenity-chip"><span class="chip-icon">🛗</span> Lift / Elevator</div>
+            <div class="amenity-chip"><span class="chip-icon">⚡</span> Power Backup</div>
+          </div>
+          <!-- Django: {% endfor %} -->
+
+          <!-- what's included in rent -->
+          <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--border);">
+            <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.05em;margin-bottom:10px;">INCLUDED IN RENT</div>
+            <div class="included-grid">
+              <!-- Django: {% for item in room.included_in_rent %} -->
+              <div class="incl-pill">✓ WiFi</div>
+              <div class="incl-pill">✓ Gas</div>
+              <div class="incl-pill incl-pill-no">✗ Electricity</div>
+              <div class="incl-pill incl-pill-no">✗ Water</div>
+              <!-- Django: {% endfor %} -->
+            </div>
+          </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="detail-card fu d3">
+          <div class="card-title">
+            <div class="card-icon" style="background:#EEF2FF;">📝</div>
+            About the Room
+          </div>
+          <!-- Django: {{ room.description|linebreaksbr }} -->
+          <div class="description-text">
+            <p>Welcome to this bright, airy private room in a well-maintained 3BHK apartment in the heart of Koramangala. The room comes fully furnished with a queen-size bed, wardrobe, study desk, and ergonomic chair — perfect for working professionals or students.</p>
+            <p>The apartment is located on the 3rd floor of a 6-storey society with 24h security and power backup. Koramangala is one of Bangalore's most vibrant neighbourhoods — you're walking distance from cafés, co-working spaces, and restaurants on 5th Block.</p>
+            <p>Nearest metro is Jayanagar Metro (800m), and Manyata Tech Park is just 18 minutes by cab. The apartment has a balcony with a great view and gets excellent cross-ventilation in the mornings.</p>
+          </div>
+        </div>
+
+        <!-- HOUSE RULES -->
+        <div class="detail-card fu d3">
+          <div class="card-title">
+            <div class="card-icon" style="background:var(--amber-lt);">📋</div>
+            House Rules
+          </div>
+          <!-- Django: {% for rule in room.house_rules_list %} -->
+          <div class="rules-list">
+            <div class="rule-item"><span class="rule-icon">🚬</span> No smoking inside the flat or on the balcony</div>
+            <div class="rule-item"><span class="rule-icon">🐾</span> No pets allowed</div>
+            <div class="rule-item"><span class="rule-icon">🕙</span> Visitors must leave by 10:00 PM on weekdays</div>
+            <div class="rule-item"><span class="rule-icon">🥗</span> Vegetarian kitchen only — no non-veg cooking</div>
+            <div class="rule-item"><span class="rule-icon">🎵</span> Quiet hours after 11 PM, please keep noise down</div>
+            <div class="rule-item"><span class="rule-icon">🧹</span> Common areas to be kept clean — weekly cleaning roster shared</div>
+          </div>
+          <!-- Django: {% endfor %} -->
+        </div>
+
+        <!-- ══ FLATMATE PREFERENCES / MATCH LOGIC ══ -->
+        <div class="match-card fu d3" id="matchCard">
+          <div class="match-card-title">🤝 Flatmate Compatibility Criteria</div>
+          <div class="match-card-sub">These preferences power our AI match score — how well do you align?</div>
+
+          <!-- Score rings -->
+          <div class="match-score-row">
+            <!-- Django: these scores will be computed dynamically per logged-in user -->
+            <div class="match-ring-wrap">
+              <div class="match-ring" style="--pct:80;"><span class="match-ring-val">8/10</span></div>
+              <div class="match-ring-label">Cleanliness Match</div>
+            </div>
+            <div class="match-ring-wrap">
+              <div class="match-ring" style="--pct:70;"><span class="match-ring-val">70%</span></div>
+              <div class="match-ring-label">Schedule Overlap</div>
+            </div>
+            <div class="match-ring-wrap">
+              <div class="match-ring" style="--pct:90;"><span class="match-ring-val">90%</span></div>
+              <div class="match-ring-label">Overall Match</div>
+            </div>
+          </div>
+
+          <!-- Preference details -->
+          <div class="pref-rows">
+
+            <!-- Sleep Schedule -->
+            <div class="pref-row">
+              <div class="pref-row-header">
+                <span class="pref-label">SLEEP SCHEDULE</span>
+                <!-- Django: {{ room.sleep_schedule }} -->
+                <span class="sched-pill">🌙 Night Owl (after midnight)</span>
+              </div>
+            </div>
+
+            <!-- Cleanliness bar -->
+            <div class="pref-row">
+              <div class="pref-row-header">
+                <!-- Django: {{ room.cleanliness_score }}/10 -->
+                <span class="pref-label">CLEANLINESS EXPECTATION</span>
+                <span class="pref-value">7 / 10</span>
+              </div>
+              <div class="clean-bar-track">
+               <!-- style="width:{% widthratio room.cleanliness_score 1 10 %}%"               -->
+  <div class="clean-bar-fill" style="width:70%"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:4px;">
+                <span style="font-size:10px;color:rgba(255,255,255,.35);font-weight:600;">Relaxed</span>
+                <span style="font-size:10px;color:rgba(255,255,255,.35);font-weight:600;">Spotless</span>
+              </div>
+            </div>
+
+            <!-- Guest policy -->
+            <div class="pref-row">
+              <div class="pref-row-header">
+                <span class="pref-label">GUEST POLICY</span>
+                <!-- Django: {{ room.guest_policy }} -->
+                <span class="guest-pill guest-ok">✓ Occasional guests OK</span>
+              </div>
+            </div>
+
+            <!-- Other prefs -->
+            <div class="pref-row">
+              <div class="pref-row-header" style="margin-bottom:8px;">
+                <span class="pref-label">FLATMATE PROFILE LOOKING FOR</span>
+              </div>
+              <div class="pref-tags">
+                <!-- Django: {{ room.gender_preference }} / {{ room.occupation_preference }} -->
+                <div class="pref-tag">👤 Any Gender</div>
+                <div class="pref-tag">💼 Working Professionals</div>
+                <div class="pref-tag">🤝 Friendly &amp; Respectful</div>
+                <div class="pref-tag">🍳 Enjoys Cooking</div>
+              </div>
+            </div>
+
+            <!-- Extra note -->
+            <div class="pref-row" style="padding:12px 16px;background:rgba(255,255,255,.06);border-radius:12px;border:1px solid rgba(255,255,255,.1);">
+              <!-- Django: {{ room.flatmate_extra_note }} -->
+              <div style="font-size:13px;color:rgba(255,255,255,.7);line-height:1.7;font-style:italic;">"Looking for someone who respects quiet hours, likes to cook occasionally, and is generally friendly. Good vibes only!"</div>
+            </div>
+          </div>
+
+          <div class="match-cta">
+            <div class="match-cta-text">Create a free profile to see your personalised compatibility score with this listing.</div>
+            <button class="btn-match" onclick="showToast('✨ Profile matching coming soon!')">
+              ⚡ Check My Compatibility Score
+            </button>
+          </div>
+        </div>
+
+        <!-- LOCATION -->
+        <div class="detail-card fu d4">
+          <div class="card-title">
+            <div class="card-icon" style="background:#FEF3C7;">📍</div>
+            Location &amp; Commute
+          </div>
+          <div class="location-pills">
+            <!-- Django: {{ room.nearest_metro }} -->
+            <div class="loc-pill"><span class="loc-icon">🚇</span> Jayanagar Metro · 800m</div>
+            <!-- Django: {{ room.office_hub_distance }} -->
+            <div class="loc-pill"><span class="loc-icon">🏢</span> Manyata Tech Park · 18 min</div>
+            <div class="loc-pill"><span class="loc-icon">☕</span> Cafés &amp; restaurants · 5 min walk</div>
+            <div class="loc-pill"><span class="loc-icon">🛒</span> Supermarket · 3 min walk</div>
+          </div>
+
+          <div class="map-placeholder" onclick="showToast('🗺 Map integration coming soon!')">
+            <div class="map-pin-anim">📍</div>
+            <!-- Django: {{ room.city }} · {{ room.locality }} -->
+            <div style="font-weight:700;color:var(--navy);">Koramangala, Bangalore</div>
+            <div style="font-size:12px;">Full address shared after match confirmation</div>
+          </div>
+        </div>
+
+      </div><!-- end left column -->
+
+
+      <!-- ══ RIGHT SIDEBAR ══ -->
+      <div class="sidebar">
+        <div class="sidebar-sticky">
+
+          <!-- Owner Card -->
+          <div class="owner-card fu d2">
+            <div class="owner-avatar-wrap">
+              <div class="owner-avatar" id="ownerAvatar">
+                <!-- Django: {% if owner.profile_photo %}<img src="{{ owner.profile_photo.url }}" />{% else %} -->
+                R
+                <!-- Django: {% endif %} -->
+              </div>
+              <div class="verified-badge" title="ID Verified">✓</div>
+            </div>
+
+            <!-- Django: {{ room.owner.get_full_name }} -->
+            <div class="owner-name">Rahul Sharma</div>
+            <!-- Django: {{ room.owner.occupation }} -->
+            <div class="owner-role">🏠 Flat Owner · Joined 2023</div>
+
+            <div class="owner-stats">
+              <div class="owner-stat">
+                <div class="owner-stat-val">4.9</div>
+                <div class="owner-stat-label">Rating</div>
+              </div>
+              <div class="owner-stat">
+                <div class="owner-stat-val">3</div>
+                <div class="owner-stat-label">Listings</div>
+              </div>
+              <div class="owner-stat">
+                <div class="owner-stat-val">~2h</div>
+                <div class="owner-stat-label">Resp. Time</div>
+              </div>
+            </div>
+
+            <div class="owner-btns">
+              <!-- Django: {#% url 'chat' room.owner.id %#} -->
+              <button class="btn-teal" style="width:100%;font-size:15px;" onclick="showToast('💬 Opening chat with Rahul…')">
+                💬 Send Message
+              </button>
+
+              <div class="owner-divider">or reach out via</div>
+
+              <!-- Django: tel:{{ room.owner.phone }} -->
+              <a class="owner-contact-row" href="tel:+919876543210" onclick="showToast('📞 Calling Rahul…'); return false;">
+                <div class="owner-contact-icon" style="background:#D1FAE5;">📞</div>
+                <div>
+                  <div class="owner-contact-text">Call Owner</div>
+                  <!-- Django: {{ room.owner.phone }} -->
+                  <div class="owner-contact-sub">+91 98765 43210</div>
+                </div>
+              </a>
+
+              <!-- Django: mailto:{{ room.owner.email }} -->
+              <a class="owner-contact-row" href="mailto:rahul@example.com" onclick="showToast('📧 Opening email…'); return false;">
+                <div class="owner-contact-icon" style="background:var(--teal-lt);">📧</div>
+                <div>
+                  <div class="owner-contact-text">Send Email</div>
+                  <!-- Django: {{ room.owner.email }} -->
+                  <div class="owner-contact-sub">rahul@example.com</div>
+                </div>
+              </a>
+            </div>
+
+            <div class="action-row" style="margin-top:14px;">
+              <button class="btn-ghost" onclick="handleSave(this)">🤍 Save</button>
+              <button class="btn-ghost" onclick="handleShare()">↗ Share</button>
+              <button class="btn-ghost" onclick="showToast('🚩 Report submitted. Thank you.')">🚩 Report</button>
+            </div>
+          </div>
+
+          <!-- Quick Facts -->
+          <div class="quick-facts fu d3">
+            <div class="qf-title">📋 Quick Facts</div>
+            <div class="qf-list">
+              <!-- Django: {{ room.room_type }} -->
+              <div class="qf-item"><span class="qf-key">🏠 Room Type</span><span class="qf-val">Private Room</span></div>
+              <!-- Django: {{ room.bhk_config }} -->
+              <div class="qf-item"><span class="qf-key">🏢 Configuration</span><span class="qf-val">3 BHK</span></div>
+              <!-- Django: {{ room.floor }} -->
+              <div class="qf-item"><span class="qf-key">🏗 Floor</span><span class="qf-val">3rd of 6</span></div>
+              <!-- Django: {{ room.furnishing_status }} -->
+              <div class="qf-item"><span class="qf-key">🛋 Furnishing</span><span class="qf-val">Fully Furnished</span></div>
+              <!-- Django: {{ room.available_from|date:"d M Y" }} -->
+              <div class="qf-item"><span class="qf-key">📅 Available From</span><span class="qf-val" style="color:var(--green);font-weight:700;">Today</span></div>
+              <!-- Django: {{ room.minimum_stay }} -->
+              <div class="qf-item"><span class="qf-key">🗓 Minimum Stay</span><span class="qf-val">3 months</span></div>
+              <!-- Django: {{ room.security_deposit }} -->
+              <div class="qf-item"><span class="qf-key">🔐 Deposit</span><span class="qf-val">2 months</span></div>
+              <!-- Django: {{ room.maintenance }} -->
+              <div class="qf-item"><span class="qf-key">⚡ Maintenance</span><span class="qf-val">Included</span></div>
+            </div>
+          </div>
+
+        </div><!-- end sticky -->
+      </div><!-- end sidebar -->
+
+    </div><!-- end body-grid -->
+  </div>
+</section>
+
+
+<!-- ══ SIMILAR LISTINGS ══ -->
+<section class="similar-section">
+  <div class="container">
+    <div class="fu d1">
+      <div class="section-label">🔍 Explore More</div>
+      <h2 class="display" style="font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--navy);margin-top:8px;letter-spacing:-.02em;">
+        Similar Rooms You Might Like
+      </h2>
+    </div>
+
+    <div class="similar-grid">
+      <!-- Django: {% for similar in similar_rooms %} -->
+
+      <!-- Card 1 -->
+      <a href="#" class="room-card fu d2">
+        <div class="room-card-img">
+          <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=75" alt="Similar room" />
+          <div class="room-card-badge">POPULAR</div>
+        </div>
+        <div class="room-card-body">
+          <div class="room-card-title">Sunny Room in HSR Layout with Balcony</div>
+          <div class="room-card-location">📍 HSR Layout, Bangalore</div>
+          <div class="room-card-footer">
+            <div class="room-card-price">₹10,500<span style="font-size:11px;font-weight:500;color:var(--muted)">/mo</span></div>
+            <div class="room-card-type">Private Room</div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 2 -->
+      <a href="#" class="room-card fu d3">
+        <div class="room-card-img">
+          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=75" alt="Similar room" />
+          <div class="room-card-badge">NEW</div>
+        </div>
+        <div class="room-card-body">
+          <div class="room-card-title">Modern Studio Near Indiranagar Metro</div>
+          <div class="room-card-location">📍 Indiranagar, Bangalore</div>
+          <div class="room-card-footer">
+            <div class="room-card-price">₹15,000<span style="font-size:11px;font-weight:500;color:var(--muted)">/mo</span></div>
+            <div class="room-card-type">Studio</div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 3 -->
+      <a href="#" class="room-card fu d4">
+        <div class="room-card-img">
+          <img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600&q=75" alt="Similar room" />
+        </div>
+        <div class="room-card-body">
+          <div class="room-card-title">Spacious Shared Room in BTM Layout</div>
+          <div class="room-card-location">📍 BTM Layout, Bangalore</div>
+          <div class="room-card-footer">
+            <div class="room-card-price">₹7,500<span style="font-size:11px;font-weight:500;color:var(--muted)">/mo</span></div>
+            <div class="room-card-type">Shared Room</div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Django: {% endfor %} -->
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="container">
+    <div class="footer-top" style="display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:260px;">
+        <div class="display" style="font-size:22px;font-weight:800;color:#fff;margin-bottom:10px;">StayMatch</div>
+        <p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,.4);">AI-powered flatmate matching for students and professionals across India.</p>
+      </div>
+      <div class="footer-links" style="display:flex;gap:56px;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">PRODUCT</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">How It Works</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Browse Listings</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">List a Room</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Pricing</a>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">CITIES</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Bangalore</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Mumbai</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Delhi</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Hyderabad</a>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">COMPANY</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">About Us</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Blog</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Privacy Policy</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Terms of Use</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <div style="font-size:13px;color:rgba(255,255,255,.25);">© 2026 StayMatch Technologies Pvt. Ltd. · Made in India 🇮🇳</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.25);">Bangalore · Mumbai · Delhi · Hyderabad · Pune · Chennai · Kolkata · Patna</div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ══ MOBILE STICKY BAR ══ -->
+<div class="mobile-sticky-bar" id="mobileStickyBar">
+  <div class="msb-price">
+    <!-- Django: ₹{{ room.rent|intcomma }} -->
+    <div class="msb-price-main">₹12,000</div>
+    <div class="msb-price-sub">per month</div>
+  </div>
+  <button class="btn-teal" style="padding:13px 28px;" onclick="showToast('💬 Opening chat…')">💬 Message Owner</button>
+  <button class="btn-outline" style="padding:13px 18px;" onclick="handleSave(this)">🤍</button>
+</div>
+
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
+
+<script>
+  /* ══ HAMBURGER ══ */
+  const hambBtn = document.getElementById('hamburgerBtn');
+  const mobileNav = document.getElementById('mobileNav');
+  hambBtn.addEventListener('click', () => {
+    const open = mobileNav.classList.toggle('open');
+    hambBtn.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  mobileNav.querySelectorAll('a').forEach(l => l.addEventListener('click', () => {
+    mobileNav.classList.remove('open'); hambBtn.classList.remove('open'); document.body.style.overflow = '';
+  }));
+
+  /* ══ GALLERY SLIDER ══ */
+  const track   = document.getElementById('galleryTrack');
+  const slides  = track.querySelectorAll('.gallery-slide');
+  const dotsBox = document.getElementById('galleryDots');
+  const counter = document.getElementById('galleryCounter');
+  const thumbs  = document.querySelectorAll('.gallery-thumb');
+  let current   = 0;
+  const total   = slides.length;
+  let isDragging = false, startX = 0, currentX = 0;
+  let autoTimer;
+
+  // build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goToSlide(i));
+    dotsBox.appendChild(d);
+  });
+
+  function goToSlide(n) {
+    current = (n + total) % total;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    counter.textContent = `${current + 1} / ${total}`;
+    dotsBox.querySelectorAll('.gallery-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    thumbs.forEach((t, i) => t.classList.toggle('active', i === current));
+    // scroll thumb into view
+    if (thumbs[current]) thumbs[current].scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+    resetAuto();
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => goToSlide(current - 1));
+  document.getElementById('nextBtn').addEventListener('click', () => goToSlide(current + 1));
+
+  // keyboard nav
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') goToSlide(current - 1);
+    if (e.key === 'ArrowRight') goToSlide(current + 1);
+  });
+
+  // touch / drag
+  const slider = document.getElementById('gallerySlider');
+  slider.addEventListener('mousedown',  e => { isDragging=true; startX=e.clientX; track.style.transition='none'; });
+  slider.addEventListener('touchstart', e => { isDragging=true; startX=e.touches[0].clientX; track.style.transition='none'; }, {passive:true});
+  slider.addEventListener('mousemove',  e => { if (!isDragging) return; currentX=e.clientX-startX; track.style.transform=`translateX(calc(-${current*100}% + ${currentX}px))`; });
+  slider.addEventListener('touchmove',  e => { if (!isDragging) return; currentX=e.touches[0].clientX-startX; track.style.transform=`translateX(calc(-${current*100}% + ${currentX}px))`; }, {passive:true});
+  function endDrag() {
+    if (!isDragging) return; isDragging=false;
+    track.style.transition='';
+    if (currentX < -60) goToSlide(current + 1);
+    else if (currentX > 60) goToSlide(current - 1);
+    else goToSlide(current);
+    currentX=0;
+  }
+  slider.addEventListener('mouseup', endDrag);
+  slider.addEventListener('touchend', endDrag);
+  slider.addEventListener('mouseleave', endDrag);
+
+  // auto-advance
+  function resetAuto() { clearInterval(autoTimer); autoTimer = setInterval(() => goToSlide(current + 1), 4500); }
+  resetAuto();
+
+  /* ══ CLEANLINESS BAR ANIMATION ══ */
+  const bar = document.querySelector('.clean-bar-fill');
+  if (bar) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { bar.style.width = bar.style.width || '70%'; observer.unobserve(bar); }});
+    }, { threshold: 0.3 });
+    observer.observe(bar);
+  }
+
+  /* ══ MATCH RING ANIMATION ══ */
+  document.querySelectorAll('.match-ring').forEach(ring => {
+    const pct = parseFloat(getComputedStyle(ring).getPropertyValue('--pct') || ring.style.getPropertyValue('--pct') || 0);
+    ring.style.setProperty('--pct', 0);
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          let start = null;
+          function animate(ts) {
+            if (!start) start = ts;
+            const progress = Math.min((ts - start) / 900, 1);
+            ring.style.setProperty('--pct', (progress * pct) + '%');
+            if (progress < 1) requestAnimationFrame(animate);
+          }
+          requestAnimationFrame(animate);
+          obs.unobserve(ring);
+        }
+      });
+    }, { threshold: 0.4 });
+    obs.observe(ring);
+  });
+
+  /* ══ SAVE / WISHLIST ══ */
+  function handleSave(btn) {
+    const saved = btn.textContent.includes('♥') || btn.textContent.includes('❤');
+    if (saved) { btn.textContent = btn.textContent.replace(/[♥❤]/, '🤍'); showToast('Removed from saved listings'); }
+    else        { btn.textContent = btn.textContent.replace('🤍', '❤️'); showToast('❤️ Saved to your wishlist!'); }
+  }
+
+  /* ══ SHARE ══ */
+  function handleShare() {
+    if (navigator.share) {
+      navigator.share({ title: document.title, url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(window.location.href).then(() => showToast('🔗 Link copied to clipboard!'));
+    }
+  }
+
+  /* ══ TOAST ══ */
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  /* ══ STICKY NAV SHADOW ══ */
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    nav.style.boxShadow = window.scrollY > 10 ? '0 2px 20px rgba(15,31,61,.08)' : 'none';
+  });
+</script>
+</body>
+</html>
