@@ -1,0 +1,219 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+.wrap{font-family:'Segoe UI',sans-serif;display:flex;height:600px;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;background:#fff;}
+
+.sb{width:290px;min-width:290px;background:#fff;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;}
+.sb-head{padding:16px 16px 10px;border-bottom:1px solid #e2e8f0;}
+.sb-head h2{font-size:16px;font-weight:700;color:#0f172a;}
+.sb-head p{font-size:12px;color:#64748b;margin-top:2px;}
+.sb-search{padding:10px 12px;border-bottom:1px solid #e2e8f0;}
+.sb-search input{width:100%;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:20px;padding:7px 14px;font-size:13px;color:#0f172a;outline:none;}
+.sb-search input::placeholder{color:#94a3b8;}
+.conv-list{flex:1;overflow-y:auto;}
+.conv-list::-webkit-scrollbar{width:4px;}
+.conv-list::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px;}
+.ci{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;border-left:3px solid transparent;transition:background 0.15s;}
+.ci:hover{background:#f8fafc;}
+.ci.active{background:#eff6ff;border-left-color:#3b82f6;}
+.av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;position:relative;}
+.av.on::after{content:'';position:absolute;bottom:1px;right:1px;width:10px;height:10px;background:#22c55e;border-radius:50%;border:2px solid #fff;}
+.ci-info{flex:1;min-width:0;}
+.ci-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;}
+.ci-name{font-size:13px;font-weight:600;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ci-time{font-size:11px;color:#94a3b8;flex-shrink:0;}
+.ci-prev{font-size:12px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ci-prev.bold{color:#0f172a;font-weight:600;}
+.u-dot{width:8px;height:8px;background:#3b82f6;border-radius:50%;flex-shrink:0;}
+
+.chat{flex:1;display:flex;flex-direction:column;min-width:0;background:#fff;}
+.chat-hd{padding:12px 18px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;background:#fff;}
+.chat-hd-l{display:flex;align-items:center;gap:10px;}
+.ch-name{font-size:15px;font-weight:700;color:#0f172a;}
+.ch-status{display:flex;align-items:center;gap:4px;font-size:11px;color:#22c55e;margin-top:2px;}
+.ch-dot{width:7px;height:7px;background:#22c55e;border-radius:50%;}
+.btn-vp{font-size:12px;padding:6px 14px;border-radius:8px;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;cursor:pointer;font-weight:600;}
+.btn-vp:hover{background:#dbeafe;}
+
+.msgs{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:12px;background:#f8fafc;}
+.msgs::-webkit-scrollbar{width:4px;}
+.msgs::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px;}
+.date-div{text-align:center;font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:8px;margin:4px 0;}
+.date-div::before,.date-div::after{content:'';flex:1;height:1px;background:#e2e8f0;}
+
+.mrow{display:flex;flex-direction:column;}
+.mrow.inc{align-items:flex-start;}
+.mrow.out{align-items:flex-end;}
+.mrow-inner{display:flex;align-items:flex-end;gap:7px;max-width:74%;}
+.mrow.inc .mrow-inner{flex-direction:row;}
+.mrow.out .mrow-inner{flex-direction:row-reverse;}
+.mav{width:28px;height:28px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.bub{padding:9px 14px;border-radius:16px;font-size:13px;line-height:1.55;}
+.bub.inc{background:#fff;border:1px solid #e2e8f0;color:#0f172a;border-bottom-left-radius:4px;}
+.bub.out{background:#1d4ed8;color:#fff;border-bottom-right-radius:4px;}
+.mts{font-size:10px;color:#94a3b8;margin-top:3px;}
+.mrow.inc .mts{margin-left:35px;}
+.mrow.out .mts{text-align:right;}
+
+.inp-bar{padding:10px 14px;border-top:1px solid #e2e8f0;display:flex;align-items:center;gap:8px;background:#fff;}
+.inp-bar input{flex:1;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:22px;padding:9px 16px;font-size:13px;color:#0f172a;outline:none;}
+.inp-bar input:focus{border-color:#93c5fd;background:#fff;}
+.inp-bar input::placeholder{color:#94a3b8;}
+.snd{width:38px;height:38px;border-radius:50%;background:#1d4ed8;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s;}
+.snd:hover{background:#1e40af;}
+.snd svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+.mob-btn{display:none;position:absolute;top:10px;left:10px;background:#3b82f6;color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:13px;cursor:pointer;}
+@media(max-width:560px){
+  .sb{display:none;position:absolute;z-index:20;height:600px;width:80%;box-shadow:4px 0 20px rgba(0,0,0,.15);}
+  .sb.show{display:flex;}
+  .mob-btn{display:block;}
+  .wrap{position:relative;}
+}
+</style>
+
+<div class="wrap" id="wrap">
+  <button class="mob-btn" onclick="document.getElementById('sb').classList.toggle('show')">☰ Chats</button>
+  <div class="sb" id="sb">
+    <div class="sb-head">
+      <h2>💬 Messages</h2>
+      <p>8 active conversations</p>
+    </div>
+    <div class="sb-search"><input placeholder="Search conversations…" /></div>
+    <div class="conv-list" id="convList"></div>
+  </div>
+  <div class="chat">
+    <div class="chat-hd">
+      <div class="chat-hd-l">
+        <div class="av on" id="hAv" style="background:#dbeafe;color:#1d4ed8;">RS</div>
+        <div>
+          <div class="ch-name" id="hName">Riya Sharma</div>
+          <div class="ch-status" id="hStatus"><div class="ch-dot"></div> Online now</div>
+        </div>
+      </div>
+      <button class="btn-vp">View Profile →</button>
+    </div>
+    <div class="msgs" id="msgs"></div>
+    <div class="inp-bar">
+      <input id="inp" placeholder="Type a message…" />
+      <button class="snd" id="sndBtn">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const convs=[
+  {id:1,i:'RS',name:'Riya Sharma',prev:'OBSESSED ok we def need to be flatmates 😭',time:'2m',bg:'#dbeafe',tc:'#1d4ed8',on:true,u:2},
+  {id:2,i:'AM',name:'Arjun Mehta',prev:'haha same!! are you into gaming? 🎮',time:'1h',bg:'#dcfce7',tc:'#15803d',on:false,u:1},
+  {id:3,i:'PN',name:'Priya Nair',prev:'The flat is still available! Come visit 🏠',time:'3h',bg:'#fef9c3',tc:'#a16207',on:true,u:0},
+  {id:4,i:'RM',name:'Rohan M.',prev:"Let me know when you're free to visit!",time:'1d',bg:'#ede9fe',tc:'#6d28d9',on:false,u:0},
+  {id:5,i:'SK',name:'Sneha K.',prev:'We matched 92%, should we chat? 👋',time:'2d',bg:'#fce7f3',tc:'#be185d',on:false,u:0},
+  {id:6,i:'DV',name:'Dev Verma',prev:'Hey! Saw your profile on StayMatch',time:'3d',bg:'#f1f5f9',tc:'#475569',on:false,u:0},
+];
+const msgs={
+  1:[
+    {f:'t',t:'Hey! Just saw your profile on StayMatch 👀',ts:'10:14 AM'},
+    {f:'m',t:"Hi Riya! I've been looking for a flatmate in HSR Layout 🙌",ts:'10:16 AM'},
+    {f:'t',t:"OMG same area! Night owl who loves gaming — this feels too good 😂",ts:'10:18 AM'},
+    {f:'m',t:'Haha right? What games do you play?',ts:'10:19 AM'},
+    {f:'t',t:'Mostly Valorant and some indie stuff. You?',ts:'10:21 AM'},
+    {f:'m',t:"Same! I'm Diamond in Valorant 💀 We'd literally live the same schedule",ts:'10:23 AM'},
+    {f:'t',t:'OBSESSED ok we def need to be flatmates 😭',ts:'10:25 AM'},
+  ],
+  2:[
+    {f:'t',t:'Hey! Arjun here from your StayMatch match list',ts:'9:00 AM'},
+    {f:'m',t:'Hey Arjun! 95% compatibility — pretty cool 😄',ts:'9:05 AM'},
+    {f:'t',t:'haha same!! are you into gaming? 🎮',ts:'9:06 AM'},
+  ],
+  3:[
+    {f:'t',t:'Hi! I saw you were interested in the 1BHK near HSR metro',ts:'7:00 AM'},
+    {f:'m',t:'Yes! When can I schedule a visit?',ts:'7:15 AM'},
+    {f:'t',t:'The flat is still available! Come visit 🏠',ts:'7:20 AM'},
+  ],
+  4:[
+    {f:'t',t:"Hi there! The 3BHK in Indiranagar — let's arrange a time?",ts:'Yesterday'},
+    {f:'m',t:'Sure! Tomorrow evening works?',ts:'Yesterday'},
+    {f:'t',t:"Let me know when you're free to visit!",ts:'Yesterday'},
+  ],
+  5:[
+    {f:'t',t:'Hey! We matched 92% on StayMatch, wanted to say hi 👋',ts:'2 days ago'},
+    {f:'m',t:'Hi Sneha! That is a crazy high match 😄',ts:'2 days ago'},
+  ],
+  6:[
+    {f:'t',t:'Hey! Saw your profile on StayMatch — looking in HSR too?',ts:'3 days ago'},
+  ],
+};
+let active=1;
+
+const replies=['Got it! 👍','That sounds amazing!','Haha totally agree 😄','Let me check and get back!','Yes! When works for you?','Sounds like a plan 🙌'];
+
+function renderList(){
+  const el=document.getElementById('convList');
+  el.innerHTML='';
+  convs.forEach(c=>{
+    const d=document.createElement('div');
+    d.className='ci'+(c.id===active?' active':'');
+    d.innerHTML=`<div class="av${c.on?' on':''}" style="background:${c.bg};color:${c.tc};">${c.i}</div>
+    <div class="ci-info">
+      <div class="ci-top"><span class="ci-name">${c.name}</span><span class="ci-time">${c.time}</span></div>
+      <div class="ci-prev${c.u?' bold':''}">${c.prev}</div>
+    </div>
+    ${c.u?'<div class="u-dot"></div>':''}`;
+    d.onclick=()=>switchChat(c.id);
+    el.appendChild(d);
+  });
+}
+
+function switchChat(id){
+  active=id;
+  const c=convs.find(x=>x.id===id);
+  document.getElementById('hName').textContent=c.name;
+  const av=document.getElementById('hAv');
+  av.textContent=c.i;av.style.background=c.bg;av.style.color=c.tc;
+  av.className='av'+(c.on?' on':'');
+  document.getElementById('hStatus').style.display=c.on?'flex':'none';
+  renderMsgs();renderList();
+  if(window.innerWidth<=560) document.getElementById('sb').classList.remove('show');
+}
+
+function renderMsgs(){
+  const area=document.getElementById('msgs');
+  const list=msgs[active]||[];
+  const c=convs.find(x=>x.id===active);
+  area.innerHTML='<div class="date-div">Today</div>';
+  list.forEach(m=>{
+    const row=document.createElement('div');
+    row.className='mrow '+(m.f==='m'?'out':'inc');
+    const avHtml=m.f==='t'
+      ?`<div class="mav" style="background:${c.bg};color:${c.tc};">${c.i}</div>`
+      :`<div class="mav" style="background:#dbeafe;color:#1d4ed8;">Me</div>`;
+    row.innerHTML=`<div class="mrow-inner">${avHtml}<div class="bub ${m.f==='m'?'out':'inc'}">${m.t}</div></div><div class="mts">${m.ts}</div>`;
+    area.appendChild(row);
+  });
+  area.scrollTop=area.scrollHeight;
+}
+
+document.getElementById('sndBtn').onclick=send;
+document.getElementById('inp').onkeydown=e=>{if(e.key==='Enter')send();};
+
+function send(){
+  const inp=document.getElementById('inp');
+  const txt=inp.value.trim();
+  if(!txt)return;
+  if(!msgs[active])msgs[active]=[];
+  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  msgs[active].push({f:'m',t:txt,ts:now});
+  const c=convs.find(x=>x.id===active);
+  if(c){c.prev=txt;c.time='now';c.u=0;}
+  inp.value='';renderMsgs();renderList();
+  setTimeout(()=>{
+    const rep=replies[Math.floor(Math.random()*replies.length)];
+    msgs[active].push({f:'t',t:rep,ts:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+    renderMsgs();
+  },1200);
+}
+
+renderList();renderMsgs();
+</script>

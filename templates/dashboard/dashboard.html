@@ -560,10 +560,11 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   </a>
 
   <div class="sb-section">Connect</div>
-  <a class="nav-item" onclick="showSec('messages')">
+<a href="{% url 'inbox' %}" class="nav-item" style="text-decoration: none;">
     <span class="nav-icon">💬</span> Messages
     <span class="nav-badge">3</span>
-  </a>
+</a>
+
   <a class="nav-item" onclick="showSec('notifications')">
     <span class="nav-icon">🔔</span> Notifications
   </a>

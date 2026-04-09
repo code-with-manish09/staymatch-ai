@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'accounts.apps.AccountsConfig',
     'dashboard.apps.DashboardConfig',
-    'rooms.apps.RoomsConfig'
+    'rooms.apps.RoomsConfig',
+    'inbox.apps.InboxConfig'
 ]
 
 MIDDLEWARE = [
