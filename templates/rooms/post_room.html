@@ -1042,13 +1042,10 @@
     </nav>
 
     <div class="mobile-nav" id="mobileNav">
-        <a href="#" class="nav-a">Discover</a>
-        <a href="#" class="nav-a">How It Works</a>
-        <a href="#" class="nav-a active">List a Room</a>
-        <a href="#" class="nav-a">About</a>
+        
         <div class="mobile-nav-btns">
-            <a href="#" class="btn-outline" style="flex:1;">Log In</a>
-            <a href="#" class="btn-primary" style="flex:1;">Get Started →</a>
+            <!-- <a href="#" class="btn-outline" style="flex:1;">Log In</a> -->
+            <a href="#" class="btn-primary" style="flex:1;">Dashboard →</a>
         </div>
     </div>
 
@@ -1561,12 +1558,12 @@
                                 </div>
                                 <div class="field-group">
                                     <label class="field-label">Phone *</label>
-                                    <input type="tel" class="field-input" placeholder="+91 98765 43210" />
+                                    <input type="tel" class="field-input" placeholder="+91 98765 43210" id="phoneInput" />
                                 </div>
                             </div>
                             <div class="field-group">
                                 <label class="field-label">Email *</label>
-                                <input type="email" class="field-input" placeholder="you@example.com" />
+                                <input type="email" class="field-input" placeholder="you@example.com" id="emailInput" />
                             </div>
                             <div
                                 style="display:flex;align-items:flex-start;gap:10px;background:var(--teal-lt);border-radius:12px;padding:14px 16px;">
@@ -1875,10 +1872,11 @@
 
         /* ── file upload / image preview ── */
         let uploadedImgs = [];
+        let uploadedFiles = [];
         function handleFiles(files) {
-            const grid = document.getElementById('imgPreviewGrid');
             Array.from(files).slice(0, 10 - uploadedImgs.length).forEach(file => {
                 if (!file.type.startsWith('image/')) return;
+                uploadedFiles.push(file);
                 const reader = new FileReader();
                 reader.onload = e => {
                     uploadedImgs.push(e.target.result);
@@ -1902,7 +1900,11 @@
                 grid.appendChild(d);
             });
         }
-        function removeImg(i) { uploadedImgs.splice(i, 1); renderImgPreviews(); }
+        function removeImg(i) {
+            uploadedImgs.splice(i, 1);
+            uploadedFiles.splice(i, 1);
+            renderImgPreviews();
+        }
 
         // drag & drop
         const zone = document.getElementById('uploadZone');
@@ -1911,11 +1913,71 @@
         zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
 
         /* ── submit ── */
+        function getActiveText(groupId) {
+            const active = document.querySelector('#' + groupId + ' .radio-btn.active');
+            return active ? active.textContent.trim() : '';
+        }
+
         function handleSubmit() {
             const agree = document.getElementById('agreeCheck').checked;
             if (!agree) { alert('Please agree to the Terms of Use to publish your listing.'); return; }
-            document.getElementById('successOverlay').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+
+            const formData = new FormData();
+            formData.append('title', document.getElementById('titleInput').value || 'Untitled Listing');
+            formData.append('city', document.getElementById('cityInput').value || 'Bangalore');
+            formData.append('area', document.getElementById('areaInput').value || 'Not specified');
+            formData.append('room_type', document.getElementById('roomTypeInput').value || 'Private Room');
+            formData.append('available_from', document.getElementById('availableInput').value);
+            formData.append('rent', document.getElementById('rentSlider').value || '12000');
+            formData.append('description', document.getElementById('descInput').value || '');
+            formData.append('contact_name', document.getElementById('nameInput').value || '');
+            formData.append('contact_phone', document.getElementById('phoneInput').value || '');
+            formData.append('contact_email', document.getElementById('emailInput').value || '');
+
+            const selectedAmenities = Array.from(document.querySelectorAll('#amenityGrid .amenity-btn.selected .ame-label'))
+                .map(el => el.textContent.trim());
+            selectedAmenities.forEach(name => formData.append('amenities', name));
+
+            const selectedIncludedItems = Array.from(document.querySelectorAll('#includedGroup .radio-btn.active'))
+                .map(el => el.textContent.trim());
+            selectedIncludedItems.forEach(item => formData.append('included_items', item));
+
+            for (let i = 0; i < uploadedFiles.length; i++) {
+                formData.append('images', uploadedFiles[i]);
+                formData.append('images[]', uploadedFiles[i]);
+            }
+
+            // Optional fields with safe defaults
+            formData.append('address', 'Address not provided');
+            formData.append('bhk_config', '1 BHK');
+            formData.append('floor', 'Not specified');
+            formData.append('min_stay', '1 month');
+            formData.append('deposit', '1 month rent');
+            formData.append('maintenance', 'Included in rent');
+            formData.append('furnishing_status', getActiveText('furnishGroup').includes('Semi') ? 'Semi' : (getActiveText('furnishGroup').includes('Unfurnished') ? 'Unfurnished' : 'Fully'));
+            formData.append('house_rules', '');
+            formData.append('nearest_metro', '');
+            formData.append('distance_to_hub', '');
+            formData.append('pref_gender', 'Any');
+            formData.append('pref_occupation', 'Any');
+            formData.append('sleep_schedule', getActiveText('sleepGroup') || 'No preference');
+            formData.append('cleanliness_level', document.getElementById('cleanSlider').value || '7');
+            formData.append('guest_policy', getActiveText('guestGroup') || 'Occasional guests OK');
+
+            fetch(window.location.pathname, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                body: formData
+            })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                        return;
+                    }
+                    if (!response.ok) throw new Error('Save failed');
+                    window.location.href = '/dashboard/';
+                })
+                .catch(() => alert('Listing save nahi ho paayi. Please try again.'));
         }
         function closeSuccess() {
             document.getElementById('successOverlay').style.display = 'none';

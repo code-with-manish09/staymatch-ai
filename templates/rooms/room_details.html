@@ -2,452 +2,764 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Room Detail — StayMatch</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-:root{--navy:#0F1F3D;--teal:#0EA5C9;--teal-lt:#E0F4FB;--amber:#F59E0B;--amber-lt:#FEF3C7;--green:#10B981;--green-lt:#F0FDF4;--border:#E4E8F0;--muted:#6B7A99;--off:#F6F7FB;--card-sh:0 2px 16px rgba(15,31,61,.08);}
+:root{
+  --navy:#0F1F3D;--teal:#0EA5C9;--teal-lt:#E0F4FB;--amber:#F59E0B;--amber-lt:#FEF3C7;
+  --green:#10B981;--green-lt:#F0FDF4;--white:#FFFFFF;--off:#F6F7FB;--border:#E4E8F0;
+  --muted:#6B7A99;--card-sh:0 4px 24px rgba(15,31,61,.10);--card-sh2:0 12px 40px rgba(15,31,61,.14);
+}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Instrument Sans',sans-serif;background:var(--off);color:var(--navy);min-height:100vh;}
+html{scroll-behavior:smooth;}
+body{font-family:'Instrument Sans',sans-serif;background:var(--off);color:var(--navy);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--off);}
+::-webkit-scrollbar-thumb{background:var(--teal);border-radius:99px;}
 .display{font-family:'Bricolage Grotesque',sans-serif;}
-.grad{background:linear-gradient(120deg,var(--teal),var(--navy));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9998;opacity:.5;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes gradPan{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes checkPop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes blobMorph{0%,100%{border-radius:60% 40% 70% 30%/50% 60% 40% 50%}50%{border-radius:40% 60% 30% 70%/60% 40% 70% 30%}}
+.fu{animation:fadeUp .6s ease forwards;opacity:0;}
+.d1{animation-delay:.06s}.d2{animation-delay:.14s}.d3{animation-delay:.24s}.d4{animation-delay:.36s}
+.grad{background:linear-gradient(120deg,var(--teal),var(--navy));background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradPan 5s ease infinite;}
 
-/* NAV */
-.nav{height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
-.nav-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:var(--navy);text-decoration:none;}
-.nav-links{display:flex;gap:24px;}
-.nav-a{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;cursor:pointer;}
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:500;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.02em;color:var(--navy);text-decoration:none;}
+.nav-links{display:flex;gap:36px;}
+.nav-a{font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;transition:color .2s;}
 .nav-a:hover,.nav-a.active{color:var(--navy);}
-.nav-btns{display:flex;gap:8px;}
-.btn-sm{padding:7px 16px;border-radius:8px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;border:1.5px solid var(--border);background:#fff;color:var(--navy);transition:all .2s;}
-.btn-sm:hover{background:var(--off);}
-.btn-sm.primary{background:var(--navy);color:#fff;border-color:var(--navy);}
-.btn-sm.primary:hover{background:#1a3260;}
-.btn-sm.teal{background:var(--teal);color:#fff;border-color:var(--teal);}
-.btn-sm.teal:hover{background:#0993b3;}
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:6px;width:36px;height:36px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--navy);border-radius:2px;transition:all .3s ease;transform-origin:center;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-nav{display:none;position:fixed;top:68px;left:0;right:0;background:rgba(255,255,255,.97);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);padding:20px 24px 28px;flex-direction:column;gap:4px;z-index:499;animation:slideDown .25s ease forwards;}
+.mobile-nav.open{display:flex;}
+.mobile-nav .nav-a{font-size:16px;padding:10px 0;border-bottom:1px solid var(--border);}
+.mobile-nav-btns{display:flex;gap:10px;margin-top:16px;}
+.btn-primary{background:var(--navy);color:#fff;padding:13px 28px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:background .2s,transform .2s,box-shadow .2s;letter-spacing:-.01em;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
+.btn-primary:hover{background:#1a3260;transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,31,61,.2);}
+.btn-teal{background:var(--teal);color:#fff;padding:13px 28px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
+.btn-teal:hover{background:#0993b3;transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,165,201,.3);}
+.btn-outline{background:transparent;color:var(--navy);padding:12px 24px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:14px;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
+.btn-outline:hover{border-color:var(--navy);background:var(--off);}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:99px;font-size:11px;font-weight:600;white-space:nowrap;}
+.container{max-width:1200px;margin:0 auto;padding:0 48px;}
 
-/* HERO IMAGE */
-.hero-gallery{position:relative;height:340px;background:linear-gradient(135deg,#0EA5C9,#0F1F3D);overflow:hidden;display:flex;}
-.hero-main{flex:2;position:relative;overflow:hidden;cursor:pointer;}
-.hero-main img{width:100%;height:100%;object-fit:cover;}
-.hero-side{flex:1;display:grid;grid-template-rows:1fr 1fr;gap:3px;padding-left:3px;}
-.hero-thumb{overflow:hidden;cursor:pointer;}
-.hero-thumb img{width:100%;height:100%;object-fit:cover;}
-.hero-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;color:rgba(255,255,255,.3);}
-.photo-count-btn{position:absolute;bottom:14px;right:16px;background:rgba(15,31,61,.7);color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Instrument Sans',sans-serif;backdrop-filter:blur(6px);}
-.status-badge{position:absolute;top:14px;left:14px;background:var(--amber);color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:6px;letter-spacing:.05em;font-family:'Bricolage Grotesque',sans-serif;}
+/* ── GALLERY ── */
+.gallery-grid{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;height:420px;gap:3px;background:var(--navy);}
+.g-main{grid-row:1/3;position:relative;overflow:hidden;background:linear-gradient(135deg,#0EA5C9,#0F1F3D);cursor:pointer;}
+.g-thumb{overflow:hidden;position:relative;background:linear-gradient(135deg,#1a3260,#0EA5C9);cursor:pointer;}
+.g-main img,.g-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
+.g-main:hover img,.g-thumb:hover img{transform:scale(1.04);}
+.gallery-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:60px;opacity:.25;}
+.g-thumb .gallery-placeholder{font-size:36px;}
+.gallery-badge{position:absolute;top:16px;left:16px;background:var(--amber);color:#fff;font-size:10px;font-weight:800;padding:5px 12px;border-radius:6px;letter-spacing:.06em;font-family:'Bricolage Grotesque',sans-serif;z-index:2;}
+.gallery-photo-btn{position:absolute;bottom:16px;right:16px;background:rgba(15,31,61,.75);color:#fff;border:none;padding:9px 18px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Instrument Sans',sans-serif;backdrop-filter:blur(8px);z-index:2;transition:background .2s;}
+.gallery-photo-btn:hover{background:rgba(15,31,61,.92);}
+.gallery-modal{position:fixed;inset:0;background:rgba(15,31,61,.82);display:none;align-items:center;justify-content:center;z-index:1200;padding:20px;}
+.gallery-modal.open{display:flex;}
+.gallery-modal-inner{max-width:980px;width:100%;max-height:90vh;background:#fff;border-radius:14px;overflow:auto;padding:16px;border:1px solid var(--border);}
+.gallery-modal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.gallery-modal-grid img{width:100%;height:220px;object-fit:cover;border-radius:10px;}
+.gallery-close{position:absolute;top:16px;right:16px;background:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;}
+.save-share{position:absolute;top:16px;right:16px;display:flex;gap:8px;z-index:2;}
+.icon-btn{background:rgba(255,255,255,.9);border:none;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .2s;backdrop-filter:blur(6px);}
+.icon-btn:hover{background:#fff;transform:scale(1.08);}
 
-/* BODY GRID */
-.body-wrap{max-width:1160px;margin:0 auto;padding:28px 20px 60px;display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start;}
-
-/* LEFT PANEL */
-.section-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:var(--card-sh);margin-bottom:20px;}
-.sec-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
-.sec-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
-.ic-teal{background:var(--teal-lt);}
-.ic-amber{background:var(--amber-lt);}
-.ic-green{background:var(--green-lt);}
-.ic-navy{background:#EEF1F6;}
-
-/* Info grid */
-.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-.info-item{background:var(--off);border-radius:10px;padding:12px 14px;}
-.info-item .i-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;margin-bottom:4px;text-transform:uppercase;}
-.info-item .i-val{font-size:14px;font-weight:600;color:var(--navy);}
-.info-item .i-val.teal{color:var(--teal);}
-.info-item .i-val.green{color:var(--green);}
-
-/* Amenity chips */
-.ame-wrap{display:flex;flex-wrap:wrap;gap:8px;}
-.ame-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:99px;background:var(--off);border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--navy);}
-.ame-chip.active{background:var(--teal-lt);border-color:var(--teal);color:var(--teal);}
-.ame-chip .ame-ico{font-size:14px;}
-
-/* Description */
-.desc-text{font-size:14px;color:var(--muted);line-height:1.75;}
-.rules-list{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
-.rule-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--navy);}
-.rule-dot{width:6px;height:6px;border-radius:50%;background:var(--amber);margin-top:5px;flex-shrink:0;}
-
-/* Map / Location */
-.loc-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
-.loc-pill{display:flex;align-items:center;gap:7px;background:var(--off);border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:13px;font-weight:500;color:var(--navy);}
-.loc-pill span{font-size:16px;}
-.map-placeholder{height:160px;background:linear-gradient(145deg,#ddf0fa,#c5e7f7);border-radius:12px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);position:relative;overflow:hidden;}
-.map-pin{width:36px;height:36px;background:var(--teal);border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(14,165,201,.4);}
-.map-pin-inner{width:12px;height:12px;background:#fff;border-radius:50%;transform:rotate(45deg);}
-.map-streets{position:absolute;inset:0;opacity:.2;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,var(--teal) 39px,var(--teal) 40px),repeating-linear-gradient(90deg,transparent,transparent 59px,var(--teal) 59px,var(--teal) 60px);}
-
-/* Flatmate prefs */
-.pref-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.pref-item{background:var(--off);border-radius:10px;padding:12px 14px;}
-.pref-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.05em;margin-bottom:6px;text-transform:uppercase;}
-.pref-val{font-size:13px;font-weight:600;color:var(--navy);}
-.pref-bar{height:6px;background:var(--border);border-radius:99px;margin-top:8px;overflow:hidden;}
-.pref-fill{height:100%;background:var(--teal);border-radius:99px;}
-
-/* Included row */
-.incl-row{display:flex;flex-wrap:wrap;gap:7px;}
-.incl-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:600;}
-.incl-yes{background:#F0FDF4;color:#059669;border:1px solid #A7F3D0;}
-.incl-no{background:var(--off);color:var(--muted);border:1px solid var(--border);text-decoration:line-through;opacity:.6;}
-
-/* RIGHT SIDEBAR */
-.price-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:var(--card-sh);position:sticky;top:76px;}
-.price-tag{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px;color:var(--navy);}
-.price-sub{font-size:12px;color:var(--muted);}
-.cta-btn{width:100%;padding:14px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;cursor:pointer;border:none;margin-top:12px;transition:all .2s;}
-.cta-primary{background:var(--teal);color:#fff;}
-.cta-primary:hover{background:#0993b3;}
-.cta-secondary{background:var(--off);color:var(--navy);border:1.5px solid var(--border);}
-.cta-secondary:hover{border-color:var(--navy);}
-.contact-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--card-sh);margin-top:16px;}
-.host-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.host-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:16px;flex-shrink:0;}
-.host-name{font-weight:600;font-size:14px;color:var(--navy);}
-.host-since{font-size:11px;color:var(--muted);}
-.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
-.stat-box{background:var(--off);border-radius:8px;padding:10px 12px;}
-.stat-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:18px;color:var(--navy);}
-.stat-lbl{font-size:10px;color:var(--muted);margin-top:1px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
-.divider{border:none;border-top:1px solid var(--border);margin:14px 0;}
-.contact-btns{display:flex;flex-direction:column;gap:8px;}
-.trust-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
-.trust-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:var(--green-lt);border-radius:99px;font-size:11px;font-weight:600;color:#059669;border:1px solid #A7F3D0;}
-
-/* Breadcrumb */
-.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:18px;}
+/* ── SECTIONS ── */
+.section-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:28px 32px;box-shadow:var(--card-sh);margin-bottom:20px;}
+.sec-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--navy);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.step-badge{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Bricolage Grotesque',sans-serif;}
+.step-badge.teal{background:var(--teal);}
+.step-badge.amber{background:var(--amber);}
+.step-badge.green{background:var(--green);}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:16px;}
 .breadcrumb a{color:var(--muted);text-decoration:none;}
 .breadcrumb a:hover{color:var(--navy);}
 .bc-sep{color:var(--border);}
+.page-grid{display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start;padding:32px 0 80px;}
 
-/* Tabs */
-.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:18px;}
-.tab{padding:10px 16px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px;background:none;border-left:none;border-right:none;border-top:none;}
-.tab.active{color:var(--teal);border-bottom-color:var(--teal);}
+/* ── INFO GRID ── */
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.info-item{background:var(--off);border-radius:12px;padding:14px 16px;border:1px solid var(--border);}
+.i-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
+.i-val{font-size:14px;font-weight:600;color:var(--navy);}
+.i-val.teal{color:var(--teal);}
+.i-val.green{color:var(--green);}
+.i-val.amber{color:var(--amber);}
+.i-val.muted{font-size:12px;color:var(--muted);}
+
+/* ── PRICING ── */
+.price-highlight{background:linear-gradient(135deg,var(--navy),#1a3260);border-radius:14px;padding:22px 26px;margin-bottom:20px;color:#fff;}
+.price-big{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:40px;color:#fff;line-height:1;}
+.incl-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.incl-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:99px;font-size:12px;font-weight:600;}
+.incl-yes{background:#F0FDF4;color:#059669;border:1px solid #A7F3D0;}
+.incl-no{background:var(--off);color:var(--muted);border:1px solid var(--border);text-decoration:line-through;opacity:.6;}
+
+/* ── AMENITIES ── */
+.amenity-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.amenity-item{border:1.5px solid var(--border);border-radius:12px;padding:14px 10px;background:#fff;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;transition:all .2s;}
+.amenity-item.active{border-color:var(--teal);background:var(--teal-lt);}
+.amenity-item.inactive{opacity:.45;filter:grayscale(.4);}
+.ame-icon{font-size:22px;line-height:1;}
+.ame-label{font-size:11px;font-weight:600;text-align:center;line-height:1.3;color:var(--muted);}
+.amenity-item.active .ame-label{color:var(--teal);}
+.ame-check-dot{width:16px;height:16px;border-radius:50%;background:var(--teal);display:none;align-items:center;justify-content:center;position:absolute;top:6px;right:6px;font-size:9px;color:#fff;animation:checkPop .25s ease;}
+.amenity-item.active .ame-check-dot{display:flex;}
+
+/* ── FURNISHING ── */
+.furnish-group{display:flex;gap:10px;flex-wrap:wrap;}
+.furnish-btn{border:1.5px solid var(--border);border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:7px;background:#fff;}
+.furnish-btn.active{border-color:var(--teal);background:var(--teal-lt);color:var(--teal);}
+.f-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0;}
+
+/* ── PHOTOS ── */
+.photos-scroll{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px;}
+.photo-thumb{aspect-ratio:4/3;border-radius:10px;background:var(--off);border:1px solid var(--border);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--border);}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:20px;gap:0;}
+.tab-btn{padding:10px 18px;font-size:13px;font-weight:600;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .2s;margin-bottom:-1px;font-family:'Instrument Sans',sans-serif;}
+.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);}
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
+.desc-text{font-size:14px;color:var(--muted);line-height:1.8;}
+.rules-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.rule-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--navy);}
+.rule-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);margin-top:4px;flex-shrink:0;}
+.loc-tags{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+.loc-tag{display:flex;align-items:center;gap:8px;background:var(--off);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:500;color:var(--navy);}
+.loc-tag span{font-size:18px;}
+.map-box{height:180px;background:linear-gradient(145deg,#ddf0fa,#c5e7f7);border-radius:14px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);position:relative;overflow:hidden;}
+.map-grid-lines{position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(14,165,201,.15) 39px,rgba(14,165,201,.15) 40px),repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(14,165,201,.15) 59px,rgba(14,165,201,.15) 60px);}
+.map-pin{width:40px;height:40px;background:var(--teal);border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(14,165,201,.45);}
+.map-pin-inner{width:14px;height:14px;background:#fff;border-radius:50%;transform:rotate(45deg);}
+.map-label{position:absolute;bottom:12px;left:12px;background:rgba(255,255,255,.9);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--navy);backdrop-filter:blur(6px);}
 
-/* Rating */
-.rating-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
-.stars{display:flex;gap:2px;}
-.star{width:14px;height:14px;background:var(--amber);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
+/* ── PREFS ── */
+.pref-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.pref-item{background:var(--off);border-radius:12px;padding:14px 16px;border:1px solid var(--border);}
+.pref-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
+.pref-val{font-size:13px;font-weight:600;color:var(--navy);}
+.pref-bar-wrap{margin-top:8px;height:6px;background:var(--border);border-radius:99px;overflow:hidden;}
+.pref-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),#0993b3);}
+.clean-1{width:10%;}
+.clean-2{width:20%;}
+.clean-3{width:30%;}
+.clean-4{width:40%;}
+.clean-5{width:50%;}
+.clean-6{width:60%;}
+.clean-7{width:70%;}
+.clean-8{width:80%;}
+.clean-9{width:90%;}
+.clean-10{width:100%;}
+.radio-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;font-size:12px;font-weight:600;}
+.radio-pill.active{background:var(--teal-lt);color:var(--teal);border:1px solid rgba(14,165,201,.3);}
+.radio-pill.inactive{background:var(--off);color:var(--muted);border:1px solid var(--border);}
+.radio-dot2{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.host-note{background:var(--teal-lt);border:1px solid rgba(14,165,201,.2);border-radius:12px;padding:16px 18px;margin-top:4px;}
+.host-note-label{font-size:10px;font-weight:800;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+
+/* ── CONTACT ── */
+.contact-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.contact-item{background:var(--off);border:1px solid var(--border);border-radius:12px;padding:14px 16px;}
+.contact-item a{color:var(--teal);text-decoration:none;font-weight:600;}
+
+/* ── REVIEWS ── */
+.rating-big{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:48px;color:var(--navy);line-height:1;}
+.stars-row{display:flex;gap:3px;margin:6px 0;}
+.star{width:16px;height:16px;background:var(--amber);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
 .star.half{opacity:.4;}
-.review-card{border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;}
-.rev-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.review-card{border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:12px;}
+.rev-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.rev-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;flex-shrink:0;font-family:'Bricolage Grotesque',sans-serif;}
 .rev-name{font-size:13px;font-weight:600;color:var(--navy);}
 .rev-date{font-size:11px;color:var(--muted);}
-.rev-text{font-size:13px;color:var(--muted);line-height:1.6;}
+.rev-text{font-size:13px;color:var(--muted);line-height:1.7;}
 
-/* Responsive */
-@media(max-width:900px){
-  .body-wrap{grid-template-columns:1fr;}
-  .price-card{position:static;}
-  .contact-card{position:static;}
-  .info-grid{grid-template-columns:1fr 1fr;}
-  .hero-side{display:none;}
-  .hero-main{flex:1;}
+/* ── SIDEBAR ── */
+.sidebar-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:24px;box-shadow:var(--card-sh2);}
+.price-tag-big{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:32px;color:var(--navy);}
+.avail-dot{width:9px;height:9px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.cta-btn{width:100%;padding:14px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;cursor:pointer;border:none;margin-top:10px;transition:all .2s;letter-spacing:-.01em;}
+.cta-teal{background:var(--teal);color:#fff;}
+.cta-teal:hover{background:#0993b3;transform:translateY(-1px);}
+.cta-navy{background:var(--navy);color:#fff;}
+.cta-navy:hover{background:#1a3260;transform:translateY(-1px);}
+.cta-ghost{background:transparent;color:var(--navy);border:1.5px solid var(--border);}
+.cta-ghost:hover{border-color:var(--navy);background:var(--off);}
+.host-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:22px;box-shadow:var(--card-sh);margin-top:16px;}
+.host-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;flex-shrink:0;}
+.stat-2col{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;}
+.stat-box{background:var(--off);border-radius:10px;padding:12px;text-align:center;}
+.stat-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:var(--navy);}
+.stat-lbl{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-top:2px;}
+.trust-row{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;}
+.trust-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;background:var(--green-lt);border-radius:99px;font-size:11px;font-weight:600;color:#059669;border:1px solid #A7F3D0;}
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0;}
+.why-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--card-sh);margin-top:16px;}
+.why-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.why-item:last-child{border-bottom:none;padding-bottom:0;}
+.why-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.benefit-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--off);border-radius:12px;border:1px solid var(--border);}
+.benefit-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+
+/* ── FOOTER ── */
+footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  nav{padding:0 28px;}
+  .container{padding:0 28px;}
+  .page-grid{grid-template-columns:1fr !important;}
+  .sidebar-card{position:static !important;}
+  .host-card{position:static !important;}
+  .amenity-grid{grid-template-columns:repeat(3,1fr)!important;}
+  .info-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .pref-grid{grid-template-columns:repeat(2,1fr)!important;}
 }
-@media(max-width:600px){
-  .info-grid{grid-template-columns:1fr 1fr;}
-  .pref-grid{grid-template-columns:1fr;}
-  .nav-links{display:none;}
-  .hero-gallery{height:220px;}
+@media(max-width:768px){
+  nav{padding:0 20px;height:60px;}
+  .nav-links,.nav-desktop-btns{display:none;}
+  .hamburger{display:flex;}
+  .container{padding:0 20px;}
+  .gallery-grid{grid-template-columns:1fr;grid-template-rows:280px;height:280px;}
+  .g-thumb{display:none;}
+  .amenity-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .info-grid{grid-template-columns:1fr 1fr!important;}
+  .pref-grid{grid-template-columns:1fr!important;}
+  .contact-row{grid-template-columns:1fr!important;}
+  .photos-scroll{grid-template-columns:repeat(2,1fr)!important;}
+  .section-card{padding:20px!important;}
+  .footer-top{flex-direction:column!important;gap:32px!important;}
+  .footer-links{flex-wrap:wrap!important;gap:28px!important;}
+  .footer-bottom{flex-direction:column!important;gap:8px!important;text-align:center!important;}
+}
+@media(max-width:480px){
+  .amenity-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .gallery-grid{height:220px;}
+  .photos-scroll{grid-template-columns:repeat(2,1fr)!important;}
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nav">
-  <a href="#" class="nav-logo display">Stay<span class="grad">Match</span></a>
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="index.html" class="nav-logo display">Stay<span class="grad">Match</span></a>
   <div class="nav-links">
     <a href="#" class="nav-a">Discover</a>
     <a href="#" class="nav-a">How It Works</a>
     <a href="#" class="nav-a active">List a Room</a>
     <a href="#" class="nav-a">About</a>
   </div>
-  <div class="nav-btns">
-    <a href="#" class="btn-sm">Log In</a>
-    <a href="#" class="btn-sm primary">Get Started →</a>
+  <div class="nav-desktop-btns" style="display:flex;gap:10px;align-items:center;">
+    <a href="#" class="btn-outline" style="padding:9px 20px;font-size:14px;">Log In</a>
+    <a href="#" class="btn-primary" style="padding:10px 22px;font-size:14px;">Dashboard →</a>
   </div>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
 </nav>
-
-<!-- GALLERY -->
-<div class="hero-gallery">
-  <div class="hero-main">
-    <div class="hero-placeholder">🏠</div>
-    <div class="status-badge">AVAILABLE NOW</div>
-    <button class="photo-count-btn">📸 View All 8 Photos</button>
-  </div>
-  <div class="hero-side">
-    <div class="hero-thumb"><div class="hero-placeholder" style="font-size:22px;">🛁</div></div>
-    <div class="hero-thumb"><div class="hero-placeholder" style="font-size:22px;">🍳</div></div>
+<div class="mobile-nav" id="mobileNav">
+  <a href="#" class="nav-a">Discover</a>
+  <a href="#" class="nav-a">How It Works</a>
+  <a href="#" class="nav-a active">List a Room</a>
+  <a href="#" class="nav-a">About</a>
+  <div class="mobile-nav-btns">
+    <a href="#" class="btn-outline" style="flex:1;">Log In</a>
+    <a href="#" class="btn-primary" style="flex:1;">Dashboard →</a>
   </div>
 </div>
 
-<!-- BODY -->
-<div class="body-wrap">
-
-  <!-- LEFT -->
-  <div>
-
-    <!-- Breadcrumb + Title -->
-    <div class="breadcrumb">
-      <a href="#">Home</a><span class="bc-sep">›</span>
-      <a href="#">Bangalore</a><span class="bc-sep">›</span>
-      <a href="#">Indiranagar</a><span class="bc-sep">›</span>
-      <span>Private Room</span>
+<!-- ══ GALLERY ══ -->
+<div class="fu d1">
+  <div class="gallery-grid">
+    <div class="g-main" id="mainPhoto">
+      {% with first_img=room.images.first %}
+      {% if first_img %}
+      <img src="{{ first_img.image.url }}" alt="{{ room.title }}" id="mainGalleryImg">
+      {% else %}
+      <div class="gallery-placeholder">🏠</div>
+      {% endif %}
+      {% endwith %}
+      <div class="gallery-badge" id="availBadge">AVAILABLE NOW</div>
+      <div class="save-share">
+        <button class="icon-btn" title="Save" onclick="toggleSave(this)">♡</button>
+        <button class="icon-btn" title="Share">↗</button>
+      </div>
+      <button class="gallery-photo-btn" id="photoCountBtn">📸 View All {{ room.images.count }} Photos</button>
     </div>
-
-    <div style="margin-bottom:20px;">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-        <div>
-          <h1 class="display" style="font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--navy);margin-bottom:6px;">Cozy private room near Koramangala metro</h1>
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-            <span style="font-size:13px;color:var(--muted);">📍 Indiranagar, Bangalore</span>
-            <span style="width:4px;height:4px;border-radius:50%;background:var(--border);display:inline-block;"></span>
-            <div class="stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star half"></div></div>
-            <span style="font-size:13px;font-weight:600;color:var(--navy);">4.6</span>
-            <span style="font-size:12px;color:var(--muted);">(12 reviews)</span>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <button class="btn-sm">♡ Save</button>
-          <button class="btn-sm">↗ Share</button>
-        </div>
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;">
-        <div class="ame-chip active"><span class="ame-ico">🏠</span>Private Room</div>
-        <div class="ame-chip active"><span class="ame-ico">🪑</span>Fully Furnished</div>
-        <div class="ame-chip active"><span class="ame-ico">👥</span>2 BHK</div>
-        <div class="ame-chip active"><span class="ame-ico">🏢</span>3rd of 6</div>
-        <div class="ame-chip"><span class="ame-ico">📅</span>Available: Apr 15, 2026</div>
-        <div class="ame-chip"><span class="ame-ico">📆</span>Min. Stay: 3 months</div>
-      </div>
-    </div>
-
-    <!-- ROOM BASICS -->
-    <div class="section-card">
-      <div class="sec-title"><div class="sec-icon ic-teal">📋</div>Room Basics</div>
-      <div class="info-grid">
-        <div class="info-item"><div class="i-label">City</div><div class="i-val">Bangalore</div></div>
-        <div class="info-item"><div class="i-label">Locality</div><div class="i-val">Indiranagar</div></div>
-        <div class="info-item"><div class="i-label">Room Type</div><div class="i-val teal">Private Room</div></div>
-        <div class="info-item"><div class="i-label">BHK Config</div><div class="i-val">2 BHK</div></div>
-        <div class="info-item"><div class="i-label">Floor</div><div class="i-val">3rd of 6</div></div>
-        <div class="info-item"><div class="i-label">Furnishing</div><div class="i-val">Fully Furnished</div></div>
-        <div class="info-item"><div class="i-label">Available From</div><div class="i-val green">Apr 15, 2026</div></div>
-        <div class="info-item"><div class="i-label">Min. Stay</div><div class="i-val">3 months</div></div>
-        <div class="info-item"><div class="i-label">Address</div><div class="i-val" style="font-size:12px;">Shared after match</div></div>
-      </div>
-    </div>
-
-    <!-- PRICING -->
-    <div class="section-card">
-      <div class="sec-title"><div class="sec-icon ic-amber">💰</div>Pricing &amp; Deposit</div>
-      <div class="info-grid" style="margin-bottom:16px;">
-        <div class="info-item"><div class="i-label">Monthly Rent</div><div class="i-val" style="font-size:18px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;">₹12,000</div></div>
-        <div class="info-item"><div class="i-label">Security Deposit</div><div class="i-val">2 months rent</div></div>
-        <div class="info-item"><div class="i-label">Maintenance</div><div class="i-val">₹500 / month</div></div>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;">Included in Rent</div>
-        <div class="incl-row">
-          <span class="incl-chip incl-yes">✓ WiFi</span>
-          <span class="incl-chip incl-no">✗ Electricity</span>
-          <span class="incl-chip incl-no">✗ Water</span>
-          <span class="incl-chip incl-yes">✓ Gas</span>
-          <span class="incl-chip incl-no">✗ Cooking</span>
-          <span class="incl-chip incl-no">✗ Housekeeping</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- AMENITIES -->
-    <div class="section-card">
-      <div class="sec-title"><div class="sec-icon ic-teal">⚡</div>Amenities &amp; Furnishing</div>
-      <div class="ame-wrap">
-        <div class="ame-chip active"><span class="ame-ico">📶</span>High-Speed WiFi</div>
-        <div class="ame-chip"><span class="ame-ico">❄️</span>Air Conditioning</div>
-        <div class="ame-chip active"><span class="ame-ico">🛏️</span>Bed &amp; Mattress</div>
-        <div class="ame-chip"><span class="ame-ico">🧺</span>Washing Machine</div>
-        <div class="ame-chip active"><span class="ame-ico">🍳</span>Kitchen Access</div>
-        <div class="ame-chip"><span class="ame-ico">🚿</span>Attached Bath</div>
-        <div class="ame-chip"><span class="ame-ico">🅿️</span>Parking</div>
-        <div class="ame-chip"><span class="ame-ico">🏋️</span>Gym Access</div>
-        <div class="ame-chip"><span class="ame-ico">🔒</span>24h Security</div>
-        <div class="ame-chip"><span class="ame-ico">🛗</span>Lift / Elevator</div>
-        <div class="ame-chip active"><span class="ame-ico">⚡</span>Power Backup</div>
-        <div class="ame-chip"><span class="ame-ico">🐾</span>Pet Friendly</div>
-      </div>
-    </div>
-
-    <!-- DESCRIPTION + RULES TABS -->
-    <div class="section-card">
-      <div class="sec-title"><div class="sec-icon ic-navy">📝</div>About &amp; Rules</div>
-      <div class="tabs">
-        <button class="tab active" onclick="switchTab('desc',this)">About the Room</button>
-        <button class="tab" onclick="switchTab('rules',this)">House Rules</button>
-        <button class="tab" onclick="switchTab('nearby',this)">Nearby</button>
-      </div>
-      <div id="tab-desc" class="tab-panel active">
-        <p class="desc-text">A beautifully furnished private room in a spacious 2BHK apartment in the heart of Indiranagar. The flat is on the 3rd floor with great natural light and ventilation. You'll be sharing with one working professional — a quiet, clean, and respectful flatmate. The neighbourhood has excellent cafes, restaurants, and supermarkets within walking distance. Nearest metro (Indiranagar Blue Line) is just 750m away, making commutes a breeze. Perfect for someone who works in Koramangala, Whitefield, or the CBD.</p>
-        <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
-          <div style="background:var(--off);border-radius:8px;padding:10px 14px;font-size:13px;"><span style="font-weight:600;color:var(--navy);">🚇 Nearest Metro</span><br/><span style="color:var(--muted);">Indiranagar Metro — 750m</span></div>
-          <div style="background:var(--off);border-radius:8px;padding:10px 14px;font-size:13px;"><span style="font-weight:600;color:var(--navy);">🏢 Office Hub</span><br/><span style="color:var(--muted);">2km to Manyata Tech Park</span></div>
-        </div>
-      </div>
-      <div id="tab-rules" class="tab-panel">
-        <div class="rules-list">
-          <div class="rule-item"><div class="rule-dot"></div><span>No smoking indoors</span></div>
-          <div class="rule-item"><div class="rule-dot"></div><span>No pets allowed</span></div>
-          <div class="rule-item"><div class="rule-dot"></div><span>Visitors only till 10pm</span></div>
-          <div class="rule-item"><div class="rule-dot"></div><span>Vegetarian kitchen only</span></div>
-          <div class="rule-item"><div class="rule-dot"></div><span>Respect quiet hours — 11pm to 7am</span></div>
-          <div class="rule-item"><div class="rule-dot"></div><span>Keep common areas clean</span></div>
-        </div>
-      </div>
-      <div id="tab-nearby" class="tab-panel">
-        <div class="map-placeholder">
-          <div class="map-streets"></div>
-          <div class="map-pin"><div class="map-pin-inner"></div></div>
-        </div>
-        <div class="loc-row" style="margin-top:12px;">
-          <div class="loc-pill"><span>🚇</span>Indiranagar Metro — 750m</div>
-          <div class="loc-pill"><span>🏥</span>Apollo Hospital — 1.2km</div>
-          <div class="loc-pill"><span>🛒</span>D-Mart — 600m</div>
-          <div class="loc-pill"><span>☕</span>Third Wave Coffee — 200m</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- FLATMATE PREFERENCES -->
-    <div class="section-card">
-      <div class="sec-title"><div class="sec-icon ic-amber">🤖</div>Flatmate Preferences</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">These preferences are used by our AI to score compatibility with potential tenants.</p>
-      <div class="pref-grid">
-        <div class="pref-item">
-          <div class="pref-label">Preferred Gender</div>
-          <div class="pref-val">Any</div>
-        </div>
-        <div class="pref-item">
-          <div class="pref-label">Preferred Occupation</div>
-          <div class="pref-val">Working Professionals</div>
-        </div>
-        <div class="pref-item">
-          <div class="pref-label">Sleep Schedule</div>
-          <div class="pref-val">🌙 Night Owl</div>
-        </div>
-        <div class="pref-item">
-          <div class="pref-label">Guest Policy</div>
-          <div class="pref-val">Occasional guests OK</div>
-        </div>
-        <div class="pref-item" style="grid-column:1/-1;">
-          <div class="pref-label">Cleanliness Expectation</div>
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-            <div class="pref-val">7 / 10</div>
-            <span style="font-size:12px;color:var(--muted);">Quite tidy</span>
-          </div>
-          <div class="pref-bar"><div class="pref-fill" style="width:70%;"></div></div>
-        </div>
-      </div>
-      <div style="margin-top:14px;padding:14px;background:var(--teal-lt);border-radius:10px;border:1px solid rgba(14,165,201,.15);">
-        <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">From the Host</div>
-        <p style="font-size:13px;color:var(--navy);line-height:1.6;">Looking for someone who respects quiet hours, likes to cook occasionally, and is generally friendly and easy-going. A neat workspace and a good sense of hygiene are important to me.</p>
-      </div>
-    </div>
-
-    <!-- REVIEWS -->
-    <div class="section-card">
-      <div class="sec-title"><div class="sec-icon ic-green">⭐</div>Reviews from Previous Tenants</div>
-      <div class="rating-row">
-        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:36px;color:var(--navy);">4.6</div>
-        <div>
-          <div class="stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star half"></div></div>
-          <div style="font-size:12px;color:var(--muted);margin-top:3px;">Based on 12 reviews</div>
-        </div>
-      </div>
-      <div class="review-card">
-        <div class="rev-top"><span class="rev-name">Priya S.</span><span class="rev-date">March 2026</span></div>
-        <div class="stars" style="margin-bottom:6px;"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
-        <p class="rev-text">Absolutely loved staying here. The room is exactly as described — clean, well-lit, and cozy. The host was very responsive and easy to communicate with. Would definitely recommend!</p>
-      </div>
-      <div class="review-card">
-        <div class="rev-top"><span class="rev-name">Rahul M.</span><span class="rev-date">Jan 2026</span></div>
-        <div class="stars" style="margin-bottom:6px;"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star half"></div></div>
-        <p class="rev-text">Great location, very close to the metro. The flat is well-maintained and the kitchen is spacious. Only minor thing — the WiFi sometimes slows down in the evenings.</p>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- RIGHT SIDEBAR -->
-  <div>
-    <div class="price-card">
-      <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:4px;">
-        <span style="font-size:14px;color:var(--muted);font-weight:600;">₹</span>
-        <span class="price-tag">12,000</span>
-        <span class="price-sub">/ month</span>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
-        <span style="font-size:12px;color:var(--muted);">+ ₹500 maintenance</span>
-        <span style="font-size:12px;color:var(--muted);">· Deposit: 2 months</span>
-      </div>
-      <div style="background:var(--off);border-radius:10px;padding:12px 14px;margin-bottom:4px;">
-        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;">Availability</div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></div>
-          <span style="font-size:13px;font-weight:600;color:var(--navy);">Available from Apr 15, 2026</span>
-        </div>
-      </div>
-      <button class="cta-btn cta-primary">💬 Send Enquiry</button>
-      <button class="cta-btn cta-secondary">📅 Schedule a Visit</button>
-      <button class="cta-btn cta-secondary" style="margin-top:4px;">♡ Save Listing</button>
-      <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:12px;">Free to enquire · No booking fees</div>
-    </div>
-
-    <div class="contact-card">
-      <div class="host-row">
-        <div class="host-avatar">RK</div>
-        <div>
-          <div class="host-name">Rajesh Kumar</div>
-          <div class="host-since">Host since Jan 2024</div>
-        </div>
-      </div>
-      <div class="stat-row">
-        <div class="stat-box"><div class="stat-num">98%</div><div class="stat-lbl">Response Rate</div></div>
-        <div class="stat-box"><div class="stat-num">~2h</div><div class="stat-lbl">Avg. Reply</div></div>
-      </div>
-      <div class="trust-row">
-        <span class="trust-chip">✓ ID Verified</span>
-        <span class="trust-chip">✓ Phone Verified</span>
-        <span class="trust-chip">✓ Email Verified</span>
-      </div>
-      <hr class="divider"/>
-      <div class="contact-btns">
-        <button class="cta-btn cta-primary" style="margin:0;">📱 Call Host</button>
-        <button class="cta-btn cta-secondary" style="margin:0;">📧 Send Message</button>
-      </div>
-    </div>
-
-    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--card-sh);margin-top:16px;">
-      <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:12px;">Why StayMatch?</div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:28px;height:28px;background:var(--teal-lt);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">🔒</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:var(--navy);font-weight:600;">Safe &amp; verified</strong><br/>All users are ID-verified.</div></div>
-        <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:28px;height:28px;background:var(--amber-lt);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">🤖</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:var(--navy);font-weight:600;">AI compatibility score</strong><br/>Ranked against your profile.</div></div>
-        <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:28px;height:28px;background:var(--green-lt);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">💬</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:var(--navy);font-weight:600;">Chat before committing</strong><br/>In-app messaging, zero cost.</div></div>
-      </div>
-    </div>
-
+    {% for img in room.images.all %}
+      {% if not forloop.first and forloop.counter <= 3 %}
+      <div class="g-thumb"><img src="{{ img.image.url }}" alt="{{ room.title }}" class="gallery-thumb-img"></div>
+      {% endif %}
+    {% empty %}
+    <div class="g-thumb"><div class="gallery-placeholder" style="font-size:36px;">🛁</div></div>
+    <div class="g-thumb"><div class="gallery-placeholder" style="font-size:36px;">🍳</div></div>
+    {% endfor %}
   </div>
 </div>
+
+<div class="gallery-modal" id="galleryModal">
+  <button class="gallery-close" id="galleryCloseBtn">✕</button>
+  <div class="gallery-modal-inner">
+    <div class="gallery-modal-grid">
+      {% for img in room.images.all %}
+      <img src="{{ img.image.url }}" alt="{{ room.title }}">
+      {% empty %}
+      <div class="photo-thumb">🏠</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- ══ BODY ══ -->
+<div class="container">
+  <div class="page-grid">
+
+    <!-- ══ LEFT ══ -->
+    <div>
+
+      <!-- Breadcrumb + Heading -->
+      <div class="fu d1">
+        <div class="breadcrumb">
+          <a href="#">Home</a><span class="bc-sep">›</span>
+          <a href="#" id="bcCity">{{ room.city }}</a><span class="bc-sep">›</span>
+          <a href="#" id="bcArea">{{ room.area }}</a><span class="bc-sep">›</span>
+          <span id="bcType">{{ room.room_type }}</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+          <div style="flex:1;">
+            <h1 class="display" id="detailTitle" style="font-size:clamp(22px,3.5vw,30px);font-weight:800;letter-spacing:-.02em;color:var(--navy);line-height:1.15;margin-bottom:8px;">{{ room.title }}</h1>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span style="font-size:13px;color:var(--muted);">📍 <span id="detailLoc">{{ room.area }}, {{ room.city }}</span></span>
+            </div>
+          </div>
+        </div>
+        <!-- Quick chips -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+          <div class="chip" style="background:#EBF9FD;color:var(--teal);" id="chip-type">🏠 {{ room.room_type }}</div>
+          <div class="chip" style="background:var(--amber-lt);color:#92400E;" id="chip-bhk">🏢 {{ room.bhk_config }}</div>
+          <div class="chip" style="background:var(--off);color:var(--navy);" id="chip-floor">📐 {{ room.floor }}</div>
+          <div class="chip" style="background:var(--green-lt);color:#059669;" id="chip-avail">📅 Available: {{ room.available_from }}</div>
+          <div class="chip" style="background:var(--off);color:var(--navy);" id="chip-minstay">📆 Min. Stay: {{ room.min_stay }}</div>
+          <div class="chip" style="background:var(--teal-lt);color:var(--teal);" id="chip-furnish">🪑 {{ room.get_furnishing_status_display }}</div>
+        </div>
+      </div>
+
+      <!-- ── STEP 1: ROOM BASICS ── -->
+      <div class="section-card fu d1">
+        <div class="sec-title"><div class="step-badge">1</div> Room Basics</div>
+        <div class="info-grid">
+          <div class="info-item" style="grid-column:1/-1;"><div class="i-label">Listing Title</div><div class="i-val" id="d-title" style="font-size:15px;">{{ room.title }}</div></div>
+          <div class="info-item"><div class="i-label">City</div><div class="i-val teal" id="d-city">{{ room.city }}</div></div>
+          <div class="info-item"><div class="i-label">Locality / Area</div><div class="i-val" id="d-area">{{ room.area }}</div></div>
+          <div class="info-item"><div class="i-label">Full Address</div><div class="i-val muted">{{ room.address }}</div></div>
+          <div class="info-item"><div class="i-label">Room Type</div><div class="i-val teal" id="d-roomtype">{{ room.room_type }}</div></div>
+          <div class="info-item"><div class="i-label">BHK Config</div><div class="i-val" id="d-bhk">{{ room.bhk_config }}</div></div>
+          <div class="info-item"><div class="i-label">Floor</div><div class="i-val" id="d-floor">{{ room.floor }}</div></div>
+          <div class="info-item"><div class="i-label">Available From</div><div class="i-val green" id="d-avail">{{ room.available_from }}</div></div>
+          <div class="info-item"><div class="i-label">Minimum Stay</div><div class="i-val" id="d-minstay">{{ room.min_stay }}</div></div>
+        </div>
+      </div>
+
+      <!-- ── STEP 2: PRICING & DEPOSIT ── -->
+      <div class="section-card fu d2">
+        <div class="sec-title"><div class="step-badge teal">2</div> Pricing &amp; Deposit</div>
+        <div class="price-highlight">
+          <div style="display:flex;align-items:baseline;gap:6px;">
+            <span style="font-size:18px;color:rgba(255,255,255,.6);font-weight:600;">₹</span>
+            <span class="price-big" id="d-rent">{{ room.rent }}</span>
+            <span style="font-size:14px;color:rgba(255,255,255,.7);margin-left:4px;">/ month</span>
+          </div>
+          <div style="display:flex;gap:24px;margin-top:12px;flex-wrap:wrap;">
+            <div>
+              <div style="font-size:10px;color:rgba(255,255,255,.45);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;">Security Deposit</div>
+              <div style="font-size:14px;font-weight:600;color:#fff;" id="d-deposit">{{ room.deposit }}</div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:rgba(255,255,255,.45);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;">Maintenance</div>
+              <div style="font-size:14px;font-weight:600;color:#fff;" id="d-maintenance">{{ room.maintenance }}</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">What's Included in Rent</div>
+          <div class="incl-grid" id="d-included">
+            <span class="incl-chip {% if included.wifi %}incl-yes{% else %}incl-no{% endif %}">{% if included.wifi %}✓{% else %}✗{% endif %} WiFi</span>
+            <span class="incl-chip {% if included.electricity %}incl-yes{% else %}incl-no{% endif %}">{% if included.electricity %}✓{% else %}✗{% endif %} Electricity</span>
+            <span class="incl-chip {% if included.water %}incl-yes{% else %}incl-no{% endif %}">{% if included.water %}✓{% else %}✗{% endif %} Water</span>
+            <span class="incl-chip {% if included.gas %}incl-yes{% else %}incl-no{% endif %}">{% if included.gas %}✓{% else %}✗{% endif %} Gas</span>
+            <span class="incl-chip {% if included.cooking %}incl-yes{% else %}incl-no{% endif %}">{% if included.cooking %}✓{% else %}✗{% endif %} Cooking</span>
+            <span class="incl-chip {% if included.housekeeping %}incl-yes{% else %}incl-no{% endif %}">{% if included.housekeeping %}✓{% else %}✗{% endif %} Housekeeping</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 3: AMENITIES & FURNISHING ── -->
+      <div class="section-card fu d2">
+        <div class="sec-title"><div class="step-badge teal">3</div> Amenities &amp; Furnishing</div>
+        <div style="margin-bottom:20px;">
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">Furnishing Status</div>
+          <div class="furnish-group" id="d-furnish">
+            <div class="furnish-btn {% if room.furnishing_status == 'Fully' %}active{% endif %}"><div class="f-dot"></div>Fully Furnished</div>
+            <div class="furnish-btn {% if room.furnishing_status == 'Semi' %}active{% endif %}"><div class="f-dot"></div>Semi Furnished</div>
+            <div class="furnish-btn {% if room.furnishing_status == 'Unfurnished' %}active{% endif %}"><div class="f-dot"></div>Unfurnished</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">Available Amenities <span style="color:var(--teal);font-size:11px;text-transform:none;letter-spacing:0;">(highlighted = available)</span></div>
+          <div class="amenity-grid" id="d-amenities">
+            {% for amenity in room.amenities.all %}
+            <div class="amenity-item active"><div class="ame-check-dot">✓</div><div class="ame-icon">{{ amenity.icon }}</div><div class="ame-label">{{ amenity.name }}</div></div>
+            {% empty %}
+            <div class="amenity-item inactive"><div class="ame-check-dot">✓</div><div class="ame-icon">—</div><div class="ame-label">No amenities added</div></div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 4: PHOTOS ── -->
+      <div class="section-card fu d3">
+        <div class="sec-title"><div class="step-badge amber">4</div> Photos</div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">This listing has <strong style="color:var(--navy);" id="photoCount">{{ room.images.count }} photos</strong> — room, bathroom, kitchen &amp; building views. Listings with 4+ photos get <strong style="color:var(--navy);">5× more inquiries.</strong></p>
+        <div class="photos-scroll" id="d-photos">
+          {% for img in room.images.all %}
+          <div class="photo-thumb"><img src="{{ img.image.url }}" alt="{{ room.title }}"></div>
+          {% empty %}
+          <div class="photo-thumb">🏠</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- ── STEP 5: DESCRIPTION & RULES ── -->
+      <div class="section-card fu d3">
+        <div class="sec-title"><div class="step-badge amber">5</div> Description &amp; Rules</div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('about',this)">About the Room</button>
+          <button class="tab-btn" onclick="switchTab('rules',this)">House Rules</button>
+          <button class="tab-btn" onclick="switchTab('location',this)">Location &amp; Nearby</button>
+        </div>
+        <div id="tab-about" class="tab-panel active">
+          <p class="desc-text" id="d-desc">{{ room.description }}</p>
+        </div>
+        <div id="tab-rules" class="tab-panel">
+          <ul class="rules-list" id="d-rules">
+            <li class="rule-item"><div class="rule-dot"></div><span>{{ room.house_rules }}</span></li>
+          </ul>
+        </div>
+        <div id="tab-location" class="tab-panel">
+          <div class="loc-tags" id="d-location">
+            <div class="loc-tag"><span>🚇</span><div><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Nearest Metro / Station</div><strong id="d-metro">{{ room.nearest_metro }}</strong></div></div>
+            <div class="loc-tag"><span>🏢</span><div><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Distance from Office Hub</div><strong id="d-office">{{ room.distance_to_hub }}</strong></div></div>
+          </div>
+          <div class="map-box">
+            <div class="map-grid-lines"></div>
+            <div style="position:relative;z-index:1;"><div class="map-pin"><div class="map-pin-inner"></div></div></div>
+            <div class="map-label">📍 <span id="d-maplabel">{{ room.area }}, {{ room.city }}</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 6: FLATMATE PREFERENCES ── -->
+      <div class="section-card fu d4">
+        <div class="sec-title"><div class="step-badge amber">6</div> Flatmate Preferences</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Our AI uses these preferences to score and rank compatible flatmate profiles. Be honest — the right match matters!</p>
+        <div class="pref-grid">
+          <div class="pref-item">
+            <div class="pref-label">Preferred Gender</div>
+            <div class="pref-val" id="d-gender">{{ room.pref_gender }}</div>
+          </div>
+          <div class="pref-item">
+            <div class="pref-label">Preferred Occupation</div>
+            <div class="pref-val" id="d-occupation">{{ room.pref_occupation }}</div>
+          </div>
+          <div class="pref-item" style="grid-column:1/-1;">
+            <div class="pref-label">Sleep Schedule Preference</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;" id="d-sleep">
+              <div class="radio-pill active"><div class="radio-dot2"></div>{{ room.sleep_schedule }}</div>
+            </div>
+          </div>
+          <div class="pref-item" style="grid-column:1/-1;">
+            <div class="pref-label">Cleanliness Expectation</div>
+            <div style="display:flex;align-items:baseline;gap:6px;margin:8px 0 10px;">
+              <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:28px;color:var(--navy);" id="d-clean">{{ room.cleanliness_level }}</span>
+              <span style="font-size:13px;color:var(--muted);">/ 10</span>
+            </div>
+            <div class="pref-bar-wrap"><div class="pref-bar-fill clean-{{ room.cleanliness_level }}" id="d-clean-bar"></div></div>
+            <div style="display:flex;justify-content:space-between;margin-top:5px;"><span style="font-size:10px;color:var(--muted);">Relaxed</span><span style="font-size:10px;color:var(--muted);">Very tidy</span></div>
+          </div>
+          <div class="pref-item" style="grid-column:1/-1;">
+            <div class="pref-label">Guest / Visitor Policy</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;" id="d-guest">
+              <div class="radio-pill active"><div class="radio-dot2"></div>{{ room.guest_policy }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="host-note" style="margin-top:16px;" id="d-hostnote">
+          <div class="host-note-label">Anything else in a flatmate?</div>
+          <p style="font-size:13px;color:var(--navy);line-height:1.7;">{{ room.house_rules }}</p>
+        </div>
+      </div>
+
+      <!-- ── STEP 7: CONTACT DETAILS ── -->
+      <div class="section-card fu d4">
+        <div class="sec-title"><div class="step-badge">7</div> Host Contact Details</div>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap;">
+          <div class="host-avatar" id="d-hostInitials">👤</div>
+          <div>
+            <div style="font-weight:700;font-size:16px;color:var(--navy);" id="d-hostName">{{ room.contact_name|default:room.owner.get_full_name }}</div>
+            <div style="font-size:12px;color:var(--muted);">Host since January 2024</div>
+          </div>
+          <div style="margin-left:auto;">
+            <div class="trust-chip">✓ ID Verified</div>
+          </div>
+        </div>
+        <div class="contact-row" id="d-contact">
+          <div class="contact-item">
+            <div class="i-label">Phone</div>
+            <div class="i-val" style="margin-top:4px;">📱 <a href="tel:{{ room.contact_phone }}">{{ room.contact_phone }}</a></div>
+          </div>
+          <div class="contact-item">
+            <div class="i-label">Email</div>
+            <div class="i-val" style="margin-top:4px;">📧 <a href="mailto:{{ room.contact_email }}">{{ room.contact_email }}</a></div>
+          </div>
+        </div>
+        <div style="background:var(--teal-lt);border-radius:12px;padding:14px 16px;margin-top:14px;font-size:13px;color:var(--navy);line-height:1.7;border:1px solid rgba(14,165,201,.15);">
+          🔒 <strong>Privacy protected:</strong> Full address is shared only after a match is confirmed through StayMatch. Your safety is our priority.
+        </div>
+      </div>
+
+      <!-- ── REVIEWS ── -->
+      <div class="section-card fu d4">
+        <div class="sec-title"><div class="step-badge green">★</div> Reviews from Previous Tenants</div>
+        <div style="display:flex;align-items:flex-start;gap:24px;margin-bottom:20px;flex-wrap:wrap;">
+          <div>
+            <div class="rating-big">4.6</div>
+            <div class="stars-row"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star half"></div></div>
+            <div style="font-size:12px;color:var(--muted);">Based on 12 reviews</div>
+          </div>
+          <div style="flex:1;min-width:160px;padding-top:6px;">
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:80px;">Cleanliness</span><div style="flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="width:90%;height:100%;background:var(--amber);border-radius:99px;"></div></div><span style="font-size:11px;color:var(--navy);font-weight:700;">4.8</span></div>
+              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:80px;">Location</span><div style="flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="width:85%;height:100%;background:var(--amber);border-radius:99px;"></div></div><span style="font-size:11px;color:var(--navy);font-weight:700;">4.6</span></div>
+              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:80px;">Value</span><div style="flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="width:80%;height:100%;background:var(--amber);border-radius:99px;"></div></div><span style="font-size:11px;color:var(--navy);font-weight:700;">4.3</span></div>
+              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:80px;">Host</span><div style="flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="width:95%;height:100%;background:var(--amber);border-radius:99px;"></div></div><span style="font-size:11px;color:var(--navy);font-weight:700;">4.9</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="rev-top">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="rev-avatar">PS</div>
+              <div><div class="rev-name">Priya S.</div><div class="rev-date">March 2026</div></div>
+            </div>
+            <div class="stars-row" style="margin:0;"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+          </div>
+          <p class="rev-text">Absolutely loved staying here. The room is exactly as described — clean, well-lit, and cozy. The host was very responsive and easy to communicate with. Would definitely recommend!</p>
+        </div>
+        <div class="review-card">
+          <div class="rev-top">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="rev-avatar" style="background:linear-gradient(135deg,var(--amber),#d97706);">RM</div>
+              <div><div class="rev-name">Rahul M.</div><div class="rev-date">Jan 2026</div></div>
+            </div>
+            <div class="stars-row" style="margin:0;"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star half"></div></div>
+          </div>
+          <p class="rev-text">Great location, very close to the metro. The flat is well-maintained and the kitchen is spacious. Only minor thing — WiFi slows down a bit in the evenings.</p>
+        </div>
+      </div>
+
+    </div><!-- end left -->
+
+    <!-- ══ SIDEBAR ══ -->
+    <div>
+      <!-- Price Card -->
+      <div class="sidebar-card">
+        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:4px;">
+          <span style="font-size:16px;color:var(--muted);font-weight:600;">₹</span>
+          <span class="price-tag-big" id="sb-rent">{{ room.rent }}</span>
+          <span style="font-size:13px;color:var(--muted);margin-left:2px;">/ month</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">+ {{ room.maintenance }} &nbsp;·&nbsp; Deposit: {{ room.deposit }}</div>
+        <div style="background:var(--off);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <div class="avail-dot"></div>
+          <span style="font-size:13px;font-weight:600;color:var(--navy);" id="sb-avail">Available from {{ room.available_from }}</span>
+        </div>
+        <div style="background:var(--off);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <span style="font-size:14px;">📆</span>
+          <span style="font-size:13px;font-weight:600;color:var(--navy);" id="sb-minstay">Min. Stay: {{ room.min_stay }}</span>
+        </div>
+        <button class="cta-btn cta-teal" style="margin-top:14px;">💬 Send Enquiry</button>
+        <button class="cta-btn cta-navy">📅 Schedule a Visit</button>
+        <button class="cta-btn cta-ghost">♡ Save to Wishlist</button>
+        <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:12px;">Free to enquire · No booking fees ever</div>
+        <div class="divider"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+          <div class="chip" style="background:var(--green-lt);color:#059669;border:1px solid #A7F3D0;">🔒 Verified Host</div>
+          <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🤖 AI Matched</div>
+          <div class="chip" style="background:var(--amber-lt);color:#92400E;">⚡ Responds ~2h</div>
+        </div>
+      </div>
+
+      <!-- Host Card -->
+      <div class="host-card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <div class="host-avatar" id="sb-hostInitials">👤</div>
+          <div>
+            <div style="font-weight:700;font-size:15px;color:var(--navy);" id="sb-hostName">{{ room.contact_name|default:room.owner.get_full_name }}</div>
+            <div style="font-size:11px;color:var(--muted);">Host since Jan 2024</div>
+          </div>
+        </div>
+        <div class="stat-2col">
+          <div class="stat-box"><div class="stat-num">98%</div><div class="stat-lbl">Response Rate</div></div>
+          <div class="stat-box"><div class="stat-num">~2h</div><div class="stat-lbl">Avg. Reply</div></div>
+        </div>
+        <div class="trust-row">
+          <span class="trust-chip">✓ ID Verified</span>
+          <span class="trust-chip">✓ Phone Verified</span>
+          <span class="trust-chip">✓ Email Verified</span>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="cta-btn cta-teal" style="margin:0;">📱 Call Host</button>
+          <button class="cta-btn cta-ghost" style="margin:0;">📧 Send Message</button>
+        </div>
+      </div>
+
+      <!-- Why StayMatch -->
+      <div class="why-card">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">Why StayMatch?</div>
+        <div class="why-item">
+          <div class="why-icon" style="background:var(--teal-lt);">🔒</div>
+          <div><div style="font-weight:600;font-size:13px;color:var(--navy);margin-bottom:2px;">Safe &amp; verified</div><div style="font-size:12px;color:var(--muted);">All enquiries from ID-verified users only.</div></div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon" style="background:var(--amber-lt);">📊</div>
+          <div><div style="font-weight:600;font-size:13px;color:var(--navy);margin-bottom:2px;">Compatibility scoring</div><div style="font-size:12px;color:var(--muted);">AI ranks every applicant against your preferences.</div></div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon" style="background:var(--green-lt);">💬</div>
+          <div><div style="font-weight:600;font-size:13px;color:var(--navy);margin-bottom:2px;">Chat before you decide</div><div style="font-size:12px;color:var(--muted);">Message interested tenants in-app at zero cost.</div></div>
+        </div>
+      </div>
+
+    </div><!-- end sidebar -->
+  </div><!-- end page-grid -->
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="container">
+    <div class="footer-top" style="display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:260px;">
+        <div class="display" style="font-size:22px;font-weight:800;color:#fff;margin-bottom:10px;">StayMatch</div>
+        <p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,.4);">AI-powered flatmate matching for students and professionals across India.</p>
+      </div>
+      <div class="footer-links" style="display:flex;gap:56px;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">PRODUCT</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">How It Works</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Browse Listings</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">List a Room</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Pricing</a>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">CITIES</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Bangalore</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Mumbai</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Delhi</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Hyderabad</a>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">COMPANY</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">About Us</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Blog</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Privacy Policy</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Terms of Use</a>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">CONTACT US</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="mailto:hello@staymatch.in" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">📧 hello@staymatch.in</a>
+            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">📱 +91 98765 43210</a>
+            <span style="color:rgba(255,255,255,.55);font-size:14px;">📍 Koramangala, Bangalore</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom" style="padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <div style="font-size:13px;color:rgba(255,255,255,.25);">© 2026 StayMatch Technologies Pvt. Ltd. · Made in India 🇮🇳</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.25);">Bangalore · Mumbai · Delhi · Hyderabad · Pune · Chennai · Kolkata · Patna</div>
+    </div>
+  </div>
+</footer>
 
 <script>
+/* ── hamburger ── */
+const hBtn = document.getElementById('hamburgerBtn');
+const mNav = document.getElementById('mobileNav');
+hBtn.addEventListener('click', () => {
+  const open = mNav.classList.toggle('open');
+  hBtn.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+mNav.querySelectorAll('a').forEach(l => l.addEventListener('click', () => {
+  mNav.classList.remove('open'); hBtn.classList.remove('open'); document.body.style.overflow = '';
+}));
+
+/* ── tabs ── */
 function switchTab(id, el) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
   el.classList.add('active');
+}
+
+/* ── save heart toggle ── */
+function toggleSave(btn) {
+  const saved = btn.textContent === '♡';
+  btn.textContent = saved ? '♥' : '♡';
+  btn.style.background = saved ? '#fff0f0' : 'rgba(255,255,255,.9)';
+  btn.style.color = saved ? '#ef4444' : '';
+}
+
+/* ── gallery thumb click -> main image ── */
+const mainGalleryImg = document.getElementById('mainGalleryImg');
+document.querySelectorAll('.gallery-thumb-img').forEach((thumb) => {
+  thumb.addEventListener('click', () => {
+    if (mainGalleryImg) {
+      mainGalleryImg.src = thumb.src;
+    }
+  });
+});
+
+/* ── view all photos button ── */
+const photoCountBtn = document.getElementById('photoCountBtn');
+const galleryModal = document.getElementById('galleryModal');
+const galleryCloseBtn = document.getElementById('galleryCloseBtn');
+if (photoCountBtn && galleryModal) {
+  photoCountBtn.addEventListener('click', () => galleryModal.classList.add('open'));
+}
+if (galleryCloseBtn && galleryModal) {
+  galleryCloseBtn.addEventListener('click', () => galleryModal.classList.remove('open'));
+  galleryModal.addEventListener('click', (e) => {
+    if (e.target === galleryModal) galleryModal.classList.remove('open');
+  });
 }
 </script>
 </body>

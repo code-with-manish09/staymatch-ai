@@ -765,7 +765,65 @@ input[type=range]{width:100%;accent-color:var(--teal);}
         <a class="sec-link">View all 48 listings →</a>
       </div>
       <div class="rooms-grid fu d4">
+        {% for room in listings %}
+        <div class="room-card">
+          <div class="room-img">
+            {% with first_img=room.images.first %}
+              {% if first_img %}
+              <img src="{{ first_img.image.url }}" alt="{{ room.title }}" onerror="this.style.display='none'"/>
+              {% else %}
+              <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" alt="Room" onerror="this.style.display='none'"/>
+              {% endif %}
+            {% endwith %}
+            <div class="match-badge teal">
+              🎯
+              {% if room.cleanliness_level >= 9 %}
+                96% Match
+              {% elif room.cleanliness_level >= 7 %}
+                92% Match
+              {% elif room.cleanliness_level >= 5 %}
+                88% Match
+              {% else %}
+                82% Match
+              {% endif %}
+            </div>
+            <div class="room-save" id="sv-dyn-{{ room.id }}" onclick="toggleSave('sv-dyn-{{ room.id }}')">🤍</div>
+            <div class="room-type">{{ room.bhk_config }} · {{ room.get_furnishing_status_display }}</div>
+          </div>
+          <div class="room-body">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:3px;">
+              <div class="room-title" style="margin-bottom:0;">{{ room.title }}</div>
+              <span class="verified-badge gold" style="flex-shrink:0;margin-left:6px;margin-top:2px;">✅ Verified</span>
+            </div>
+            <div class="room-loc">📍 {{ room.area }} · {{ room.city }}</div>
+            <div class="safety-row">
+              <div class="safety-stars">★★★★★</div>
+              <span class="safety-lbl">Safety 4.7</span>
+              <span class="clean-pill">🧹 Clean</span>
+            </div>
+            <div class="room-chips">
+              <div class="chip mutual-chip match">🏠 {{ room.room_type }}</div>
+              <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🪑 {{ room.get_furnishing_status_display }}</div>
+              {% if room.nearest_metro %}
+              <div class="chip" style="background:#F0FDF4;color:#059669;">🚇 Near Metro</div>
+              {% endif %}
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+              <div class="ai-price-pill">🤖 AI Fair: ₹{{ room.rent }}</div>
+              <div class="env-score">🌿 Env <span>8.2/10</span></div>
+            </div>
+            <div class="room-footer">
+              <div class="room-price">₹{{ room.rent }} <small>/mo</small></div>
+              <a href="{% url 'room_details_by_id' room.id %}" class="btn-sm btn-sm-teal" style="text-decoration: none; text-align: center; display: inline-block;">
+                View Details
+              </a>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        {% endfor %}
 
+        {% if not listings %}
         <div class="room-card">
   <div class="room-img">
     <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" alt="Room" onerror="this.style.display='none'"/>
@@ -907,6 +965,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
             </div>
           </div>
         </div>
+        {% endif %}
 
       </div><!-- /rooms-grid -->
 

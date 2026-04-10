@@ -37,6 +37,12 @@ class Listing(models.Model):
     rent = models.IntegerField(validators=[MinValueValidator(2000), MaxValueValidator(80000)])
     deposit = models.CharField(max_length=50)
     maintenance = models.CharField(max_length=50)
+    included_wifi = models.BooleanField(default=False)
+    included_electricity = models.BooleanField(default=False)
+    included_water = models.BooleanField(default=False)
+    included_gas = models.BooleanField(default=False)
+    included_cooking = models.BooleanField(default=False)
+    included_housekeeping = models.BooleanField(default=False)
     
     # 3. Amenities & Furnishing
     FURNISH_CHOICES = [
@@ -61,6 +67,9 @@ class Listing(models.Model):
 
     # Metadata
     is_published = models.BooleanField(default=False)
+    contact_name = models.CharField(max_length=120, blank=True)
+    contact_phone = models.CharField(max_length=20, blank=True)
+    contact_email = models.EmailField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
