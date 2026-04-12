@@ -10,24 +10,27 @@ def get_conversations(user):
         Q(sender=user) | Q(recipient=user)
     )
 
-    seen_listings = []
+    seen = []        # (listing_id, other_user_id) dono track karo
     conversations = []
 
     for msg in all_msgs.order_by('-created_at'):
-        if msg.listing_id not in seen_listings:
-            seen_listings.append(msg.listing_id)
+        # Other user kaun hai
+        if msg.sender == user:
+            other = msg.recipient
+        else:
+            other = msg.sender
+
+        key = (msg.listing_id, other.id)   # ✅ listing + user dono ka pair
+
+        if key not in seen:
+            seen.append(key)
 
             unread = Message.objects.filter(
                 recipient=user,
                 listing=msg.listing,
+                sender=other,
                 is_read=False
             ).count()
-
-            # ✅ Yeh fix hai — recipient == user toh other = sender, warna other = recipient
-            if msg.sender == user:
-                other = msg.recipient
-            else:
-                other = msg.sender
 
             conversations.append({
                 'listing': msg.listing,
@@ -37,7 +40,6 @@ def get_conversations(user):
             })
 
     return conversations
-
 # ─── inbox view (sirf sidebar dikhao, koi chat select nahi) ──────────────────
 @login_required
 def inbox(request):
@@ -55,25 +57,38 @@ def inbox(request):
 def chat_view(request, listing_id):
     listing = get_object_or_404(Listing, id=listing_id)
 
-    # Sirf is listing ki messages jo mere saath hain
+    # Doosra banda kaun hai determine karo
+    if request.user == listing.owner:
+        # Owner hai toh URL se other_user_id lena hoga
+        other_user_id = request.GET.get('user')
+        if not other_user_id:
+            # Koi user select nahi — pehli conversation pe bhejo
+            first_msg = Message.objects.filter(
+                listing=listing,
+                recipient=listing.owner
+            ).first()
+            if first_msg:
+                return redirect(f"{request.path}?user={first_msg.sender.id}")
+            else:
+                return redirect('inbox')
+        from django.contrib.auth.models import User
+        other_user = get_object_or_404(User, id=other_user_id)
+    else:
+        # Normal user hai — other_user hamesha owner hoga
+        other_user = listing.owner
+
+    # Sirf inhi do logon ke beech ki messages
     messages = Message.objects.filter(
         listing=listing
     ).filter(
-        Q(sender=request.user) | Q(recipient=request.user)
+        Q(sender=request.user, recipient=other_user) |
+        Q(sender=other_user, recipient=request.user)
     ).order_by('created_at')
 
-    # Jo messages mujhe mile hain unhe read mark karo
+    # Read mark karo
     messages.filter(recipient=request.user, is_read=False).update(is_read=True)
 
-    # Sidebar ke liye conversations
     conversations = get_conversations(request.user)
-
-    # Doosra banda kaun hai?
-    first_msg = messages.first()
-    if first_msg:
-        other_user = first_msg.sender if first_msg.recipient == request.user else first_msg.recipient
-    else:
-        other_user = listing.owner  # agar koi message nahi abhi tak
 
     return render(request, 'inbox/inbox.html', {
         'conversations': conversations,
@@ -82,8 +97,8 @@ def chat_view(request, listing_id):
         'other_user': other_user,
     })
 
+from django.urls import reverse
 
-# ─── send message ─────────────────────────────────────────────────────────────
 @login_required
 def send_message(request, listing_id):
     if request.method == 'POST':
@@ -91,27 +106,38 @@ def send_message(request, listing_id):
         body = request.POST.get('body', '').strip()
 
         if body:
-            # ✅ Agar main owner hoon toh recipient = pehle wala sender
-            # Agar main owner nahi hoon toh recipient = owner
             if request.user == listing.owner:
-                # Owner reply kar raha hai — pehla message dhundo kis ne bheja tha
-                first_msg = Message.objects.filter(
-                    listing=listing
-                ).exclude(sender=listing.owner).first()
-
-                if first_msg:
+                other_user_id = request.POST.get('other_user_id')
+                if not other_user_id:
+                    first_msg = Message.objects.filter(
+                        listing=listing
+                    ).exclude(sender=listing.owner).first()
+                    if not first_msg:
+                        return redirect('inbox')
                     recipient = first_msg.sender
+                    other_user_id = recipient.id
                 else:
-                    return redirect('chat_view', listing_id=listing_id)
+                    from django.contrib.auth.models import User
+                    recipient = get_object_or_404(User, id=int(other_user_id))
+
+                Message.objects.create(
+                    sender=request.user,
+                    recipient=recipient,
+                    listing=listing,
+                    body=body,
+                )
+                # ✅ reverse use karo — hardcoded URL nahi
+                return redirect(
+                    reverse('chat_view', args=[listing_id]) + f'?user={other_user_id}'
+                )
+
             else:
-                # Normal user message kar raha hai owner ko
-                recipient = listing.owner
+                Message.objects.create(
+                    sender=request.user,
+                    recipient=listing.owner,
+                    listing=listing,
+                    body=body,
+                )
+                return redirect('chat_view', listing_id=listing_id)
 
-            Message.objects.create(
-                sender=request.user,
-                recipient=recipient,
-                listing=listing,
-                body=body,
-            )
-
-    return redirect('chat_view', listing_id=listing_id)
+    return redirect('inbox')

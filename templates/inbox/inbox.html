@@ -268,39 +268,41 @@ body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; }
       <p>{{ conversations|length }} conversation{{ conversations|length|pluralize }}</p>
     </div>
 
-    <div class="conv-list">
-      {% for conv in conversations %}
+   <div class="conv-list">
 
-        <a class="ci {% if active_listing.id == conv.listing.id %}active{% endif %}"
-           href="{% url 'chat_view' conv.listing.id %}">
+  {% for conv in conversations %}
 
-          <div class="av">
-            {{ conv.other_user.username|slice:":1"|upper }}
-          </div>
+    {% if conv.listing.owner == request.user %}
+      <a class="ci {% if active_listing.id == conv.listing.id and other_user.id == conv.other_user.id %}active{% endif %}"
+         href="{% url 'chat_view' conv.listing.id %}?user={{ conv.other_user.id }}">
+    {% else %}
+      <a class="ci {% if active_listing.id == conv.listing.id %}active{% endif %}"
+         href="{% url 'chat_view' conv.listing.id %}">
+    {% endif %}
 
-          <div class="ci-info">
-            <div class="ci-top">
-              <span class="ci-name">{{ conv.other_user.username }}</span>
-              <span class="ci-time">{{ conv.last_msg.created_at|timesince|slice:":5" }}</span>
-            </div>
-            <div class="ci-prev {% if conv.unread %}unread{% endif %}">
-              {{ conv.listing.title|truncatechars:35 }}
-            </div>
-          </div>
+      <div class="av">{{ conv.other_user.username|slice:":1"|upper }}</div>
 
-          {% if conv.unread %}
-            <div class="u-dot"></div>
-          {% endif %}
-
-        </a>
-
-      {% empty %}
-        <div style="text-align:center; padding:50px 20px;">
-          <p style="font-size:13px; color:#94a3b8;">Koi message nahi abhi tak.</p>
+      <div class="ci-info">
+        <div class="ci-top">
+          <span class="ci-name">{{ conv.other_user.username }}</span>
+          <span class="ci-time">{{ conv.last_msg.created_at|timesince|slice:":5" }}</span>
         </div>
-      {% endfor %}
-    </div>
+        <div class="ci-prev {% if conv.unread %}unread{% endif %}">
+          {{ conv.listing.title|truncatechars:35 }}
+        </div>
+      </div>
 
+      {% if conv.unread %}<div class="u-dot"></div>{% endif %}
+
+    </a>
+
+  {% empty %}
+    <div style="text-align:center; padding:50px 20px;">
+      <p style="font-size:13px; color:#94a3b8;">Koi message nahi abhi tak.</p>
+    </div>
+  {% endfor %}
+
+   </div>
   </div>
   <!-- ════════════ SIDEBAR END ════════════ -->
 
@@ -348,22 +350,18 @@ body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; }
       </div>
 
       <!-- Send Form -->
-      <form method="POST"
-            action="{% url 'send_message' active_listing.id %}"
-            class="inp-bar">
-        {% csrf_token %}
-        <input name="body"
-               placeholder="Message likho…"
-               autocomplete="off"
-               required />
-        <button type="submit" class="snd">
-          <svg viewBox="0 0 24 24">
-            <line x1="22" y1="2" x2="11" y2="13"/>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-          </svg>
-        </button>
-      </form>
-
+      <form method="POST" action="{% url 'send_message' active_listing.id %}" class="inp-bar">
+  {% csrf_token %}
+  <!-- Yeh hidden field add karo — owner ko pata chalega kise reply karna hai -->
+  <input type="hidden" name="other_user_id" value="{{ other_user.id }}" />
+  <input name="body" id="inp" placeholder="Message likho…" autocomplete="off" required />
+  <button type="submit" class="snd">
+    <svg viewBox="0 0 24 24">
+      <line x1="22" y1="2" x2="11" y2="13"/>
+      <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+    </svg>
+  </button>
+</form>
     {% else %}
 
       <!-- No chat selected -->
