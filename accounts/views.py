@@ -1,4 +1,5 @@
 import logging
+import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -6,6 +7,7 @@ from .models import Profile
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout   
+from django.http import JsonResponse
 
 
 # 1. Logger setup (Professional error tracking ke liye)
@@ -76,6 +78,9 @@ def register(request):
 
     # GET Request
     return render(request, 'accounts/register.html')
+
+
+
 #-------------------------- LOGIN VIEW -----------------------------------
  
 def login(request):
@@ -96,6 +101,8 @@ def login(request):
             return redirect('login')   # 🔥 IMPORTANT CHANGE
 
     return render(request, 'accounts/login.html')
+
+
 
 #-------------------------- UPDATE PROFILE VIEW -----------------------------------
 @login_required
@@ -153,9 +160,41 @@ def update_profile(request):
         'user': request.user
     }
     return render(request, 'accounts/update_profile.html', context)
+
+
+
 #-------------------------- LOGOUT VIEW ----------------------------------- 
 @login_required
 def logout(request):
     auth.logout(request)
     messages.success(request, "You have been logged out. See you soon! 👋")
     return redirect('login')
+
+
+
+#===============Tags views =====================
+
+import json
+from django.http import JsonResponse
+from .models import Profile # Apna model import check kar lena
+
+def save_quiz(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            tags = data.get('tags', [])
+            score = data.get('score', 0)
+
+            # 🔥 CHANGE YAHAN HAI: 
+            # Agar profile nahi hai, toh ye line use create kar degi
+            profile, created = Profile.objects.get_or_create(user=request.user)
+            
+            profile.personality_tags = tags
+            profile.vibe_score = score
+            profile.save()
+
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+            
+    return JsonResponse({'status': 'invalid request'}, status=400)

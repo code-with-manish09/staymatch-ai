@@ -20,5 +20,8 @@ class Profile(models.Model):
     profession = models.CharField(max_length=100, default="Software Engineer")
     vibe_score = models.IntegerField(default=0)
 
+    #tags field jsonf
+    personality_tags = models.JSONField(default=list,blank=True)
+
     def __str__(self):
         return f"{self.user.username}'s Profile" if self.user else self.full_name

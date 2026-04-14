@@ -778,6 +778,49 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 .rmp-empty span { font-size: 32px; }
 .rmp-empty p { font-size: 13px; }
 
+.quiz-hero{background:linear-gradient(135deg,var(--navy) 0%,#1a3260 60%,#0d2a5e 100%);border-radius:20px;padding:36px 32px;margin-bottom:24px;position:relative;overflow:hidden;display:flex;align-items:center;gap:28px;flex-wrap:wrap;}
+.quiz-hero::before{content:'';position:absolute;top:-80px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,201,.18),transparent);pointer-events:none;}
+.quiz-hero::after{content:'';position:absolute;bottom:-60px;left:120px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.1),transparent);pointer-events:none;}
+.quiz-hero-text{flex:1;min-width:200px;position:relative;z-index:1;}
+.quiz-hero-title{font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:8px;}
+.quiz-hero-sub{font-size:14px;color:rgba(255,255,255,.55);line-height:1.65;margin-bottom:20px;max-width:480px;}
+.quiz-hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+.quiz-hero-chip{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-size:12px;font-weight:600;padding:5px 13px;border-radius:99px;border:1px solid rgba(255,255,255,.12);}
+.quiz-cta-btn{background:var(--teal);color:#fff;border:none;border-radius:12px;padding:14px 28px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.quiz-cta-btn:hover{background:#0993b3;transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,165,201,.35);}
+.quiz-hero-visual{flex-shrink:0;position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.quiz-score-ring{width:100px;height:100px;position:relative;}
+.quiz-score-ring svg{width:100px;height:100px;transform:rotate(-90deg);}
+.quiz-score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:800;color:var(--teal);}
+.quiz-score-lbl{font-size:11px;color:rgba(255,255,255,.4);font-weight:600;}
+ 
+/* ── QUIZ STEPS ROW — 4 per row = 2 rows for 8 ── */
+.quiz-steps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.quiz-step-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 10px;text-align:center;box-shadow:var(--card-sh);transition:all .2s;}
+.qs-icon{font-size:22px;margin-bottom:6px;}
+.qs-label{font-size:11px;font-weight:700;color:var(--navy);}
+.qs-sublabel{font-size:10px;color:var(--muted);margin-top:2px;}
+ 
+/* ── HOW IT WORKS ── */
+.how-it-works{background:#fff;border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:24px;box-shadow:var(--card-sh);}
+.hiw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px;}
+.hiw-item{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--off);border-radius:12px;}
+.hiw-num{width:28px;height:28px;border-radius:8px;background:var(--navy);color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hiw-text{font-size:12px;color:var(--navy);font-weight:600;line-height:1.5;}
+.hiw-sub{font-size:11px;color:var(--muted);margin-top:2px;font-weight:400;}
+ 
+/* ── TAGS PREVIEW ── */
+.tags-preview{background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px 24px;box-shadow:var(--card-sh);}
+.tag-category{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.tag-category:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.tag-cat-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
+.tag-options{display:flex;flex-wrap:wrap;gap:7px;}
+.tag-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:99px;font-size:12px;font-weight:600;border:1.5px solid var(--border);color:var(--navy);background:var(--off);transition:all .15s;}
+.tag-pill:hover{border-color:var(--teal);background:var(--teal-lt);color:var(--teal);}
+ 
+/* ── RESPONSIVE ── */
+@media(max-width:900px){.quiz-steps-row{grid-template-columns:repeat(2,1fr);}.hiw-grid{grid-template-columns:1fr;}}
+@media(max-width:600px){.quiz-hero{padding:22px 18px;gap:18px;}.quiz-hero-title{font-size:20px;}.quiz-hero-visual{display:none;}.tags-preview{padding:16px;}}
 </style>
 </head>
 <body>
@@ -841,6 +884,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 
 <!-- ════════════════════════════ MAIN ════════════════════════════ -->
 <main class="main">
+  {% csrf_token %}
 {% if messages %}
   {% for message in messages %}
     <div class="msg msg-success">
@@ -890,14 +934,16 @@ input[type=range]{width:100%;accent-color:var(--teal);}
         <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px; height:30px; border-radius: 50%;" alt="{{ user.username }}"/>
         {% endif %}
         <div style="flex:1;position:relative;z-index:1;">
-          <div class="wb-name">Hey {{ request.user.profile.full_name }}, welcome back 👋</div>
-          <div class="wb-sub">3 new high-compatibility matches found today — go connect!</div>
+          <div class="wb-name">Hey {{ request.user.profile.full_name }}, welcome back ! 👋</div>
           <div class="wb-chips">
-            <span class="wb-chip">🌙 Night Owl</span>
-            <span class="wb-chip">🎮 Gaming</span>
-            <span class="wb-chip">🍕 Foodie</span>
-            <span class="wb-chip">💻 Tech</span>
-          </div>
+  {% if request.user.profile.personality_tags %}
+    {% for tag in request.user.profile.personality_tags %}
+      <span class="wb-chip">{{ tag }}</span>
+    {% endfor %}
+  {% else %}
+    <span class="wb-chip">🏷️ Quiz lo aur tags pao</span>
+  {% endif %}
+</div>
           <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
             <span class="verified-badge">🎓 Student Verified</span>
             <span class="quiz-done">🧠 Personality Quiz Done</span>
@@ -1590,12 +1636,14 @@ input[type=range]{width:100%;accent-color:var(--teal);}
             <div class="profile-field">
               <div class="profile-field-label">Personality Tags</div>
               <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">
-                <span class="chip" style="background:var(--teal-lt);color:var(--teal);">🌙 Night Owl</span>
-                <span class="chip" style="background:var(--teal-lt);color:var(--teal);">🎮 Gamer</span>
-                <span class="chip" style="background:var(--teal-lt);color:var(--teal);">🍕 Foodie</span>
-                <span class="chip" style="background:var(--teal-lt);color:var(--teal);">💻 Tech</span>
-                <span class="chip" style="background:var(--teal-lt);color:var(--teal);">🎵 Music</span>
-              </div>
+  {% if request.user.profile.personality_tags %}
+    {% for tag in request.user.profile.personality_tags %}
+      <span class="chip" style="background:var(--teal-lt);color:var(--teal);">{{ tag }}</span>
+    {% endfor %}
+  {% else %}
+    <span style="font-size:12px;color:var(--muted);">selected tags 🏷️</span>
+  {% endif %}
+</div>
             </div>
 
             <div class="profile-field">
@@ -1670,81 +1718,327 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 
     <!-- ══ PERSONALITY QUIZ ══ -->
     <div id="sec-quiz" style="display:none;">
-      <div class="sec-hd"><div class="sec-title">🧠 Personality Quiz Matching</div><div class="section-label" style="margin-bottom:0;">AI Feature</div></div>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Answer 8 quick questions about your lifestyle and personality. Our AI builds your compatibility profile and matches you with people who truly vibe with you — beyond just budget and location.</p>
-
-      <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:18px;box-shadow:var(--card-sh);">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-          <div class="display" style="font-weight:700;font-size:16px;color:var(--navy);">Your Personality Profile</div>
-          <div style="background:var(--teal-lt);color:var(--teal);font-size:12px;font-weight:700;padding:4px 12px;border-radius:99px;">Quiz Complete ✓</div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;">
-          <div style="text-align:center;background:var(--off);border-radius:12px;padding:14px 8px;">
-            <div style="font-size:24px;margin-bottom:4px;">🌙</div>
-            <div style="font-size:11px;font-weight:700;color:var(--navy);">Night Owl</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px;">Sleep Pattern</div>
-          </div>
-          <div style="text-align:center;background:var(--off);border-radius:12px;padding:14px 8px;">
-            <div style="font-size:24px;margin-bottom:4px;">📚</div>
-            <div style="font-size:11px;font-weight:700;color:var(--navy);">Ambivert</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px;">Social Style</div>
-          </div>
-          <div style="text-align:center;background:var(--off);border-radius:12px;padding:14px 8px;">
-            <div style="font-size:24px;margin-bottom:4px;">🍕</div>
-            <div style="font-size:11px;font-weight:700;color:var(--navy);">Non-Veg</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px;">Food Pref.</div>
-          </div>
-          <div style="text-align:center;background:var(--off);border-radius:12px;padding:14px 8px;">
-            <div style="font-size:24px;margin-bottom:4px;">🔇</div>
-            <div style="font-size:11px;font-weight:700;color:var(--navy);">Moderate</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px;">Noise Level</div>
-          </div>
-        </div>
-        <button class="btn-teal" style="width:100%;padding:12px;font-size:14px;" onclick="showToast('Retaking Quiz…','Your new results will update matches 🎯')">Retake Quiz →</button>
+ 
+  <div class="sec-hd">
+    <div class="sec-title">🧠 Personality Quiz</div>
+    <div class="section-label" style="margin-bottom:0;">AI Feature</div>
+  </div>
+ 
+  <div class="quiz-hero">
+    <div class="quiz-hero-text">
+      <div class="quiz-hero-title">Discover Your<br/>Flatmate Personality</div>
+      <div class="quiz-hero-sub">8 quick questions about lifestyle, hobbies aur occupation. AI tumhara personality profile banata hai aur profile pe tags add karta hai.</div>
+      <div class="quiz-hero-chips">
+        <span class="quiz-hero-chip">⏱ 3 minutes</span>
+        <span class="quiz-hero-chip">🎯 8 questions</span>
+        <span class="quiz-hero-chip">🏷️ Tags your profile</span>
+        <span class="quiz-hero-chip">🤖 AI powered</span>
       </div>
-
-      <div class="sec-hd"><div class="sec-title">🎯 Personality-Based Matches</div></div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;">
-        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--card-sh);">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="avatar" style="width:44px;height:44px;" alt="Arjun"/>
-            <div><div style="font-weight:700;font-size:14px;color:var(--navy);">Arjun Mehta</div><div style="font-size:11px;color:var(--muted);">23 · SWE · Bangalore</div></div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;">
-            <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:var(--muted);width:72px;">Personality</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:96%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--teal);">96%</span></div>
-            <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:var(--muted);width:72px;">Lifestyle</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:91%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--teal);">91%</span></div>
-            <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:var(--muted);width:72px;">Interests</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:88%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--teal);">88%</span></div>
-          </div>
-          <button class="btn-sm btn-sm-teal" style="width:100%;font-size:12px;" onclick="showToast('Request Sent!','Arjun received your connect request 🎉')">connect</button>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--card-sh);">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="avatar" style="width:44px;height:44px;" alt="Riya"/>
-            <div><div style="font-weight:700;font-size:14px;color:var(--navy);">Riya Sharma</div><div style="font-size:11px;color:var(--muted);">22 · UX · Mumbai</div></div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;">
-            <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:var(--muted);width:72px;">Personality</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:93%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--teal);">93%</span></div>
-            <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:var(--muted);width:72px;">Lifestyle</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:89%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--teal);">89%</span></div>
-            <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:var(--muted);width:72px;">Interests</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:97%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--teal);">97%</span></div>
-          </div>
-          <button class="btn-sm btn-sm-teal" style="width:100%;font-size:12px;" onclick="showToast('Request Sent!','Riya received your connect request 🎉')">Connect</button>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--card-sh);">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-            <img src="https://randomuser.me/api/portraits/women/65.jpg" class="avatar" style="width:44px;height:44px;" alt="Priya"/>
-            <div><div style="font-weight:700;font-size:14px;color:var(--navy);">Priya Nair</div><div style="font-size:11px;color:var(--muted);">24 · Doctor · Delhi</div></div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;">
-            <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:var(--muted);width:72px;">Personality</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:79%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--teal);">79%</span></div>
-            <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:var(--muted);width:72px;">Lifestyle</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:84%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--teal);">84%</span></div>
-            <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:var(--muted);width:72px;">Interests</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:71%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--teal);">71%</span></div>
-          </div>
-          <button class="btn-sm btn-sm-navy" style="width:100%;font-size:12px;" onclick="showToast('Request Sent!','Priya received your connect request 🎉')">Connect</button>
-        </div>
-      </div>
-      <button class="btn-outline" onclick="showSec('discover')">← Back to Discover</button>
+      <button class="quiz-cta-btn" onclick="openVibe()">✨ Start Quiz Now</button>
     </div>
+    <div class="quiz-hero-visual">
+      <div class="quiz-score-ring">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="7"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#0EA5C9" stroke-width="7" stroke-dasharray="251.3" stroke-dashoffset="32.7" stroke-linecap="round"/>
+        </svg>
+        <div class="quiz-score-num">87</div>
+      </div>
+      <div class="quiz-score-lbl">Vibe Score</div>
+      <div style="margin-top:8px;"><span style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;">Top 12% in Bangalore</span></div>
+    </div>
+  </div>
+ 
+  <!-- 8 Step Cards -->
+  <div class="sec-title" style="font-size:15px;margin-bottom:14px;">📋 What We Ask You</div>
+  <div class="quiz-steps-row">
+    <div class="quiz-step-card"><div class="qs-icon">🌙</div><div class="qs-label">Sleep Cycle</div><div class="qs-sublabel">Night owl or early bird?</div></div>
+    <div class="quiz-step-card"><div class="qs-icon">🍽️</div><div class="qs-label">Food Habits</div><div class="qs-sublabel">Veg, Non-veg or Vegan?</div></div>
+    <div class="quiz-step-card"><div class="qs-icon">🔊</div><div class="qs-label">Noise & Vibe</div><div class="qs-sublabel">Quiet or lively home?</div></div>
+    <div class="quiz-step-card"><div class="qs-icon">💰</div><div class="qs-label">Budget Range</div><div class="qs-sublabel">Your max rent?</div></div>
+    <div class="quiz-step-card"><div class="qs-icon">🧬</div><div class="qs-label">Personality</div><div class="qs-sublabel">Zen, Planner, Creative?</div></div>
+    <div class="quiz-step-card"><div class="qs-icon">🎮</div><div class="qs-label">Hobbies</div><div class="qs-sublabel">Gaming, music, travel?</div></div>
+    <div class="quiz-step-card"><div class="qs-icon">⚽</div><div class="qs-label">Sports</div><div class="qs-sublabel">Cricket, gym, yoga?</div></div>
+    <div class="quiz-step-card"><div class="qs-icon">💼</div><div class="qs-label">Occupation</div><div class="qs-sublabel">Student, IT, startup?</div></div>
+  </div>
+ 
+  <!-- How It Works -->
+  <div class="how-it-works">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <div class="display" style="font-weight:700;font-size:15px;color:var(--navy);">How It Works</div>
+      <span style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:4px 12px;border-radius:99px;">🤖 AI Powered</span>
+    </div>
+    <div class="hiw-grid">
+      <div class="hiw-item"><div class="hiw-num">1</div><div><div class="hiw-text">8-step quiz lo</div><div class="hiw-sub">Honestly answer karo — 3 min</div></div></div>
+      <div class="hiw-item"><div class="hiw-num">2</div><div><div class="hiw-text">AI tags calculate karta hai</div><div class="hiw-sub">Night Owl, Gamer, Introvert etc.</div></div></div>
+      <div class="hiw-item"><div class="hiw-num">3</div><div><div class="hiw-text">Tags profile pe dikhhte hain</div><div class="hiw-sub">Sahi roommates tumhe dhundhhte hain</div></div></div>
+    </div>
+  </div>
+ 
+  <!-- Tags Preview — All 7 categories -->
+  <div class="tags-preview">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div class="display" style="font-weight:700;font-size:15px;color:var(--navy);">🏷️ Tags You Can Get</div>
+      <span style="font-size:12px;color:var(--muted);">Quiz ke baad profile pe add ho jaate hain</span>
+    </div>
+    <div class="tag-category">
+      <div class="tag-cat-label">Sleep Pattern</div>
+      <div class="tag-options">
+        <span class="tag-pill">🌙 Night Owl</span><span class="tag-pill">🌅 Early Bird</span><span class="tag-pill">🔄 Flexible</span><span class="tag-pill">🌀 Shift Worker</span>
+      </div>
+    </div>
+    <div class="tag-category">
+      <div class="tag-cat-label">Food Preference</div>
+      <div class="tag-options">
+        <span class="tag-pill">🥗 Pure Veg</span><span class="tag-pill">🍗 Non-Veg</span><span class="tag-pill">🌿 Vegan</span><span class="tag-pill">😋 Flexible Eater</span>
+      </div>
+    </div>
+    <div class="tag-category">
+      <div class="tag-cat-label">Social Style</div>
+      <div class="tag-options">
+        <span class="tag-pill">📚 Introvert</span><span class="tag-pill">⚖️ Ambivert</span><span class="tag-pill">🎉 Extrovert</span>
+      </div>
+    </div>
+    <div class="tag-category">
+      <div class="tag-cat-label">Personality Type</div>
+      <div class="tag-options">
+        <span class="tag-pill">🧘 The Zen One</span><span class="tag-pill">🎯 The Planner</span><span class="tag-pill">🎨 The Creative</span><span class="tag-pill">🚀 The Hustler</span>
+      </div>
+    </div>
+    <div class="tag-category">
+      <div class="tag-cat-label">Hobbies & Interests</div>
+      <div class="tag-options">
+        <span class="tag-pill">🎮 Gamer</span><span class="tag-pill">🎵 Music Lover</span><span class="tag-pill">📚 Reader</span><span class="tag-pill">🍳 Cook</span><span class="tag-pill">🎨 Creative</span><span class="tag-pill">✈️ Traveller</span><span class="tag-pill">💻 Tech Geek</span><span class="tag-pill">🎬 Movie Buff</span>
+      </div>
+    </div>
+    <div class="tag-category">
+      <div class="tag-cat-label">Sports</div>
+      <div class="tag-options">
+        <span class="tag-pill">⚽ Football Fan</span><span class="tag-pill">🏏 Cricket Fan</span><span class="tag-pill">🏸 Badminton</span><span class="tag-pill">🏋️ Fitness Freak</span><span class="tag-pill">🏃 Runner</span><span class="tag-pill">🧘 Yoga</span><span class="tag-pill">🏊 Swimmer</span><span class="tag-pill">🚴 Cyclist</span>
+      </div>
+    </div>
+    <div class="tag-category">
+      <div class="tag-cat-label">Occupation</div>
+      <div class="tag-options">
+        <span class="tag-pill">💻 Software Pro</span><span class="tag-pill">🎓 Student</span><span class="tag-pill">🏢 Corporate</span><span class="tag-pill">🎨 Freelancer</span><span class="tag-pill">🏥 Healthcare</span><span class="tag-pill">🚀 Startup</span><span class="tag-pill">📚 Researcher</span><span class="tag-pill">🎭 Creative Pro</span>
+      </div>
+    </div>
+  </div>
+ 
+  <div style="margin-top:20px;">
+    <button class="btn-outline" onclick="showSec('discover')">← Back to Discover</button>
+  </div>
+ 
+</div>
+<!-- /sec-quiz -->
+ 
+ 
+<!-- ══ VIBE MODAL — replace existing vibeModal div ══ -->
+<div class="modal-overlay" id="vibeModal" onclick="closeVibe(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div>
+        <div class="section-label" style="margin-bottom:6px;">STEP <span id="stepN">1</span> OF 8</div>
+        <div class="display" style="font-size:20px;font-weight:800;color:var(--navy);">✨ Find Your Vibe</div>
+      </div>
+      <button class="modal-close" onclick="closeVibe()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="step-dots">
+        <div class="sdot active" id="sd0"></div><div class="sdot" id="sd1"></div><div class="sdot" id="sd2"></div><div class="sdot" id="sd3"></div>
+        <div class="sdot" id="sd4"></div><div class="sdot" id="sd5"></div><div class="sdot" id="sd6"></div><div class="sdot" id="sd7"></div>
+      </div>
+ 
+      <!-- Step 1 -->
+      <div id="sv1">
+        <div class="q-title">🌙 Sleep cycle kya hai?</div>
+        <div class="q-sub">Flatmate conflict ki sabse badi wajah — honest raho!</div>
+        <div class="opt-grid">
+          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🌅</div><div class="opt-label">Early Bird</div><div class="opt-sub">10 baje so jaate ho</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🌙</div><div class="opt-label">Night Owl</div><div class="opt-sub">2 baje tak jagte ho</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🔄</div><div class="opt-label">Flexible</div><div class="opt-sub">Din ke hisaab se</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🌀</div><div class="opt-label">Shift Worker</div><div class="opt-sub">Irregular schedule</div></div>
+        </div>
+        <button class="btn-teal" style="width:100%;padding:13px;font-size:14px;" onclick="goStep(2)">Next →</button>
+      </div>
+ 
+      <!-- Step 2 -->
+      <div id="sv2" style="display:none;">
+        <div class="q-title">🍽️ Food preferences?</div>
+        <div class="q-sub">Shared kitchen mein sab ko samajhna padta hai!</div>
+        <div class="opt-grid">
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🥗</div><div class="opt-label">Pure Veg</div><div class="opt-sub">Ghar mein meat nahi</div></div>
+          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🍗</div><div class="opt-label">Non-Veg</div><div class="opt-sub">Kuch bhi chalega</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🌿</div><div class="opt-label">Vegan</div><div class="opt-sub">No animal products</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">😋</div><div class="opt-label">No Preference</div><div class="opt-sub">Bilkul flexible</div></div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(1)">← Back</button>
+          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(3)">Next →</button>
+        </div>
+      </div>
+ 
+      <!-- Step 3 -->
+      <div id="sv3" style="display:none;">
+        <div class="q-title">🔊 Noise & social vibe?</div>
+        <div class="q-sub">Ghar kitna quiet ya lively chahiye?</div>
+        <div style="margin-bottom:18px;">
+          <div class="range-val" id="noiseV">5 — Moderate</div>
+          <input type="range" min="1" max="10" value="5" oninput="setNoise(this.value)"/>
+          <div class="range-lbs"><span>🤫 Library quiet</span><span>🎉 Party house</span></div>
+        </div>
+        <div class="opt-grid" style="grid-template-columns:repeat(3,1fr);">
+          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">📚</div><div class="opt-label">Introvert</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">⚖️</div><div class="opt-label">Ambivert</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🎉</div><div class="opt-label">Extrovert</div></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(2)">← Back</button>
+          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(4)">Next →</button>
+        </div>
+      </div>
+ 
+      <!-- Step 4 -->
+      <div id="sv4" style="display:none;">
+        <div class="q-title">💰 Monthly budget?</div>
+        <div class="q-sub">Max rent including utilities.</div>
+        <div style="margin-bottom:18px;">
+          <div class="range-val" id="budgetV">₹12,000</div>
+          <input type="range" min="5000" max="40000" step="1000" value="12000" oninput="setBudget(this.value)"/>
+          <div class="range-lbs"><span>₹5,000</span><span>₹40,000</span></div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(3)">← Back</button>
+          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(5)">Next →</button>
+        </div>
+      </div>
+ 
+      <!-- Step 5 -->
+      <div id="sv5" style="display:none;">
+        <div class="q-title">🧬 Personality type?</div>
+        <div class="q-sub">Ghar mein tum kaisa feel karte ho?</div>
+        <div class="opt-grid">
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🧘</div><div class="opt-label">The Zen One</div><div class="opt-sub">Calm, minimalist</div></div>
+          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🎯</div><div class="opt-label">The Planner</div><div class="opt-sub">Structured, reliable</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🎨</div><div class="opt-label">The Creative</div><div class="opt-sub">Spontaneous, artsy</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🚀</div><div class="opt-label">The Hustler</div><div class="opt-sub">Ambitious, fast-paced</div></div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(4)">← Back</button>
+          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(6)">Next →</button>
+        </div>
+      </div>
+ 
+      <!-- Step 6 — Hobbies MULTI SELECT -->
+      <div id="sv6" style="display:none;">
+        <div class="q-title">🎮 Hobbies & Interests?</div>
+        <div class="q-sub">Multiple select kar sakte ho!</div>
+        <div class="opt-grid">
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🎮</div><div class="opt-label">Gaming</div><div class="opt-sub">Video games, esports</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🎵</div><div class="opt-label">Music</div><div class="opt-sub">Listening or playing</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">📚</div><div class="opt-label">Reading</div><div class="opt-sub">Books, articles</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🍳</div><div class="opt-label">Cooking</div><div class="opt-sub">Love to cook</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🎨</div><div class="opt-label">Art & Design</div><div class="opt-sub">Creative stuff</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">✈️</div><div class="opt-label">Travelling</div><div class="opt-sub">Exploring places</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">💻</div><div class="opt-label">Tech & Coding</div><div class="opt-sub">Dev, AI, gadgets</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🎬</div><div class="opt-label">Movies & OTT</div><div class="opt-sub">Netflix, anime etc.</div></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:4px;">
+          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(5)">← Back</button>
+          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(7)">Next →</button>
+        </div>
+      </div>
+ 
+      <!-- Step 7 — Sports MULTI SELECT -->
+      <div id="sv7" style="display:none;">
+        <div class="q-title">⚽ Favourite Sports?</div>
+        <div class="q-sub">Play karte ho ya dekhte ho — dono count hota hai!</div>
+        <div class="opt-grid">
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">⚽</div><div class="opt-label">Football</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🏏</div><div class="opt-label">Cricket</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🏸</div><div class="opt-label">Badminton</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🏋️</div><div class="opt-label">Gym / Fitness</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🏃</div><div class="opt-label">Running</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🧘</div><div class="opt-label">Yoga</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🏊</div><div class="opt-label">Swimming</div></div>
+          <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🚴</div><div class="opt-label">Cycling</div></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:4px;">
+          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(6)">← Back</button>
+          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(8)">Next →</button>
+        </div>
+      </div>
+ 
+      <!-- Step 8 — Job -->
+      <div id="sv8" style="display:none;">
+        <div class="q-title">💼 Job / Occupation?</div>
+        <div class="q-sub">Isse schedule aur lifestyle match hoti hai!</div>
+        <div class="opt-grid">
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">💻</div><div class="opt-label">Software / IT</div><div class="opt-sub">Dev, design, data</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🎓</div><div class="opt-label">Student</div><div class="opt-sub">College / university</div></div>
+          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🏢</div><div class="opt-label">Corporate</div><div class="opt-sub">Office job, 9-5</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🎨</div><div class="opt-label">Freelancer</div><div class="opt-sub">Work from anywhere</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🏥</div><div class="opt-label">Healthcare</div><div class="opt-sub">Doctor, nurse etc.</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🚀</div><div class="opt-label">Startup</div><div class="opt-sub">Founder / early stage</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">📚</div><div class="opt-label">Research</div><div class="opt-sub">PhD, professor</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🎭</div><div class="opt-label">Creative / Media</div><div class="opt-sub">Artist, content, film</div></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:4px;">
+          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(7)">← Back</button>
+          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="runAI()">🏷️ Add Tags</button>   
+     </div>
+      </div>
+ 
+      <!-- Loading -->
+      <div id="sv-loading" style="display:none;text-align:center;padding:36px 0;">
+        <div class="spinner"></div>
+        <div class="display" style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:6px;">Building your profile…</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6;">your tags are in progress!</div>
+      </div>
+ 
+      <!-- Result — tags added success -->
+<div id="sv-result" style="display:none;">
+  <div style="text-align:center;margin-bottom:24px;">
+    <div style="font-size:40px;margin-bottom:10px;animation:popIn .5s ease;">🎉</div>
+    <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;">Tags Successfully Added!</div>
+    <div style="font-size:18px; font-weight:700; color:var(--teal); margin-bottom:4px;">
+       Vibe Score: <span id="result-score">0</span>
+    </div>
+    <div style="font-size:13px;color:var(--muted);">Your personality profile is live on your account</div>
+  </div>
 
+  <!-- Tags display -->
+  <div style="background:var(--teal-lt);border:1px solid rgba(14,165,201,.2);border-radius:16px;padding:20px;margin-bottom:16px;">
+    <div style="font-size:12px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">🏷️ Your Personality Tags</div>
+    <div id="result-tags" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+    <div style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.6;">Yeh tags tumhare profile pe add ho gaye — roommates tumhe inhi se dhundhenge.</div>
+  </div>
+
+  <!-- Success notice -->
+  <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <div style="font-size:20px;flex-shrink:0;">✅</div>
+    <div style="font-size:13px;color:#065F46;font-weight:600;line-height:1.5;">Profile tags succesfully added!</div>
+  </div>
+
+  <!-- AI Match teaser — future feature -->
+  <div style="background:linear-gradient(135deg,var(--navy),#1a3260);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+    <div style="font-size:22px;flex-shrink:0;">✨</div>
+    <div style="flex:1;">
+      <div style="font-weight:700;font-size:13px;color:#fff;margin-bottom:3px;">Wanna know your AI Match?</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.5;">Try our feature Match-Ai</div>
+    </div>
+    <div style="background:rgba(14,165,201,.2);color:var(--teal);font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap;flex-shrink:0;">Soon →</div>
+  </div>
+
+  <button class="btn-teal" style="width:100%;padding:13px;font-size:14px;" onclick="closeVibe();showToast('Tags Added!','Profile pe tags add ho gaye 🏷️')">Done ✓</button>
+</div>
+ 
+    </div>
+  </div>
+</div>
+ 
+ 
+</div>
     <!-- ══ SAFETY RATINGS ══ -->
     <div id="sec-safety" style="display:none;">
       <div class="sec-hd">
@@ -1925,160 +2219,8 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 </main>
 </div>
 
-<!-- ════════ VIBE MODAL ════════ -->
-<div class="modal-overlay" id="vibeModal" onclick="closeVibe(event)">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-head">
-      <div>
-        <div class="section-label" style="margin-bottom:6px;">STEP <span id="stepN">1</span> OF 5</div>
-        <div class="display" style="font-size:20px;font-weight:800;color:var(--navy);">✨ Find Your Vibe</div>
-      </div>
-      <button class="modal-close" onclick="closeVibe()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="step-dots">
-        <div class="sdot active" id="sd0"></div>
-        <div class="sdot" id="sd1"></div>
-        <div class="sdot" id="sd2"></div>
-        <div class="sdot" id="sd3"></div>
-        <div class="sdot" id="sd4"></div>
-      </div>
-
-      <div id="sv1">
-        <div class="q-title">🌙 What's your sleep cycle?</div>
-        <div class="q-sub">Most common source of flatmate conflict — be honest!</div>
-        <div class="opt-grid">
-          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🌅</div><div class="opt-label">Early Bird</div><div class="opt-sub">Sleep by 10pm, up by 6am</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🌙</div><div class="opt-label">Night Owl</div><div class="opt-sub">Up till 2am, sleep till late</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🔄</div><div class="opt-label">Flexible</div><div class="opt-sub">Depends on the day</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🌀</div><div class="opt-label">Shift Worker</div><div class="opt-sub">Irregular schedule</div></div>
-        </div>
-        <button class="btn-teal" style="width:100%;padding:13px;font-size:14px;" onclick="goStep(2)">Next →</button>
-      </div>
-
-      <div id="sv2" style="display:none;">
-        <div class="q-title">🍽️ Food preferences?</div>
-        <div class="q-sub">Shared kitchens need shared understanding!</div>
-        <div class="opt-grid">
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🥗</div><div class="opt-label">Pure Veg</div><div class="opt-sub">No meat/eggs at home</div></div>
-          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🍗</div><div class="opt-label">Non-Veg</div><div class="opt-sub">Cook anything</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🌿</div><div class="opt-label">Vegan</div><div class="opt-sub">No animal products</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">😋</div><div class="opt-label">No Preference</div><div class="opt-sub">Totally flexible</div></div>
-        </div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(1)">← Back</button>
-          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(3)">Next →</button>
-        </div>
-      </div>
-
-      <div id="sv3" style="display:none;">
-        <div class="q-title">🔊 Noise & social vibe?</div>
-        <div class="q-sub">How quiet or lively do you want home to be?</div>
-        <div style="margin-bottom:18px;">
-          <div class="range-val" id="noiseV">5 — Moderate</div>
-          <input type="range" min="1" max="10" value="5" oninput="setNoise(this.value)"/>
-          <div class="range-lbs"><span>🤫 Library quiet</span><span>🎉 Party house</span></div>
-        </div>
-        <div class="opt-grid" style="grid-template-columns:repeat(3,1fr);">
-          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">📚</div><div class="opt-label">Introvert</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">⚖️</div><div class="opt-label">Ambivert</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🎉</div><div class="opt-label">Extrovert</div></div>
-        </div>
-        <div style="display:flex;gap:10px;margin-top:16px;">
-          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(2)">← Back</button>
-          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(4)">Next →</button>
-        </div>
-      </div>
-
-      <div id="sv4" style="display:none;">
-        <div class="q-title">💰 Monthly budget?</div>
-        <div class="q-sub">Your max rent contribution including utilities.</div>
-        <div style="margin-bottom:18px;">
-          <div class="range-val" id="budgetV">₹12,000</div>
-          <input type="range" min="5000" max="40000" step="1000" value="12000" oninput="setBudget(this.value)"/>
-          <div class="range-lbs"><span>₹5,000</span><span>₹40,000</span></div>
-        </div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(3)">← Back</button>
-          <button class="btn-primary" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(5)">Next →</button>
-        </div>
-      </div>
-
-      <div id="sv5" style="display:none;">
-        <div class="q-title">🧠 Personality Quiz</div>
-        <div class="q-sub">How do you describe yourself at home?</div>
-        <div class="opt-grid">
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🧘</div><div class="opt-label">The Zen One</div><div class="opt-sub">Calm, minimalist, zero drama</div></div>
-          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🎯</div><div class="opt-label">The Planner</div><div class="opt-sub">Structured routines, reliable</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🎨</div><div class="opt-label">The Creative</div><div class="opt-sub">Spontaneous, artsy, expressive</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🚀</div><div class="opt-label">The Hustler</div><div class="opt-sub">Ambitious, busy, fast-paced</div></div>
-        </div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(4)">← Back</button>
-          <button class="btn-primary" style="flex:1;padding:12px;font-size:14px;" onclick="runAI()">🤖 Run AI Match →</button>
-        </div>
-      </div>
-
-      <div id="sv-loading" style="display:none;text-align:center;padding:36px 0;">
-        <div class="spinner"></div>
-        <div class="display" style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:6px;">Analysing your vibe…</div>
-        <div style="font-size:13px;color:var(--muted);line-height:1.6;">AI is scoring compatibility across 8 dimensions<br/>against 12,000+ active profiles</div>
-      </div>
-
-      <div id="sv-result" style="display:none;">
-        <div style="text-align:center;margin-bottom:18px;">
-          <div style="font-size:36px;margin-bottom:8px;animation:popIn .5s ease;">🎉</div>
-          <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);">Your Vibe Score: <span style="color:var(--teal);">87</span></div>
-          <div style="font-size:13px;color:var(--muted);margin-top:4px;">Top 12% among all Bangalore profiles</div>
-        </div>
-        <div class="result-badge">
-          <div class="result-score">92%</div>
-          <div style="flex:1;">
-            <div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:12px;">Top Match — Riya Sharma</div>
-            <div style="display:flex;flex-direction:column;gap:7px;">
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:78px;">Sleep</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:91%;"></div></div><span style="font-size:11px;font-weight:700;color:var(--teal);width:28px;text-align:right;">91%</span></div>
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:78px;">Social</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:88%;"></div></div><span style="font-size:11px;font-weight:700;color:var(--teal);width:28px;text-align:right;">88%</span></div>
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:78px;">Budget</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:95%;"></div></div><span style="font-size:11px;font-weight:700;color:var(--teal);width:28px;text-align:right;">95%</span></div>
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:78px;">Lifestyle</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:85%;background:linear-gradient(90deg,#F59E0B,#EF4444);"></div></div><span style="font-size:11px;font-weight:700;color:var(--amber);width:28px;text-align:right;">85%</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="insight">
-          <strong style="color:var(--navy);">🤖 AI Insight:</strong> You and Riya are both night owls who love indie music and have a similar social pace. Budget ranges overlap perfectly at ₹10k–14k. Predicted cohabitation harmony: <strong style="color:var(--teal);">Very High.</strong>
-        </div>
-        <div class="emergency-bar">
-          <div class="emergency-icon">🆘</div>
-          <div class="emergency-text">Emergency Contact Active — Your trusted contact will be notified if you don't check in after a visit.</div>
-        </div>
-        <div class="ai-assistant-hint" onclick="showToast('AI Assistant','Coming in Phase 4 — AI Chat Assistant 🤖')">
-          <div style="font-size:20px;">🤖</div>
-          <div>
-            <div style="font-weight:700;font-size:13px;color:var(--navy);">AI Chat Assistant</div>
-            <div style="font-size:11px;color:var(--muted);">Coming soon — ask AI any question about your match</div>
-          </div>
-          <div style="margin-left:auto;font-size:11px;color:var(--teal);font-weight:700;">Phase 4 →</div>
-        </div>
-        <div style="display:flex;gap:10px;margin-top:16px;">
-          <button class="btn-outline" style="padding:12px 18px;font-size:13px;" onclick="closeVibe()">Close</button>
-          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="closeVibe();showToast('Connected!','Request sent to Riya Sharma 🎉')">Connect with Riya →</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div class="toast" id="toast">
-  <div class="toast-icon" id="tIcon">🎉</div>
-  <div>
-    <div class="toast-title" id="tTitle">Match Found!</div>
-    <div class="toast-sub" id="tSub">Riya Sharma has 95% compatibility with you.</div>
-  </div>
-</div>
 
 <script>
-// ── SIDEBAR (mobile) ──
 function toggleSidebar(){
   document.getElementById('sidebar').classList.toggle('open');
   document.getElementById('sidebarOverlay').classList.toggle('open');
@@ -2088,7 +2230,6 @@ function closeSidebar(){
   document.getElementById('sidebarOverlay').classList.remove('open');
 }
 
-// ── NAV ──
 const SECTIONS=['discover','matches','saved','messages','notifications','profile','settings','quiz','safety','addroom'];
 function showSec(id){
   SECTIONS.forEach(s=>{
@@ -2099,73 +2240,111 @@ function showSec(id){
   const t=document.querySelector(`.nav-item[onclick*="'${id}'"]`);
   if(t) t.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
-  // close sidebar on mobile after nav
   if(window.innerWidth<=900) closeSidebar();
 }
 
-// ── SAVE ──
 function toggleSave(id){
   const el=document.getElementById(id);
   if(el.textContent==='🤍'){el.textContent='❤️';showToast('Saved!','Room added to bookmarks 🔖');}
   else el.textContent='🤍';
 }
 
-// ── VIBE MODAL ──
 function openVibe(){document.getElementById('vibeModal').classList.add('open');resetVibe();}
 function closeVibe(e){if(!e||e.target===document.getElementById('vibeModal'))document.getElementById('vibeModal').classList.remove('open');}
 function resetVibe(){
   goStep(1);
   ['sv-loading','sv-result'].forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';});
 }
+
 function goStep(n){
-  [1,2,3,4,5].forEach(i=>{
-    const el=document.getElementById('sv'+i);
-    if(el) el.style.display=i===n?'':'none';
-  });
-  document.getElementById('stepN').textContent=Math.min(n,5);
-  for(let i=0;i<5;i++){
-    const d=document.getElementById('sd'+i);
-    if(!d) continue;
+  for(let i=1;i<=8;i++){const el=document.getElementById('sv'+i);if(el)el.style.display=(i===n)?'':'none';}
+  document.getElementById('stepN').textContent=Math.min(n,8);
+  for(let i=0;i<8;i++){
+    const d=document.getElementById('sd'+i);if(!d)continue;
     d.className='sdot';
-    if(i<n-1) d.classList.add('done');
-    if(i===n-1) d.classList.add('active');
+    if(i<n-1)d.classList.add('done');
+    if(i===n-1)d.classList.add('active');
   }
 }
-function pick(el){
-  el.closest('.opt-grid').querySelectorAll('.opt').forEach(o=>o.classList.remove('picked'));
-  el.classList.add('picked');
-}
-function setNoise(v){
-  const l=['','Dead Quiet','Very Quiet','Quiet','Mostly Quiet','Moderate','Lively','Active','Loud','Very Loud','Party Mode'];
-  document.getElementById('noiseV').textContent=v+' — '+l[v];
-}
+
+function pick(el){el.closest('.opt-grid').querySelectorAll('.opt').forEach(o=>o.classList.remove('picked'));el.classList.add('picked');}
+function multiPick(el){el.classList.toggle('picked');}
+function setNoise(v){const l=['','Dead Quiet','Very Quiet','Quiet','Mostly Quiet','Moderate','Lively','Active','Loud','Very Loud','Party Mode'];document.getElementById('noiseV').textContent=v+' — '+l[v];}
 function setBudget(v){document.getElementById('budgetV').textContent='₹'+Number(v).toLocaleString('en-IN');}
+
 function runAI(){
-  [1,2,3,4,5].forEach(i=>{const el=document.getElementById('sv'+i);if(el)el.style.display='none';});
+  for(let i=1;i<=8;i++){const el=document.getElementById('sv'+i);if(el)el.style.display='none';}
   document.getElementById('sv-loading').style.display='';
   document.getElementById('stepN').textContent='…';
+
+  const tags=[];
+  const s1=document.querySelector('#sv1 .opt.picked');if(s1){const m={'Early Bird':'🌅 Early Bird','Night Owl':'🌙 Night Owl','Flexible':'🔄 Flexible','Shift Worker':'🌀 Shift Worker'};const v=m[s1.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);}
+  const s2=document.querySelector('#sv2 .opt.picked');if(s2){const m={'Pure Veg':'🥗 Pure Veg','Non-Veg':'🍗 Non-Veg','Vegan':'🌿 Vegan','No Preference':'😋 Flexible Eater'};const v=m[s2.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);}
+  const s3=document.querySelector('#sv3 .opt.picked');if(s3){const m={'Introvert':'📚 Introvert','Ambivert':'⚖️ Ambivert','Extrovert':'🎉 Extrovert'};const v=m[s3.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);}
+  const s5=document.querySelector('#sv5 .opt.picked');if(s5){const m={'The Zen One':'🧘 The Zen One','The Planner':'🎯 The Planner','The Creative':'🎨 The Creative','The Hustler':'🚀 The Hustler'};const v=m[s5.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);}
+  document.querySelectorAll('#sv6 .opt.picked').forEach(opt=>{const m={'Gaming':'🎮 Gamer','Music':'🎵 Music Lover','Reading':'📚 Reader','Cooking':'🍳 Cook','Art & Design':'🎨 Creative','Travelling':'✈️ Traveller','Tech & Coding':'💻 Tech Geek','Movies & OTT':'🎬 Movie Buff'};const v=m[opt.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);});
+  document.querySelectorAll('#sv7 .opt.picked').forEach(opt=>{const m={'Football':'⚽ Football Fan','Cricket':'🏏 Cricket Fan','Badminton':'🏸 Badminton','Gym / Fitness':'🏋️ Fitness Freak','Running':'🏃 Runner','Yoga':'🧘 Yoga','Swimming':'🏊 Swimmer','Cycling':'🚴 Cyclist'};const v=m[opt.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);});
+  const s8=document.querySelector('#sv8 .opt.picked');if(s8){const m={'Software / IT':'💻 Software Pro','Student':'🎓 Student','Corporate':'🏢 Corporate','Freelancer':'🎨 Freelancer','Healthcare':'🏥 Healthcare','Startup':'🚀 Startup','Research':'📚 Researcher','Creative / Media':'🎭 Creative Pro'};const v=m[s8.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);}
+
+  const score=Math.min(70+tags.length*3,99);
+
   setTimeout(()=>{
     document.getElementById('sv-loading').style.display='none';
     document.getElementById('sv-result').style.display='';
+    document.getElementById('result-score').textContent=score;
+    const c=document.getElementById('result-tags');
+    c.innerHTML=tags.length>0
+      ? tags.map(t=>`<span class="chip" style="background:#fff;border:1.5px solid rgba(14,165,201,.3);color:var(--navy);padding:6px 14px;font-size:12px;font-weight:700;">${t}</span>`).join('')
+      : '<span style="font-size:13px;color:var(--muted);">Koi tag nahi mila — wapas quiz lo!</span>';
+
+    // CSRF Token pakdo
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+console.log("Saving tags...", tags); // Debugging ke liye
+
+fetch("{% url 'save_quiz' %}", {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
+    },
+    body: JSON.stringify({
+        tags: tags,
+        score: score
+    })
+})
+.then(response => {
+    if (!response.ok) throw new Error('Network response was not ok');
+    return response.json();
+})
+.then(data => {
+    if(data.status === 'success') {
+        console.log("Success! Profile updated.");
+        // Chota sa delay taaki user "Success" animation dekh sake
+        setTimeout(() => {
+            window.location.reload(); 
+        }, 1500);
+    }
+})
+.catch(error => {
+    console.error('Error saving data:', error);
+    alert("Dhatt teri ki! Data save nahi hua. Console check karo.");
+});
+
     fireConfetti();
-  },2200);
+  },2000);
 }
+
 function fireConfetti(){
   const colors=['#0EA5C9','#F59E0B','#10B981','#F25C54','#0F1F3D'];
   for(let i=0;i<24;i++){
     const p=document.createElement('div');
-    p.style.cssText=`position:fixed;top:28%;left:${18+Math.random()*64}%;
-      width:${5+Math.random()*7}px;height:${5+Math.random()*7}px;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      border-radius:${Math.random()>.5?'50%':'3px'};
-      animation:confettiFall ${.8+Math.random()*1}s ease-out ${Math.random()*.6}s forwards;
-      pointer-events:none;z-index:2000;`;
+    p.style.cssText=`position:fixed;top:28%;left:${18+Math.random()*64}%;width:${5+Math.random()*7}px;height:${5+Math.random()*7}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>.5?'50%':'3px'};animation:confettiFall ${.8+Math.random()*1}s ease-out ${Math.random()*.6}s forwards;pointer-events:none;z-index:2000;`;
     document.body.appendChild(p);
     setTimeout(()=>p.remove(),2200);
   }
 }
 
-// ── TOAST ──
 let _tt;
 function showToast(title,sub,icon='🎉'){
   document.getElementById('tTitle').textContent=title;
@@ -2177,20 +2356,22 @@ function showToast(title,sub,icon='🎉'){
   _tt=setTimeout(()=>t.classList.remove('show'),3600);
 }
 
-// Welcome toast
 setTimeout(()=>showToast('3 New Matches!','Priya, Sneha & Dev match your vibe 🎉'),1400);
-    // 2 seconds ke baad message hide karne ka logic
-    setTimeout(function() {
-        const messages = document.querySelectorAll('.msg');
-        
-        messages.forEach(function(msg) {
-            msg.style.transition = "opacity 0.5s ease";
-            msg.style.opacity = "0";
-            setTimeout(function() {
-                msg.remove();
-            }, 500); // 0.5s wait for transition to finish
-        });
-    }, 2000); // 🔥 2000ms = 2 seconds
+
+setTimeout(function(){
+  document.querySelectorAll('.msg').forEach(function(msg){
+    msg.style.transition="opacity 0.5s ease";
+    msg.style.opacity="0";
+    setTimeout(function(){msg.remove();},500);
+  });
+},2000);
 </script>
+<div class="toast" id="toast">
+  <div class="toast-icon" id="tIcon"></div>
+  <div>
+    <div class="toast-title" id="tTitle"></div>
+    <div class="toast-sub" id="tSub"></div>
+  </div>
+</div>
 </body>
 </html>
