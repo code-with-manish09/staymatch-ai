@@ -115,4 +115,29 @@ def room_details(request, room_id=None):
     return render(request, 'rooms/room_details.html', {'room': room, 'included': included})
 
 
+#===============saved rooms ====================
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from .models import Listing, Saved_Rooms # Check spelling here
+
+def toggle_save_room(request, room_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 'login_required'}, status=401)
+    
+    if request.method == 'POST':
+        room = get_object_or_404(Listing, id=room_id)
+        # get_or_create khud hi check kar lega ki pehle se saved hai ya nahi
+        saved_room, created = Saved_Rooms.objects.get_or_create(user=request.user, room=room)
+        
+        if not created:
+            # Agar pehle se tha (created=False), toh delete kardo (Unsave)
+            saved_room.delete()
+            return JsonResponse({'status': 'removed'})
+        
+        # Agar naya bana (created=True), toh Save ho gaya
+        return JsonResponse({'status': 'saved'})
+        
+
+
 

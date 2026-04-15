@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.conf import settings
 
 class Amenity(models.Model):
     name = models.CharField(max_length=50)
@@ -80,3 +81,14 @@ class ListingImage(models.Model):
     image = models.ImageField(upload_to='listings/')
 
     
+    #=========saved rooms ===========
+
+
+
+    class Saved_Rooms(models.Model):
+        user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE, related_name='saved_rooms')
+        room = models.ForeignKey('Roomlisting', on_delete=models.CASCADE,related_name='saved_by_users')
+        created_at = models.DateField(auto_now_add=True)
+
+        class Meta:
+            unique_together = ('user' , 'room')
