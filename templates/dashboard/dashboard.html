@@ -1050,214 +1050,73 @@ input[type=range]{width:100%;accent-color:var(--teal);}
       </div>
 
       <!-- Room Listings -->
-      <div class="sec-hd fu d4">
-        <div class="sec-title">🏠 Recommended for You</div>
-        <a class="sec-link">View all 48 listings →</a>
-      </div>
-      <div class="rooms-grid fu d4">
-        {% for room in listings %}
-        <div class="room-card">
-          <div class="room-img">
-            {% with first_img=room.images.first %}
-              {% if first_img %}
-              <img src="{{ first_img.image.url }}" alt="{{ room.title }}" onerror="this.style.display='none'"/>
-              {% else %}
-              <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" alt="Room" onerror="this.style.display='none'"/>
-              {% endif %}
-            {% endwith %}
-            <div class="match-badge teal">
-              🎯
-              {% if room.cleanliness_level >= 9 %}
-                96% Match
-              {% elif room.cleanliness_level >= 7 %}
-                92% Match
-              {% elif room.cleanliness_level >= 5 %}
-                88% Match
-              {% else %}
-                82% Match
-              {% endif %}
-            </div>
-            <div class="room-save" id="sv-dyn-{{ room.id }}" onclick="toggleSave('sv-dyn-{{ room.id }}')">🤍</div>
-            <div class="room-type">{{ room.bhk_config }} · {{ room.get_furnishing_status_display }}</div>
-          </div>
-          <div class="room-body">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:3px;">
-              <div class="room-title" style="margin-bottom:0;">{{ room.title }}</div>
-              <span class="verified-badge gold" style="flex-shrink:0;margin-left:6px;margin-top:2px;">✅ Verified</span>
-            </div>
-            <div class="room-loc">📍 {{ room.area }} · {{ room.city }}</div>
-            <div class="safety-row">
-              <div class="safety-stars">★★★★★</div>
-              <span class="safety-lbl">Safety 4.7</span>
-              <span class="clean-pill">🧹 Clean</span>
-            </div>
-            <div class="room-chips">
-              <div class="chip mutual-chip match">🏠 {{ room.room_type }}</div>
-              <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🪑 {{ room.get_furnishing_status_display }}</div>
-              {% if room.nearest_metro %}
-              <div class="chip" style="background:#F0FDF4;color:#059669;">🚇 Near Metro</div>
-              {% endif %}
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-              <div class="ai-price-pill">🤖 AI Fair: ₹{{ room.rent }}</div>
-              <div class="env-score">🌿 Env <span>8.2/10</span></div>
-            </div>
-            <div class="room-footer">
-              <div class="room-price">₹{{ room.rent }} <small>/mo</small></div>
-              <a href="{% url 'room_details_by_id' room.id %}" class="btn-sm btn-sm-teal" style="text-decoration: none; text-align: center; display: inline-block;">
-                View Details
-              </a>
-            </div>
-          </div>
-        </div>
-        {% empty %}
-        {% endfor %}
-
-        {% if not listings %}
-        <div class="room-card">
-  <div class="room-img">
-    <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" alt="Room" onerror="this.style.display='none'"/>
-    <div class="match-badge teal">⚡ 95% Match</div>
-    <div class="room-save" id="sv1" onclick="toggleSave('sv1')">🤍</div>
-    <div class="room-type">2BHK · Furnished</div>
-  </div>
-  <div class="room-body">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:3px;">
-      <div class="room-title" style="margin-bottom:0;">Modern 2BHK in Koramangala</div>
-      <span class="verified-badge gold" style="flex-shrink:0;margin-left:6px;margin-top:2px;">✅ Verified</span>
-    </div>
-    <div class="room-loc">📍 5th Block, Koramangala · Bangalore</div>
-    <div class="safety-row">
-      <div class="safety-stars">★★★★★</div>
-      <span class="safety-lbl">Safety 4.8</span>
-      <span class="clean-pill">🧹 Very Clean</span>
-    </div>
-    <div class="noise-bar-wrap" style="margin-bottom:8px;">
-      <span style="font-size:10px;color:var(--muted);width:52px;flex-shrink:0;">🔇 Noise</span>
-      <div class="noise-bar-track"><div class="noise-bar-fill noise-low" style="width:20%;"></div></div>
-      <span style="font-size:10px;color:var(--green);font-weight:700;">Low</span>
-    </div>
-    <div class="room-chips">
-      <div class="chip mutual-chip match">🎮 Gamers</div>
-      <div class="chip mutual-chip match">🌙 Night owl</div>
-      <div class="chip" style="background:#F0FDF4;color:#059669;">📚 Study Friendly</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-      <div class="ai-price-pill">🤖 AI Fair: ₹13,200</div>
-      <div class="env-score">🌿 Env <span>8.4/10</span></div>
-    </div>
-    <div class="room-footer">
-      <div>
-        <div class="room-price">₹14,000 <small>/mo</small></div>
-        <div class="av-stack">
-          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""/>
-          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""/>
-          <span style="font-size:10px;color:var(--muted);margin-left:6px;">2 interested</span>
-        </div>
-      </div>
-      
-      <a href="{% url 'room_details' %}" class="btn-sm btn-sm-teal" style="text-decoration: none; text-align: center; display: inline-block;">
-        View Details
-      </a>
-    </div>
-  </div>
+      <!-- Room Listings -->
+<div class="sec-hd fu d4">
+  <div class="sec-title">🏠 Recommended for You</div>
+  <a class="sec-link">View all 48 listings →</a>
 </div>
-        <!-- Room 2 — TOP PICK -->
-        <div class="room-card" style="border-color:var(--teal);box-shadow:0 0 0 1px var(--teal),var(--card-sh2);position:relative;">
-          <div style="position:absolute;top:14px;right:14px;z-index:2;background:var(--amber);color:#000;font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;letter-spacing:.04em;">TOP PICK</div>
-          <div class="room-img">
-            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&q=80" alt="Room" onerror="this.style.display='none'"/>
-            <div class="room-save saved" id="sv2" onclick="toggleSave('sv2')">❤️</div>
-            <div class="room-type">1BHK · Semi-furnished</div>
-          </div>
-          <div class="room-body">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:3px;">
-              <div class="room-title" style="margin-bottom:0;">Cozy 1BHK near HSR Metro</div>
-              <span class="verified-badge" style="flex-shrink:0;margin-left:6px;margin-top:2px;">🎓 Student</span>
-            </div>
-            <div class="room-loc">📍 Sector 1, HSR Layout · Bangalore</div>
-            <div class="safety-row">
-              <div class="safety-stars">★★★★☆</div>
-              <span class="safety-lbl">Safety 4.2</span>
-              <span class="clean-pill">🧹 Clean</span>
-            </div>
-            <div class="noise-bar-wrap" style="margin-bottom:8px;">
-              <span style="font-size:10px;color:var(--muted);width:52px;flex-shrink:0;">🔊 Noise</span>
-              <div class="noise-bar-track"><div class="noise-bar-fill noise-mid" style="width:45%;"></div></div>
-              <span style="font-size:10px;color:var(--amber);font-weight:700;">Medium</span>
-            </div>
-            <div class="room-chips">
-              <div class="chip" style="background:#F0FDF4;color:#059669;">🏃 Fitness</div>
-              <div class="chip mutual-chip match">💻 WFH</div>
-              <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🚇 Metro</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-              <div class="ai-price-pill">🤖 AI Fair: ₹11,800</div>
-              <div class="env-score">🌿 Env <span>7.1/10</span></div>
-            </div>
-            <div class="room-footer">
-              <div>
-                <div class="room-price">₹12,500 <small>/mo</small></div>
-                <div class="av-stack">
-                  <img src="https://randomuser.me/api/portraits/women/65.jpg" alt=""/>
-                  <span style="font-size:10px;color:var(--muted);margin-left:6px;">1 interested</span>
-                </div>
-              </div>
-              <button class="btn-sm btn-sm-teal" onclick="showToast('Request Sent!','Priya will hear from you 🎉')">Connect</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Room 3 -->
-        <div class="room-card">
-          <div class="room-img">
-            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&q=80" alt="Room" onerror="this.style.display='none'"/>
-            <div class="match-badge">🎯 88% Match</div>
-            <div class="room-save" id="sv3" onclick="toggleSave('sv3')">🤍</div>
-            <div class="room-type">3BHK · Furnished</div>
-          </div>
-          <div class="room-body">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:3px;">
-              <div class="room-title" style="margin-bottom:0;">Spacious 3BHK in Indiranagar</div>
-              <span class="verified-badge gold" style="flex-shrink:0;margin-left:6px;margin-top:2px;">✅ Verified</span>
-            </div>
-            <div class="room-loc">📍 100ft Road, Indiranagar · Bangalore</div>
-            <div class="safety-row">
-              <div class="safety-stars">★★★★★</div>
-              <span class="safety-lbl">Safety 4.9</span>
-              <span class="clean-pill">🧹 Spotless</span>
-            </div>
-            <div class="noise-bar-wrap" style="margin-bottom:8px;">
-              <span style="font-size:10px;color:var(--muted);width:52px;flex-shrink:0;">🔇 Noise</span>
-              <div class="noise-bar-track"><div class="noise-bar-fill noise-low" style="width:15%;"></div></div>
-              <span style="font-size:10px;color:var(--green);font-weight:700;">Very Low</span>
-            </div>
-            <div class="room-chips">
-              <div class="chip" style="background:var(--amber-lt);color:#B45309;">🌅 Early Bird</div>
-              <div class="chip" style="background:#F0FDF4;color:#059669;">📚 Study Friendly</div>
-              <div class="chip" style="background:#EBF9FD;color:var(--teal);">🌿 Vegan</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-              <div class="ai-price-pill">🤖 AI Fair: ₹17,500</div>
-              <div class="env-score">🌿 Env <span>9.1/10</span></div>
-            </div>
-            <div class="room-footer">
-              <div>
-                <div class="room-price">₹18,000 <small>/mo</small></div>
-                <div class="av-stack">
-                  <img src="https://randomuser.me/api/portraits/men/45.jpg" alt=""/>
-                  <img src="https://randomuser.me/api/portraits/women/68.jpg" alt=""/>
-                  <img src="https://randomuser.me/api/portraits/men/76.jpg" alt=""/>
-                  <span style="font-size:10px;color:var(--muted);margin-left:6px;">3 interested</span>
-                </div>
-              </div>
-              <button class="btn-sm btn-sm-navy" onclick="showToast('Request Sent!','Team will hear from you 🎉')">Connect</button>
-            </div>
-          </div>
-        </div>
+<div class="rooms-grid fu d4">
+  {% for room in listings %}
+  <div class="room-card">
+    <div class="room-img">
+      {% with first_img=room.images.first %}
+        {% if first_img %}
+        <img src="{{ first_img.image.url }}" alt="{{ room.title }}" onerror="this.style.display='none'"/>
+        {% else %}
+        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" alt="Room"/>
         {% endif %}
-
-      </div><!-- /rooms-grid -->
+      {% endwith %}
+      <div class="match-badge teal">
+        🎯
+        {% if room.cleanliness_level >= 9 %}96% Match
+        {% elif room.cleanliness_level >= 7 %}92% Match
+        {% elif room.cleanliness_level >= 5 %}88% Match
+        {% else %}82% Match{% endif %}
+      </div>
+      <div class="room-save"
+           id="save-icon-{{ room.id }}"
+           onclick="handleRoomSave('{{ room.id }}')">
+        {% if room.id in saved_room_ids %}❤️{% else %}🤍{% endif %}
+      </div>
+      <div class="room-type">{{ room.bhk_config }} · {{ room.get_furnishing_status_display }}</div>
+    </div>
+    <div class="room-body">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:3px;">
+        <div class="room-title" style="margin-bottom:0;">{{ room.title }}</div>
+        <span class="verified-badge gold" style="flex-shrink:0;margin-left:6px;margin-top:2px;">✅ Verified</span>
+      </div>
+      <div class="room-loc">📍 {{ room.area }} · {{ room.city }}</div>
+      <div class="safety-row">
+        <div class="safety-stars">★★★★★</div>
+        <span class="safety-lbl">Safety 4.7</span>
+        <span class="clean-pill">🧹 Clean</span>
+      </div>
+      <div class="room-chips">
+        <div class="chip mutual-chip match">🏠 {{ room.room_type }}</div>
+        <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🪑 {{ room.get_furnishing_status_display }}</div>
+        {% if room.nearest_metro %}
+        <div class="chip" style="background:#F0FDF4;color:#059669;">🚇 Near Metro</div>
+        {% endif %}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+        <div class="ai-price-pill">🤖 AI Fair: ₹{{ room.rent }}</div>
+        <div class="env-score">🌿 Env <span>8.2/10</span></div>
+      </div>
+      <div class="room-footer">
+        <div class="room-price">₹{{ room.rent }} <small>/mo</small></div>
+        <a href="{% url 'room_details_by_id' room.id %}" class="btn-sm btn-sm-teal" style="text-decoration:none;text-align:center;display:inline-block;">
+          View Details
+        </a>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="feat-card" style="grid-column:1/-1;text-align:center;padding:40px;">
+    <div style="font-size:40px;margin-bottom:10px;">🏠</div>
+    <p style="color:var(--muted);">Abhi koi listing nahi mili. Filters change karo!</p>
+  </div>
+  {% endfor %}
+</div>
 
       <!-- Bottom: Trending + Messages -->
       <div class="bottom-grid fu d5">
@@ -1455,44 +1314,43 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 
     <!-- ══ SAVED ══ -->
     <div id="sec-saved" style="display:none;">
-      <div class="sec-hd"><div class="sec-title">🔖 Saved Rooms (7)</div></div>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;">
-        <div class="feat-card" style="display:flex;gap:14px;align-items:center;padding:16px;">
-          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=80&q=70" style="width:54px;height:54px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-          <div style="min-width:0;">
-            <div style="font-weight:700;font-size:13px;color:var(--navy);">Modern 2BHK · Koramangala</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:2px;">₹14,000/mo · 95% match</div>
-            <div style="font-size:11px;color:var(--green);margin-top:4px;font-weight:600;">● Available now</div>
-          </div>
-        </div>
-        <div class="feat-card" style="display:flex;gap:14px;align-items:center;padding:16px;">
-          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=80&q=70" style="width:54px;height:54px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-          <div style="min-width:0;">
-            <div style="font-weight:700;font-size:13px;color:var(--navy);">Cozy 1BHK · HSR Layout</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:2px;">₹12,500/mo · Top Pick</div>
-            <div style="font-size:11px;color:var(--coral);margin-top:4px;font-weight:600;">↓ Price dropped ₹500</div>
-          </div>
-        </div>
-        <div class="feat-card" style="display:flex;gap:14px;align-items:center;padding:16px;">
-          <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=80&q=70" style="width:54px;height:54px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-          <div style="min-width:0;">
-            <div style="font-weight:700;font-size:13px;color:var(--navy);">Spacious 3BHK · Indiranagar</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:2px;">₹18,000/mo · 88% match</div>
-            <div style="font-size:11px;color:var(--green);margin-top:4px;font-weight:600;">● Available now</div>
-          </div>
-        </div>
-        <div class="feat-card" style="display:flex;gap:14px;align-items:center;padding:16px;">
-          <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=80&q=70" style="width:54px;height:54px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-          <div style="min-width:0;">
-            <div style="font-weight:700;font-size:13px;color:var(--navy);">Studio · Whitefield</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:2px;">₹9,500/mo · 91% match</div>
-            <div style="font-size:11px;color:var(--amber);margin-top:4px;font-weight:600;">⏰ Only 2 days left</div>
-          </div>
+  <div class="sec-hd"><div class="sec-title">🔖 Saved Rooms</div></div>
+
+  <div class="rooms-grid">
+    {% for item in user_saved_rooms %}
+    <div class="room-card" id="saved-card-{{ item.room.id }}">
+      <div class="room-img">
+        {% with first_img=item.room.images.first %}
+          {% if first_img %}
+          <img src="{{ first_img.image.url }}" style="width:100%;height:160px;object-fit:cover;" alt="{{ item.room.title }}"/>
+          {% else %}
+          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" style="width:100%;height:160px;object-fit:cover;" alt="Room"/>
+          {% endif %}
+        {% endwith %}
+        <div class="room-save"
+             id="save-icon-{{ item.room.id }}"
+             onclick="handleRoomSave('{{ item.room.id }}')">❤️</div>
+      </div>
+      <div class="room-body">
+        <div class="room-title">{{ item.room.title }}</div>
+        <div class="room-loc">📍 {{ item.room.area }} · {{ item.room.city }}</div>
+        <div class="room-footer">
+          <div class="room-price">₹{{ item.room.rent }} <small>/mo</small></div>
+          <a href="{% url 'room_details_by_id' item.room.id %}" class="btn-sm btn-sm-teal" style="text-decoration:none;">View</a>
         </div>
       </div>
-      <button class="btn-outline" onclick="showSec('discover')">← Back to Discover</button>
     </div>
+    {% empty %}
+    <div class="feat-card" style="grid-column:1/-1;text-align:center;padding:40px;">
+      <div style="font-size:40px;margin-bottom:10px;">🔖</div>
+      <p style="color:var(--muted);">Aapne abhi tak koi room save nahi kiya hai.</p>
+      <button class="btn-teal" style="margin-top:16px;padding:10px 24px;font-size:14px;" onclick="showSec('discover')">Rooms Dhundho →</button>
+    </div>
+    {% endfor %}
+  </div>
 
+  <button class="btn-outline" style="margin-top:20px;" onclick="showSec('discover')">← Back to Discover</button>
+</div>
     <!-- ══ MESSAGES ══ -->
     <div id="sec-messages" style="display:none;">
       <div class="feat-card" style="text-align:center;padding:56px 28px;">
@@ -2365,6 +2223,71 @@ setTimeout(function(){
     setTimeout(function(){msg.remove();},500);
   });
 },2000);
+function handleRoomSave(roomId) {
+    const icon = document.getElementById(`save-icon-${roomId}`);
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    let url = "{% url 'toggle_save_room' '000' %}".replace('000', roomId);
+
+    fetch(url, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrftoken, 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            if (data.action === 'saved') {
+                icon.textContent = '❤️';
+                showToast('Saved!', 'Bookmarks mein add ho gaya 🔖');
+
+                // 🔥 ASLI KAAM: Bina refresh ke card add karna
+                updateSavedUI(data.room_data, 'add');
+
+            } else {
+                icon.textContent = '🤍';
+                showToast('Removed', 'Bookmarks se hat gaya');
+
+                // 🔥 ASLI KAAM: Bina refresh ke card hatana
+                updateSavedUI({id: roomId}, 'remove');
+            }
+        }
+    });
+}
+
+function updateSavedUI(room, action) {
+    const container = document.querySelector('#sec-saved .rooms-grid');
+    if (!container) return;
+
+    if (action === 'add') {
+        const emptyMsg = document.getElementById('empty-saved-msg');
+        if (emptyMsg) emptyMsg.style.display = 'none';
+
+        const cardHTML = `
+            <div class="room-card" id="saved-card-${room.id}">
+                <div class="room-img">
+                    <img src="${room.image_url}" style="width:100%;height:160px;object-fit:cover;" alt="${room.title}">
+                    <div class="room-save" id="save-icon-${room.id}" onclick="handleRoomSave('${room.id}')">❤️</div>
+                </div>
+                <div class="room-body">
+                    <div class="room-title">${room.title}</div>
+                    <div class="room-loc">📍 ${room.area} · ${room.city}</div>
+                    <div class="room-footer">
+                        <div class="room-price">₹${room.rent} <small>/mo</small></div>
+                        <a href="/rooms/${room.id}/" class="btn-sm btn-sm-teal" style="text-decoration:none;">View</a>
+                    </div>
+                </div>
+            </div>`;
+        container.insertAdjacentHTML('afterbegin', cardHTML);
+
+    } else {
+        const cardToRemove = document.getElementById(`saved-card-${room.id}`);
+        if (cardToRemove) cardToRemove.remove();
+
+        const remaining = container.querySelectorAll('.room-card');
+        if (remaining.length === 0) {
+            document.getElementById('empty-saved-msg').style.display = '';
+        }
+    }
+}
 </script>
 <div class="toast" id="toast">
   <div class="toast-icon" id="tIcon"></div>

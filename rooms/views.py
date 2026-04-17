@@ -121,23 +121,31 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from .models import Listing, Saved_Rooms # Check spelling here
 
+
+@login_required
 def toggle_save_room(request, room_id):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 'login_required'}, status=401)
-    
-    if request.method == 'POST':
+    if request.method == "POST":
         room = get_object_or_404(Listing, id=room_id)
-        # get_or_create khud hi check kar lega ki pehle se saved hai ya nahi
         saved_room, created = Saved_Rooms.objects.get_or_create(user=request.user, room=room)
-        
+
         if not created:
-            # Agar pehle se tha (created=False), toh delete kardo (Unsave)
             saved_room.delete()
-            return JsonResponse({'status': 'removed'})
+            # Yahan room_id bhej rahe hain taaki JS pehchan sake kaunsa card delete karna hai
+            return JsonResponse({'status': 'success', 'action': 'removed', 'room_id': room_id})
         
-        # Agar naya bana (created=True), toh Save ho gaya
-        return JsonResponse({'status': 'saved'})
-        
-
-
-
+        # Room ka poora matter JSON mein pack karo
+        return JsonResponse({
+            'status': 'success', 
+            'action': 'saved',
+            'room_data': {
+                'id': room.id,
+                'title': room.title,
+                'rent': room.rent,
+                'area': room.area,
+                'city': room.city,
+                # Image check logic
+                'image_url': room.images.first().image.url if room.images.exists() else 'https://via.placeholder.com/400x300',
+            }
+        })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)

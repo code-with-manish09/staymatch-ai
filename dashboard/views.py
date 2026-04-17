@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from rooms.models import Listing
+from rooms.models import Listing,Saved_Rooms
 from inbox.views import get_conversations  
 
 #==========profile===============
@@ -16,17 +16,22 @@ def get_user_profile_or_none(user):
 #==========dashboard view============
 
 
-@login_required(login_url='login')
-def dashboard(request):
-    user_profile = get_user_profile_or_none(request.user)
-    listings = Listing.objects.filter(is_published=True).prefetch_related('images').order_by('-created_at')[:6]
 
-    
-    recent_messages = get_conversations(request.user)[:5]
+# dashboard/views.py — only READ saved rooms, don't save here
+@login_required(login_url='/login/')
+def dashboard(request):
+    all_rooms = Listing.objects.filter(is_published=True).order_by('-created_at')
+
+    saved_room_ids = list(
+        Saved_Rooms.objects.filter(user=request.user).values_list('room_id', flat=True)
+    )
+    user_saved_rooms = Saved_Rooms.objects.filter(
+        user=request.user
+    ).select_related('room')
 
     context = {
-        'profile': user_profile,
-        'listings': listings,
-        'recent_messages': recent_messages,  
+        'listings': all_rooms,
+        'saved_room_ids': saved_room_ids,
+        'user_saved_rooms': user_saved_rooms,
     }
     return render(request, 'dashboard/dashboard.html', context)

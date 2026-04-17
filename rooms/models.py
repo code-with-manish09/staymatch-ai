@@ -84,11 +84,13 @@ class ListingImage(models.Model):
     #=========saved rooms ===========
 
 
+class Saved_Rooms(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='saved_rooms')
+    room = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='saved_by_users')
+    created_at = models.DateTimeField(auto_now_add=True) # DateField ki jagah DateTime behtar hai
 
-    class Saved_Rooms(models.Model):
-        user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE, related_name='saved_rooms')
-        room = models.ForeignKey('Roomlisting', on_delete=models.CASCADE,related_name='saved_by_users')
-        created_at = models.DateField(auto_now_add=True)
+    class Meta:
+        unique_together = ('user', 'room')
 
-        class Meta:
-            unique_together = ('user' , 'room')
+    def __str__(self):
+        return f"{self.user.username} saved {self.room.title}"
