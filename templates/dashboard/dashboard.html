@@ -851,10 +851,12 @@ input[type=range]{width:100%;accent-color:var(--teal);}
     <span class="nav-icon">💬</span> Messages
     <span class="nav-badge">3</span>
 </a>
-
-  <a class="nav-item" onclick="showSec('notifications')">
+<a class="nav-item" onclick="showSec('notifications')">
     <span class="nav-icon">🔔</span> Notifications
-  </a>
+    {% if unread_count %}
+    <span class="nav-badge" style="background:var(--coral);">{{ unread_count }}</span>
+    {% endif %}
+</a>
 
   <div class="sb-section">AI Features</div>
   <a class="nav-item" onclick="showSec('quiz')">
@@ -903,9 +905,12 @@ input[type=range]{width:100%;accent-color:var(--teal);}
       </div>
     </div>
     <div class="topbar-right">
-      <div class="icon-btn" onclick="showToast('3 New Matches!','Priya, Sneha & Dev match your vibe 🎉')">
-        🔔<div class="badge"></div>
-      </div>
+      <div class="icon-btn" onclick="showSec('notifications')">
+    🔔
+    {% if unread_count %}
+    <div class="badge" style="background:var(--coral);"></div>
+    {% endif %}
+</div>
       <div class="icon-btn" onclick="showSec('messages')">
         💬<div class="badge"></div>
       </div>
@@ -1361,14 +1366,41 @@ input[type=range]{width:100%;accent-color:var(--teal);}
       </div>
     </div>
 
-    <!-- ══ NOTIFICATIONS ══ -->
+        <!-- ══ NOTIFICATIONS ══ -->
+
     <div id="sec-notifications" style="display:none;">
-      <div class="feat-card" style="text-align:center;padding:56px 28px;">
-        <div style="font-size:48px;margin-bottom:14px;">🔔</div>
-        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;">Notifications</div>
-        <button class="btn-teal" style="font-size:14px;padding:11px 28px;margin-top:12px;" onclick="showSec('discover')">← Back</button>
+  <div class="feat-card" style="padding:28px;">
+    <div style="font-size:20px;font-weight:800;color:var(--navy);margin-bottom:20px;">🔔 Notifications</div>
+
+    {% if recent_messages %}
+      {% for conv in recent_messages %}
+        {% if conv.unread %}
+          <a href="{% url 'chat_view' conv.listing.id %}" 
+             style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:12px;background:#f0fdfa;border:1px solid #99f6e4;margin-bottom:10px;text-decoration:none;">
+            <div style="width:42px;height:42px;border-radius:50%;background:#0d9488;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">
+              {{ conv.other_user.username|slice:":1"|upper }}
+            </div>
+            <div>
+              <div style="font-weight:700;font-size:14px;color:#134e4a;">{{ conv.other_user.username }}</div>
+              <div style="font-size:12px;color:#0f766e;">{{ conv.other_user.username }} messaged you: "{{ conv.last_msg.body|truncatechars:40 }}"</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px;">🏠 {{ conv.listing.title|truncatechars:25 }}</div>
+            </div>
+            <div style="margin-left:auto;background:#0d9488;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">
+              {{ conv.unread }}
+            </div>
+          </a>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <div style="text-align:center;padding:40px 20px;color:#94a3b8;">
+        <div style="font-size:40px;margin-bottom:10px;">🔔</div>
+        <p>No new notifications.</p>
       </div>
-    </div>
+    {% endif %}
+
+    <button class="btn-teal" style="font-size:14px;padding:11px 28px;margin-top:16px;width:100%;" onclick="showSec('discover')">← Back</button>
+  </div>
+</div>
 
     <!-- ══ PROFILE — REDESIGNED ══ -->
     <div id="sec-profile" style="display:none;">
@@ -2288,6 +2320,67 @@ function updateSavedUI(room, action) {
         }
     }
 }
+
+
+
+
+let audioCtx = null;
+
+document.addEventListener('click', function() {
+    if (!audioCtx) {
+        audioCtx = new AudioContext();
+    }
+});
+
+function playNotifSound() {
+    if (!audioCtx) return;
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.connect(g);
+    g.connect(audioCtx.destination);
+    o.frequency.setValueAtTime(880, audioCtx.currentTime);
+    g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+    o.start(audioCtx.currentTime);
+    o.stop(audioCtx.currentTime + 0.4);
+}
+
+let lastUnread = parseInt("{{ unread_count|default:0 }}");
+
+setInterval(() => {
+    fetch('/dashboard/')
+    .then(r => r.text())
+    .then(html => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+
+        // Messages panel update
+        const newMsgs = doc.querySelector('.rmp-scroll');
+        const curMsgs = document.querySelector('.rmp-scroll');
+        if (newMsgs && curMsgs && newMsgs.innerHTML !== curMsgs.innerHTML) {
+            curMsgs.innerHTML = newMsgs.innerHTML;
+
+            // Notification section update
+            const newNotif = doc.querySelector('#sec-notifications .feat-card');
+            const curNotif = document.querySelector('#sec-notifications .feat-card');
+            if (newNotif && curNotif) curNotif.innerHTML = newNotif.innerHTML;
+
+            // Badge count dhundho
+            const newBadgeEl = doc.getElementById('notif-badge');
+            const newCount = newBadgeEl ? parseInt(newBadgeEl.textContent) : 0;
+
+            if (newCount > lastUnread) {
+                // Badge update karo
+                const curBadge = document.getElementById('notif-badge');
+                if (curBadge) curBadge.textContent = newCount;
+
+                // Toast + Sound
+                showToast('Naya Message! 🔔', 'Kisine tumhe message kiya 💬', '🔔');
+                playNotifSound();
+                lastUnread = newCount;
+            }
+        }
+    });
+}, 2000);
 </script>
 <div class="toast" id="toast">
   <div class="toast-icon" id="tIcon"></div>

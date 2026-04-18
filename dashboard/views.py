@@ -29,13 +29,16 @@ def dashboard(request):
         user=request.user
     ).select_related('room')
 
-    # ✅ Yeh add karo
-    recent_messages = get_conversations(request.user)[:5]
+    all_conversations = get_conversations(request.user)
+    recent_messages = all_conversations[:5]
+    unread_count = sum(1 for conv in all_conversations if conv['unread'] > 0)
+
 
     context = {
         'listings': all_rooms,
         'saved_room_ids': saved_room_ids,
         'user_saved_rooms': user_saved_rooms,
-        'recent_messages': recent_messages,  # ✅ Yeh add karo
+        'recent_messages': recent_messages, 
+        'unread_count': unread_count,
     }
     return render(request, 'dashboard/dashboard.html', context)
