@@ -130,14 +130,15 @@ def send_message(request, listing_id):
                 return redirect(
                     reverse('chat_view', args=[listing_id]) + f'?user={other_user_id}'
                 )
-
             else:
-                Message.objects.create(
-                    sender=request.user,
-                    recipient=listing.owner,
-                    listing=listing,
-                    body=body,
-                )
-                return redirect('chat_view', listing_id=listing_id)
+              Message.objects.create(
+              sender=request.user,
+              recipient=listing.owner,
+              listing=listing,
+              body=body,
+        )
+        return redirect(
+              reverse('chat_view', args=[listing_id])
+ )
 
     return redirect('inbox')

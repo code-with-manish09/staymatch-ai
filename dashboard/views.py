@@ -29,9 +29,13 @@ def dashboard(request):
         user=request.user
     ).select_related('room')
 
+    # ✅ Yeh add karo
+    recent_messages = get_conversations(request.user)[:5]
+
     context = {
         'listings': all_rooms,
         'saved_room_ids': saved_room_ids,
         'user_saved_rooms': user_saved_rooms,
+        'recent_messages': recent_messages,  # ✅ Yeh add karo
     }
     return render(request, 'dashboard/dashboard.html', context)

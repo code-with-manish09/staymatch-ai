@@ -617,7 +617,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
             <span style="font-size: 16px;">📅</span> 
             <span>Available from: <strong style="color: #0d9488;">{{ room.available_from|date:"M d, Y" }}</strong></span>
         </div>
-        <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; font-weight: 500;">
+        <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:hsl(215, 25%, 27%); font-weight: 500;">
             <span style="font-size: 16px;">⏱️</span> 
             <span>Min. Stay: <strong>{{ room.min_stay }}</strong></span>
         </div>
@@ -625,12 +625,14 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
 
     <div style="display: flex; flex-direction: column; gap: 10px;">
         <form action="{% url 'send_message' room.id %}" method="POST" style="margin: 0;">
-            {% csrf_token %}
-            <input type="hidden" name="message_body" value="Hi, I am interested in your room '{{ room.title }}'. Please share more details.">
-            <button type="submit" class="cta-btn" style="width:100%; background:#0d9488; color:white; border:none; padding:14px; border-radius:10px; font-weight:700; cursor:pointer; font-size:15px; transition: 0.3s; box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.3);">
-                💬 Send Direct Enquiry
-            </button>
-        </form>
+    {% csrf_token %}
+    <input type="hidden" name="body"
+           value="Hi, I am interested in your room '{{ room.title }}'. Please share more details.">
+    <button type="submit" class="cta-btn"
+        style="width:100%; background:#0d9488; color:white; border:none; padding:14px; border-radius:10px; font-weight:700; cursor:pointer; font-size:15px; transition: 0.3s; box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.3);">
+        💬 Send Direct Enquiry
+    </button>
+</form>
 
         <button class="cta-btn" style="width:100%; background:#1e293b; color:white; border:none; padding:14px; border-radius:10px; font-weight:700; cursor:pointer; font-size:15px;">
             📅 Schedule a Visit
