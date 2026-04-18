@@ -2344,43 +2344,55 @@ function playNotifSound() {
     o.start(audioCtx.currentTime);
     o.stop(audioCtx.currentTime + 0.4);
 }
-
 let lastUnread = parseInt("{{ unread_count|default:0 }}");
+let lastMsgId = 0;
 
 setInterval(() => {
-    fetch('/dashboard/')
-    .then(r => r.text())
-    .then(html => {
-        const doc = new DOMParser().parseFromString(html, 'text/html');
+    fetch('/inbox/unread/')
+    .then(r => r.json())
+    .then(data => {
+        const newCount = data.unread_count;
+        const newMsgId = data.conversations.length > 0 ? data.conversations[0].last_msg_id : 0;
 
-        // Messages panel update
-        const newMsgs = doc.querySelector('.rmp-scroll');
-        const curMsgs = document.querySelector('.rmp-scroll');
-        if (newMsgs && curMsgs && newMsgs.innerHTML !== curMsgs.innerHTML) {
-            curMsgs.innerHTML = newMsgs.innerHTML;
-
-            // Notification section update
-            const newNotif = doc.querySelector('#sec-notifications .feat-card');
-            const curNotif = document.querySelector('#sec-notifications .feat-card');
-            if (newNotif && curNotif) curNotif.innerHTML = newNotif.innerHTML;
-
-            // Badge count dhundho
-            const newBadgeEl = doc.getElementById('notif-badge');
-            const newCount = newBadgeEl ? parseInt(newBadgeEl.textContent) : 0;
-
-            if (newCount > lastUnread) {
-                // Badge update karo
-                const curBadge = document.getElementById('notif-badge');
-                if (curBadge) curBadge.textContent = newCount;
-
-                // Toast + Sound
-                showToast('Naya Message! 🔔', 'Kisine tumhe message kiya 💬', '🔔');
-                playNotifSound();
-                lastUnread = newCount;
+        // ✅ Count badha ho YA same conversation mein naya msg aaya ho
+        if (newCount > lastUnread || (newCount > 0 && newMsgId > lastMsgId)) {
+            const badge = document.getElementById('notif-badge');
+            if (badge) {
+                badge.textContent = newCount;
+            } else {
+                const navItem = document.querySelector('.nav-item[onclick*="notifications"]');
+                if (navItem) {
+                    const span = document.createElement('span');
+                    span.className = 'nav-badge';
+                    span.id = 'notif-badge';
+                    span.style.background = 'var(--coral)';
+                    span.textContent = newCount;
+                    navItem.appendChild(span);
+                }
             }
+
+            if (data.conversations.length > 0) {
+                const conv = data.conversations[0];
+                showToast(
+                    conv.username + ' ka message!',
+                    '"' + conv.message.substring(0, 35) + '..." 💬',
+                    '🔔'
+                );
+            }
+
+            playNotifSound();
+            lastUnread = newCount;
+            lastMsgId = newMsgId;
+        }
+
+        if (newCount < lastUnread) {
+            lastUnread = newCount;
+            const badge = document.getElementById('notif-badge');
+            if (badge) badge.textContent = newCount > 0 ? newCount : '';
         }
     });
 }, 2000);
+  
 </script>
 <div class="toast" id="toast">
   <div class="toast-icon" id="tIcon"></div>

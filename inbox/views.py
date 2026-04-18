@@ -142,3 +142,24 @@ def send_message(request, listing_id):
  )
 
     return redirect('inbox')
+
+#=========== unread count API for AJAX polling ==============
+
+from django.http import JsonResponse
+
+@login_required
+def unread_count_api(request):
+    conversations = get_conversations(request.user)
+    unread = sum(1 for conv in conversations if conv['unread'] > 0)
+    unread_data = [
+        {
+            'username': conv['other_user'].username,
+            'message': conv['last_msg'].body,
+            'listing': conv['listing'].title,
+            'count': conv['unread'],
+            'last_msg_id': conv['last_msg'].id  
+
+        }
+        for conv in conversations if conv['unread'] > 0
+    ]
+    return JsonResponse({'unread_count': unread, 'conversations': unread_data})
