@@ -249,6 +249,94 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
   .gallery-grid{height:220px;}
   .photos-scroll{grid-template-columns:repeat(2,1fr)!important;}
 }
+
+*{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --navy:#0F1F3D;--teal:#0EA5C9;--teal-lt:#E0F4FB;--amber:#F59E0B;--amber-lt:#FEF3C7;
+    --green:#10B981;--green-lt:#F0FDF4;--off:#F6F7FB;--border:#E4E8F0;--muted:#6B7A99;
+  }
+  .sm-wrap{font-family:'Instrument Sans',system-ui,sans-serif;background:var(--off);padding:0;color:var(--navy);}
+  .section-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:28px 32px;box-shadow:0 4px 24px rgba(15,31,61,.10);margin-bottom:20px;}
+  .sec-title{font-family:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;font-weight:700;font-size:17px;color:var(--navy);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .step-badge-green{width:28px;height:28px;border-radius:50%;background:var(--green);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+  /* ── WRITE REVIEW FORM (UPAR) ── */
+  .review-form-wrap{background:linear-gradient(135deg,#f0fdfa,#e0f4fb);border:1px solid rgba(14,165,201,.2);border-radius:16px;padding:24px;margin-bottom:24px;}
+  .picker-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+  .star-picker{display:flex;gap:6px;flex-direction:row-reverse;justify-content:flex-end;}
+  .star-picker input{display:none;}
+  .star-picker label{cursor:pointer;}
+  .star-picker label svg{width:30px;height:30px;fill:var(--border);transition:fill .15s;}
+  .star-picker input:checked ~ label svg,
+  .star-picker label:hover svg,
+  .star-picker label:hover ~ label svg{fill:var(--amber);}
+  .cat-ratings{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+  .cat-item{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 14px;}
+  .cat-name{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;}
+  .cat-stars{display:flex;gap:4px;flex-direction:row-reverse;justify-content:flex-end;}
+  .cat-stars input{display:none;}
+  .cat-stars label svg{width:20px;height:20px;fill:var(--border);transition:fill .15s;cursor:pointer;}
+  .cat-stars input:checked ~ label svg,
+  .cat-stars label:hover svg,
+  .cat-stars label:hover ~ label svg{fill:var(--amber);}
+  .pros-cons-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+  .pc-box{border-radius:12px;padding:14px;}
+  .pc-box.pros{background:#f0fdf4;border:1px solid #a7f3d0;}
+  .pc-box.cons{background:#fff7ed;border:1px solid #fcd34d;}
+  .pc-label{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;}
+  .pc-label.pros{color:#059669;}
+  .pc-label.cons{color:#d97706;}
+  .tag-input-wrap{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .tag-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:600;}
+  .pro-chip{background:#dcfce7;color:#059669;border:1px solid #86efac;}
+  .con-chip{background:#fef9c3;color:#92400e;border:1px solid #fde68a;}
+  .tag-add-input{border:none;outline:none;font-size:12px;font-family:'Instrument Sans',system-ui,sans-serif;color:var(--navy);background:transparent;width:90px;}
+  .tag-add-input::placeholder{color:var(--muted);}
+  .sm-textarea{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-size:14px;font-family:'Instrument Sans',system-ui,sans-serif;color:var(--navy);resize:vertical;min-height:100px;background:#fff;outline:none;transition:border-color .2s;line-height:1.7;}
+  .sm-textarea:focus{border-color:var(--teal);}
+  .sm-textarea::placeholder{color:var(--muted);}
+  .sm-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:14px;font-family:'Instrument Sans',system-ui,sans-serif;color:var(--navy);outline:none;background:#fff;transition:border-color .2s;}
+  .sm-input:focus{border-color:var(--teal);}
+  .sm-btn{width:100%;background:var(--teal);color:#fff;padding:14px;border-radius:10px;font-family:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:background .2s,transform .2s;}
+  .sm-btn:hover{background:#0993b3;transform:translateY(-1px);}
+  .sm-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;transform:none;}
+
+  /* success */
+  .success-box{display:none;background:var(--green-lt);border:1px solid #a7f3d0;border-radius:14px;padding:20px 24px;text-align:center;margin-bottom:24px;}
+  .success-box.show{display:block;}
+
+  /* divider */
+  .reviews-divider{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+  .reviews-divider span{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;}
+  .reviews-divider::before,.reviews-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* rating overview */
+  .rating-big{font-family:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;font-weight:800;font-size:48px;color:var(--navy);line-height:1;}
+  .stars-row{display:flex;gap:3px;margin:6px 0;}
+  .bar-row{display:flex;align-items:center;gap:8px;}
+  .bar-label{font-size:11px;color:var(--muted);width:80px;flex-shrink:0;}
+  .bar-track{flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden;}
+  .bar-fill{height:100%;background:var(--amber);border-radius:99px;}
+  .bar-val{font-size:11px;color:var(--navy);font-weight:700;min-width:24px;text-align:right;}
+
+  /* review cards */
+  .review-card{border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:12px;}
+  .rev-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .rev-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;flex-shrink:0;}
+  .rev-name{font-size:13px;font-weight:600;color:var(--navy);}
+  .rev-date{font-size:11px;color:var(--muted);}
+  .rev-text{font-size:13px;color:var(--muted);line-height:1.7;}
+  .stars-sm{display:flex;gap:3px;}
+
+  .guest-badge{display:inline-flex;align-items:center;gap:5px;background:var(--amber-lt);border:1px solid #fcd34d;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;color:#92400e;margin-bottom:16px;}
+
+  @media(max-width:600px){
+    .section-card{padding:20px 16px;}
+    .cat-ratings{grid-template-columns:1fr;}
+    .pros-cons-grid{grid-template-columns:1fr;}
+    .review-form-wrap{padding:18px 16px;}
+    .rating-overview{flex-direction:column!important;gap:16px!important;}
+  }
 </style>
 </head>
 <body>
@@ -537,48 +625,153 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
           🔒 <strong>Privacy protected:</strong> Full address is shared only after a match is confirmed through StayMatch. Your safety is our priority.
         </div>
       </div>
+<div class="sm-wrap">
+<div class="section-card">
+  <div class="sec-title">
+    <div class="step-badge-green">★</div>
+    Reviews from Previous Tenants
+  </div>
 
-      <!-- ── REVIEWS ── -->
-      <div class="section-card fu d4">
-        <div class="sec-title"><div class="step-badge green">★</div> Reviews from Previous Tenants</div>
-        <div style="display:flex;align-items:flex-start;gap:24px;margin-bottom:20px;flex-wrap:wrap;">
-          <div>
-            <div class="rating-big">4.6</div>
-            <div class="stars-row"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star half"></div></div>
-            <div style="font-size:12px;color:var(--muted);">Based on 12 reviews</div>
-          </div>
-          <div style="flex:1;min-width:160px;padding-top:6px;">
-            <div style="display:flex;flex-direction:column;gap:7px;">
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:80px;">Cleanliness</span><div style="flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="width:90%;height:100%;background:var(--amber);border-radius:99px;"></div></div><span style="font-size:11px;color:var(--navy);font-weight:700;">4.8</span></div>
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:80px;">Location</span><div style="flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="width:85%;height:100%;background:var(--amber);border-radius:99px;"></div></div><span style="font-size:11px;color:var(--navy);font-weight:700;">4.6</span></div>
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:80px;">Value</span><div style="flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="width:80%;height:100%;background:var(--amber);border-radius:99px;"></div></div><span style="font-size:11px;color:var(--navy);font-weight:700;">4.3</span></div>
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:80px;">Host</span><div style="flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="width:95%;height:100%;background:var(--amber);border-radius:99px;"></div></div><span style="font-size:11px;color:var(--navy);font-weight:700;">4.9</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="review-card">
-          <div class="rev-top">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <div class="rev-avatar">PS</div>
-              <div><div class="rev-name">Priya S.</div><div class="rev-date">March 2026</div></div>
-            </div>
-            <div class="stars-row" style="margin:0;"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
-          </div>
-          <p class="rev-text">Absolutely loved staying here. The room is exactly as described — clean, well-lit, and cozy. The host was very responsive and easy to communicate with. Would definitely recommend!</p>
-        </div>
-        <div class="review-card">
-          <div class="rev-top">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <div class="rev-avatar" style="background:linear-gradient(135deg,var(--amber),#d97706);">RM</div>
-              <div><div class="rev-name">Rahul M.</div><div class="rev-date">Jan 2026</div></div>
-            </div>
-            <div class="stars-row" style="margin:0;"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star half"></div></div>
-          </div>
-          <p class="rev-text">Great location, very close to the metro. The flat is well-maintained and the kitchen is spacious. Only minor thing — WiFi slows down a bit in the evenings.</p>
+  <!-- ══ PEHLE: REVIEW FORM ══ -->
+  <div class="guest-badge">
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 8a3 3 0 100-6 3 3 0 000 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3z"/></svg>
+    Yahan apna experience share karein
+  </div>
+
+<form method="POST" action="{% url 'submit_review' room.id %}" class="review-form-wrap" id="reviewForm">
+{% csrf_token %}
+<input type="hidden" name="rating" id="overallValue">
+<input type="hidden" name="cleanliness_rating" id="cleanValue">
+<input type="hidden" name="location_rating" id="locValue">
+<input type="hidden" name="value_rating" id="valValue">
+<input type="hidden" name="host_rating" id="hostValue">
+    <!-- overall rating -->
+    <div style="margin-bottom:18px;">
+      <div class="picker-label">Overall Rating</div>
+      <div class="star-picker" id="overallPicker">
+        <input type="radio" name="overall" id="s5" value="5"><label for="s5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+        <input type="radio" name="overall" id="s4" value="4"><label for="s4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+        <input type="radio" name="overall" id="s3" value="3"><label for="s3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+        <input type="radio" name="overall" id="s2" value="2"><label for="s2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+        <input type="radio" name="overall" id="s1" value="1"><label for="s1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+      </div>
+      <div style="font-size:12px;color:var(--teal);margin-top:6px;height:16px;" id="ratingLabel"></div>
+    </div>
+
+    <!-- category ratings -->
+    <div class="picker-label" style="margin-bottom:10px;">Category Rating</div>
+    <div class="cat-ratings">
+      <div class="cat-item">
+        <div class="cat-name">Cleanliness</div>
+        <div class="cat-stars">
+          <input type="radio" name="clean" id="c5" value="5"><label for="c5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="clean" id="c4" value="4"><label for="c4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="clean" id="c3" value="3"><label for="c3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="clean" id="c2" value="2"><label for="c2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="clean" id="c1" value="1"><label for="c1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
         </div>
       </div>
+      <div class="cat-item">
+        <div class="cat-name">Location</div>
+        <div class="cat-stars">
+          <input type="radio" name="loc" id="l5" value="5"><label for="l5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="loc" id="l4" value="4"><label for="l4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="loc" id="l3" value="3"><label for="l3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="loc" id="l2" value="2"><label for="l2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="loc" id="l1" value="1"><label for="l1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+        </div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-name">Value for Money</div>
+        <div class="cat-stars">
+          <input type="radio" name="val" id="v5" value="5"><label for="v5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="val" id="v4" value="4"><label for="v4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="val" id="v3" value="3"><label for="v3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="val" id="v2" value="2"><label for="v2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="val" id="v1" value="1"><label for="v1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+        </div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-name">Host Behaviour</div>
+        <div class="cat-stars">
+          <input type="radio" name="host" id="h5" value="5"><label for="h5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="host" id="h4" value="4"><label for="h4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="host" id="h3" value="3"><label for="h3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="host" id="h2" value="2"><label for="h2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <input type="radio" name="host" id="h1" value="1"><label for="h1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+        </div>
+      </div>
+    </div>
 
-    </div><!-- end left -->
+    <!-- feedback text -->
+    <div style="margin-bottom:14px;">
+      <div class="picker-label" style="margin-bottom:8px;">Aapka Feedback</div>
+      <textarea class="sm-textarea" id="reviewText" name="comment" placeholder="Apna experience share karein — kya acha laga, kya improve ho sakta tha..." rows="4"></textarea>
+      <div style="text-align:right;font-size:11px;color:var(--muted);margin-top:4px;" id="charCount">0 / 500</div>
+    </div>
+
+
+<button type="submit" class="sm-btn" id="submitBtn">give feedback</button> 
+ </div>
+
+  <!-- success message -->
+  <div class="success-box" id="successBox">
+    <div style="font-size:32px;margin-bottom:8px;">✅</div>
+    <div style="font-family:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;font-weight:700;font-size:16px;color:#059669;margin-bottom:4px;">Review successfully submit ho gayi!</div>
+    <div style="font-size:13px;color:var(--muted);">Shukriya — aapki review neeche add ho gayi hai.</div>
+  </div>
+
+  <!-- ══ PHIR: RATING SUMMARY + EXISTING REVIEWS ══ -->
+  <div class="reviews-divider"><span>Purani Reviews</span></div>
+
+  <!-- rating overview -->
+  <div class="rating-overview" style="display:flex;align-items:flex-start;gap:24px;margin-bottom:20px;flex-wrap:wrap;">
+    <div>
+      <div class="rating-big">4.6</div>
+      <div class="rating-big">{{ avg_rating|default:"—" }}</div>
+<div style="font-size:12px;color:var(--muted);">{{ room.reviews.count }} reviews ke aadhar par</div>
+    </div>
+    <div style="flex:1;min-width:160px;padding-top:6px;">
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div class="bar-row"><span class="bar-label">Cleanliness</span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><span class="bar-val">4.8</span></div>
+        <div class="bar-row"><span class="bar-label">Location</span><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div><span class="bar-val">4.6</span></div>
+        <div class="bar-row"><span class="bar-label">Value</span><div class="bar-track"><div class="bar-fill" style="width:80%"></div></div><span class="bar-val">4.3</span></div>
+        <div class="bar-row"><span class="bar-label">Host</span><div class="bar-track"><div class="bar-fill" style="width:95%"></div></div><span class="bar-val">4.9</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- review cards -->
+  <div id="reviewsList">
+  {% for review in room.reviews.all %}
+  <div class="review-card">
+    <div class="rev-top">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="rev-avatar" style="background:linear-gradient(135deg,#0EA5C9,#0F1F3D);">
+          {{ review.user.username|slice:":2"|upper }}
+        </div>
+        <div>
+          <div class="rev-name">{{ review.user.username }}</div>
+          <div class="rev-date">{{ review.created_at|date:"M Y" }}</div>
+        </div>
+      </div>
+      <!-- ✅ Stars yahan add karo -->
+      <div style="display:flex;gap:3px;">
+        {% if review.rating >= 1 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+        {% if review.rating >= 2 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+        {% if review.rating >= 3 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+        {% if review.rating >= 4 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+        {% if review.rating >= 5 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+      </div>
+    </div>
+    <p class="rev-text">{{ review.comment }}</p>
+</div>
+  {% empty %}
+  <p style="text-align:center;color:var(--muted);padding:20px;">Abhi koi review nahi.</p>
+  {% endfor %}
+</div>
+</div>
+</div>    </div><!-- end left -->
 
     <!-- ══ SIDEBAR ══ -->
     <div>
@@ -758,27 +951,81 @@ function toggleSave(btn) {
   btn.style.color = saved ? '#ef4444' : '';
 }
 
-/* ── gallery thumb click -> main image ── */
+/* ── gallery ── */
 const mainGalleryImg = document.getElementById('mainGalleryImg');
-document.querySelectorAll('.gallery-thumb-img').forEach((thumb) => {
-  thumb.addEventListener('click', () => {
-    if (mainGalleryImg) {
-      mainGalleryImg.src = thumb.src;
-    }
-  });
+document.querySelectorAll('.gallery-thumb-img').forEach(thumb => {
+  thumb.addEventListener('click', () => { if (mainGalleryImg) mainGalleryImg.src = thumb.src; });
 });
-
-/* ── view all photos button ── */
 const photoCountBtn = document.getElementById('photoCountBtn');
 const galleryModal = document.getElementById('galleryModal');
 const galleryCloseBtn = document.getElementById('galleryCloseBtn');
-if (photoCountBtn && galleryModal) {
-  photoCountBtn.addEventListener('click', () => galleryModal.classList.add('open'));
-}
+if (photoCountBtn && galleryModal) photoCountBtn.addEventListener('click', () => galleryModal.classList.add('open'));
 if (galleryCloseBtn && galleryModal) {
   galleryCloseBtn.addEventListener('click', () => galleryModal.classList.remove('open'));
-  galleryModal.addEventListener('click', (e) => {
-    if (e.target === galleryModal) galleryModal.classList.remove('open');
+  galleryModal.addEventListener('click', e => { if (e.target === galleryModal) galleryModal.classList.remove('open'); });
+}
+
+/* ── star SVG helper ── */
+function starSVG(filled) {
+  const f = filled ? '#F59E0B' : '#E4E8F0';
+  return `<svg width="16" height="16" viewBox="0 0 24 24" fill="${f}"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+}
+function renderStars(id, rating) {
+  const el = document.getElementById(id); if (!el) return;
+  let h = ''; for (let i = 1; i <= 5; i++) h += starSVG(i <= rating);
+  el.innerHTML = h;
+}
+renderStars('avgStarsRow', 4.6);
+renderStars('rev1stars', 5);
+renderStars('rev2stars', 4);
+
+
+/* ── review form ── */
+const textarea = document.getElementById('reviewText');
+const charCount = document.getElementById('charCount');
+
+function checkForm() {
+  const hasR = document.querySelector('input[name="overall"]:checked');
+  const hasT = textarea && textarea.value.trim().length >= 10;
+  const btn = document.getElementById('submitBtn');
+  if (btn) btn.disabled = !(hasR && hasT);
+}
+
+// Overall rating
+const ratingLabels = {1:'Bahut kharab', 2:'Theek-thaak', 3:'Acha', 4:'Bahut acha', 5:'Excellent!'};
+document.querySelectorAll('input[name="overall"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const ov = document.getElementById('overallValue');
+    if (ov) ov.value = r.value;
+    const rl = document.getElementById('ratingLabel');
+    if (rl) rl.textContent = ratingLabels[r.value] + ' (' + r.value + '/5)';
+    checkForm();
+  });
+});
+
+// Overall rating — label click pe bhi catch karo
+document.querySelectorAll('.star-picker label').forEach((label, idx) => {
+    label.addEventListener('click', () => {
+        const input = label.previousElementSibling;
+        if (input) {
+            input.checked = true;
+            const val = input.value;
+            const ov = document.getElementById('overallValue');
+            if (ov) ov.value = val;
+            const rl = document.getElementById('ratingLabel');
+            if (rl) rl.textContent = ratingLabels[val] + ' (' + val + '/5)';
+            checkForm();
+        }
+    });
+});
+
+// Textarea char count
+if (textarea) {
+  textarea.addEventListener('input', () => {
+    const l = Math.min(textarea.value.length, 500);
+    if (charCount) charCount.textContent = l + ' / 500';
+    if (textarea.value.length > 500) textarea.value = textarea.value.slice(0, 500);
+    checkForm();
   });
 }
 </script>

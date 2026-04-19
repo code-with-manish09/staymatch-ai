@@ -1,7 +1,10 @@
 from datetime import date
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from urllib3 import request
 from .models import Listing, Amenity, ListingImage
+
+# Utility functions
 
 
 def to_int(value, default):
@@ -10,7 +13,10 @@ def to_int(value, default):
         return int(value)
     except (TypeError, ValueError):
         return default
+    
 
+
+#===============amenities====================
 
 def build_included_flags(selected_items):
     """Convert selected included-items list to DB boolean flags."""
@@ -23,6 +29,7 @@ def build_included_flags(selected_items):
         'included_housekeeping': 'Housekeeping' in selected_items,
     }
 
+#===============post room====================
 
 @login_required 
 def post_room(request):
@@ -96,6 +103,8 @@ def post_room(request):
 
     return render(request, 'rooms/post_room.html')
 
+#==============room details====================
+
 def room_details(request, room_id=None):
     # If room_id provided, open that room; otherwise latest room
     qs = Listing.objects.prefetch_related('amenities', 'images')
@@ -149,3 +158,43 @@ def toggle_save_room(request, room_id):
         })
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
+
+#===============review rooms====================
+from .models import Listing, Amenity, ListingImage, Review
+from django.contrib import messages
+
+@login_required
+def submit_review(request, room_id):
+    if request.method == 'POST':
+        room = get_object_or_404(Listing, id=room_id)
+
+        if Review.objects.filter(listing=room, user=request.user).exists():
+            messages.error(request, 'already submitted!')
+            return redirect('room_details_by_id', room_id=room_id)
+
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment', '').strip()
+
+        if rating and comment:
+            Review.objects.create(
+                listing=room,
+                user=request.user,
+                rating=int(rating),
+                cleanliness_rating=int(request.POST.get('cleanliness_rating') or 3),
+                location_rating=int(request.POST.get('location_rating') or 3),
+                value_rating=int(request.POST.get('value_rating') or 3),
+                host_rating=int(request.POST.get('host_rating') or 3),
+                comment=comment,
+            )
+            messages.success(request, 'Review submit ho gayi! ⭐')
+
+            rating = request.POST.get('rating')
+            comment = request.POST.get('comment', '').strip()
+            print("DEBUG rating:", rating)
+            print("DEBUG comment:", comment)
+            print("DEBUG POST data:", request.POST)
+
+        return redirect('room_details_by_id', room_id=room_id)
+
+    return redirect('room_details_by_id', room_id=room_id)

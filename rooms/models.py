@@ -94,3 +94,22 @@ class Saved_Rooms(models.Model):
 
     def __str__(self):
         return f"{self.user.username} saved {self.room.title}"
+    
+    #================reviews====================    
+
+class Review(models.Model):
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    cleanliness_rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
+    location_rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
+    value_rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
+    host_rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
+    comment = models.TextField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('listing', 'user')
+
+    def __str__(self):
+        return f"{self.user.username} → {self.listing.title} ({self.rating}★)"
