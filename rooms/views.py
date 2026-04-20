@@ -105,13 +105,12 @@ def post_room(request):
 
 #==============room details====================
 from django.db.models import Avg
+from django.shortcuts import render
 
 def room_details(request, room_id=None):
     qs = Listing.objects.prefetch_related('amenities', 'images')
-    if room_id:
-        room = qs.filter(id=room_id).first()
-    else:
-        room = qs.order_by('-created_at').first()
+
+    room = qs.filter(id=room_id).first() if room_id else qs.order_by('-created_at').first()
 
     included = {
         'wifi': room.included_wifi if room else False,
@@ -122,38 +121,60 @@ def room_details(request, room_id=None):
         'housekeeping': room.included_housekeeping if room else False,
     }
 
+    # ✅ Already reviewed check (unchanged)
     already_reviewed = False
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and room:
         already_reviewed = Review.objects.filter(listing=room, user=request.user).exists()
 
-    reviews = Review.objects.filter(listing=room).order_by('-created_at')
+    # ✅ Reviews queryset (safe if room None)
+    reviews = Review.objects.filter(listing=room).order_by('-created_at') if room else Review.objects.none()
     total_reviews = reviews.count()
 
-    # ✅ Yahan sab averages calculate ho rahe hain
-    avg_rating = reviews.aggregate(Avg('rating'))['rating__avg']
-    avg_cleanliness = reviews.aggregate(Avg('cleanliness_rating'))['cleanliness_rating__avg']
-    avg_location = reviews.aggregate(Avg('location_rating'))['location_rating__avg']
-    avg_value = reviews.aggregate(Avg('value_rating'))['value_rating__avg']
-    avg_host = reviews.aggregate(Avg('host_rating'))['host_rating__avg']
+    # ✅ Aggregate once (optimized)
+    averages = reviews.aggregate(
+        avg_rating=Avg('rating'),
+        avg_cleanliness=Avg('cleanliness_rating'),
+        avg_location=Avg('location_rating'),
+        avg_value=Avg('value_rating'),
+        avg_host=Avg('host_rating'),
+    )
 
-    avg_rating = round(avg_rating, 1) if avg_rating else None
-    avg_cleanliness = round(avg_cleanliness, 1) if avg_cleanliness else 0
-    avg_location = round(avg_location, 1) if avg_location else 0
-    avg_value = round(avg_value, 1) if avg_value else 0
-    avg_host = round(avg_host, 1) if avg_host else 0
+    # ✅ Clean + safe values
+    avg_rating = round(averages['avg_rating'], 1) if averages['avg_rating'] else None
+
+    avg_cleanliness = round(averages['avg_cleanliness'], 1) if averages['avg_cleanliness'] else 0
+    avg_location = round(averages['avg_location'], 1) if averages['avg_location'] else 0
+    avg_value = round(averages['avg_value'], 1) if averages['avg_value'] else 0
+    avg_host = round(averages['avg_host'], 1) if averages['avg_host'] else 0
+
+    # ✅ ⭐ IMPORTANT FIX: percentage conversion (UI bars ke liye)
+    avg_cleanliness_percent = avg_cleanliness * 20
+    avg_location_percent = avg_location * 20
+    avg_value_percent = avg_value * 20
+    avg_host_percent = avg_host * 20
 
     context = {
         'room': room,
         'included': included,
         'already_reviewed': already_reviewed,
+
+        # ratings (numbers)
         'avg_rating': avg_rating,
         'avg_cleanliness': avg_cleanliness,
         'avg_location': avg_location,
         'avg_value': avg_value,
         'avg_host': avg_host,
+
+        # ⭐ NEW (bars ke liye)
+        'avg_cleanliness_percent': avg_cleanliness_percent,
+        'avg_location_percent': avg_location_percent,
+        'avg_value_percent': avg_value_percent,
+        'avg_host_percent': avg_host_percent,
+
         'reviews': reviews,
         'total_reviews': total_reviews,
     }
+
     return render(request, 'rooms/room_details.html', context)
 #===============saved rooms ====================
 

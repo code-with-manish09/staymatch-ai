@@ -716,11 +716,11 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
         <div class="cat-item">
           <div class="cat-name">Host Behaviour</div>
           <div class="cat-stars">
-            <input type="radio" name="host" id="h5" value="5"><label for="h5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="host" id="h4" value="4"><label for="h4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="host" id="h3" value="3"><label for="h3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="host" id="h2" value="2"><label for="h2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="host" id="h1" value="1"><label for="h1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+         <input type="radio" name="host" id="h1" value="1"><label for="h1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+        <input type="radio" name="host" id="h2" value="2"><label for="h2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+        <input type="radio" name="host" id="h3" value="3"><label for="h3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+        <input type="radio" name="host" id="h4" value="4"><label for="h4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+        <input type="radio" name="host" id="h5" value="5"><label for="h5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
           </div>
         </div>
       </div>
@@ -754,10 +754,10 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
     </div>
     <div style="flex:1;min-width:160px;padding-top:6px;">
       <div style="display:flex;flex-direction:column;gap:7px;">
-        <div class="bar-row"><span class="bar-label">Cleanliness</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_cleanliness|default:0|floatformat:0 }}0%"></div></div><span class="bar-val">{{ avg_cleanliness|default:"—" }}</span></div>
-<div class="bar-row"><span class="bar-label">Location</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_location|default:0|floatformat:0 }}0%"></div></div><span class="bar-val">{{ avg_location|default:"—" }}</span></div>
-<div class="bar-row"><span class="bar-label">Value</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_value|default:0|floatformat:0 }}0%"></div></div><span class="bar-val">{{ avg_value|default:"—" }}</span></div>
-<div class="bar-row"><span class="bar-label">Host</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_host|default:0|floatformat:0 }}0%"></div></div><span class="bar-val">{{ avg_host|default:"—" }}</span></div>
+        <div class="bar-row"><span class="bar-label">Cleanliness</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_cleanliness_percent }}%"></div></div><span class="bar-val">{{ avg_cleanliness|default:"—" }}</span></div>
+<div class="bar-row"><span class="bar-label">Location</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_location_percent }}%"></div></div><span class="bar-val">{{ avg_location|default:"—" }}</span></div>
+<div class="bar-row"><span class="bar-label">Value</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_value_percent }}%"></div></div><span class="bar-val">{{ avg_value|default:"—" }}</span></div>
+<div class="bar-row"><span class="bar-label">Host</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_host_percent }}%"></div></div><span class="bar-val">{{ avg_host|default:"—" }}</span></div>
       </div>
     </div>
   </div>
@@ -1024,21 +1024,36 @@ document.querySelectorAll('input[name="overall"]').forEach(r => {
 });
 
 // Overall rating — label click pe bhi catch karo
-document.querySelectorAll('.star-picker label').forEach((label, idx) => {
-    label.addEventListener('click', () => {
-        const input = label.previousElementSibling;
-        if (input) {
-            input.checked = true;
-            const val = input.value;
-            const ov = document.getElementById('overallValue');
-            if (ov) ov.value = val;
-            const rl = document.getElementById('ratingLabel');
-            if (rl) rl.textContent = ratingLabels[val] + ' (' + val + '/5)';
-            checkForm();
-        }
+// Jab bhi koi category star click kare, hidden field update ho
+document.querySelectorAll('input[name="clean"]').forEach(r => {
+    r.addEventListener('change', () => {
+        document.getElementById('cleanValue').value = r.value;
     });
 });
 
+document.querySelectorAll('input[name="loc"]').forEach(r => {
+    r.addEventListener('change', () => {
+        document.getElementById('locValue').value = r.value;
+    });
+});
+
+document.querySelectorAll('input[name="val"]').forEach(r => {
+    r.addEventListener('change', () => {
+        document.getElementById('valValue').value = r.value;
+    });
+});
+
+document.querySelectorAll('input[name="host"]').forEach(r => {
+    r.addEventListener('change', () => {
+        document.getElementById('hostValue').value = r.value;
+    });
+});
+
+document.querySelectorAll('input[name="overall"]').forEach(r => {
+    r.addEventListener('change', () => {
+        document.getElementById('overallValue').value = r.value;
+    });
+});
 // Textarea char count
 if (textarea) {
   textarea.addEventListener('input', () => {
