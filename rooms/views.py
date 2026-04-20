@@ -2,7 +2,7 @@ from datetime import date
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from urllib3 import request
-from .models import Listing, Amenity, ListingImage
+from .models import Listing, Amenity, ListingImage, Review
 
 # Utility functions
 
@@ -104,14 +104,15 @@ def post_room(request):
     return render(request, 'rooms/post_room.html')
 
 #==============room details====================
+from django.db.models import Avg
 
 def room_details(request, room_id=None):
-    # If room_id provided, open that room; otherwise latest room
     qs = Listing.objects.prefetch_related('amenities', 'images')
     if room_id:
         room = qs.filter(id=room_id).first()
     else:
         room = qs.order_by('-created_at').first()
+
     included = {
         'wifi': room.included_wifi if room else False,
         'electricity': room.included_electricity if room else False,
@@ -121,14 +122,44 @@ def room_details(request, room_id=None):
         'housekeeping': room.included_housekeeping if room else False,
     }
 
-    return render(request, 'rooms/room_details.html', {'room': room, 'included': included})
+    already_reviewed = False
+    if request.user.is_authenticated:
+        already_reviewed = Review.objects.filter(listing=room, user=request.user).exists()
 
+    reviews = Review.objects.filter(listing=room).order_by('-created_at')
+    total_reviews = reviews.count()
 
+    # ✅ Yahan sab averages calculate ho rahe hain
+    avg_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+    avg_cleanliness = reviews.aggregate(Avg('cleanliness_rating'))['cleanliness_rating__avg']
+    avg_location = reviews.aggregate(Avg('location_rating'))['location_rating__avg']
+    avg_value = reviews.aggregate(Avg('value_rating'))['value_rating__avg']
+    avg_host = reviews.aggregate(Avg('host_rating'))['host_rating__avg']
+
+    avg_rating = round(avg_rating, 1) if avg_rating else None
+    avg_cleanliness = round(avg_cleanliness, 1) if avg_cleanliness else 0
+    avg_location = round(avg_location, 1) if avg_location else 0
+    avg_value = round(avg_value, 1) if avg_value else 0
+    avg_host = round(avg_host, 1) if avg_host else 0
+
+    context = {
+        'room': room,
+        'included': included,
+        'already_reviewed': already_reviewed,
+        'avg_rating': avg_rating,
+        'avg_cleanliness': avg_cleanliness,
+        'avg_location': avg_location,
+        'avg_value': avg_value,
+        'avg_host': avg_host,
+        'reviews': reviews,
+        'total_reviews': total_reviews,
+    }
+    return render(request, 'rooms/room_details.html', context)
 #===============saved rooms ====================
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from .models import Listing, Saved_Rooms # Check spelling here
+from .models import Listing, Saved_Rooms 
 
 
 @login_required
@@ -140,10 +171,9 @@ def toggle_save_room(request, room_id):
         if not created:
             saved_room.delete()
             # Yahan room_id bhej rahe hain taaki JS pehchan sake kaunsa card delete karna hai
-            return JsonResponse({'status': 'success', 'action': 'removed', 'room_id': room_id})
+    return JsonResponse({'status': 'success', 'action': 'removed', 'room_id': room_id})
         
-        # Room ka poora matter JSON mein pack karo
-        return JsonResponse({
+    return JsonResponse({
             'status': 'success', 
             'action': 'saved',
             'room_data': {
