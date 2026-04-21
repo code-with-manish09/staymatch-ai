@@ -628,172 +628,105 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
           🔒 <strong>Privacy protected:</strong> Full address is shared only after a match is confirmed through StayMatch. Your safety is our priority.
         </div>
       </div>
-<div class="sm-wrap">
-<div class="section-card">
+      
+<div class="section-card fu d4">
+        <div class="sec-title"><div class="step-badge green">★</div> Reviews from Previous Tenants</div>
 
-  <!-- Messages — sec-title se BAHAR -->
-  {% if messages %}
-    {% for message in messages %}
-      {% if message.tags == 'error' %}
-        <div class="msg-error">⚠️ Aapne pehle hi review submit kar di hai!</div>
-      {% elif message.tags == 'success' %}
-        <div class="msg-success">✅ {{ message }}</div>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
+        {% if messages %}{% for message in messages %}{% if message.tags == 'error' %}<div class="msg-error">⚠️ Aapne pehle hi review submit kar di hai!</div>{% elif message.tags == 'success' %}<div class="msg-success">✅ {{ message }}</div>{% endif %}{% endfor %}{% endif %}
 
-  <div class="sec-title">
-    <div class="step-badge-green">★</div>
-    Reviews from Previous Tenants
-  </div>
-
-  <div class="guest-badge">
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 8a3 3 0 100-6 3 3 0 000 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3z"/></svg>
-    Share your experience as a tenant
-  </div>
-
-  {% if already_reviewed %}
-    <div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:20px;text-align:center;margin-bottom:20px;">
-      <div style="font-size:24px;margin-bottom:6px;">✅</div>
-      <div style="font-weight:700;color:#059669;font-size:15px;">Already submitted!</div>
-      <div style="font-size:13px;color:var(--muted);margin-top:4px;">Thank you for your feedback 🙏</div>
-    </div>
-  {% else %}
-    <form method="POST" action="{% url 'submit_review' room.id %}" class="review-form-wrap" id="reviewForm">
-      {% csrf_token %}
-      <input type="hidden" name="rating" id="overallValue">
-      <input type="hidden" name="cleanliness_rating" id="cleanValue">
-      <input type="hidden" name="location_rating" id="locValue">
-      <input type="hidden" name="value_rating" id="valValue">
-      <input type="hidden" name="host_rating" id="hostValue">
-
-      <!-- Overall Rating -->
-      <div style="margin-bottom:18px;">
-        <div class="picker-label">Overall Rating</div>
-        <div class="star-picker" id="overallPicker">
-          <input type="radio" name="overall" id="s5" value="5"><label for="s5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-          <input type="radio" name="overall" id="s4" value="4"><label for="s4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-          <input type="radio" name="overall" id="s3" value="3"><label for="s3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-          <input type="radio" name="overall" id="s2" value="2"><label for="s2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-          <input type="radio" name="overall" id="s1" value="1"><label for="s1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+        {% if already_reviewed %}
+        <div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:20px;text-align:center;margin-bottom:20px;">
+          <div style="font-size:24px;margin-bottom:6px;">✅</div>
+          <div style="font-weight:700;color:#059669;font-size:15px;">Already submitted!</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:4px;">Thank you for your feedback 🙏</div>
         </div>
-        <div style="font-size:12px;color:var(--teal);margin-top:6px;height:16px;" id="ratingLabel"></div>
-      </div>
-
-      <!-- Category Ratings -->
-      <div class="picker-label" style="margin-bottom:10px;">Category Rating</div>
-      <div class="cat-ratings">
-        <div class="cat-item">
-          <div class="cat-name">Cleanliness</div>
-          <div class="cat-stars">
-            <input type="radio" name="clean" id="c5" value="5"><label for="c5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="clean" id="c4" value="4"><label for="c4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="clean" id="c3" value="3"><label for="c3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="clean" id="c2" value="2"><label for="c2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="clean" id="c1" value="1"><label for="c1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+        {% else %}
+        <form method="POST" action="{% url 'submit_review' room.id %}" class="review-form-wrap" id="reviewForm">
+          {% csrf_token %}
+          <input type="hidden" name="rating" id="overallValue">
+          <input type="hidden" name="cleanliness_rating" id="cleanValue">
+          <input type="hidden" name="location_rating" id="locValue">
+          <input type="hidden" name="value_rating" id="valValue">
+          <input type="hidden" name="host_rating" id="hostValue">
+          <div style="margin-bottom:18px;">
+            <div class="picker-label">Overall Rating</div>
+            <div class="star-picker" id="overallPicker">
+              <input type="radio" name="overall" id="s5" value="5"><label for="s5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+              <input type="radio" name="overall" id="s4" value="4"><label for="s4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+              <input type="radio" name="overall" id="s3" value="3"><label for="s3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+              <input type="radio" name="overall" id="s2" value="2"><label for="s2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+              <input type="radio" name="overall" id="s1" value="1"><label for="s1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+            </div>
+            <div style="font-size:12px;color:var(--teal);margin-top:6px;height:16px;" id="ratingLabel"></div>
           </div>
-        </div>
-        <div class="cat-item">
-          <div class="cat-name">Location</div>
-          <div class="cat-stars">
-            <input type="radio" name="loc" id="l5" value="5"><label for="l5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="loc" id="l4" value="4"><label for="l4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="loc" id="l3" value="3"><label for="l3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="loc" id="l2" value="2"><label for="l2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="loc" id="l1" value="1"><label for="l1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <div class="picker-label" style="margin-bottom:10px;">Category Rating</div>
+          <div class="cat-ratings">
+            <div class="cat-item"><div class="cat-name">Cleanliness</div><div class="cat-stars"><input type="radio" name="clean" id="c5" value="5"><label for="c5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="clean" id="c4" value="4"><label for="c4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="clean" id="c3" value="3"><label for="c3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="clean" id="c2" value="2"><label for="c2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="clean" id="c1" value="1"><label for="c1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label></div></div>
+            <div class="cat-item"><div class="cat-name">Location</div><div class="cat-stars"><input type="radio" name="loc" id="l5" value="5"><label for="l5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="loc" id="l4" value="4"><label for="l4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="loc" id="l3" value="3"><label for="l3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="loc" id="l2" value="2"><label for="l2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="loc" id="l1" value="1"><label for="l1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label></div></div>
+            <div class="cat-item"><div class="cat-name">Value for Money</div><div class="cat-stars"><input type="radio" name="val" id="v5" value="5"><label for="v5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="val" id="v4" value="4"><label for="v4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="val" id="v3" value="3"><label for="v3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="val" id="v2" value="2"><label for="v2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="val" id="v1" value="1"><label for="v1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label></div></div>
+            <div class="cat-item"><div class="cat-name">Host Behaviour</div><div class="cat-stars"><input type="radio" name="host" id="h1" value="1"><label for="h1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="host" id="h2" value="2"><label for="h2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="host" id="h3" value="3"><label for="h3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="host" id="h4" value="4"><label for="h4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="host" id="h5" value="5"><label for="h5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label></div></div>
           </div>
-        </div>
-        <div class="cat-item">
-          <div class="cat-name">Value for Money</div>
-          <div class="cat-stars">
-            <input type="radio" name="val" id="v5" value="5"><label for="v5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="val" id="v4" value="4"><label for="v4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="val" id="v3" value="3"><label for="v3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="val" id="v2" value="2"><label for="v2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            <input type="radio" name="val" id="v1" value="1"><label for="v1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          <div style="margin-bottom:14px;">
+            <div class="picker-label" style="margin-bottom:8px;">Your Feedback</div>
+            <textarea class="sm-textarea" id="reviewText" name="comment" placeholder="Apna experience share karein..." rows="4"></textarea>
+            <div style="text-align:right;font-size:11px;color:var(--muted);margin-top:4px;" id="charCount">0 / 500</div>
           </div>
-        </div>
-        <div class="cat-item">
-          <div class="cat-name">Host Behaviour</div>
-          <div class="cat-stars">
-         <input type="radio" name="host" id="h1" value="1"><label for="h1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-        <input type="radio" name="host" id="h2" value="2"><label for="h2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-        <input type="radio" name="host" id="h3" value="3"><label for="h3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-        <input type="radio" name="host" id="h4" value="4"><label for="h4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-        <input type="radio" name="host" id="h5" value="5"><label for="h5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-          </div>
-        </div>
-      </div>
+          <button type="submit" class="sm-btn" id="submitBtn" disabled>Give Feedback</button>
+        </form>
+        {% endif %}
 
-      <!-- Feedback Text -->
-      <div style="margin-bottom:14px;">
-        <div class="picker-label" style="margin-bottom:8px;">your Feedback</div>
-        <textarea class="sm-textarea" id="reviewText" name="comment" placeholder="Apna experience share karein..." rows="4"></textarea>
-        <div style="text-align:right;font-size:11px;color:var(--muted);margin-top:4px;" id="charCount">0 / 500</div>
-      </div>
-
-<button type="submit" class="sm-btn" id="submitBtn" disabled>Give Feedback</button>
-    </form> 
-  {% endif %}  
-
-  <!-- Rating Summary -->
-  <div class="reviews-divider"><span>old Reviews</span></div>
-  <div class="rating-overview" style="display:flex;align-items:flex-start;gap:24px;margin-bottom:20px;flex-wrap:wrap;">
-    <div>
-      <div class="rating-big">{{ avg_rating|default:"—" }}</div>
-      <div class="stars-row">
-      {% with rating=avg_rating|default:0 %}
-          {% if rating >= 1 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-          {% if rating >= 2 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-          {% if rating >= 3 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-          {% if rating >= 4 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-          {% if rating >= 5 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-        {% endwith %}
-      </div>
-      <div style="font-size:12px;color:var(--muted);">{{ total_reviews }} Based on reviews</div>
-    </div>
-    <div style="flex:1;min-width:160px;padding-top:6px;">
-      <div style="display:flex;flex-direction:column;gap:7px;">
-        <div class="bar-row"><span class="bar-label">Cleanliness</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_cleanliness_percent }}%"></div></div><span class="bar-val">{{ avg_cleanliness|default:"—" }}</span></div>
-          <div class="bar-row"><span class="bar-label">Location</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_location_percent }}%"></div></div><span class="bar-val">{{ avg_location|default:"—" }}</span></div>
-          <div class="bar-row"><span class="bar-label">Value</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_value_percent }}%"></div></div><span class="bar-val">{{ avg_value|default:"—" }}</span></div>
-          <div class="bar-row"><span class="bar-label">Host</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_host_percent }}%"></div></div><span class="bar-val">{{ avg_host|default:"—" }}</span></div>
-        </div>
-    </div>
-  </div>
-
-  <!-- Review Cards -->
-  <div id="reviewsList">
-   {% for review in reviews %}
-    <div class="review-card">
-      <div class="rev-top">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div class="rev-avatar" style="background:linear-gradient(135deg,#0EA5C9,#0F1F3D);">
-            {{ review.user.username|slice:":2"|upper }}
-          </div>
+        <div style="display:flex;align-items:flex-start;gap:24px;margin:20px 0;flex-wrap:wrap;">
           <div>
-            <div class="rev-name">{{ review.user.username }}</div>
-            <div class="rev-date">{{ review.created_at|date:"M Y" }}</div>
+            <div class="rating-big">{{ avg_rating|default:"—" }}</div>
+            <div class="stars-row">
+              {% with rating=avg_rating|default:0 %}
+              {% if rating >= 1 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+              {% if rating >= 2 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+              {% if rating >= 3 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+              {% if rating >= 4 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+              {% if rating >= 5 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+              {% endwith %}
+            </div>
+            <div style="font-size:12px;color:var(--muted);">{{ total_reviews }} Based on reviews</div>
+          </div>
+          <div style="flex:1;min-width:160px;padding-top:6px;">
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div class="bar-row"><span class="bar-label">Cleanliness</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_cleanliness_percent }}%"></div></div><span class="bar-val">{{ avg_cleanliness|default:"—" }}</span></div>
+              <div class="bar-row"><span class="bar-label">Location</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_location_percent }}%"></div></div><span class="bar-val">{{ avg_location|default:"—" }}</span></div>
+              <div class="bar-row"><span class="bar-label">Value</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_value_percent }}%"></div></div><span class="bar-val">{{ avg_value|default:"—" }}</span></div>
+              <div class="bar-row"><span class="bar-label">Host</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_host_percent }}%"></div></div><span class="bar-val">{{ avg_host|default:"—" }}</span></div>
+            </div>
           </div>
         </div>
-        <div style="display:flex;gap:3px;">
-          {% if review.rating >= 1 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-          {% if review.rating >= 2 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-          {% if review.rating >= 3 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-          {% if review.rating >= 4 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-          {% if review.rating >= 5 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+
+        <div id="reviewsList">
+          {% for review in reviews %}
+          <div class="review-card">
+            <div class="rev-top">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="rev-avatar" style="background:linear-gradient(135deg,#0EA5C9,#0F1F3D);">{{ review.user.username|slice:":2"|upper }}</div>
+                <div><div class="rev-name">{{ review.user.username }}</div><div class="rev-date">{{ review.created_at|date:"M Y" }}</div></div>
+              </div>
+              <div style="display:flex;gap:3px;">
+                {% if review.rating >= 1 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+                {% if review.rating >= 2 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+                {% if review.rating >= 3 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+                {% if review.rating >= 4 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+                {% if review.rating >= 5 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+              </div>
+            </div>
+            <p class="rev-text">{{ review.comment }}</p>
+          </div>
+          {% empty %}
+          <p style="text-align:center;color:var(--muted);padding:20px;">No reviews yet.</p>
+          {% endfor %}
         </div>
+
       </div>
-      <p class="rev-text">{{ review.comment }}</p>
-    </div>
-    {% empty %}
-    <p style="text-align:center;color:var(--muted);padding:20px;">No reviews yet.</p>
-    {% endfor %}
-  </div>
 
-</div><!-- end section-card -->
-</div><!-- end sm-wrap -->
+    </div><!-- end left -->
 
+    <!-- ══ SIDEBAR ══ -->
     <!-- ══ SIDEBAR ══ -->
     <div>
       <div class="sidebar-card" style="padding: 24px; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border-radius: 16px;">
