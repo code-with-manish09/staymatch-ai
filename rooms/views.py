@@ -191,11 +191,15 @@ def toggle_save_room(request, room_id):
 
         if not created:
             saved_room.delete()
-            # Yahan room_id bhej rahe hain taaki JS pehchan sake kaunsa card delete karna hai
-    return JsonResponse({'status': 'success', 'action': 'removed', 'room_id': room_id})
-        
-    return JsonResponse({
-            'status': 'success', 
+            return JsonResponse({   # ✅ if ke andar, sahi jagah
+                'status': 'success', 
+                'action': 'removed', 
+                'room_id': room_id
+            })
+
+        # ✅ Yeh tab chalega jab naya save hua ho (created=True)
+        return JsonResponse({
+            'status': 'success',
             'action': 'saved',
             'room_data': {
                 'id': room.id,
@@ -203,13 +207,11 @@ def toggle_save_room(request, room_id):
                 'rent': room.rent,
                 'area': room.area,
                 'city': room.city,
-                # Image check logic
                 'image_url': room.images.first().image.url if room.images.exists() else 'https://via.placeholder.com/400x300',
             }
         })
-    
-    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
 #===============review rooms====================
 from .models import Listing, Amenity, ListingImage, Review

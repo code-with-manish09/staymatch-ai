@@ -2311,14 +2311,15 @@ function updateSavedUI(room, action) {
         container.insertAdjacentHTML('afterbegin', cardHTML);
 
     } else {
-        const cardToRemove = document.getElementById(`saved-card-${room.id}`);
-        if (cardToRemove) cardToRemove.remove();
+    const cardToRemove = document.getElementById(`saved-card-${room.id}`);
+    if (cardToRemove) cardToRemove.remove();
 
-        const remaining = container.querySelectorAll('.room-card');
-        if (remaining.length === 0) {
-            document.getElementById('empty-saved-msg').style.display = '';
-        }
+    const remaining = container.querySelectorAll('.room-card');
+    if (remaining.length === 0) {
+        const emptyMsg = document.getElementById('empty-saved-msg'); // ✅ pehle lo
+        if (emptyMsg) emptyMsg.style.display = ''; // ✅ phir check karo
     }
+}
 }
 
 

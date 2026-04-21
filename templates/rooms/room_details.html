@@ -755,10 +755,10 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
     <div style="flex:1;min-width:160px;padding-top:6px;">
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div class="bar-row"><span class="bar-label">Cleanliness</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_cleanliness_percent }}%"></div></div><span class="bar-val">{{ avg_cleanliness|default:"—" }}</span></div>
-<div class="bar-row"><span class="bar-label">Location</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_location_percent }}%"></div></div><span class="bar-val">{{ avg_location|default:"—" }}</span></div>
-<div class="bar-row"><span class="bar-label">Value</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_value_percent }}%"></div></div><span class="bar-val">{{ avg_value|default:"—" }}</span></div>
-<div class="bar-row"><span class="bar-label">Host</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_host_percent }}%"></div></div><span class="bar-val">{{ avg_host|default:"—" }}</span></div>
-      </div>
+          <div class="bar-row"><span class="bar-label">Location</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_location_percent }}%"></div></div><span class="bar-val">{{ avg_location|default:"—" }}</span></div>
+          <div class="bar-row"><span class="bar-label">Value</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_value_percent }}%"></div></div><span class="bar-val">{{ avg_value|default:"—" }}</span></div>
+          <div class="bar-row"><span class="bar-label">Host</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_host_percent }}%"></div></div><span class="bar-val">{{ avg_host|default:"—" }}</span></div>
+        </div>
     </div>
   </div>
 
