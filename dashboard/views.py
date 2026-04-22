@@ -15,9 +15,8 @@ def get_user_profile_or_none(user):
 
 #==========dashboard view============
 
+from django.db.models import Avg, Count
 
-
-# dashboard/views.py — only READ saved rooms, don't save here
 @login_required(login_url='/login/')
 def dashboard(request):
     all_rooms = Listing.objects.filter(is_published=True).order_by('-created_at')
@@ -33,12 +32,20 @@ def dashboard(request):
     recent_messages = all_conversations[:5]
     unread_count = sum(1 for conv in all_conversations if conv['unread'] > 0)
 
+  
+    trending_rooms = Listing.objects.annotate(
+        avg_rating=Avg('reviews__rating'),
+        review_count=Count('reviews')
+    ).order_by('-review_count', '-avg_rating')[:5]
 
+    
     context = {
         'listings': all_rooms,
         'saved_room_ids': saved_room_ids,
         'user_saved_rooms': user_saved_rooms,
-        'recent_messages': recent_messages, 
+        'recent_messages': recent_messages,
         'unread_count': unread_count,
+        'trending_rooms': trending_rooms,
     }
+
     return render(request, 'dashboard/dashboard.html', context)

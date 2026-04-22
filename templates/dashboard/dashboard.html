@@ -1122,110 +1122,65 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   </div>
   {% endfor %}
 </div>
+<div class="bottom-grid fu d5">
 
-      <!-- Bottom: Trending + Messages -->
-      <div class="bottom-grid fu d5">
- 
-  <!-- ── PREMIUM TRENDING ── -->
-  <div class="trending-wrap">
-    <div class="trend-header">
-      <div class="sec-title">🔥 Trending Now</div>
-      <a class="sec-link">See all →</a>
-    </div>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">
-      Most viewed in last 24 hours
-    </p>
- 
-    <div class="trend-fire-badge">🔥 Hot Market — Bangalore</div>
- 
-    <!-- Trend Item 1 -->
-    <a href="{% url 'room_details_by_id' 1 %}" class="trend-item" style="text-decoration:none;">
-      <div class="trend-rank gold">1</div>
-      <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=80&q=70"
-           class="trend-img" alt="Studio"/>
-      <div class="trend-info">
-        <div class="trend-name">Studio in Whitefield</div>
-        <div class="trend-sub">📍 Bangalore · 1 bed · Furnished</div>
-        <div style="display:flex;gap:5px;margin-top:4px;">
-          <span class="chip" style="background:var(--teal-lt);color:var(--teal);padding:2px 8px;">🚇 Metro</span>
-          <span class="chip" style="background:#F0FDF4;color:#059669;padding:2px 8px;">✓ Verified</span>
-        </div>
-      </div>
-      <div class="trend-right">
-        <div class="trend-price">₹9,500</div>
-        <div class="trend-pct hot">🔥 91%</div>
-      </div>
-    </a>
- 
-    <!-- Trend Item 2 -->
-    <a href="{% url 'room_details_by_id' 2 %}" class="trend-item" style="text-decoration:none;">
-      <div class="trend-rank silver">2</div>
-      <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=80&q=70"
-           class="trend-img" alt="2BHK"/>
-      <div class="trend-info">
-        <div class="trend-name">2BHK in Andheri West</div>
-        <div class="trend-sub">📍 Mumbai · 2 bed · Semi-Furnished</div>
-        <div style="display:flex;gap:5px;margin-top:4px;">
-          <span class="chip" style="background:var(--amber-lt);color:#B45309;padding:2px 8px;">⚡ Popular</span>
-        </div>
-      </div>
-      <div class="trend-right">
-        <div class="trend-price">₹22,000</div>
-        <div class="trend-pct warm">⚡ 87%</div>
-      </div>
-    </a>
- 
-    <!-- Trend Item 3 -->
-    <a href="{% url 'room_details_by_id' 3 %}" class="trend-item" style="text-decoration:none;">
-      <div class="trend-rank bronze">3</div>
-      <img src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=80&q=70"
-           class="trend-img" alt="PG"/>
-      <div class="trend-info">
-        <div class="trend-name">PG in Lajpat Nagar</div>
-        <div class="trend-sub">📍 Delhi · 1 bed · Furnished</div>
-        <div style="display:flex;gap:5px;margin-top:4px;">
-          <span class="chip" style="background:#F0FDF4;color:#059669;padding:2px 8px;">📚 Study Friendly</span>
-        </div>
-      </div>
-      <div class="trend-right">
-        <div class="trend-price">₹11,000</div>
-        <div class="trend-pct">⚡ 84%</div>
-      </div>
-    </a>
- 
-    <!-- Trend Item 4 -->
-    <a href="{% url 'room_details_by_id' 4 %}" class="trend-item" style="text-decoration:none;">
-      <div class="trend-rank">4</div>
-      <img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=80&q=70"
-           class="trend-img" alt="1BHK"/>
-      <div class="trend-info">
-        <div class="trend-name">1BHK in Powai</div>
-        <div class="trend-sub">📍 Mumbai · 1 bed · Furnished</div>
-      </div>
-      <div class="trend-right">
-        <div class="trend-price">₹17,500</div>
-        <div class="trend-pct">📈 79%</div>
-      </div>
-    </a>
- 
-    <!-- Trend Item 5 -->
-    <a href="{% url 'room_details_by_id' 5 %}" class="trend-item" style="text-decoration:none;">
-      <div class="trend-rank">5</div>
-      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=80&q=70"
-           class="trend-img" alt="3BHK"/>
-      <div class="trend-info">
-        <div class="trend-name">3BHK in Banjara Hills</div>
-        <div class="trend-sub">📍 Hyderabad · 3 bed · Fully Furnished</div>
-      </div>
-      <div class="trend-right">
-        <div class="trend-price">₹28,000</div>
-        <div class="trend-pct">📈 76%</div>
-      </div>
-    </a>
- 
+<!-- Trending Section -->
+<div class="trending-wrap">
+  <div class="trend-header">
+    <div class="sec-title">🔥 Trending Now</div>
+    <a class="sec-link">See all →</a>
   </div>
-  <!-- /trending-wrap -->
- 
+  <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">
+    Most viewed in last 24 hours
+  </p>
+  <div class="trend-fire-badge">🔥 Hot Market</div>
+
+  {% for room in trending_rooms %}
+  <a href="{% url 'room_details_by_id' room.id %}" class="trend-item" style="text-decoration:none;">
+    
+    <div class="trend-rank {% if forloop.counter == 1 %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">
+      {{ forloop.counter }}
+    </div>
+
+    {% if room.images.first %}
+    <img src="{{ room.images.first.image.url }}" class="trend-img" alt="{{ room.title }}"/>
+    {% else %}
+    <div class="trend-img" style="background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:20px;">🏠</div>
+    {% endif %}
+
+    <div class="trend-info">
+      <div class="trend-name">{{ room.title }}</div>
+      <div class="trend-sub">📍 {{ room.area }} · {{ room.city }}</div>
+      <div style="display:flex;gap:5px;margin-top:4px;">
+        {% if room.avg_rating %}
+        <span class="chip" style="background:var(--amber-lt);color:#B45309;padding:2px 8px;">
+          ⭐ {{ room.avg_rating|floatformat:1 }}
+        </span>
+        {% endif %}
+        <span class="chip" style="background:#F0FDF4;color:#059669;padding:2px 8px;">
+          {{ room.review_count }} reviews
+        </span>
+      </div>
+    </div>
+
+    <div class="trend-right">
+      <div class="trend-price">₹{{ room.rent }}</div>
+      <div class="trend-pct {% if forloop.counter == 1 %}hot{% elif forloop.counter <= 3 %}warm{% endif %}">
+        {% if room.avg_rating %}
+          {% if room.avg_rating >= 4.5 %}🔥{% else %}📈{% endif %}
+          {{ room.avg_rating|floatformat:1 }}/5
+        {% else %}
+          🆕 New
+        {% endif %}
+      </div>
+    </div>
+
+  </a>
+  {% empty %}
+  <p style="text-align:center;color:var(--muted);padding:20px;">Koi trending room nahi mila.</p>
+  {% endfor %}
+
+</div>
  
   <!-- ── REAL MESSAGES PANEL ── -->
   <div class="real-msg-panel">
@@ -1299,17 +1254,17 @@ input[type=range]{width:100%;accent-color:var(--teal);}
       <a href="{% url 'inbox' %}" class="rmp-footer-btn">
         💬 Open Full Inbox
       </a>
-    </div>
+   </div><!-- end rmp-footer -->
  
-  </div> 
-</div>
-</div>
+      </div><!-- end real-msg-panel --> 
+      
+    </div><!-- end bottom-grid -->
 
- <!-- /sec-discover -->
+  </div><!-- end sec-discover -->
 
-    <!-- ══ MATCHES ══ -->
-    <div id="sec-matches" style="display:none;">
-      <div class="feat-card" style="text-align:center;padding:56px 28px;">
+  <!-- ══ MATCHES ══ -->
+     <div id="sec-matches" style="display:none;">
+          <div class="feat-card" style="text-align:center;padding:56px 28px;">
         <div style="font-size:48px;margin-bottom:14px;">⚡</div>
         <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;">Your AI Matches</div>
         <p style="color:var(--muted);font-size:14px;margin-bottom:20px;">4 high-compatibility flatmates found for you today.</p>
@@ -1929,10 +1884,10 @@ input[type=range]{width:100%;accent-color:var(--teal);}
  
  
 </div>
-    <!-- ══ SAFETY RATINGS ══ -->
+    <!-- ══ FAQs══ -->
     <div id="sec-safety" style="display:none;">
       <div class="sec-hd">
-        <div class="sec-title">🛡️ Safety & Verification Centre</div>
+        <div class="sec-title">🛡️ FAQs</div>
         <div class="section-label" style="margin-bottom:0;">AI Feature</div>
       </div>
       <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Every listing and profile is scored by our AI Safety Engine across multiple parameters.</p>
