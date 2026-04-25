@@ -2,10 +2,10 @@ from datetime import date
 import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from httpx import request
 from .models import Listing, Amenity, ListingImage, Review
 from django.http import JsonResponse  # already hai
-from rooms.services.services import get_vibe_score  # yahan add karo
-# Utility functions
+from rooms.services.services import get_room_faqs, get_vibe_score  
 
 
 def to_int(value, default):
@@ -293,3 +293,18 @@ def ai_match_view(request):
     results.sort(key=lambda x: x["vibe_score"], reverse=True)
 
     return JsonResponse({"matches": results})
+
+#===============room faqs====================
+@login_required
+def room_faqs(request, room_id):
+    if request.method == 'POST':
+        room = get_object_or_404(Listing, id=room_id)
+        question = request.POST.get('question', '').strip()
+        
+        if not question:
+            return JsonResponse({'error': 'Question empty hai'}, status=400)
+        
+        answer = get_room_faqs(room.get_preference_text(), question)
+        return JsonResponse({'answer': answer})
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)

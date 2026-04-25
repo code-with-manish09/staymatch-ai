@@ -9,4 +9,5 @@ urlpatterns = [
     path('review/<int:room_id>/', views.submit_review, name='submit_review'),
     path('matches/', views.matches, name='matches'),
     path('ai-match/', views.ai_match_view, name='ai_match'),
+    path('room/<int:room_id>/faqs/', views.room_faqs, name='room_faqs'),
     ]

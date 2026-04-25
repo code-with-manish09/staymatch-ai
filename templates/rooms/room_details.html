@@ -726,6 +726,27 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
 
     </div><!-- end left -->
 
+    <!-- ── FAQ SECTION ── -->
+<div class="section-card fu d4">
+  <div class="sec-title"><div class="step-badge teal">?</div> Ask About This Room</div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Have a question about this room? Ask our AI — it knows everything about this listing!</p>
+  
+  <!-- Chat History -->
+  <div id="faqChat" style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;max-height:360px;overflow-y:auto;"></div>
+  
+  <!-- Input -->
+  <div style="display:flex;gap:10px;">
+    <input type="text" id="faqInput" placeholder="e.g. Is parking available? Is it near metro?" 
+      style="flex:1;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:14px;font-family:'Instrument Sans',sans-serif;color:var(--navy);outline:none;"
+      onkeydown="if(event.key==='Enter') askFaq()"/>
+    <button onclick="askFaq()" id="faqBtn"
+      style="background:var(--teal);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;white-space:nowrap;">
+      Ask AI ✦
+    </button>
+  </div>
+</div>
+
+
     <!-- ══ SIDEBAR ══ -->
     <!-- ══ SIDEBAR ══ -->
     <div>
@@ -996,6 +1017,60 @@ if (textarea) {
     checkForm();
   });
 }
+
+const ROOM_ID = {{ room.id }};
+
+async function askFaq() {
+  const input = document.getElementById('faqInput');
+  const btn = document.getElementById('faqBtn');
+  const chat = document.getElementById('faqChat');
+  const question = input.value.trim();
+  
+  if (!question) return;
+
+  // User bubble
+  chat.innerHTML += `
+    <div style="align-self:flex-end;background:var(--navy);color:#fff;padding:10px 16px;border-radius:14px 14px 4px 14px;font-size:13px;max-width:80%;">
+      ${question}
+    </div>`;
+
+  input.value = '';
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  // Loading bubble
+  chat.innerHTML += `<div id="loadingBubble" style="align-self:flex-start;background:var(--off);border:1px solid var(--border);padding:10px 16px;border-radius:14px 14px 14px 4px;font-size:13px;color:var(--muted);">AI soch raha hai...</div>`;
+  chat.scrollTop = chat.scrollHeight;
+
+  try {
+    const formData = new FormData();
+    formData.append('question', question);
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+    const res = await fetch(`/rooms/room/${ROOM_ID}/faqs/`, {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+
+    document.getElementById('loadingBubble').remove();
+
+    chat.innerHTML += `
+      <div style="align-self:flex-start;background:var(--teal-lt);border:1px solid rgba(14,165,201,.2);padding:10px 16px;border-radius:14px 14px 14px 4px;font-size:13px;color:var(--navy);max-width:85%;line-height:1.7;">
+        <span style="font-size:10px;font-weight:800;color:var(--teal);letter-spacing:.06em;display:block;margin-bottom:4px;">AI ✦</span>
+        ${data.answer}
+      </div>`;
+
+  } catch(err) {
+    document.getElementById('loadingBubble').remove();
+    chat.innerHTML += `<div style="color:#ef4444;font-size:13px;">Kuch galat hua, dobara try karo.</div>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Ask AI ✦';
+  chat.scrollTop = chat.scrollHeight;
+}
+
 </script>
 </body>
 </html>
