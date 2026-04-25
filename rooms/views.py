@@ -1,9 +1,10 @@
 from datetime import date
+import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from urllib3 import request
 from .models import Listing, Amenity, ListingImage, Review
-
+from django.http import JsonResponse  # already hai
+from rooms.services.services import get_vibe_score  # yahan add karo
 # Utility functions
 
 
@@ -251,3 +252,44 @@ def submit_review(request, room_id):
         return redirect('room_details_by_id', room_id=room_id)
 
     return redirect('room_details_by_id', room_id=room_id)
+
+
+
+#==========match view============
+@login_required(login_url='/login/')
+def matches(request):
+    return render(request, 'rooms/matches.html')
+
+#=======match details view===========
+
+
+@login_required
+def ai_match_view(request):
+    user_prefs = (
+        f"Gender: {request.GET.get('gender', 'Any')}, "
+        f"Occupation: {request.GET.get('occupation', 'Any')}, "
+        f"Sleep schedule: {request.GET.get('sleep', 'Any')}, "
+        f"Cleanliness: {request.GET.get('cleanliness', 'Any')}, "
+        f"Guest policy: {request.GET.get('guest_policy', 'Any')}, "
+        f"City: {request.GET.get('city', 'Any')}, "
+        f"Budget: {request.GET.get('budget', 'Any')}"
+    )
+
+    rooms = Listing.objects.filter(is_published=True)
+
+    results = []
+    for room in rooms:
+        response = get_vibe_score(user_prefs, room.get_preference_text())
+        data = json.loads(response)
+        results.append({
+            "room_id": room.id,
+            "title": room.title,
+            "city": room.city,
+            "rent": room.rent,
+            "vibe_score": data["score"],
+            "reason": data["reason"]
+        })
+
+    results.sort(key=lambda x: x["vibe_score"], reverse=True)
+
+    return JsonResponse({"matches": results})

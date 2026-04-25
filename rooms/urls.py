@@ -7,4 +7,6 @@ urlpatterns = [
     path('room_details/<int:room_id>/', views.room_details, name='room_details_by_id'),
     path('toggle-save/<int:room_id>/', views.toggle_save_room, name='toggle_save_room'),
     path('review/<int:room_id>/', views.submit_review, name='submit_review'),
+    path('matches/', views.matches, name='matches'),
+    path('ai-match/', views.ai_match_view, name='ai_match'),
     ]

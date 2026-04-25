@@ -837,7 +837,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   <a class="nav-item active" onclick="showSec('discover')">
     <span class="nav-icon">🏠</span> Discover Rooms
   </a>
-  <a class="nav-item" onclick="showSec('matches')">
+  <a href="{% url 'matches' %}" class="nav-item" onclick="showSec('matches')">
     <span class="nav-icon">⚡</span> My Matches
     <span class="nav-badge teal">4</span>
   </a>
@@ -1054,7 +1054,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
         <button class="btn-vibe" onclick="openVibe()">✨ Find Your Vibe</button>
       </div>
 
-      <!-- Room Listings -->
+      
       <!-- Room Listings -->
 <div class="sec-hd fu d4">
   <div class="sec-title">🏠 Recommended for You</div>
@@ -1254,24 +1254,14 @@ input[type=range]{width:100%;accent-color:var(--teal);}
       <a href="{% url 'inbox' %}" class="rmp-footer-btn">
         💬 Open Full Inbox
       </a>
-   </div><!-- end rmp-footer -->
- 
-      </div><!-- end real-msg-panel --> 
-      
-    </div><!-- end bottom-grid -->
-
-  </div><!-- end sec-discover -->
-
-  <!-- ══ MATCHES ══ -->
-     <div id="sec-matches" style="display:none;">
-          <div class="feat-card" style="text-align:center;padding:56px 28px;">
-        <div style="font-size:48px;margin-bottom:14px;">⚡</div>
-        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;">Your AI Matches</div>
-        <p style="color:var(--muted);font-size:14px;margin-bottom:20px;">4 high-compatibility flatmates found for you today.</p>
-        <button class="btn-teal" style="font-size:14px;padding:11px 28px;" onclick="showSec('discover')">← Back to Discover</button>
+   </div>
       </div>
+      
     </div>
 
+  </div>
+  <!-- ══ MATCHES ══ -->
+    
     <!-- ══ SAVED ══ -->
     <div id="sec-saved" style="display:none;">
   <div class="sec-hd"><div class="sec-title">🔖 Saved Rooms</div></div>

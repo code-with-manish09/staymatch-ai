@@ -75,6 +75,22 @@ class Listing(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.city}"
+    
+    def get_preference_text(self):
+        return (
+            f"Room type : {self.room_type},"
+            f"city: {self.city},"
+            f"furnishing : {self.furnishing_status},"
+            f"preferred gender : {self.pref_gender},"
+            f"preferred occupation: {self.pref_occupation},"
+            f"sleep schedule: {self.sleep_schedule},"
+            f"cleanliness level : {self.cleanliness_level},"
+            f"guest policy : {self.guest_policy},"
+            f"wifi included : {self.included_wifi},"
+            f"Cooking allowed: {self.included_cooking}, "
+            f"House rules: {self.house_rules}, "
+            f"Rent: {self.rent}"
+        )
 
 class ListingImage(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='images')
