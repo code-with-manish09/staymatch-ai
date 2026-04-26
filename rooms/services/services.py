@@ -7,10 +7,16 @@ def get_vibe_score(user_prefs, room_prefs):
     prompt = f"""
     User preferences: {user_prefs}
     Room preferences: {room_prefs}
-    Compare these and give a compatibility score from 0-100.
-    Return ONLY this JSON, nothing else, no markdown, no extra text:
-    {{"score": 85, "reason": "brief reason here"}}
-    """
+    Dono ko dhyan se compare kar aur ek SAHI compatibility score de 0 se 100 ke beech.
+    - Agar city match nahi karti toh score kam hona chahiye
+    - Agar budget match nahi karta toh score kam hona chahiye  
+    - Agar sleep schedule alag hai toh score kam hona chahiye
+    - Sirf tab zyada score de jab genuinely zyada match ho
+    -ranking us hisab se do jo jyada match ho vibe score mein wo top pe rahe and so on.
+
+    Sirf yeh JSON return kar, koi backticks nahi, koi extra text nahi:
+    {{"score": 45, "reason": "yahan reason likho"}}
+"""
     response = client.models.generate_content(
         model='gemini-2.5-flash',
         contents=prompt

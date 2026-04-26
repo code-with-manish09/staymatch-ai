@@ -2,7 +2,6 @@ from datetime import date
 import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from httpx import request
 from .models import Listing, Amenity, ListingImage, Review
 from django.http import JsonResponse  # already hai
 from rooms.services.services import get_room_faqs, get_vibe_score  
@@ -280,7 +279,10 @@ def ai_match_view(request):
     results = []
     for room in rooms:
         response = get_vibe_score(user_prefs, room.get_preference_text())
-        data = json.loads(response)
+        clean = response.strip().removeprefix('```json').removeprefix('```').removesuffix('```').strip()
+        if not clean:
+            continue
+        data = json.loads(clean)
         results.append({
             "room_id": room.id,
             "title": room.title,
