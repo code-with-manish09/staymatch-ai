@@ -1,4 +1,7 @@
+{% extends 'base.html' %}
 
+    {% block content %}
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -135,18 +138,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;ma
 <body>
 
 <nav>
-  <a href="/" class="nav-logo display">Stay<span class="grad">Match</span></a>
-  <div class="nav-links">
-    <a href="#" class="nav-a">Discover</a>
-    <a href="#" class="nav-a">How It Works</a>
-    <a href="#" class="nav-a">List a Room</a>
-    <a href="#" class="nav-a active">AI Match</a>
-  </div>
-  <div class="nav-desktop-btns" style="display:flex;gap:10px;align-items:center;">
-    <a href="/dashboard/" class="btn-outline" style="padding:9px 20px;font-size:14px;">Dashboard</a>
-    <a href="/rooms/post_room/" class="btn-primary" style="padding:10px 22px;font-size:14px;">Post Room →</a>
-  </div>
-  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
+
 </nav>
 <div class="mobile-nav" id="mobileNav">
   <a href="#" class="nav-a">Discover</a>
@@ -291,17 +283,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;ma
 </div>
 
 <footer>
-  <div class="container">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08);">
-      <div style="max-width:260px;">
-        <div class="display" style="font-size:22px;font-weight:800;color:#fff;margin-bottom:10px;">StayMatch</div>
-        <p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,.4);">AI-powered flatmate matching for students and professionals across India.</p>
-      </div>
-    </div>
-    <div style="padding-top:24px;">
-      <div style="font-size:13px;color:rgba(255,255,255,.25);">© 2026 StayMatch Technologies Pvt. Ltd. · Made in India 🇮🇳</div>
-    </div>
-  </div>
+  
 </footer>
 
 <script>
@@ -421,3 +403,5 @@ async function findMatches() {
 </script>
 </body>
 </html>
+
+{% endblock %}

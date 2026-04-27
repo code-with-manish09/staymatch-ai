@@ -41,20 +41,13 @@ body::after{
   pointer-events:none;z-index:9998;opacity:.5;
 }
 .msg-success {
-    /* Glass Effect (Translucency & Blur) */
-    background: rgba(16, 185, 129, 0.1); /* Halka Green background */
-    backdrop-filter: blur(12px);          /* 🔥 Ye line glass banati hai */
-    -webkit-backdrop-filter: blur(12px); /* Safari support */
-    
-    /* Border & Shadow (Chamakeeli border) */
-    border: 1px solid rgba(16, 185, 129, 0.3); /* Green translucent border */
+    background: rgba(16, 185, 129, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(16, 185, 129, 0.3);
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.1); /* Halki si green chamak */
-
-    /* 🔥 TEXT COLOR FIX (White BG ke liye Dark Green) */
-    color: #0d7b56; 
-    
-    /* Layout & Font (Saaf aur readable) */
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.1);
+    color: #0d7b56;
     padding: 14px 22px;
     font-weight: 700;
     font-size: 14px;
@@ -63,10 +56,8 @@ body::after{
     display: flex;
     align-items: center;
     gap: 12px;
-    
-    /* Animation (Niche se upar aane ke liye) */
     animation: slideUp 0.5s ease forwards;
-    z-index: 1000; /* Taaki topbar ke upar rahe */
+    z-index: 1000;
 }
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(32px);}to{opacity:1;transform:translateY(0);}}
@@ -140,7 +131,7 @@ body::after{
 /* ═══════════════════════════════════════ */
 /* LAYOUT                                  */
 /* ═══════════════════════════════════════ */
-.app{display:flex;min-height:100vh;}
+.app{display:flex;flex-direction:column;min-height:100vh;}
 
 /* ── SIDEBAR ── */
 .sidebar{
@@ -174,7 +165,6 @@ body::after{
 .nav-badge.amber{background:var(--amber);}
 .nav-badge.teal{background:var(--teal);}
 
-/* logout nav item */
 .nav-item-logout{
   display:flex;align-items:center;gap:10px;
   padding:10px 14px;border-radius:10px;margin:1px 8px;
@@ -194,15 +184,12 @@ body::after{
 .sb-user-name{font-size:14px;font-weight:700;color:#fff;}
 .sb-user-role{font-size:11px;color:rgba(255,255,255,.35);margin-top:2px;}
 
-
-/* mobile sidebar overlay */
 .sidebar-overlay{
   display:none;position:fixed;inset:0;background:rgba(15,31,61,.5);
   backdrop-filter:blur(4px);z-index:299;
 }
 .sidebar-overlay.open{display:block;}
 
-/* hamburger */
 .hamburger{
   display:none;width:38px;height:38px;border-radius:10px;
   border:1px solid var(--border);background:#fff;
@@ -211,8 +198,14 @@ body::after{
 }
 .hamburger:hover{background:var(--off);}
 
-/* ── MAIN ── */
-.main{margin-left:248px;flex:1;min-height:100vh;display:flex;flex-direction:column;}
+/* ── MAIN WRAPPER ── */
+.main-wrapper{
+  margin-left:248px;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -270,7 +263,6 @@ body::after{
 .vibe-score{text-align:center;flex-shrink:0;position:relative;z-index:1;}
 .vibe-num{font-family:'Bricolage Grotesque',sans-serif;font-size:44px;font-weight:800;color:var(--teal);line-height:1;}
 .vibe-lbl{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;}
-
 
 /* ── STATS ROW ── */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
@@ -373,14 +365,24 @@ body::after{
 
 /* ── TRENDING ── */
 .trending-wrap{background:#fff;border:1px solid var(--border);border-radius:20px;padding:22px;box-shadow:var(--card-sh);}
-.trend-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
+.trend-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.trend-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all 0.2s;border-radius:0;text-decoration:none;}
 .trend-item:last-child{border-bottom:none;padding-bottom:0;}
-.trend-rank{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:var(--border);width:26px;flex-shrink:0;text-align:center;}
+.trend-item:hover{transform:translateX(4px);}
+.trend-rank{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;color:var(--border);width:24px;flex-shrink:0;text-align:center;}
 .trend-rank.gold{color:var(--amber);}
-.trend-img{width:50px;height:50px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--teal-lt);}
-.trend-name{font-weight:600;font-size:13px;color:var(--navy);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.trend-rank.silver{color:#94a3b8;}
+.trend-rank.bronze{color:#b87333;}
+.trend-img{width:52px;height:52px;border-radius:12px;object-fit:cover;flex-shrink:0;background:var(--teal-lt);}
+.trend-info{flex:1;min-width:0;}
+.trend-name{font-weight:700;font-size:13px;color:var(--navy);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .trend-sub{font-size:11px;color:var(--muted);}
-.trend-pct{flex-shrink:0;background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;}
+.trend-right{flex-shrink:0;text-align:right;}
+.trend-price{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;color:var(--navy);}
+.trend-pct{display:inline-flex;align-items:center;gap:3px;background:var(--teal-lt);color:var(--teal);font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;margin-top:3px;}
+.trend-pct.hot{background:#FFF1F2;color:var(--coral);}
+.trend-pct.warm{background:var(--amber-lt);color:#B45309;}
+.trend-fire-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#FF6B35,#F59E0B);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;margin-bottom:12px;}
 
 /* ── MESSAGES ── */
 .msg-panel{background:#fff;border:1px solid var(--border);border-radius:20px;box-shadow:var(--card-sh);overflow:hidden;display:flex;flex-direction:column;}
@@ -395,10 +397,33 @@ body::after{
 .msg-time{font-size:10px;color:var(--muted);font-weight:400;}
 .msg-preview{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
 .msg-unread{background:var(--teal);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:99px;flex-shrink:0;}
-.typing-bar{
-  padding:10px 16px;border-top:1px solid var(--border);
-  background:var(--teal-lt);display:flex;align-items:center;gap:8px;
-}
+.typing-bar{padding:10px 16px;border-top:1px solid var(--border);background:var(--teal-lt);display:flex;align-items:center;gap:8px;}
+
+/* ── REAL MESSAGES PANEL ── */
+.real-msg-panel{background:#fff;border:1px solid var(--border);border-radius:20px;box-shadow:var(--card-sh);overflow:hidden;display:flex;flex-direction:column;}
+.rmp-header{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.rmp-scroll{flex:1;overflow-y:auto;max-height:320px;}
+.rmp-scroll::-webkit-scrollbar{width:3px;}
+.rmp-scroll::-webkit-scrollbar-thumb{background:var(--teal-lt);border-radius:4px;}
+.rmp-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background 0.15s;text-decoration:none;border-bottom:1px solid #f8fafc;}
+.rmp-item:hover{background:var(--off);}
+.rmp-item.unread{background:#F0FAFB;border-left:3px solid var(--teal);}
+.rmp-av{width:40px;height:40px;border-radius:50%;background:var(--teal-lt);color:var(--teal);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;}
+.rmp-av .unread-dot{position:absolute;bottom:1px;right:1px;width:10px;height:10px;background:var(--teal);border-radius:50%;border:2px solid #fff;}
+.rmp-info{flex:1;min-width:0;}
+.rmp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;}
+.rmp-name{font-size:13px;font-weight:700;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rmp-time{font-size:10px;color:var(--muted);flex-shrink:0;}
+.rmp-preview{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rmp-preview.bold{color:var(--navy);font-weight:600;}
+.rmp-listing{font-size:10px;color:var(--teal);font-weight:600;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rmp-unread-badge{background:var(--teal);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:99px;flex-shrink:0;min-width:18px;text-align:center;}
+.rmp-footer{padding:12px 16px;border-top:1px solid var(--border);background:var(--off);}
+.rmp-footer-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.rmp-footer-btn:hover{background:var(--teal);}
+.rmp-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;color:var(--muted);gap:8px;}
+.rmp-empty span{font-size:32px;}
+.rmp-empty p{font-size:13px;}
 
 /* ── MODAL ── */
 .modal-overlay{
@@ -442,11 +467,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 
 .spinner{width:44px;height:44px;border:3px solid var(--teal-lt);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
 
-.result-badge{
-  background:var(--teal-lt);border-radius:16px;padding:20px;
-  display:flex;align-items:center;gap:16px;margin-top:16px;
-  border:1px solid rgba(14,165,201,.2);
-}
+.result-badge{background:var(--teal-lt);border-radius:16px;padding:20px;display:flex;align-items:center;gap:16px;margin-top:16px;border:1px solid rgba(14,165,201,.2);}
 .result-score{font-family:'Bricolage Grotesque',sans-serif;font-size:52px;font-weight:800;color:var(--teal);line-height:1;flex-shrink:0;}
 
 .insight{background:var(--off);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.65;margin-top:14px;border:1px solid var(--border);}
@@ -503,6 +524,52 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 .profile-col-header{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
 .profile-col-bar{width:16px;height:2px;border-radius:2px;display:inline-block;flex-shrink:0;}
 
+/* ══ QUIZ STYLES ══ */
+.quiz-hero{background:linear-gradient(135deg,var(--navy) 0%,#1a3260 60%,#0d2a5e 100%);border-radius:20px;padding:36px 32px;margin-bottom:24px;position:relative;overflow:hidden;display:flex;align-items:center;gap:28px;flex-wrap:wrap;}
+.quiz-hero::before{content:'';position:absolute;top:-80px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,201,.18),transparent);pointer-events:none;}
+.quiz-hero::after{content:'';position:absolute;bottom:-60px;left:120px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.1),transparent);pointer-events:none;}
+.quiz-hero-text{flex:1;min-width:200px;position:relative;z-index:1;}
+.quiz-hero-title{font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:8px;}
+.quiz-hero-sub{font-size:14px;color:rgba(255,255,255,.55);line-height:1.65;margin-bottom:20px;max-width:480px;}
+.quiz-hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+.quiz-hero-chip{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-size:12px;font-weight:600;padding:5px 13px;border-radius:99px;border:1px solid rgba(255,255,255,.12);}
+.quiz-cta-btn{background:var(--teal);color:#fff;border:none;border-radius:12px;padding:14px 28px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.quiz-cta-btn:hover{background:#0993b3;transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,165,201,.35);}
+.quiz-hero-visual{flex-shrink:0;position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.quiz-score-ring{width:100px;height:100px;position:relative;}
+.quiz-score-ring svg{width:100px;height:100px;transform:rotate(-90deg);}
+.quiz-score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:800;color:var(--teal);}
+.quiz-score-lbl{font-size:11px;color:rgba(255,255,255,.4);font-weight:600;}
+.quiz-steps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.quiz-step-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 10px;text-align:center;box-shadow:var(--card-sh);transition:all .2s;}
+.qs-icon{font-size:22px;margin-bottom:6px;}
+.qs-label{font-size:11px;font-weight:700;color:var(--navy);}
+.qs-sublabel{font-size:10px;color:var(--muted);margin-top:2px;}
+.how-it-works{background:#fff;border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:24px;box-shadow:var(--card-sh);}
+.hiw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px;}
+.hiw-item{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--off);border-radius:12px;}
+.hiw-num{width:28px;height:28px;border-radius:8px;background:var(--navy);color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hiw-text{font-size:12px;color:var(--navy);font-weight:600;line-height:1.5;}
+.hiw-sub{font-size:11px;color:var(--muted);margin-top:2px;font-weight:400;}
+.tags-preview{background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px 24px;box-shadow:var(--card-sh);}
+.tag-category{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.tag-category:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.tag-cat-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
+.tag-options{display:flex;flex-wrap:wrap;gap:7px;}
+.tag-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:99px;font-size:12px;font-weight:600;border:1.5px solid var(--border);color:var(--navy);background:var(--off);transition:all .15s;}
+.tag-pill:hover{border-color:var(--teal);background:var(--teal-lt);color:var(--teal);}
+
+/* ══ FOOTER ══ */
+.site-footer{
+  background:var(--navy);
+  margin-left:248px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.site-footer .container{
+  max-width:100%;
+  padding:40px 28px 0;
+}
+
 /* ══ RESPONSIVE ══ */
 @media(max-width:1100px){
   .rooms-grid{grid-template-columns:repeat(2,1fr);}
@@ -512,7 +579,8 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 @media(max-width:900px){
   .sidebar{transform:translateX(-100%);}
   .sidebar.open{transform:translateX(0);}
-  .main{margin-left:0;}
+  .main-wrapper{margin-left:0;}
+  .site-footer{margin-left:0;}
   .hamburger{display:flex;}
   .search-wrap{width:200px;}
   .content{padding:18px 16px;}
@@ -529,298 +597,22 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   .feat-card{padding:18px;}
   .filter-bar{gap:7px;}
   .btn-vibe{margin-left:0;width:100%;}
+  .site-footer .container{padding:28px 16px 0;}
 }
 @media(max-width:420px){
   .stats-row{grid-template-columns:1fr;}
   .topbar-right .user-pill span{display:none;}
 }
-
-/* ── PREMIUM TRENDING ── */
-.trending-wrap {
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 22px;
-  box-shadow: var(--card-sh);
+@media(max-width:900px){
+  .quiz-steps-row{grid-template-columns:repeat(2,1fr);}
+  .hiw-grid{grid-template-columns:1fr;}
 }
- 
-.trend-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
+@media(max-width:600px){
+  .quiz-hero{padding:22px 18px;gap:18px;}
+  .quiz-hero-title{font-size:20px;}
+  .quiz-hero-visual{display:none;}
+  .tags-preview{padding:16px;}
 }
- 
-.trend-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: all 0.2s;
-  border-radius: 0;
-  text-decoration: none;
-}
-.trend-item:last-child { border-bottom: none; padding-bottom: 0; }
-.trend-item:hover { transform: translateX(4px); }
- 
-.trend-rank {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-weight: 800;
-  font-size: 18px;
-  color: var(--border);
-  width: 24px;
-  flex-shrink: 0;
-  text-align: center;
-}
-.trend-rank.gold { color: var(--amber); }
-.trend-rank.silver { color: #94a3b8; }
-.trend-rank.bronze { color: #b87333; }
- 
-.trend-img {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
-  object-fit: cover;
-  flex-shrink: 0;
-  background: var(--teal-lt);
-}
- 
-.trend-info { flex: 1; min-width: 0; }
-.trend-name {
-  font-weight: 700;
-  font-size: 13px;
-  color: var(--navy);
-  margin-bottom: 3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.trend-sub { font-size: 11px; color: var(--muted); }
- 
-.trend-right { flex-shrink: 0; text-align: right; }
-.trend-price {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-weight: 800;
-  font-size: 13px;
-  color: var(--navy);
-}
-.trend-pct {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  background: var(--teal-lt);
-  color: var(--teal);
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 6px;
-  margin-top: 3px;
-}
-.trend-pct.hot { background: #FFF1F2; color: var(--coral); }
-.trend-pct.warm { background: var(--amber-lt); color: #B45309; }
- 
-.trend-fire-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: linear-gradient(135deg, #FF6B35, #F59E0B);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 99px;
-  margin-bottom: 12px;
-}
- 
-/* ── REAL MESSAGES PANEL ── */
-.real-msg-panel {
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  box-shadow: var(--card-sh);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
- 
-.rmp-header {
-  padding: 16px 18px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
- 
-.rmp-scroll { flex: 1; overflow-y: auto; max-height: 320px; }
-.rmp-scroll::-webkit-scrollbar { width: 3px; }
-.rmp-scroll::-webkit-scrollbar-thumb { background: var(--teal-lt); border-radius: 4px; }
- 
-.rmp-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 16px;
-  cursor: pointer;
-  transition: background 0.15s;
-  text-decoration: none;
-  border-bottom: 1px solid #f8fafc;
-}
-.rmp-item:hover { background: var(--off); }
-.rmp-item.unread { background: #F0FAFB; border-left: 3px solid var(--teal); }
- 
-.rmp-av {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--teal-lt);
-  color: var(--teal);
-  font-size: 15px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-}
-.rmp-av .unread-dot {
-  position: absolute;
-  bottom: 1px;
-  right: 1px;
-  width: 10px;
-  height: 10px;
-  background: var(--teal);
-  border-radius: 50%;
-  border: 2px solid #fff;
-}
- 
-.rmp-info { flex: 1; min-width: 0; }
-.rmp-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2px;
-}
-.rmp-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--navy);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.rmp-time { font-size: 10px; color: var(--muted); flex-shrink: 0; }
-.rmp-preview {
-  font-size: 11px;
-  color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.rmp-preview.bold { color: var(--navy); font-weight: 600; }
-.rmp-listing {
-  font-size: 10px;
-  color: var(--teal);
-  font-weight: 600;
-  margin-top: 1px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
- 
-.rmp-unread-badge {
-  background: var(--teal);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 99px;
-  flex-shrink: 0;
-  min-width: 18px;
-  text-align: center;
-}
- 
-.rmp-footer {
-  padding: 12px 16px;
-  border-top: 1px solid var(--border);
-  background: var(--off);
-}
-.rmp-footer-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  padding: 10px;
-  background: var(--navy);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-.rmp-footer-btn:hover { background: var(--teal); }
- 
-.rmp-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  color: var(--muted);
-  gap: 8px;
-}
-.rmp-empty span { font-size: 32px; }
-.rmp-empty p { font-size: 13px; }
-
-.quiz-hero{background:linear-gradient(135deg,var(--navy) 0%,#1a3260 60%,#0d2a5e 100%);border-radius:20px;padding:36px 32px;margin-bottom:24px;position:relative;overflow:hidden;display:flex;align-items:center;gap:28px;flex-wrap:wrap;}
-.quiz-hero::before{content:'';position:absolute;top:-80px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,201,.18),transparent);pointer-events:none;}
-.quiz-hero::after{content:'';position:absolute;bottom:-60px;left:120px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.1),transparent);pointer-events:none;}
-.quiz-hero-text{flex:1;min-width:200px;position:relative;z-index:1;}
-.quiz-hero-title{font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:8px;}
-.quiz-hero-sub{font-size:14px;color:rgba(255,255,255,.55);line-height:1.65;margin-bottom:20px;max-width:480px;}
-.quiz-hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
-.quiz-hero-chip{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-size:12px;font-weight:600;padding:5px 13px;border-radius:99px;border:1px solid rgba(255,255,255,.12);}
-.quiz-cta-btn{background:var(--teal);color:#fff;border:none;border-radius:12px;padding:14px 28px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
-.quiz-cta-btn:hover{background:#0993b3;transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,165,201,.35);}
-.quiz-hero-visual{flex-shrink:0;position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;}
-.quiz-score-ring{width:100px;height:100px;position:relative;}
-.quiz-score-ring svg{width:100px;height:100px;transform:rotate(-90deg);}
-.quiz-score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:800;color:var(--teal);}
-.quiz-score-lbl{font-size:11px;color:rgba(255,255,255,.4);font-weight:600;}
- 
-/* ── QUIZ STEPS ROW — 4 per row = 2 rows for 8 ── */
-.quiz-steps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
-.quiz-step-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 10px;text-align:center;box-shadow:var(--card-sh);transition:all .2s;}
-.qs-icon{font-size:22px;margin-bottom:6px;}
-.qs-label{font-size:11px;font-weight:700;color:var(--navy);}
-.qs-sublabel{font-size:10px;color:var(--muted);margin-top:2px;}
- 
-/* ── HOW IT WORKS ── */
-.how-it-works{background:#fff;border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:24px;box-shadow:var(--card-sh);}
-.hiw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px;}
-.hiw-item{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--off);border-radius:12px;}
-.hiw-num{width:28px;height:28px;border-radius:8px;background:var(--navy);color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.hiw-text{font-size:12px;color:var(--navy);font-weight:600;line-height:1.5;}
-.hiw-sub{font-size:11px;color:var(--muted);margin-top:2px;font-weight:400;}
- 
-/* ── TAGS PREVIEW ── */
-.tags-preview{background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px 24px;box-shadow:var(--card-sh);}
-.tag-category{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);}
-.tag-category:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
-.tag-cat-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
-.tag-options{display:flex;flex-wrap:wrap;gap:7px;}
-.tag-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:99px;font-size:12px;font-weight:600;border:1.5px solid var(--border);color:var(--navy);background:var(--off);transition:all .15s;}
-.tag-pill:hover{border-color:var(--teal);background:var(--teal-lt);color:var(--teal);}
- 
-/* ── RESPONSIVE ── */
-@media(max-width:900px){.quiz-steps-row{grid-template-columns:repeat(2,1fr);}.hiw-grid{grid-template-columns:1fr;}}
-@media(max-width:600px){.quiz-hero{padding:22px 18px;gap:18px;}.quiz-hero-title{font-size:20px;}.quiz-hero-visual{display:none;}.tags-preview{padding:16px;}}
 </style>
 </head>
 <body>
@@ -847,16 +639,16 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   </a>
 
   <div class="sb-section">Connect</div>
-<a href="{% url 'inbox' %}" class="nav-item" style="text-decoration: none;">
+  <a href="{% url 'inbox' %}" class="nav-item" style="text-decoration:none;">
     <span class="nav-icon">💬</span> Messages
     <span class="nav-badge">3</span>
-</a>
-<a class="nav-item" onclick="showSec('notifications')">
+  </a>
+  <a class="nav-item" onclick="showSec('notifications')">
     <span class="nav-icon">🔔</span> Notifications
     {% if unread_count %}
     <span class="nav-badge" style="background:var(--coral);">{{ unread_count }}</span>
     {% endif %}
-</a>
+  </a>
 
   <div class="sb-section">AI Features</div>
   <a class="nav-item" onclick="showSec('quiz')">
@@ -866,9 +658,9 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   <a class="nav-item" onclick="showSec('safety')">
     <span class="nav-icon">🛡️</span> Safety Ratings
   </a>
- <a href="{% url 'post_room' %}" class="nav-item">
+  <a href="{% url 'post_room' %}" class="nav-item">
     <span class="nav-icon">➕</span> Post a Room
-</a>
+  </a>
 
   <div class="sb-section">Account</div>
   <a class="nav-item" onclick="showSec('profile')">
@@ -878,22 +670,20 @@ input[type=range]{width:100%;accent-color:var(--teal);}
     <span class="nav-icon">⚙️</span> Settings
   </a>
 
-  <!-- ── LOGOUT ── -->
   <a class="nav-item-logout" href="{% url 'logout' %}" style="margin:4px 8px 8px;">
     <span class="nav-icon">🚪</span> Logout
   </a>
 </aside>
 
-<!-- ════════════════════════════ MAIN ════════════════════════════ -->
-<main class="main">
+<!-- ════════════════════════════ MAIN WRAPPER ════════════════════════════ -->
+<div class="main-wrapper">
+
   {% csrf_token %}
-{% if messages %}
-  {% for message in messages %}
-    <div class="msg msg-success">
-      {{ message }}
-    </div>
-  {% endfor %}
-{% endif %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="msg msg-success">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 
   <!-- TOPBAR -->
   <div class="topbar">
@@ -906,34 +696,119 @@ input[type=range]{width:100%;accent-color:var(--teal);}
     </div>
     <div class="topbar-right">
       <div class="icon-btn" onclick="showSec('notifications')">
-    🔔
-    {% if unread_count %}
-    <div class="badge" style="background:var(--coral);"></div>
-    {% endif %}
-</div>
+        🔔
+        {% if unread_count %}
+        <div class="badge" style="background:var(--coral);"></div>
+        {% endif %}
+      </div>
       <div class="icon-btn" onclick="showSec('messages')">
         💬<div class="badge"></div>
       </div>
       <div class="user-pill" onclick="showSec('profile')">
-    {% if request.user.profile.profile_picture %}
-        <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:30px; height:30px; border-radius: 50%; object-fit: cover;" alt="{{ user.username }}"/>
-    {% else %}
-        <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px; height:30px; border-radius: 50%;" alt="{{ user.username }}"/>
-    {% endif %}
+        {% if request.user.profile.profile_picture %}
+          <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:30px;height:30px;border-radius:50%;object-fit:cover;" alt="{{ user.username }}"/>
+        {% else %}
+          <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px;height:30px;border-radius:50%;" alt="{{ user.username }}"/>
+        {% endif %}
         <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ user.username }}</span>
       </div>
     </div>
   </div>
 
-  <!-- CONTENT -->
+  <!-- CONTENT BLOCK -->
   <div class="content">
+    {% block content %}{% endblock %}
+  </div>
 
-  {% block content %}{% endblock %}
+  <!-- ════════════════════════════ FOOTER ════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08);">
+        <div style="max-width:260px;">
+          <div class="display" style="font-size:22px;font-weight:800;color:#fff;margin-bottom:10px;">StayMatch</div>
+          <p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,.4);">AI-powered flatmate matching for students and professionals across India.</p>
+        </div>
+        <div style="display:flex;gap:64px;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">PRODUCT</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">How It Works</a>
+              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Browse Listings</a>
+              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Post a Room</a>
+              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Pricing</a>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">CITIES</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Bangalore</a>
+              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Mumbai</a>
+              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Delhi</a>
+              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Hyderabad</a>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">COMPANY</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">About Us</a>
+              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Blog</a>
+              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Privacy Policy</a>
+              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Terms of Use</a>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">CONTACT US</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;align-items:flex-start;gap:10px;">
+                <div style="width:28px;height:28px;border-radius:8px;background:rgba(14,165,201,.15);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">📧</div>
+                <div>
+                  <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:1px;">Email</div>
+                  <a href="mailto:hello@nestmate.in" style="color:rgba(255,255,255,.7);font-size:13px;text-decoration:none;">hello@nestmate.in</a>
+                </div>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:10px;">
+                <div style="width:28px;height:28px;border-radius:8px;background:rgba(245,158,11,.15);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">📱</div>
+                <div>
+                  <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:1px;">WhatsApp Support</div>
+                  <a href="#" style="color:rgba(255,255,255,.7);font-size:13px;text-decoration:none;">+91 98765 43210</a>
+                </div>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:10px;">
+                <div style="width:28px;height:28px;border-radius:8px;background:rgba(16,185,129,.15);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">📍</div>
+                <div>
+                  <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:1px;">Head Office</div>
+                  <span style="color:rgba(255,255,255,.7);font-size:13px;">Koramangala, Bangalore</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:4px;">
+                <a href="#" style="width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:14px;text-decoration:none;" title="Instagram">📸</a>
+                <a href="#" style="width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:14px;text-decoration:none;" title="Twitter/X">🐦</a>
+                <a href="#" style="width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:14px;text-decoration:none;" title="LinkedIn">💼</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:24px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div style="font-size:13px;color:rgba(255,255,255,.25);">© 2026 NestMate Technologies Pvt. Ltd. · Made in India 🇮🇳</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.25);">Bangalore · Mumbai · Delhi · Hyderabad · Pune · Chennai · Kolkata · Patna</div>
+      </div>
+    </div>
+  </footer>
 
-  </div><!-- /content -->
-</main>
+</div><!-- /main-wrapper -->
+
+</div><!-- /app -->
+
+<div id="contacts-section" class=''></div>
+
+<div class="toast" id="toast">
+  <div class="toast-icon" id="tIcon"></div>
+  <div>
+    <div class="toast-title" id="tTitle"></div>
+    <div class="toast-sub" id="tSub"></div>
+  </div>
 </div>
-
 
 <script>
 function toggleSidebar(){
@@ -1012,39 +887,15 @@ function runAI(){
       ? tags.map(t=>`<span class="chip" style="background:#fff;border:1.5px solid rgba(14,165,201,.3);color:var(--navy);padding:6px 14px;font-size:12px;font-weight:700;">${t}</span>`).join('')
       : '<span style="font-size:13px;color:var(--muted);">Koi tag nahi mila — wapas quiz lo!</span>';
 
-    // CSRF Token pakdo
-const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-console.log("Saving tags...", tags); // Debugging ke liye
-
-fetch("{% url 'save_quiz' %}", {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrftoken
-    },
-    body: JSON.stringify({
-        tags: tags,
-        score: score
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    fetch("{% url 'save_quiz' %}", {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json','X-CSRFToken': csrftoken},
+      body: JSON.stringify({tags: tags, score: score})
     })
-})
-.then(response => {
-    if (!response.ok) throw new Error('Network response was not ok');
-    return response.json();
-})
-.then(data => {
-    if(data.status === 'success') {
-        console.log("Success! Profile updated.");
-        // Chota sa delay taaki user "Success" animation dekh sake
-        setTimeout(() => {
-            window.location.reload(); 
-        }, 1500);
-    }
-})
-.catch(error => {
-    console.error('Error saving data:', error);
-    alert("Dhatt teri ki! Data save nahi hua. Console check karo.");
-});
+    .then(response => { if (!response.ok) throw new Error('Network response was not ok'); return response.json(); })
+    .then(data => { if(data.status === 'success') { setTimeout(() => { window.location.reload(); }, 1500); } })
+    .catch(error => { console.error('Error saving data:', error); });
 
     fireConfetti();
   },2000);
@@ -1080,152 +931,119 @@ setTimeout(function(){
     setTimeout(function(){msg.remove();},500);
   });
 },2000);
+
 function handleRoomSave(roomId) {
-    const icon = document.getElementById(`save-icon-${roomId}`);
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    let url = "{% url 'toggle_save_room' '000' %}".replace('000', roomId);
-
-    fetch(url, {
-        method: 'POST',
-        headers: { 'X-CSRFToken': csrftoken, 'Content-Type': 'application/json' }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            if (data.action === 'saved') {
-                icon.textContent = '❤️';
-                showToast('Saved!', 'Bookmarks mein add ho gaya 🔖');
-
-                // 🔥 ASLI KAAM: Bina refresh ke card add karna
-                updateSavedUI(data.room_data, 'add');
-
-            } else {
-                icon.textContent = '🤍';
-                showToast('Removed', 'Bookmarks se hat gaya');
-
-                // 🔥 ASLI KAAM: Bina refresh ke card hatana
-                updateSavedUI({id: roomId}, 'remove');
-            }
-        }
-    });
+  const icon = document.getElementById(`save-icon-${roomId}`);
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  let url = "{% url 'toggle_save_room' '000' %}".replace('000', roomId);
+  fetch(url, {
+    method: 'POST',
+    headers: { 'X-CSRFToken': csrftoken, 'Content-Type': 'application/json' }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'success') {
+      if (data.action === 'saved') {
+        icon.textContent = '❤️';
+        showToast('Saved!', 'Bookmarks mein add ho gaya 🔖');
+        updateSavedUI(data.room_data, 'add');
+      } else {
+        icon.textContent = '🤍';
+        showToast('Removed', 'Bookmarks se hat gaya');
+        updateSavedUI({id: roomId}, 'remove');
+      }
+    }
+  });
 }
 
 function updateSavedUI(room, action) {
-    const container = document.querySelector('#sec-saved .rooms-grid');
-    if (!container) return;
-
-    if (action === 'add') {
-        const emptyMsg = document.getElementById('empty-saved-msg');
-        if (emptyMsg) emptyMsg.style.display = 'none';
-
-        const cardHTML = `
-            <div class="room-card" id="saved-card-${room.id}">
-                <div class="room-img">
-                    <img src="${room.image_url}" style="width:100%;height:160px;object-fit:cover;" alt="${room.title}">
-                    <div class="room-save" id="save-icon-${room.id}" onclick="handleRoomSave('${room.id}')">❤️</div>
-                </div>
-                <div class="room-body">
-                    <div class="room-title">${room.title}</div>
-                    <div class="room-loc">📍 ${room.area} · ${room.city}</div>
-                    <div class="room-footer">
-                        <div class="room-price">₹${room.rent} <small>/mo</small></div>
-                        <a href="/rooms/${room.id}/" class="btn-sm btn-sm-teal" style="text-decoration:none;">View</a>
-                    </div>
-                </div>
-            </div>`;
-        container.insertAdjacentHTML('afterbegin', cardHTML);
-
-    } else {
+  const container = document.querySelector('#sec-saved .rooms-grid');
+  if (!container) return;
+  if (action === 'add') {
+    const emptyMsg = document.getElementById('empty-saved-msg');
+    if (emptyMsg) emptyMsg.style.display = 'none';
+    const cardHTML = `
+      <div class="room-card" id="saved-card-${room.id}">
+        <div class="room-img">
+          <img src="${room.image_url}" style="width:100%;height:160px;object-fit:cover;" alt="${room.title}">
+          <div class="room-save" id="save-icon-${room.id}" onclick="handleRoomSave('${room.id}')">❤️</div>
+        </div>
+        <div class="room-body">
+          <div class="room-title">${room.title}</div>
+          <div class="room-loc">📍 ${room.area} · ${room.city}</div>
+          <div class="room-footer">
+            <div class="room-price">₹${room.rent} <small>/mo</small></div>
+            <a href="/rooms/${room.id}/" class="btn-sm btn-sm-teal" style="text-decoration:none;">View</a>
+          </div>
+        </div>
+      </div>`;
+    container.insertAdjacentHTML('afterbegin', cardHTML);
+  } else {
     const cardToRemove = document.getElementById(`saved-card-${room.id}`);
     if (cardToRemove) cardToRemove.remove();
-
     const remaining = container.querySelectorAll('.room-card');
     if (remaining.length === 0) {
-        const emptyMsg = document.getElementById('empty-saved-msg'); // ✅ pehle lo
-        if (emptyMsg) emptyMsg.style.display = ''; // ✅ phir check karo
+      const emptyMsg = document.getElementById('empty-saved-msg');
+      if (emptyMsg) emptyMsg.style.display = '';
     }
+  }
 }
-}
-
-
-
 
 let audioCtx = null;
-
-document.addEventListener('click', function() {
-    if (!audioCtx) {
-        audioCtx = new AudioContext();
-    }
-});
+document.addEventListener('click', function() { if (!audioCtx) { audioCtx = new AudioContext(); } });
 
 function playNotifSound() {
-    if (!audioCtx) return;
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.connect(g);
-    g.connect(audioCtx.destination);
-    o.frequency.setValueAtTime(880, audioCtx.currentTime);
-    g.gain.setValueAtTime(0.15, audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-    o.start(audioCtx.currentTime);
-    o.stop(audioCtx.currentTime + 0.4);
+  if (!audioCtx) return;
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.connect(g);
+  g.connect(audioCtx.destination);
+  o.frequency.setValueAtTime(880, audioCtx.currentTime);
+  g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+  o.start(audioCtx.currentTime);
+  o.stop(audioCtx.currentTime + 0.4);
 }
+
 let lastUnread = parseInt("{{ unread_count|default:0 }}");
 let lastMsgId = 0;
 
 setInterval(() => {
-    fetch('/inbox/unread/')
-    .then(r => r.json())
-    .then(data => {
-        const newCount = data.unread_count;
-        const newMsgId = data.conversations.length > 0 ? data.conversations[0].last_msg_id : 0;
-
-        // ✅ Count badha ho YA same conversation mein naya msg aaya ho
-        if (newCount > lastUnread || (newCount > 0 && newMsgId > lastMsgId)) {
-            const badge = document.getElementById('notif-badge');
-            if (badge) {
-                badge.textContent = newCount;
-            } else {
-                const navItem = document.querySelector('.nav-item[onclick*="notifications"]');
-                if (navItem) {
-                    const span = document.createElement('span');
-                    span.className = 'nav-badge';
-                    span.id = 'notif-badge';
-                    span.style.background = 'var(--coral)';
-                    span.textContent = newCount;
-                    navItem.appendChild(span);
-                }
-            }
-
-            if (data.conversations.length > 0) {
-                const conv = data.conversations[0];
-                showToast(
-                    conv.username + ' ka message!',
-                    '"' + conv.message.substring(0, 35) + '..." 💬',
-                    '🔔'
-                );
-            }
-
-            playNotifSound();
-            lastUnread = newCount;
-            lastMsgId = newMsgId;
+  fetch('/inbox/unread/')
+  .then(r => r.json())
+  .then(data => {
+    const newCount = data.unread_count;
+    const newMsgId = data.conversations.length > 0 ? data.conversations[0].last_msg_id : 0;
+    if (newCount > lastUnread || (newCount > 0 && newMsgId > lastMsgId)) {
+      const badge = document.getElementById('notif-badge');
+      if (badge) {
+        badge.textContent = newCount;
+      } else {
+        const navItem = document.querySelector('.nav-item[onclick*="notifications"]');
+        if (navItem) {
+          const span = document.createElement('span');
+          span.className = 'nav-badge';
+          span.id = 'notif-badge';
+          span.style.background = 'var(--coral)';
+          span.textContent = newCount;
+          navItem.appendChild(span);
         }
-
-        if (newCount < lastUnread) {
-            lastUnread = newCount;
-            const badge = document.getElementById('notif-badge');
-            if (badge) badge.textContent = newCount > 0 ? newCount : '';
-        }
-    });
+      }
+      if (data.conversations.length > 0) {
+        const conv = data.conversations[0];
+        showToast(conv.username + ' ka message!', '"' + conv.message.substring(0, 35) + '..." 💬', '🔔');
+      }
+      playNotifSound();
+      lastUnread = newCount;
+      lastMsgId = newMsgId;
+    }
+    if (newCount < lastUnread) {
+      lastUnread = newCount;
+      const badge = document.getElementById('notif-badge');
+      if (badge) badge.textContent = newCount > 0 ? newCount : '';
+    }
+  });
 }, 2000);
-  
 </script>
-<div class="toast" id="toast">
-  <div class="toast-icon" id="tIcon"></div>
-  <div>
-    <div class="toast-title" id="tTitle"></div>
-    <div class="toast-sub" id="tSub"></div>
-  </div>
-</div>
 </body>
 </html>
