@@ -1,318 +1,116 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inbox</title>
+
+{% block extra_css %}
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; }
-
-.wrap {
-    display: flex;
-    height: 100vh;
-    max-width: 1100px;
-    margin: 0 auto;
-    background: #fff;
-    border-left: 1px solid #e2e8f0;
-    border-right: 1px solid #e2e8f0;
+.wrap{
+    display:flex;
+    height:calc(100vh - 66px);
+    background:#fff;
+    border-left:1px solid #e2e8f0;
+    border-right:1px solid #e2e8f0;
 }
 
-/* ── SIDEBAR ── */
-.sb {
-    width: 300px;
-    min-width: 300px;
-    border-right: 1px solid #e2e8f0;
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-}
+.sb{width:300px;min-width:300px;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;background:#fff;}
+.sb-head{padding:18px 16px 12px;border-bottom:1px solid #e2e8f0;}
+.sb-head h2{font-size:16px;font-weight:700;color:#0f172a;}
+.sb-head p{font-size:12px;color:#64748b;margin-top:3px;}
+.conv-list{flex:1;overflow-y:auto;}
 
-.sb-head {
-    padding: 18px 16px 12px;
-    border-bottom: 1px solid #e2e8f0;
-}
+.ci{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;border-left:3px solid transparent;text-decoration:none;transition:background 0.15s;}
+.ci:hover{background:#f8fafc;}
+.ci.active{background:#eff6ff;border-left-color:#3b82f6;}
 
-.sb-head h2 { font-size: 16px; font-weight: 700; color: #0f172a; }
-.sb-head p  { font-size: 12px; color: #64748b; margin-top: 3px; }
+.av{width:42px;height:42px;border-radius:50%;background:#dbeafe;color:#1d4ed8;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ci-info{flex:1;min-width:0;}
+.ci-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;}
+.ci-name{font-size:13px;font-weight:600;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ci-time{font-size:11px;color:#94a3b8;flex-shrink:0;}
+.ci-prev{font-size:12px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ci-prev.unread{color:#0f172a;font-weight:600;}
+.u-dot{width:9px;height:9px;background:#3b82f6;border-radius:50%;flex-shrink:0;}
 
-.conv-list { flex: 1; overflow-y: auto; }
+.chat{flex:1;display:flex;flex-direction:column;min-width:0;}
+.chat-hd{padding:14px 18px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:12px;background:#fff;}
+.chat-hd .av{width:38px;height:38px;font-size:14px;}
+.ch-name{font-size:15px;font-weight:700;color:#0f172a;}
+.ch-sub{font-size:11px;color:#64748b;margin-top:2px;}
 
-/* each conversation row */
-.ci {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 14px;
-    cursor: pointer;
-    border-left: 3px solid transparent;
-    text-decoration: none;
-    transition: background 0.15s;
-}
-.ci:hover  { background: #f8fafc; }
-.ci.active { background: #eff6ff; border-left-color: #3b82f6; }
+.msgs{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:12px;background:#f8fafc;}
+.date-div{text-align:center;font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:8px;margin:4px 0;}
+.date-div::before,.date-div::after{content:'';flex:1;height:1px;background:#e2e8f0;}
 
-.av {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: #dbeafe;
-    color: #1d4ed8;
-    font-size: 15px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
+.mrow{display:flex;flex-direction:column;}
+.mrow.inc{align-items:flex-start;}
+.mrow.out{align-items:flex-end;}
+.mrow-inner{display:flex;align-items:flex-end;gap:7px;max-width:72%;}
+.mrow.inc .mrow-inner{flex-direction:row;}
+.mrow.out .mrow-inner{flex-direction:row-reverse;}
+.mav{width:28px;height:28px;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mav.me{background:#1d4ed8;color:#fff;}
+.mav.them{background:#e2e8f0;color:#0f172a;}
+.bub{padding:9px 14px;border-radius:16px;font-size:13px;line-height:1.55;word-break:break-word;}
+.bub.inc{background:#fff;border:1px solid #e2e8f0;color:#0f172a;border-bottom-left-radius:4px;}
+.bub.out{background:#1d4ed8;color:#fff;border-bottom-right-radius:4px;}
+.mts{font-size:10px;color:#94a3b8;margin-top:3px;}
+.mrow.inc .mts{margin-left:35px;}
+.mrow.out .mts{text-align:right;}
 
-.ci-info { flex: 1; min-width: 0; }
+.empty-chat{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#94a3b8;gap:10px;}
+.empty-chat span{font-size:40px;}
+.empty-chat p{font-size:14px;}
 
-.ci-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2px;
-}
-
-.ci-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: #0f172a;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.ci-time { font-size: 11px; color: #94a3b8; flex-shrink: 0; }
-
-.ci-prev {
-    font-size: 12px;
-    color: #64748b;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.ci-prev.unread { color: #0f172a; font-weight: 600; }
-
-.u-dot {
-    width: 9px;
-    height: 9px;
-    background: #3b82f6;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-/* ── CHAT PANEL ── */
-.chat {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
-
-/* chat header */
-.chat-hd {
-    padding: 14px 18px;
-    border-bottom: 1px solid #e2e8f0;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #fff;
-}
-
-.chat-hd .av { width: 38px; height: 38px; font-size: 14px; }
-
-.ch-name { font-size: 15px; font-weight: 700; color: #0f172a; }
-.ch-sub  { font-size: 11px; color: #64748b; margin-top: 2px; }
-
-/* messages area */
-.msgs {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    background: #f8fafc;
-}
-
-.date-div {
-    text-align: center;
-    font-size: 11px;
-    color: #94a3b8;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 4px 0;
-}
-.date-div::before,
-.date-div::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: #e2e8f0;
-}
-
-/* single message row */
-.mrow { display: flex; flex-direction: column; }
-.mrow.inc { align-items: flex-start; }
-.mrow.out { align-items: flex-end; }
-
-.mrow-inner {
-    display: flex;
-    align-items: flex-end;
-    gap: 7px;
-    max-width: 72%;
-}
-.mrow.inc .mrow-inner { flex-direction: row; }
-.mrow.out .mrow-inner { flex-direction: row-reverse; }
-
-.mav {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    font-size: 11px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-.mav.me   { background: #1d4ed8; color: #fff; }
-.mav.them { background: #e2e8f0; color: #0f172a; }
-
-.bub {
-    padding: 9px 14px;
-    border-radius: 16px;
-    font-size: 13px;
-    line-height: 1.55;
-    word-break: break-word;
-}
-.bub.inc { background: #fff; border: 1px solid #e2e8f0; color: #0f172a; border-bottom-left-radius: 4px; }
-.bub.out { background: #1d4ed8; color: #fff; border-bottom-right-radius: 4px; }
-
-.mts { font-size: 10px; color: #94a3b8; margin-top: 3px; }
-.mrow.inc .mts { margin-left: 35px; }
-.mrow.out .mts { text-align: right; }
-
-/* empty state */
-.empty-chat {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #94a3b8;
-    gap: 10px;
-}
-.empty-chat span { font-size: 40px; }
-.empty-chat p { font-size: 14px; }
-
-/* send form */
-.inp-bar {
-    padding: 10px 14px;
-    border-top: 1px solid #e2e8f0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #fff;
-}
-
-.inp-bar input {
-    flex: 1;
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
-    border-radius: 22px;
-    padding: 9px 16px;
-    font-size: 13px;
-    color: #0f172a;
-    outline: none;
-}
-.inp-bar input:focus { border-color: #93c5fd; background: #fff; }
-
-.snd {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #1d4ed8;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-.snd:hover { background: #1e40af; }
-.snd svg {
-    width: 16px; height: 16px;
-    fill: none; stroke: #fff;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
+.inp-bar{padding:10px 14px;border-top:1px solid #e2e8f0;display:flex;align-items:center;gap:8px;background:#fff;}
+.inp-bar input{flex:1;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:22px;padding:9px 16px;font-size:13px;color:#0f172a;outline:none;}
+.inp-bar input:focus{border-color:#93c5fd;background:#fff;}
+.snd{width:40px;height:40px;border-radius:50%;background:#1d4ed8;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.snd:hover{background:#1e40af;}
+.snd svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 </style>
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
 
 <div class="wrap">
 
-  <!-- ════════════ SIDEBAR ════════════ -->
+  <!-- SIDEBAR -->
   <div class="sb">
-
     <div class="sb-head">
       <h2>💬 Messages</h2>
       <p>{{ conversations|length }} conversation{{ conversations|length|pluralize }}</p>
     </div>
-
-   <div class="conv-list">
-
-  {% for conv in conversations %}
-
-    {% if conv.listing.owner == request.user %}
-      <a class="ci {% if active_listing.id == conv.listing.id and other_user.id == conv.other_user.id %}active{% endif %}"
-         href="{% url 'chat_view' conv.listing.id %}?user={{ conv.other_user.id }}">
-    {% else %}
-      <a class="ci {% if active_listing.id == conv.listing.id %}active{% endif %}"
-         href="{% url 'chat_view' conv.listing.id %}">
-    {% endif %}
-
-      <div class="av">{{ conv.other_user.username|slice:":1"|upper }}</div>
-
-      <div class="ci-info">
-        <div class="ci-top">
-          <span class="ci-name">{{ conv.other_user.username }}</span>
-          <span class="ci-time">{{ conv.last_msg.created_at|timesince|slice:":5" }}</span>
+    <div class="conv-list">
+      {% for conv in conversations %}
+        {% if conv.listing.owner == request.user %}
+          <a class="ci {% if active_listing.id == conv.listing.id and other_user.id == conv.other_user.id %}active{% endif %}"
+             href="{% url 'chat_view' conv.listing.id %}?user={{ conv.other_user.id }}">
+        {% else %}
+          <a class="ci {% if active_listing.id == conv.listing.id %}active{% endif %}"
+             href="{% url 'chat_view' conv.listing.id %}">
+        {% endif %}
+          <div class="av">{{ conv.other_user.username|slice:":1"|upper }}</div>
+          <div class="ci-info">
+            <div class="ci-top">
+              <span class="ci-name">{{ conv.other_user.username }}</span>
+              <span class="ci-time">{{ conv.last_msg.created_at|timesince|slice:":5" }}</span>
+            </div>
+            <div class="ci-prev {% if conv.unread %}unread{% endif %}">
+              {{ conv.listing.title|truncatechars:35 }}
+            </div>
+          </div>
+          {% if conv.unread %}<div class="u-dot"></div>{% endif %}
+        </a>
+      {% empty %}
+        <div style="text-align:center;padding:50px 20px;">
+          <p style="font-size:13px;color:#94a3b8;">Koi message nahi abhi tak.</p>
         </div>
-        <div class="ci-prev {% if conv.unread %}unread{% endif %}">
-          {{ conv.listing.title|truncatechars:35 }}
-        </div>
-      </div>
-
-      {% if conv.unread %}<div class="u-dot"></div>{% endif %}
-
-    </a>
-
-  {% empty %}
-    <div style="text-align:center; padding:50px 20px;">
-      <p style="font-size:13px; color:#94a3b8;">Koi message nahi abhi tak.</p>
+      {% endfor %}
     </div>
-  {% endfor %}
-
-   </div>
   </div>
-  <!-- ════════════ SIDEBAR END ════════════ -->
 
-
-  <!-- ════════════ CHAT PANEL ════════════ -->
+  <!-- CHAT PANEL -->
   <div class="chat">
-
     {% if active_listing %}
-
-      <!-- Header -->
       <div class="chat-hd">
         <div class="av">{{ other_user.username|slice:":1"|upper }}</div>
         <div>
@@ -321,90 +119,70 @@ body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; }
         </div>
       </div>
 
-      <!-- Messages -->
       <div class="msgs" id="msgs">
         <div class="date-div">Today</div>
-
-        {% for msg in messages %}
+        {% for msg in chat_messages %}
           <div class="mrow {% if msg.sender == request.user %}out{% else %}inc{% endif %}">
             <div class="mrow-inner">
-
               <div class="mav {% if msg.sender == request.user %}me{% else %}them{% endif %}">
                 {{ msg.sender.username|slice:":1"|upper }}
               </div>
-
               <div class="bub {% if msg.sender == request.user %}out{% else %}inc{% endif %}">
                 {{ msg.body }}
               </div>
-
             </div>
             <div class="mts">{{ msg.created_at|date:"H:i" }}</div>
           </div>
-
         {% empty %}
-          <div style="text-align:center; margin-top:60px; color:#94a3b8;">
+          <div style="text-align:center;margin-top:60px;color:#94a3b8;">
             <p>Pehla message bhejo! 👋</p>
           </div>
         {% endfor %}
-
       </div>
 
-      <!-- Send Form -->
       <form method="POST" action="{% url 'send_message' active_listing.id %}" class="inp-bar">
-  {% csrf_token %}
-  <!-- Yeh hidden field add karo — owner ko pata chalega kise reply karna hai -->
-  <input type="hidden" name="other_user_id" value="{{ other_user.id }}" />
-  <input name="body" id="inp" placeholder="Message likho…" autocomplete="off" required />
-  <button type="submit" class="snd">
-    <svg viewBox="0 0 24 24">
-      <line x1="22" y1="2" x2="11" y2="13"/>
-      <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-    </svg>
-  </button>
-</form>
-    {% else %}
+        {% csrf_token %}
+        <input type="hidden" name="other_user_id" value="{{ other_user.id }}" />
+        <input name="body" id="inp" placeholder="Message likho…" autocomplete="off" required />
+        <button type="submit" class="snd">
+          <svg viewBox="0 0 24 24">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </form>
 
-      <!-- No chat selected -->
+    {% else %}
       <div class="empty-chat">
         <span>💬</span>
         <p>Baayein se koi conversation select karo</p>
       </div>
-
     {% endif %}
-
   </div>
-  <!-- ════════════ CHAT PANEL END ════════════ -->
 
 </div>
 
 <script>
-  // Chat ke neeche scroll karo automatically
   var msgs = document.getElementById('msgs');
-  if (msgs) msgs.scrollTop = msgs.scrollHeight;
+  if(msgs) msgs.scrollTop = msgs.scrollHeight;
 
-  var msgs = document.getElementById('msgs');
-  if (msgs) msgs.scrollTop = msgs.scrollHeight;
-
-  // active_listing check Django se nahi, JS se karo
   var activeListing = "{{ active_listing.id }}";
-
-  if (activeListing) {
-    setInterval(function() {
+  if(activeListing){
+    setInterval(function(){
       fetch(window.location.href)
-        .then(function(r) { return r.text(); })
-        .then(function(html) {
+        .then(function(r){return r.text();})
+        .then(function(html){
           var parser = new DOMParser();
-          var doc = parser.parseFromString(html, 'text/html');
+          var doc = parser.parseFromString(html,'text/html');
           var newMsgs = doc.getElementById('msgs');
           var curMsgs = document.getElementById('msgs');
-          if (newMsgs && curMsgs) {
+          if(newMsgs && curMsgs){
             curMsgs.innerHTML = newMsgs.innerHTML;
             curMsgs.scrollTop = curMsgs.scrollHeight;
           }
         });
-    }, 4000);
+    },4000);
   }
 </script>
 
-</body>
-</html>
+{% endblock %}

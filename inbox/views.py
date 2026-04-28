@@ -47,7 +47,7 @@ def inbox(request):
 
     return render(request, 'inbox/inbox.html', {
         'conversations': conversations,
-        'messages': [],          # koi chat open nahi
+        'chat_messages': [],          # koi chat open nahi
         'active_listing': None,
     })
 
@@ -92,7 +92,7 @@ def chat_view(request, listing_id):
 
     return render(request, 'inbox/inbox.html', {
         'conversations': conversations,
-        'messages': messages,
+        'chat_messages': messages,
         'active_listing': listing,
         'other_user': other_user,
     })
