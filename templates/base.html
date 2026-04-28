@@ -156,7 +156,7 @@ body::after{
   display:flex;align-items:center;gap:10px;
   padding:10px 14px;border-radius:10px;margin:1px 8px;
   font-size:14px;font-weight:500;color:rgba(255,255,255,.5);
-  cursor:pointer;transition:all .2s;text-decoration:none;
+  cursor:pointer;transition:background .0s;text-decoration:none;
 }
 .nav-item:hover{background:rgba(255,255,255,.07);color:#fff;}
 .nav-item.active{background:var(--teal);color:#fff;font-weight:600;}
@@ -562,8 +562,8 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 /* ══ FOOTER ══ */
 .site-footer{
   background:var(--navy);
-  margin-left:248px;
   border-top:1px solid rgba(255,255,255,.06);
+  clear: both;  /* ye add karo */
 }
 .site-footer .container{
   max-width:100%;
@@ -614,6 +614,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   .tags-preview{padding:16px;}
 }
 </style>
+{% block extra_css %}{% endblock %}
 </head>
 <body>
 <div class="app">
@@ -626,24 +627,24 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   </div>
 
   <div class="sb-section">Main</div>
-  <a class="nav-item active" onclick="showSec('discover')">
+  <a href="{% url 'dashboard' %}" class="nav-item">
     <span class="nav-icon">🏠</span> Discover Rooms
   </a>
-  <a href="{% url 'matches' %}" class="nav-item" onclick="showSec('matches')">
+  <a href="{% url 'matches' %}" class="nav-item">
     <span class="nav-icon">⚡</span> My Matches
     <span class="nav-badge teal">4</span>
   </a>
-  <a class="nav-item" onclick="showSec('saved')">
+  <a href="{% url 'dashboard' %}?sec=saved" class="nav-item">
     <span class="nav-icon">🔖</span> Saved Rooms
     <span class="nav-badge amber">7</span>
   </a>
 
   <div class="sb-section">Connect</div>
-  <a href="{% url 'inbox' %}" class="nav-item" style="text-decoration:none;">
+  <a href="{% url 'inbox' %}" class="nav-item">
     <span class="nav-icon">💬</span> Messages
     <span class="nav-badge">3</span>
   </a>
-  <a class="nav-item" onclick="showSec('notifications')">
+  <a href="{% url 'dashboard' %}?sec=notifications" class="nav-item">
     <span class="nav-icon">🔔</span> Notifications
     {% if unread_count %}
     <span class="nav-badge" style="background:var(--coral);">{{ unread_count }}</span>
@@ -651,11 +652,11 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   </a>
 
   <div class="sb-section">AI Features</div>
-  <a class="nav-item" onclick="showSec('quiz')">
+  <a href="{% url 'dashboard' %}?sec=quiz" class="nav-item">
     <span class="nav-icon">🧠</span> Personality Quiz
     <span class="nav-badge teal">New</span>
   </a>
-  <a class="nav-item" onclick="showSec('safety')">
+  <a href="{% url 'dashboard' %}?sec=safety" class="nav-item">
     <span class="nav-icon">🛡️</span> Safety Ratings
   </a>
   <a href="{% url 'post_room' %}" class="nav-item">
@@ -663,10 +664,10 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   </a>
 
   <div class="sb-section">Account</div>
-  <a class="nav-item" onclick="showSec('profile')">
+  <a href="{% url 'dashboard' %}?sec=profile" class="nav-item">
     <span class="nav-icon">👤</span> My Profile
   </a>
-  <a class="nav-item" onclick="showSec('settings')">
+  <a href="{% url 'dashboard' %}?sec=settings" class="nav-item">
     <span class="nav-icon">⚙️</span> Settings
   </a>
 
@@ -674,7 +675,6 @@ input[type=range]{width:100%;accent-color:var(--teal);}
     <span class="nav-icon">🚪</span> Logout
   </a>
 </aside>
-
 <!-- ════════════════════════════ MAIN WRAPPER ════════════════════════════ -->
 <div class="main-wrapper">
 
@@ -811,6 +811,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 </div>
 
 <script>
+  
 function toggleSidebar(){
   document.getElementById('sidebar').classList.toggle('open');
   document.getElementById('sidebarOverlay').classList.toggle('open');
@@ -1044,6 +1045,29 @@ setInterval(() => {
     }
   });
 }, 2000);
+// Current page active nav
+const currentPath = window.location.pathname;
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.classList.remove('active');
+  const href = el.getAttribute('href');
+  if(href && currentPath === href) {
+    el.classList.add('active');
+  }
+});
+
+// ?sec= wala handle karo
+const urlSec = new URLSearchParams(window.location.search).get('sec');
+if(urlSec) {
+  showSec(urlSec);
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.remove('active');
+    const href = el.getAttribute('href');
+    if(href && href.includes('sec='+urlSec)) {
+      el.classList.add('active');
+    }
+  });
+}
+
 </script>
 </body>
 </html>

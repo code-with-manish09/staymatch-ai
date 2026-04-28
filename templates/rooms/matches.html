@@ -1,59 +1,7 @@
 {% extends 'base.html' %}
 
-    {% block content %}
- 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>AI Vibe Match — StayMatch</title>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+{% block extra_css %}
 <style>
-:root{
-  --navy:#0F1F3D;--teal:#0EA5C9;--teal-lt:#E0F4FB;--amber:#F59E0B;--amber-lt:#FEF3C7;
-  --green:#10B981;--green-lt:#F0FDF4;--white:#FFFFFF;--off:#F6F7FB;--border:#E4E8F0;
-  --muted:#6B7A99;--card-sh:0 4px 24px rgba(15,31,61,.10);--card-sh2:0 12px 40px rgba(15,31,61,.14);
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:'Instrument Sans',sans-serif;background:var(--off);color:var(--navy);overflow-x:hidden;}
-::-webkit-scrollbar{width:5px;}
-::-webkit-scrollbar-track{background:var(--off);}
-::-webkit-scrollbar-thumb{background:var(--teal);border-radius:99px;}
-.display{font-family:'Bricolage Grotesque',sans-serif;}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@keyframes gradPan{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes cardIn{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-
-.fu{animation:fadeUp .6s ease forwards;opacity:0;}
-.d1{animation-delay:.06s}.d2{animation-delay:.14s}.d3{animation-delay:.24s}
-.grad{background:linear-gradient(120deg,var(--teal),var(--navy));background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradPan 5s ease infinite;}
-
-nav{position:sticky;top:0;z-index:500;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);}
-.nav-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.02em;color:var(--navy);text-decoration:none;}
-.nav-links{display:flex;gap:36px;}
-.nav-a{font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;transition:color .2s;}
-.nav-a:hover,.nav-a.active{color:var(--navy);}
-.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:6px;width:36px;height:36px;}
-.hamburger span{display:block;width:22px;height:2px;background:var(--navy);border-radius:2px;transition:all .3s ease;transform-origin:center;}
-.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
-.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-.mobile-nav{display:none;position:fixed;top:68px;left:0;right:0;background:rgba(255,255,255,.97);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);padding:20px 24px 28px;flex-direction:column;gap:4px;z-index:499;}
-.mobile-nav.open{display:flex;}
-.mobile-nav .nav-a{font-size:16px;padding:10px 0;border-bottom:1px solid var(--border);}
-.mobile-nav-btns{display:flex;gap:10px;margin-top:16px;}
-.btn-primary{background:var(--navy);color:#fff;padding:13px 28px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
-.btn-primary:hover{background:#1a3260;transform:translateY(-2px);}
-.btn-outline{background:transparent;color:var(--navy);padding:12px 24px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:14px;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
-.btn-outline:hover{border-color:var(--navy);background:var(--off);}
-.container{max-width:1100px;margin:0 auto;padding:0 48px;}
-
 .hero{padding:60px 0 40px;text-align:center;}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--teal-lt);border:1px solid rgba(14,165,201,.25);border-radius:99px;padding:8px 18px;font-size:12px;font-weight:700;color:var(--teal);letter-spacing:.05em;text-transform:uppercase;margin-bottom:20px;}
 .hero-badge-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite;}
@@ -84,6 +32,7 @@ nav{position:sticky;top:0;z-index:500;height:68px;display:flex;align-items:cente
 
 .match-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:28px 32px;box-shadow:var(--card-sh);margin-bottom:16px;transition:all .25s;opacity:0;animation:cardIn .5s ease forwards;}
 .match-card:hover{box-shadow:var(--card-sh2);transform:translateY(-2px);}
+@keyframes cardIn{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
 .match-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;}
 .match-info{flex:1;}
 .match-rank{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:10px;}
@@ -95,7 +44,7 @@ nav{position:sticky;top:0;z-index:500;height:68px;display:flex;align-items:cente
 
 .vibe-section{flex-shrink:0;text-align:center;min-width:130px;}
 .vibe-score-circle{width:96px;height:96px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 10px;border:3px solid var(--border);}
-.vibe-score-circle.high{border-color:var(--green);background:var(--green-lt);}
+.vibe-score-circle.high{border-color:var(--green);background:#F0FDF4;}
 .vibe-score-circle.mid{border-color:var(--teal);background:var(--teal-lt);}
 .vibe-score-circle.low{border-color:var(--amber);background:var(--amber-lt);}
 .vibe-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;line-height:1;color:var(--navy);}
@@ -122,218 +71,176 @@ nav{position:sticky;top:0;z-index:500;height:68px;display:flex;align-items:cente
 .error-title{font-weight:700;font-size:15px;color:#92400e;margin-bottom:4px;}
 .error-sub{font-size:13px;color:#92400e;opacity:.8;}
 
-footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;margin-top:80px;}
-
-@media(max-width:1024px){nav{padding:0 28px;}.container{padding:0 28px;}.form-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:768px){
-  nav{padding:0 20px;height:60px;}.nav-links,.nav-desktop-btns{display:none;}.hamburger{display:flex;}
-  .container{padding:0 20px;}.form-card{padding:24px 20px;}.form-grid{grid-template-columns:1fr;}
-  .match-card{padding:20px;}.match-top{flex-direction:column-reverse;}
+  .form-card{padding:24px 20px;}
+  .form-grid{grid-template-columns:1fr;}
+  .match-card{padding:20px;}
+  .match-top{flex-direction:column-reverse;}
   .vibe-section{width:100%;display:flex;align-items:center;gap:16px;text-align:left;}
-  .vibe-score-circle{width:64px;height:64px;margin:0;}.vibe-num{font-size:20px;}
+  .vibe-score-circle{width:64px;height:64px;margin:0;}
+  .vibe-num{font-size:20px;}
   .hero{padding:40px 0 24px;}
+
+
 }
 </style>
-</head>
-<body>
+{% endblock %}
 
-<nav>
+{% block content %}
 
-</nav>
-<div class="mobile-nav" id="mobileNav">
-  <a href="#" class="nav-a">Discover</a>
-  <a href="#" class="nav-a">How It Works</a>
-  <a href="#" class="nav-a active">AI Match</a>
-  <div class="mobile-nav-btns">
-    <a href="/dashboard/" class="btn-outline" style="flex:1;">Dashboard</a>
-    <a href="/rooms/post_room/" class="btn-primary" style="flex:1;">Post Room →</a>
+<div class="hero fu d1">
+  <div class="hero-badge"><div class="hero-badge-dot"></div> Powered by Gemini AI</div>
+  <h1 class="display">Find Your Perfect<br><span class="grad">Vibe Match</span></h1>
+  <p>Tell us your lifestyle — our AI scores and ranks the most compatible rooms for you in seconds.</p>
+</div>
+
+<div class="form-card fu d2">
+  <div style="margin-bottom:24px;">
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:18px;color:var(--navy);margin-bottom:4px;">Your Lifestyle Preferences</div>
+    <div style="font-size:13px;color:var(--muted);">Fill what applies — skip anything you're flexible about.</div>
+  </div>
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Your Gender</label>
+      <select id="gender">
+        <option value="">Any / Flexible</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Your Occupation</label>
+      <select id="occupation">
+        <option value="">Any</option>
+        <option value="Student">Student</option>
+        <option value="Working Professional">Working Professional</option>
+        <option value="Freelancer">Freelancer</option>
+        <option value="Entrepreneur">Entrepreneur</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Preferred City</label>
+      <select id="city">
+        <option value="">Any City</option>
+        <option value="Bangalore">Bangalore</option>
+        <option value="Mumbai">Mumbai</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Patna">Patna</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Sleep Schedule</label>
+      <select id="sleep">
+        <option value="">Flexible</option>
+        <option value="Early Riser (before 7am)">Early Riser</option>
+        <option value="Night Owl (after midnight)">Night Owl</option>
+        <option value="Moderate (10pm-7am)">Moderate</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Cleanliness Level</label>
+      <select id="cleanliness">
+        <option value="">Flexible</option>
+        <option value="Very Clean (9-10)">Very Clean</option>
+        <option value="Moderately Clean (6-8)">Moderately Clean</option>
+        <option value="Relaxed (1-5)">Relaxed</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Guest Policy</label>
+      <select id="guest_policy">
+        <option value="">Flexible</option>
+        <option value="No guests preferred">No Guests</option>
+        <option value="Occasional guests OK">Occasional OK</option>
+        <option value="Guests welcome anytime">Open House</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Max Budget (₹/month)</label>
+      <input type="number" id="budget" placeholder="e.g. 15000" min="2000" max="80000" step="500"/>
+      <div class="form-note">Leave blank if flexible</div>
+    </div>
+    <div class="form-group">
+      <label>Room Type</label>
+      <select id="room_type">
+        <option value="">Any Type</option>
+        <option value="Private Room">Private Room</option>
+        <option value="Shared Room">Shared Room</option>
+        <option value="Studio">Studio / 1BHK</option>
+        <option value="Master Bedroom">Master Bedroom</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Furnishing</label>
+      <select id="furnishing">
+        <option value="">Any</option>
+        <option value="Fully Furnished">Fully Furnished</option>
+        <option value="Semi Furnished">Semi Furnished</option>
+        <option value="Unfurnished">Unfurnished</option>
+      </select>
+    </div>
+  </div>
+
+  <div style="height:1px;background:var(--border);margin:24px 0;"></div>
+  <button class="find-btn" id="findBtn" onclick="findMatches()">
+    ✦ &nbsp; Find My Vibe Match
+  </button>
+</div>
+
+<div class="loading-state" id="loadingState">
+  <div class="spinner"></div>
+  <div class="loading-text">AI is analysing your vibe...</div>
+  <div class="loading-sub">Comparing your preferences with all listings using Gemini</div>
+</div>
+
+<div class="error-box" id="errorBox" style="display:none;">
+  <div style="font-size:24px;">⚠️</div>
+  <div>
+    <div class="error-title">Something went wrong</div>
+    <div class="error-sub" id="errorMsg">Could not fetch matches. Please try again.</div>
   </div>
 </div>
 
-<div class="container">
-
-  <div class="hero fu d1">
-    <div class="hero-badge"><div class="hero-badge-dot"></div> Powered by Gemini AI</div>
-    <h1 class="display">Find Your Perfect<br><span class="grad">Vibe Match</span></h1>
-    <p>Tell us your lifestyle — our AI scores and ranks the most compatible rooms for you in seconds.</p>
+<div id="resultsSection" style="display:none;">
+  <div class="results-header">
+    <div class="results-title display">Your Top Matches</div>
+    <div class="results-count" id="resultsCount">0 rooms found</div>
   </div>
-
-  <div class="form-card fu d2">
-    <div style="margin-bottom:24px;">
-      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:18px;color:var(--navy);margin-bottom:4px;">Your Lifestyle Preferences</div>
-      <div style="font-size:13px;color:var(--muted);">Fill what applies — skip anything you're flexible about.</div>
-    </div>
-
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Your Gender</label>
-        <select id="gender">
-          <option value="">Any / Flexible</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Your Occupation</label>
-        <select id="occupation">
-          <option value="">Any</option>
-          <option value="Student">Student</option>
-          <option value="Working Professional">Working Professional</option>
-          <option value="Freelancer">Freelancer</option>
-          <option value="Entrepreneur">Entrepreneur</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Preferred City</label>
-        <select id="city">
-          <option value="">Any City</option>
-          <option value="Bangalore">Bangalore</option>
-          <option value="Mumbai">Mumbai</option>
-          <option value="Delhi">Delhi</option>
-          <option value="Patna">Patna</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Sleep Schedule</label>
-        <select id="sleep">
-          <option value="">Flexible</option>
-          <option value="Early Riser (before 7am)">Early Riser</option>
-          <option value="Night Owl (after midnight)">Night Owl</option>
-          <option value="Moderate (10pm-7am)">Moderate</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Cleanliness Level</label>
-        <select id="cleanliness">
-          <option value="">Flexible</option>
-          <option value="Very Clean (9-10)">Very Clean</option>
-          <option value="Moderately Clean (6-8)">Moderately Clean</option>
-          <option value="Relaxed (1-5)">Relaxed</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Guest Policy</label>
-        <select id="guest_policy">
-          <option value="">Flexible</option>
-          <option value="No guests preferred">No Guests</option>
-          <option value="Occasional guests OK">Occasional OK</option>
-          <option value="Guests welcome anytime">Open House</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Max Budget (₹/month)</label>
-        <input type="number" id="budget" placeholder="e.g. 15000" min="2000" max="80000" step="500"/>
-        <div class="form-note">Leave blank if flexible</div>
-      </div>
-      <div class="form-group">
-        <label>Room Type</label>
-        <select id="room_type">
-          <option value="">Any Type</option>
-          <option value="Private Room">Private Room</option>
-          <option value="Shared Room">Shared Room</option>
-          <option value="Studio">Studio / 1BHK</option>
-          <option value="Master Bedroom">Master Bedroom</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Furnishing</label>
-        <select id="furnishing">
-          <option value="">Any</option>
-          <option value="Fully Furnished">Fully Furnished</option>
-          <option value="Semi Furnished">Semi Furnished</option>
-          <option value="Unfurnished">Unfurnished</option>
-        </select>
-      </div>
-    </div>
-
-    <div style="height:1px;background:var(--border);margin:24px 0;"></div>
-    <button class="find-btn" id="findBtn" onclick="findMatches()">
-      ✦ &nbsp; Find My Vibe Match
-    </button>
-  </div>
-
-  <div class="loading-state" id="loadingState">
-    <div class="spinner"></div>
-    <div class="loading-text">AI is analysing your vibe...</div>
-    <div class="loading-sub">Comparing your preferences with all listings using Gemini</div>
-  </div>
-
-  <div class="error-box" id="errorBox" style="display:none;">
-    <div style="font-size:24px;">⚠️</div>
-    <div>
-      <div class="error-title">Something went wrong</div>
-      <div class="error-sub" id="errorMsg">Could not fetch matches. Please try again.</div>
-    </div>
-  </div>
-
-  <div id="resultsSection" style="display:none;">
-    <div class="results-header">
-      <div class="results-title display">Your Top Matches</div>
-      <div class="results-count" id="resultsCount">0 rooms found</div>
-    </div>
-    <div id="resultsList"></div>
-  </div>
-
-  <div class="empty-state" id="emptyState" style="display:none;">
-    <div style="font-size:56px;">🏠</div>
-    <div class="empty-title display">No matches found</div>
-    <div class="empty-sub">Try relaxing your filters — more listings coming soon!</div>
-  </div>
-
+  <div id="resultsList"></div>
 </div>
 
-<footer>
-  
-</footer>
+<div class="empty-state" id="emptyState" style="display:none;">
+  <div style="font-size:56px;">🏠</div>
+  <div class="empty-title display">No matches found</div>
+  <div class="empty-sub">Try relaxing your filters — more listings coming soon!</div>
+</div>
 
 <script>
-const hBtn = document.getElementById('hamburgerBtn');
-const mNav = document.getElementById('mobileNav');
-hBtn.addEventListener('click', () => {
-  const open = mNav.classList.toggle('open');
-  hBtn.classList.toggle('open', open);
-});
+function getVibeClass(score){if(score>=75)return'high';if(score>=50)return'mid';return'low';}
+function getVibeEmoji(score){if(score>=85)return'🔥 Perfect Vibe';if(score>=70)return'✨ Great Match';if(score>=55)return'👍 Good Match';return'🤔 Possible Match';}
+function getRankClass(idx){if(idx===0)return'gold';if(idx===1)return'silver';if(idx===2)return'bronze';return'';}
 
-function getVibeClass(score) {
-  if (score >= 75) return 'high';
-  if (score >= 50) return 'mid';
-  return 'low';
-}
-
-function getVibeEmoji(score) {
-  if (score >= 85) return '🔥 Perfect Vibe';
-  if (score >= 70) return '✨ Great Match';
-  if (score >= 55) return '👍 Good Match';
-  return '🤔 Possible Match';
-}
-
-function getRankClass(idx) {
-  if (idx === 0) return 'gold';
-  if (idx === 1) return 'silver';
-  if (idx === 2) return 'bronze';
-  return '';
-}
-
-function renderCard(match, index) {
-  const vibeClass = getVibeClass(match.vibe_score);
-  const delay = (index * 0.1).toFixed(1);
-  const rankClass = getRankClass(index);
+function renderCard(match,index){
+  const vibeClass=getVibeClass(match.vibe_score);
+  const delay=(index*0.1).toFixed(1);
+  const rankClass=getRankClass(index);
   return `
   <div class="match-card" style="animation-delay:${delay}s;">
     <div class="match-top">
       <div class="match-info">
-        <div class="match-rank ${rankClass}">#${index + 1}</div>
+        <div class="match-rank ${rankClass}">#${index+1}</div>
         <div class="match-title">${match.title}</div>
         <div style="margin-bottom:12px;">
           <span class="match-chip" style="background:var(--teal-lt);color:var(--teal);">📍 ${match.city}</span>
           <span class="match-chip" style="background:var(--amber-lt);color:#92400e;">₹${match.rent.toLocaleString()}/mo</span>
-          ${match.room_type ? `<span class="match-chip" style="background:var(--off);color:var(--navy);">🏠 ${match.room_type}</span>` : ''}
+          ${match.room_type?`<span class="match-chip" style="background:var(--off);color:var(--navy);">🏠 ${match.room_type}</span>`:''}
         </div>
         <div class="score-bar-wrap">
           <div class="score-bar-label"><span>Vibe Compatibility</span><span style="color:var(--navy);font-weight:700;">${match.vibe_score}%</span></div>
           <div class="score-bar-track"><div class="score-bar-fill" style="width:${match.vibe_score}%;"></div></div>
         </div>
-        ${match.reason ? `<div class="reason-box"><div class="reason-label">AI Analysis</div><div class="reason-text">${match.reason}</div></div>` : ''}
+        ${match.reason?`<div class="reason-box"><div class="reason-label">AI Analysis</div><div class="reason-text">${match.reason}</div></div>`:''}
         <a href="/rooms/room_details/${match.room_id}/" class="view-btn">View Room →</a>
       </div>
       <div class="vibe-section">
@@ -347,61 +254,56 @@ function renderCard(match, index) {
   </div>`;
 }
 
-async function findMatches() {
-  const btn = document.getElementById('findBtn');
-  const loading = document.getElementById('loadingState');
-  const results = document.getElementById('resultsSection');
-  const empty = document.getElementById('emptyState');
-  const errorBox = document.getElementById('errorBox');
-  const list = document.getElementById('resultsList');
+async function findMatches(){
+  const btn=document.getElementById('findBtn');
+  const loading=document.getElementById('loadingState');
+  const results=document.getElementById('resultsSection');
+  const empty=document.getElementById('emptyState');
+  const errorBox=document.getElementById('errorBox');
+  const list=document.getElementById('resultsList');
 
-  btn.disabled = true;
-  btn.textContent = 'Analysing...';
+  btn.disabled=true;
+  btn.textContent='Analysing...';
   loading.classList.add('show');
-  results.style.display = 'none';
-  empty.style.display = 'none';
-  errorBox.style.display = 'none';
-  list.innerHTML = '';
+  results.style.display='none';
+  empty.style.display='none';
+  errorBox.style.display='none';
+  list.innerHTML='';
 
-  const params = new URLSearchParams({
-    gender: document.getElementById('gender').value,
-    occupation: document.getElementById('occupation').value,
-    sleep: document.getElementById('sleep').value,
-    cleanliness: document.getElementById('cleanliness').value,
-    guest_policy: document.getElementById('guest_policy').value,
-    city: document.getElementById('city').value,
-    budget: document.getElementById('budget').value,
-    room_type: document.getElementById('room_type').value,
-    furnishing: document.getElementById('furnishing').value,
+  const params=new URLSearchParams({
+    gender:document.getElementById('gender').value,
+    occupation:document.getElementById('occupation').value,
+    sleep:document.getElementById('sleep').value,
+    cleanliness:document.getElementById('cleanliness').value,
+    guest_policy:document.getElementById('guest_policy').value,
+    city:document.getElementById('city').value,
+    budget:document.getElementById('budget').value,
+    room_type:document.getElementById('room_type').value,
+    furnishing:document.getElementById('furnishing').value,
   });
 
-  try {
-    const res = await fetch(`/rooms/ai-match/?${params}`);
-    const data = await res.json();
+  try{
+    const res=await fetch(`/rooms/ai-match/?${params}`);
+    const data=await res.json();
     loading.classList.remove('show');
-    btn.disabled = false;
-    btn.innerHTML = '✦ &nbsp; Find My Vibe Match';
+    btn.disabled=false;
+    btn.innerHTML='✦ &nbsp; Find My Vibe Match';
 
-    if (!data.matches || data.matches.length === 0) {
-      empty.style.display = 'block';
-      return;
-    }
+    if(!data.matches||data.matches.length===0){empty.style.display='block';return;}
 
-    document.getElementById('resultsCount').textContent = `${data.matches.length} rooms found`;
-    data.matches.forEach((match, i) => { list.innerHTML += renderCard(match, i); });
-    results.style.display = 'block';
-    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('resultsCount').textContent=`${data.matches.length} rooms found`;
+    data.matches.forEach((match,i)=>{list.innerHTML+=renderCard(match,i);});
+    results.style.display='block';
+    results.scrollIntoView({behavior:'smooth',block:'start'});
 
-  } catch (err) {
+  }catch(err){
     loading.classList.remove('show');
-    btn.disabled = false;
-    btn.innerHTML = '✦ &nbsp; Find My Vibe Match';
-    document.getElementById('errorMsg').textContent = 'Server error. Please try again.';
-    errorBox.style.display = 'flex';
+    btn.disabled=false;
+    btn.innerHTML='✦ &nbsp; Find My Vibe Match';
+    document.getElementById('errorMsg').textContent='Server error. Please try again.';
+    errorBox.style.display='flex';
   }
 }
 </script>
-</body>
-</html>
 
 {% endblock %}
