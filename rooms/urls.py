@@ -10,4 +10,5 @@ urlpatterns = [
     path('matches/', views.matches, name='matches'),
     path('ai-match/', views.ai_match_view, name='ai_match'),
     path('room/<int:room_id>/faqs/', views.room_faqs, name='room_faqs'),
+    path('room/<int:pk>/edit/', views.edit_room, name='room_edit'),
     ]

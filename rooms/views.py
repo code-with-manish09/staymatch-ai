@@ -3,8 +3,11 @@ import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Listing, Amenity, ListingImage, Review
-from django.http import JsonResponse  # already hai
-from rooms.services.services import get_room_faqs, get_vibe_score  
+from django.http import JsonResponse  
+from rooms.services.services import get_room_faqs, get_vibe_score
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+
 
 
 def to_int(value, default):
@@ -310,3 +313,121 @@ def room_faqs(request, room_id):
         return JsonResponse({'answer': answer})
     
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+#===============edit room====================
+
+AMENITIES_DATA = [
+    ('📶', 'High-Speed WiFi'),
+    ('❄️', 'Air Conditioning'),
+    ('🛏️', 'Bed & Mattress'),
+    ('🧺', 'Washing Machine'),
+    ('🍳', 'Kitchen Access'),
+    ('🚿', 'Attached Bath'),
+    ('🅿️', 'Parking'),
+    ('🏋️', 'Gym Access'),
+    ('🔒', '24h Security'),
+    ('🛗', 'Lift / Elevator'),
+    ('⚡', 'Power Backup'),
+    ('🐾', 'Pet Friendly'),
+]
+
+@login_required
+def edit_room(request, pk):
+    room = get_object_or_404(Listing, pk=pk, owner=request.user)
+    
+    if request.method == 'POST':
+        # Step 1: Basics
+        room.title = request.POST.get('title')
+        room.city = request.POST.get('city')
+        room.area = request.POST.get('area')
+        room.address = request.POST.get('address', '')
+        room.room_type = request.POST.get('room_type')
+        room.bhk_config = request.POST.get('bhk_config', '1 BHK')
+        room.floor = request.POST.get('floor', '')
+        room.available_from = request.POST.get('available_from')
+        room.min_stay = request.POST.get('min_stay', 'Flexible')
+
+        # Step 2: Pricing
+        room.rent = int(request.POST.get('rent', 12000))
+        room.deposit = request.POST.get('deposit', 'Negotiable')
+        room.maintenance = request.POST.get('maintenance', 'Included in rent')
+
+        # Included items — alag alag BooleanFields hain
+        included = request.POST.get('included_items', '')
+        room.included_wifi = 'WiFi' in included
+        room.included_electricity = 'Electricity' in included
+        room.included_water = 'Water' in included
+        room.included_gas = 'Gas' in included
+        room.included_cooking = 'Cooking' in included
+        room.included_housekeeping = 'Housekeeping' in included
+
+        # Step 3: Furnishing
+        room.furnishing_status = request.POST.get('furnishing_status', 'Unfurnished')
+        # Fully Furnished → "Fully", Semi Furnished → "Semi"
+        if 'Fully' in room.furnishing_status:
+            room.furnishing_status = 'Fully'
+        elif 'Semi' in room.furnishing_status:
+            room.furnishing_status = 'Semi'
+        else:
+            room.furnishing_status = 'Unfurnished'
+
+        # Step 5: Description
+        room.description = request.POST.get('description', '')
+        room.house_rules = request.POST.get('house_rules', '')
+        room.nearest_metro = request.POST.get('nearest_metro', '')
+        room.distance_to_hub = request.POST.get('distance_to_hub', '')
+
+        # Step 6: Preferences
+        room.pref_gender = request.POST.get('pref_gender', 'Any')
+        room.pref_occupation = request.POST.get('pref_occupation', 'Any')
+        room.sleep_schedule = request.POST.get('sleep_schedule', 'No preference')
+        room.cleanliness_level = int(request.POST.get('cleanliness_level', 7))
+        room.guest_policy = request.POST.get('guest_policy', 'Occasional guests OK')
+
+        # Step 7: Contact
+        room.contact_name = request.POST.get('contact_name', '')
+        room.contact_phone = request.POST.get('contact_phone', '')
+        room.contact_email = request.POST.get('contact_email', '')
+
+        room.save()
+
+        # Amenities update
+        amenities_str = request.POST.get('amenities', '')
+        if amenities_str:
+            selected_names = [a.strip() for a in amenities_str.split(',') if a.strip()]
+            room.amenities.clear()
+            for name in selected_names:
+                amenity = Amenity.objects.filter(name=name).first()
+                if amenity:
+                    room.amenities.add(amenity)
+
+        # Delete marked photos
+        for img_id in request.POST.getlist('delete_images'):
+            if img_id:
+                ListingImage.objects.filter(id=img_id, listing=room).delete()
+
+        # New photos save karo
+        for img in request.FILES.getlist('new_images'):
+            ListingImage.objects.create(listing=room, image=img)
+
+        messages.success(request, '✅ Room updated successfully!')
+        return redirect('room_details_by_id', room_id=room.pk)
+
+    # GET request
+    amenity_names = list(room.amenities.values_list('name', flat=True))
+
+    # Included items list for template
+    included_items = []
+    if room.included_wifi: included_items.append('WiFi')
+    if room.included_electricity: included_items.append('Electricity')
+    if room.included_water: included_items.append('Water')
+    if room.included_gas: included_items.append('Gas')
+    if room.included_cooking: included_items.append('Cooking')
+    if room.included_housekeeping: included_items.append('Housekeeping')
+
+    return render(request, 'rooms/edit_room.html', {
+        'room': room,
+        'amenity_names': amenity_names,
+        'amenities_data': AMENITIES_DATA,
+        'included_items': included_items,
+    })

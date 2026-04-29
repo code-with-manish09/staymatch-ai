@@ -1,0 +1,546 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+/* ── edit room specific (reuses post-room styles) ── */
+.form-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:32px;box-shadow:var(--card-sh);margin-bottom:24px;}
+.form-section-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--navy);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.form-section-title .step-badge{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.form-section-title .step-badge.teal{background:var(--teal);}
+.form-section-title .step-badge.amber{background:var(--amber);}
+
+.field-group{display:flex;flex-direction:column;gap:6px;}
+.field-label{font-size:13px;font-weight:600;color:var(--navy);}
+.field-hint{font-size:11px;color:var(--muted);}
+.field-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'Instrument Sans',sans-serif;font-size:14px;color:var(--navy);background:#fff;transition:border-color .2s,box-shadow .2s;outline:none;appearance:none;}
+.field-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(14,165,201,.12);}
+.field-input::placeholder{color:var(--muted);}
+select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7A99' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;}
+textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
+
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+
+.amenity-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.amenity-btn{border:1.5px solid var(--border);border-radius:12px;padding:12px 10px;background:#fff;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:'Instrument Sans',sans-serif;position:relative;}
+.amenity-btn .ame-icon{font-size:22px;line-height:1;}
+.amenity-btn .ame-label{font-size:11px;font-weight:600;color:var(--muted);text-align:center;line-height:1.3;}
+.amenity-btn:hover{border-color:var(--teal);background:var(--teal-lt);}
+.amenity-btn.selected{border-color:var(--teal);background:var(--teal-lt);}
+.amenity-btn.selected .ame-label{color:var(--teal);}
+.amenity-btn.selected .ame-check{display:flex;}
+.ame-check{display:none;width:16px;height:16px;border-radius:50%;background:var(--teal);align-items:center;justify-content:center;position:absolute;top:6px;right:6px;font-size:10px;color:#fff;}
+
+.range-input{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:99px;background:linear-gradient(90deg,var(--teal) 0%,var(--teal) var(--pct,50%),#EEF0F6 var(--pct,50%));outline:none;cursor:pointer;}
+.range-input::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--navy);border:3px solid #fff;box-shadow:0 2px 8px rgba(15,31,61,.25);cursor:pointer;}
+.range-labels{display:flex;justify-content:space-between;margin-top:6px;}
+.range-label{font-size:11px;color:var(--muted);}
+.range-val{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--navy);}
+.range-unit{font-size:13px;color:var(--muted);margin-left:3px;}
+
+.radio-group{display:flex;gap:10px;flex-wrap:wrap;}
+.radio-btn{border:1.5px solid var(--border);border-radius:10px;padding:10px 16px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);transition:all .2s;display:flex;align-items:center;gap:7px;}
+.radio-btn:hover{border-color:var(--teal);}
+.radio-btn.active{border-color:var(--teal);background:var(--teal-lt);color:var(--teal);}
+.radio-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0;}
+
+/* existing photos grid */
+.existing-photos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.existing-thumb{aspect-ratio:4/3;border-radius:10px;overflow:hidden;position:relative;border:2px solid var(--border);}
+.existing-thumb img{width:100%;height:100%;object-fit:cover;}
+.existing-thumb .delete-photo-btn{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(220,38,38,.85);color:#fff;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.existing-thumb .delete-photo-btn:hover{background:#dc2626;transform:scale(1.1);}
+.existing-thumb.marked-delete{opacity:.35;border-color:#fca5a5;}
+.existing-thumb.marked-delete::after{content:'Deleted';position:absolute;inset:0;background:rgba(220,38,38,.15);display:flex;align-items:center;justify-content:center;color:#dc2626;font-weight:700;font-size:11px;}
+
+.upload-zone{border:2px dashed var(--border);border-radius:16px;padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--off);}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--teal);background:var(--teal-lt);}
+.upload-zone input[type="file"]{display:none;}
+.img-preview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;}
+.img-thumb{aspect-ratio:4/3;border-radius:10px;background:var(--off);border:1px solid var(--border);overflow:hidden;position:relative;}
+.img-thumb img{width:100%;height:100%;object-fit:cover;}
+.img-thumb .remove-btn{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(15,31,61,.7);color:#fff;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;}
+
+/* edit hero */
+.edit-hero{background:linear-gradient(135deg,#1a3260,var(--navy));border-radius:20px;padding:28px 32px;margin-bottom:28px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.edit-hero::before{content:'';position:absolute;top:-60px;right:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.15),transparent);pointer-events:none;}
+.edit-hero-left{position:relative;z-index:1;}
+.edit-hero-title{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(20px,3vw,28px);font-weight:800;color:#fff;margin-bottom:6px;}
+.edit-hero-sub{font-size:13px;color:rgba(255,255,255,.5);line-height:1.6;max-width:460px;}
+.edit-hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.edit-hero-chip{background:rgba(255,255,255,.1);color:rgba(255,255,255,.75);font-size:12px;font-weight:600;padding:5px 13px;border-radius:99px;border:1px solid rgba(255,255,255,.12);}
+.edit-hero-right{position:relative;z-index:1;flex-shrink:0;}
+.edit-hero-thumb{width:90px;height:90px;border-radius:16px;object-fit:cover;border:3px solid rgba(255,255,255,.2);box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.edit-hero-thumb-placeholder{width:90px;height:90px;border-radius:16px;background:rgba(255,255,255,.08);border:2px dashed rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:36px;}
+
+/* unsaved changes bar */
+.unsaved-bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;border-radius:14px;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 8px 32px rgba(15,31,61,.3);z-index:500;opacity:0;pointer-events:none;transition:all .4s cubic-bezier(.22,.68,0,1.2);white-space:nowrap;}
+.unsaved-bar.show{opacity:1;pointer-events:all;}
+.unsaved-dot{width:8px;height:8px;border-radius:50%;background:var(--amber);animation:pulse 1.5s ease infinite;flex-shrink:0;}
+
+@media(max-width:900px){
+  .form-row-2,.form-row-3{grid-template-columns:1fr;}
+  .amenity-grid{grid-template-columns:repeat(2,1fr);}
+  .img-preview-grid,.existing-photos-grid{grid-template-columns:repeat(2,1fr);}
+  .radio-group{flex-direction:column;}
+  .form-card{padding:20px;}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- EDIT HERO -->
+<div class="edit-hero fu d1">
+  <div class="edit-hero-left">
+    <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(245,158,11,.15);color:var(--amber);padding:5px 13px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.04em;margin-bottom:14px;">
+      ✏️ EDIT MODE
+    </div>
+    <div class="edit-hero-title">Edit Your Listing</div>
+    <div class="edit-hero-sub">Update your room details. Changes will be reflected immediately after saving.</div>
+    <div class="edit-hero-chips">
+      <span class="edit-hero-chip">🏠 {{ room.room_type }}</span>
+      <span class="edit-hero-chip">📍 {{ room.area }}, {{ room.city }}</span>
+      <span class="edit-hero-chip">₹{{ room.rent }}/mo</span>
+    </div>
+  </div>
+  <div class="edit-hero-right">
+    {% with first_img=room.images.first %}
+    {% if first_img %}
+    <img src="{{ first_img.image.url }}" class="edit-hero-thumb" alt="{{ room.title }}">
+    {% else %}
+    <div class="edit-hero-thumb-placeholder">🏠</div>
+    {% endif %}
+    {% endwith %}
+  </div>
+</div>
+
+<form method="POST" enctype="multipart/form-data" id="editForm" onchange="showUnsaved()">
+{% csrf_token %}
+<div style="display:flex;flex-direction:column;gap:24px;">
+
+  <!-- STEP 1: BASICS -->
+  <div class="form-card fu d1">
+    <div class="form-section-title"><div class="step-badge">1</div> Room Basics</div>
+    <div style="display:flex;flex-direction:column;gap:18px;">
+      <div class="field-group">
+        <label class="field-label">Listing Title *</label>
+        <input type="text" name="title" class="field-input" value="{{ room.title }}" placeholder="e.g. Cozy private room near Koramangala metro" required/>
+        <span class="field-hint">A clear, catchy title gets 3× more views.</span>
+      </div>
+      <div class="form-row-2">
+        <div class="field-group">
+          <label class="field-label">City *</label>
+          <select name="city" class="field-input" required>
+            <option value="">Select city</option>
+            <option {% if room.city == 'Bangalore' %}selected{% endif %}>Bangalore</option>
+            <option {% if room.city == 'Mumbai' %}selected{% endif %}>Mumbai</option>
+            <option {% if room.city == 'Delhi' %}selected{% endif %}>Delhi</option>
+            <option {% if room.city == 'Hyderabad' %}selected{% endif %}>Hyderabad</option>
+            <option {% if room.city == 'Pune' %}selected{% endif %}>Pune</option>
+            <option {% if room.city == 'Chennai' %}selected{% endif %}>Chennai</option>
+            <option {% if room.city == 'Kolkata' %}selected{% endif %}>Kolkata</option>
+            <option {% if room.city == 'Patna' %}selected{% endif %}>Patna</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Locality / Area *</label>
+          <input type="text" name="area" class="field-input" value="{{ room.area }}" placeholder="e.g. Indiranagar" required/>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Full Address</label>
+        <input type="text" name="address" class="field-input" value="{{ room.address }}" placeholder="Street, building, landmark"/>
+        <span class="field-hint">Not shown publicly — only revealed after a match is confirmed.</span>
+      </div>
+      <div class="form-row-3">
+        <div class="field-group">
+          <label class="field-label">Room Type *</label>
+          <select name="room_type" class="field-input" required>
+            <option value="">Select</option>
+            <option {% if room.room_type == 'Private Room' %}selected{% endif %}>Private Room</option>
+            <option {% if room.room_type == 'Shared Room' %}selected{% endif %}>Shared Room</option>
+            <option {% if room.room_type == 'Studio' or room.room_type == 'Studio / 1BHK' %}selected{% endif %}>Studio / 1BHK</option>
+            <option {% if room.room_type == 'Master Bedroom' %}selected{% endif %}>Master Bedroom</option>
+            <option {% if room.room_type == 'PG / Hostel' %}selected{% endif %}>PG / Hostel</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">BHK Config</label>
+          <select name="bhk_config" class="field-input">
+            <option {% if room.bhk_config == '1 BHK' %}selected{% endif %}>1 BHK</option>
+            <option {% if room.bhk_config == '2 BHK' %}selected{% endif %}>2 BHK</option>
+            <option {% if room.bhk_config == '3 BHK' %}selected{% endif %}>3 BHK</option>
+            <option {% if room.bhk_config == '4+ BHK' %}selected{% endif %}>4+ BHK</option>
+            <option {% if room.bhk_config == 'Studio' %}selected{% endif %}>Studio</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Floor</label>
+          <input type="text" name="floor" class="field-input" value="{{ room.floor }}" placeholder="e.g. 3rd of 6"/>
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="field-group">
+          <label class="field-label">Available From *</label>
+          <input type="date" name="available_from" class="field-input" value="{{ room.available_from|date:'Y-m-d' }}" required/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Minimum Stay</label>
+          <select name="min_stay" class="field-input">
+            <option {% if room.min_stay == '1 month' %}selected{% endif %}>1 month</option>
+            <option {% if room.min_stay == '3 months' %}selected{% endif %}>3 months</option>
+            <option {% if room.min_stay == '6 months' %}selected{% endif %}>6 months</option>
+            <option {% if room.min_stay == '1 year' %}selected{% endif %}>1 year</option>
+            <option {% if room.min_stay == 'Flexible' %}selected{% endif %}>Flexible</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: PRICING -->
+  <div class="form-card fu d2">
+    <div class="form-section-title"><div class="step-badge teal">2</div> Pricing &amp; Deposit</div>
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      <div class="field-group">
+        <label class="field-label">Monthly Rent</label>
+        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:10px;">
+          <span style="font-size:16px;color:var(--muted);font-weight:600;">₹</span>
+          <span class="range-val" id="rentVal">{{ room.rent }}</span>
+          <span class="range-unit">/ month</span>
+        </div>
+        <input type="range" class="range-input" id="rentSlider" name="rent" min="2000" max="80000" value="{{ room.rent }}" step="500" oninput="updateRent(this)"/>
+        <div class="range-labels"><span class="range-label">₹2,000</span><span class="range-label">₹80,000</span></div>
+      </div>
+      <div class="form-row-2">
+        <div class="field-group">
+          <label class="field-label">Security Deposit</label>
+          <select name="deposit" class="field-input">
+            <option {% if room.deposit == '1 month rent' %}selected{% endif %}>1 month rent</option>
+            <option {% if room.deposit == '2 months rent' %}selected{% endif %}>2 months rent</option>
+            <option {% if room.deposit == '3 months rent' %}selected{% endif %}>3 months rent</option>
+            <option {% if room.deposit == 'Negotiable' %}selected{% endif %}>Negotiable</option>
+            <option {% if room.deposit == 'No deposit' %}selected{% endif %}>No deposit</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Maintenance</label>
+          <select name="maintenance" class="field-input">
+            <option {% if room.maintenance == 'Included in rent' %}selected{% endif %}>Included in rent</option>
+            <option {% if room.maintenance == '₹500 / month' %}selected{% endif %}>₹500 / month</option>
+            <option {% if room.maintenance == '₹1,000 / month' %}selected{% endif %}>₹1,000 / month</option>
+            <option {% if room.maintenance == '₹1,500 / month' %}selected{% endif %}>₹1,500 / month</option>
+            <option {% if room.maintenance == 'Varies (ask me)' %}selected{% endif %}>Varies (ask me)</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" style="margin-bottom:10px;">What's included in rent?</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;" id="includedGroup">
+  <button type="button" class="radio-btn {% if 'WiFi' in included_items %}active{% endif %}" onclick="toggleIncluded(this)"><div class="radio-dot"></div>WiFi</button>
+  <button type="button" class="radio-btn {% if 'Electricity' in included_items %}active{% endif %}" onclick="toggleIncluded(this)"><div class="radio-dot"></div>Electricity</button>
+  <button type="button" class="radio-btn {% if 'Water' in included_items %}active{% endif %}" onclick="toggleIncluded(this)"><div class="radio-dot"></div>Water</button>
+  <button type="button" class="radio-btn {% if 'Gas' in included_items %}active{% endif %}" onclick="toggleIncluded(this)"><div class="radio-dot"></div>Gas</button>
+  <button type="button" class="radio-btn {% if 'Cooking' in included_items %}active{% endif %}" onclick="toggleIncluded(this)"><div class="radio-dot"></div>Cooking</button>
+  <button type="button" class="radio-btn {% if 'Housekeeping' in included_items %}active{% endif %}" onclick="toggleIncluded(this)"><div class="radio-dot"></div>Housekeeping</button>
+</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: AMENITIES -->
+  <div class="form-card fu d2">
+    <div class="form-section-title"><div class="step-badge teal">3</div> Amenities &amp; Furnishing</div>
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div>
+        <div class="field-label" style="margin-bottom:12px;">Furnishing Status</div>
+        <div class="radio-group" id="furnishGroup">
+          <button type="button" class="radio-btn {% if room.furnishing_status == 'Fully' or room.furnishing_status == 'Fully Furnished' %}active{% endif %}" onclick="setRadio('furnishGroup',this)"><div class="radio-dot"></div>Fully Furnished</button>
+          <button type="button" class="radio-btn {% if room.furnishing_status == 'Semi' or room.furnishing_status == 'Semi Furnished' %}active{% endif %}" onclick="setRadio('furnishGroup',this)"><div class="radio-dot"></div>Semi Furnished</button>
+          <button type="button" class="radio-btn {% if room.furnishing_status == 'Unfurnished' %}active{% endif %}" onclick="setRadio('furnishGroup',this)"><div class="radio-dot"></div>Unfurnished</button>
+        </div>
+      </div>
+      <div>
+        <div class="field-label" style="margin-bottom:12px;">Available Amenities</div>
+        <div class="amenity-grid" id="amenityGrid">
+          <div class="amenity-grid" id="amenityGrid">
+  {% for icon, label in amenities_data %}
+  <button type="button" class="amenity-btn {% if label in amenity_names %}selected{% endif %}" onclick="toggleAmenity(this)">
+    <div class="ame-check">✓</div>
+    <div class="ame-icon">{{ icon }}</div>
+    <div class="ame-label">{{ label }}</div>
+  </button>
+  {% endfor %}
+</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: PHOTOS -->
+  <div class="form-card fu d3">
+    <div class="form-section-title"><div class="step-badge amber">4</div> Photos</div>
+
+    {% if room.images.exists %}
+    <div style="margin-bottom:20px;">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">
+        Current Photos <span style="color:var(--teal);font-size:11px;text-transform:none;letter-spacing:0;">(click ✕ to remove)</span>
+      </div>
+      <div class="existing-photos-grid" id="existingPhotosGrid">
+        {% for img in room.images.all %}
+        <div class="existing-thumb" id="photo-wrap-{{ img.id }}">
+          <img src="{{ img.image.url }}" alt="{{ room.title }}">
+          <button class="delete-photo-btn" type="button" onclick="markDeletePhoto('{{ img.id }}', this)" title="Remove this photo">✕</button>
+          <input type="hidden" name="delete_images" value="" id="del-{{ img.id }}" disabled>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">Add New Photos</div>
+    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+      <input type="file" id="fileInput" name="new_images" accept="image/*" multiple onchange="handleFiles(this.files)"/>
+      <div style="font-size:36px;margin-bottom:10px;">📸</div>
+      <div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:4px;">Drop photos here or click to browse</div>
+      <div style="font-size:12px;color:var(--muted);">JPG, PNG · Max 5MB each</div>
+    </div>
+    <div class="img-preview-grid" id="imgPreviewGrid"></div>
+  </div>
+
+  <!-- STEP 5: DESCRIPTION -->
+  <div class="form-card fu d3">
+    <div class="form-section-title"><div class="step-badge amber">5</div> Description &amp; Rules</div>
+    <div style="display:flex;flex-direction:column;gap:18px;">
+      <div class="field-group">
+        <label class="field-label">About the Room</label>
+        <textarea name="description" class="field-input" placeholder="Describe the room, flat, neighbourhood…" style="min-height:120px;">{{ room.description }}</textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">House Rules</label>
+        <textarea name="house_rules" class="field-input" placeholder="e.g. No smoking indoors…" style="min-height:90px;">{{ room.house_rules }}</textarea>
+      </div>
+      <div class="form-row-2">
+        <div class="field-group">
+          <label class="field-label">Nearest Metro / Station</label>
+          <input type="text" name="nearest_metro" class="field-input" value="{{ room.nearest_metro }}" placeholder="e.g. Indiranagar Metro (800m)"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Distance from Office Hub</label>
+          <input type="text" name="distance_to_hub" class="field-input" value="{{ room.distance_to_hub }}" placeholder="e.g. 2km to Manyata Tech Park"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6: PREFERENCES -->
+  <div class="form-card fu d4">
+    <div class="form-section-title"><div class="step-badge amber">6</div> Flatmate Preferences</div>
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div class="form-row-2">
+        <div class="field-group">
+          <label class="field-label">Preferred Gender</label>
+          <select name="pref_gender" class="field-input">
+            <option {% if room.pref_gender == 'Any' %}selected{% endif %}>Any</option>
+            <option {% if room.pref_gender == 'Female only' %}selected{% endif %}>Female only</option>
+            <option {% if room.pref_gender == 'Male only' %}selected{% endif %}>Male only</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Preferred Occupation</label>
+          <select name="pref_occupation" class="field-input">
+            <option {% if room.pref_occupation == 'Any' %}selected{% endif %}>Any</option>
+            <option {% if room.pref_occupation == 'Students only' %}selected{% endif %}>Students only</option>
+            <option {% if room.pref_occupation == 'Working professionals' %}selected{% endif %}>Working professionals</option>
+            <option {% if room.pref_occupation == 'Students & professionals' %}selected{% endif %}>Students &amp; professionals</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" style="margin-bottom:10px;">Sleep Schedule Preference</label>
+        <div class="radio-group" id="sleepGroup">
+          <button type="button" class="radio-btn {% if room.sleep_schedule == '🌅 Early bird' or room.sleep_schedule == 'Early bird' %}active{% endif %}" onclick="setRadio('sleepGroup',this)"><div class="radio-dot"></div>🌅 Early bird</button>
+          <button type="button" class="radio-btn {% if room.sleep_schedule == '🌙 Night owl' or room.sleep_schedule == 'Night owl' %}active{% endif %}" onclick="setRadio('sleepGroup',this)"><div class="radio-dot"></div>🌙 Night owl</button>
+          <button type="button" class="radio-btn {% if room.sleep_schedule == 'No preference' %}active{% endif %}" onclick="setRadio('sleepGroup',this)"><div class="radio-dot"></div>No preference</button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" style="margin-bottom:10px;">Cleanliness Expectation</label>
+        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:8px;">
+          <span class="range-val" style="font-size:18px;" id="cleanVal">{{ room.cleanliness_level }}</span>
+          <span class="range-unit">/ 10</span>
+        </div>
+        <input type="range" class="range-input" name="cleanliness_level" id="cleanSlider" min="1" max="10" value="{{ room.cleanliness_level }}" step="1" oninput="updateClean(this)"/>
+        <div class="range-labels"><span class="range-label">Relaxed</span><span class="range-label">Very tidy</span></div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" style="margin-bottom:10px;">Guest / Visitor Policy</label>
+        <div class="radio-group" id="guestGroup">
+          <button type="button" class="radio-btn {% if room.guest_policy == 'Occasional guests OK' %}active{% endif %}" onclick="setRadio('guestGroup',this)"><div class="radio-dot"></div>Occasional guests OK</button>
+          <button type="button" class="radio-btn {% if room.guest_policy == 'No overnight guests' %}active{% endif %}" onclick="setRadio('guestGroup',this)"><div class="radio-dot"></div>No overnight guests</button>
+          <button type="button" class="radio-btn {% if room.guest_policy == 'Very flexible' %}active{% endif %}" onclick="setRadio('guestGroup',this)"><div class="radio-dot"></div>Very flexible</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 7: CONTACT -->
+  <div class="form-card fu d4">
+    <div class="form-section-title"><div class="step-badge">7</div> Contact Details</div>
+    <div style="display:flex;flex-direction:column;gap:18px;">
+      <div class="form-row-2">
+        <div class="field-group">
+          <label class="field-label">Full Name *</label>
+          <input type="text" name="contact_name" class="field-input" value="{{ room.contact_name }}" placeholder="Your name" required/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Phone *</label>
+          <input type="tel" name="contact_phone" class="field-input" value="{{ room.contact_phone }}" placeholder="+91 98765 43210" required/>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Email *</label>
+        <input type="email" name="contact_email" class="field-input" value="{{ room.contact_email }}" placeholder="you@example.com" required/>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="fu d4 form-card">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <button type="submit" class="btn-teal" style="flex:1;min-width:160px;font-size:15px;padding:15px 32px;">
+        💾 Save Changes
+      </button>
+      <a href="{% url 'room_details_by_id' room_id=room.id %}" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;background:#fff;border:1.5px solid var(--border);color:var(--navy);padding:15px 28px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;text-decoration:none;transition:all .2s;"
+        onmouseover="this.style.borderColor='var(--navy)'"
+        onmouseout="this.style.borderColor='var(--border)'">
+        ✕ Cancel
+      </a>
+    </div>
+    <div style="margin-top:14px;padding:12px 16px;background:var(--off);border-radius:10px;font-size:12px;color:var(--muted);border:1px solid var(--border);">
+      🔒 Changes saved securely. Your listing will update instantly.
+    </div>
+  </div>
+
+</div>
+
+<!-- Hidden fields -->
+<input type="hidden" name="furnishing_status" id="furnishingVal"/>
+<input type="hidden" name="sleep_schedule" id="sleepVal"/>
+<input type="hidden" name="guest_policy" id="guestVal"/>
+<input type="hidden" name="included_items" id="includedVal"/>
+<input type="hidden" name="amenities" id="amenitiesVal"/>
+
+</form>
+
+<!-- UNSAVED CHANGES BAR -->
+<div class="unsaved-bar" id="unsavedBar">
+  <div class="unsaved-dot"></div>
+  <span style="font-size:13px;font-weight:600;">Unsaved changes</span>
+  <button onclick="document.getElementById('editForm').submit()" style="background:var(--teal);color:#fff;border:none;padding:8px 18px;border-radius:8px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;cursor:pointer;">Save Now</button>
+  <button onclick="document.getElementById('unsavedBar').classList.remove('show')" style="background:rgba(255,255,255,.1);color:#fff;border:none;padding:8px 12px;border-radius:8px;font-size:12px;cursor:pointer;">Dismiss</button>
+</div>
+
+<script>
+/* ── Rent slider ── */
+function updateRent(el){
+  const v=parseInt(el.value);
+  const pct=((v-2000)/(80000-2000))*100;
+  el.style.setProperty('--pct',pct+'%');
+  document.getElementById('rentVal').textContent=v.toLocaleString('en-IN');
+}
+updateRent(document.getElementById('rentSlider'));
+
+/* ── Cleanliness slider ── */
+function updateClean(el){
+  const pct=((el.value-1)/9)*100;
+  el.style.setProperty('--pct',pct+'%');
+  document.getElementById('cleanVal').textContent=el.value;
+}
+updateClean(document.getElementById('cleanSlider'));
+
+/* ── Radio / Toggle helpers ── */
+function setRadio(groupId,btn){
+  document.querySelectorAll('#'+groupId+' .radio-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  collectHiddenValues();
+}
+function toggleIncluded(b){b.classList.toggle('active');collectHiddenValues();}
+function toggleAmenity(b){b.classList.toggle('selected');collectHiddenValues();}
+
+function collectHiddenValues(){
+  const furnish=document.querySelector('#furnishGroup .radio-btn.active');
+  if(furnish) document.getElementById('furnishingVal').value=furnish.textContent.trim();
+  const sleep=document.querySelector('#sleepGroup .radio-btn.active');
+  if(sleep) document.getElementById('sleepVal').value=sleep.textContent.trim();
+  const guest=document.querySelector('#guestGroup .radio-btn.active');
+  if(guest) document.getElementById('guestVal').value=guest.textContent.trim();
+  const incl=[...document.querySelectorAll('#includedGroup .radio-btn.active')].map(b=>b.textContent.trim());
+  document.getElementById('includedVal').value=incl.join(',');
+  const amen=[...document.querySelectorAll('#amenityGrid .amenity-btn.selected')].map(b=>b.querySelector('.ame-label').textContent.trim());
+  document.getElementById('amenitiesVal').value=amen.join(',');
+}
+collectHiddenValues();
+
+/* ── Photo delete marking ── */
+function markDeletePhoto(imgId, btn){
+  const wrap=document.getElementById('photo-wrap-'+imgId);
+  const input=document.getElementById('del-'+imgId);
+  const isMarked=wrap.classList.toggle('marked-delete');
+  if(isMarked){
+    input.disabled=false;
+    input.value=imgId;
+    btn.textContent='↩';
+    btn.title='Undo delete';
+    btn.style.background='rgba(245,158,11,.85)';
+  } else {
+    input.disabled=true;
+    input.value='';
+    btn.textContent='✕';
+    btn.title='Remove this photo';
+    btn.style.background='rgba(220,38,38,.85)';
+  }
+}
+
+/* ── New photos preview ── */
+let uploadedFiles=[];
+function handleFiles(files){
+  Array.from(files).slice(0,10).forEach(file=>{
+    if(!file.type.startsWith('image/'))return;
+    const reader=new FileReader();
+    reader.onload=e=>{
+      uploadedFiles.push({file,url:e.target.result});
+      renderImgPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function renderImgPreviews(){
+  const grid=document.getElementById('imgPreviewGrid');
+  grid.innerHTML='';
+  uploadedFiles.forEach((f,i)=>{
+    const d=document.createElement('div');
+    d.className='img-thumb';
+    d.innerHTML=`<img src="${f.url}" alt="preview"/><button class="remove-btn" type="button" onclick="removeImg(${i})">✕</button>`;
+    grid.appendChild(d);
+  });
+}
+function removeImg(i){uploadedFiles.splice(i,1);renderImgPreviews();}
+const zone=document.getElementById('uploadZone');
+zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('dragover');});
+zone.addEventListener('dragleave',()=>zone.classList.remove('dragover'));
+zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('dragover');handleFiles(e.dataTransfer.files);});
+
+/* ── Unsaved changes bar ── */
+let unsavedTimer;
+function showUnsaved(){
+  clearTimeout(unsavedTimer);
+  document.getElementById('unsavedBar').classList.add('show');
+}
+document.getElementById('editForm').addEventListener('submit',()=>{
+  document.getElementById('unsavedBar').classList.remove('show');
+  collectHiddenValues();
+});
+</script>
+
+{% endblock %}

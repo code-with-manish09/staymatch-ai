@@ -1,92 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Room Detail — StayMatch</title>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+{% extends 'base.html' %}
+
+{% block extra_css %}
 <style>
-:root{
-  --navy:#0F1F3D;--teal:#0EA5C9;--teal-lt:#E0F4FB;--amber:#F59E0B;--amber-lt:#FEF3C7;
-  --green:#10B981;--green-lt:#F0FDF4;--white:#FFFFFF;--off:#F6F7FB;--border:#E4E8F0;
-  --muted:#6B7A99;--card-sh:0 4px 24px rgba(15,31,61,.10);--card-sh2:0 12px 40px rgba(15,31,61,.14);
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:'Instrument Sans',sans-serif;background:var(--off);color:var(--navy);overflow-x:hidden;}
-::-webkit-scrollbar{width:5px;}
-::-webkit-scrollbar-track{background:var(--off);}
-::-webkit-scrollbar-thumb{background:var(--teal);border-radius:99px;}
-.display{font-family:'Bricolage Grotesque',sans-serif;}
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9998;opacity:.5;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@keyframes gradPan{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes checkPop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
-@keyframes blobMorph{0%,100%{border-radius:60% 40% 70% 30%/50% 60% 40% 50%}50%{border-radius:40% 60% 30% 70%/60% 40% 70% 30%}}
-.fu{animation:fadeUp .6s ease forwards;opacity:0;}
-.d1{animation-delay:.06s}.d2{animation-delay:.14s}.d3{animation-delay:.24s}.d4{animation-delay:.36s}
-.grad{background:linear-gradient(120deg,var(--teal),var(--navy));background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradPan 5s ease infinite;}
-
-/* ── NAV ── */
-nav{position:sticky;top:0;z-index:500;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);}
-.nav-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.02em;color:var(--navy);text-decoration:none;}
-.nav-links{display:flex;gap:36px;}
-.nav-a{font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;transition:color .2s;}
-.nav-a:hover,.nav-a.active{color:var(--navy);}
-.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:6px;width:36px;height:36px;}
-.hamburger span{display:block;width:22px;height:2px;background:var(--navy);border-radius:2px;transition:all .3s ease;transform-origin:center;}
-.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
-.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-.mobile-nav{display:none;position:fixed;top:68px;left:0;right:0;background:rgba(255,255,255,.97);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);padding:20px 24px 28px;flex-direction:column;gap:4px;z-index:499;animation:slideDown .25s ease forwards;}
-.mobile-nav.open{display:flex;}
-.mobile-nav .nav-a{font-size:16px;padding:10px 0;border-bottom:1px solid var(--border);}
-.mobile-nav-btns{display:flex;gap:10px;margin-top:16px;}
-.btn-primary{background:var(--navy);color:#fff;padding:13px 28px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:background .2s,transform .2s,box-shadow .2s;letter-spacing:-.01em;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
-.btn-primary:hover{background:#1a3260;transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,31,61,.2);}
-.btn-teal{background:var(--teal);color:#fff;padding:13px 28px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
-.btn-teal:hover{background:#0993b3;transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,165,201,.3);}
-.btn-outline{background:transparent;color:var(--navy);padding:12px 24px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:14px;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
-.btn-outline:hover{border-color:var(--navy);background:var(--off);}
-.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:99px;font-size:11px;font-weight:600;white-space:nowrap;}
-.container{max-width:1200px;margin:0 auto;padding:0 48px;}
-
-/* ── GALLERY ── */
-.gallery-grid{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;height:420px;gap:3px;background:var(--navy);}
+/* ── room detail specific ── */
+.gallery-grid{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;height:420px;gap:3px;background:var(--navy);border-radius:16px;overflow:hidden;margin-bottom:28px;}
 .g-main{grid-row:1/3;position:relative;overflow:hidden;background:linear-gradient(135deg,#0EA5C9,#0F1F3D);cursor:pointer;}
 .g-thumb{overflow:hidden;position:relative;background:linear-gradient(135deg,#1a3260,#0EA5C9);cursor:pointer;}
 .g-main img,.g-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
 .g-main:hover img,.g-thumb:hover img{transform:scale(1.04);}
 .gallery-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:60px;opacity:.25;}
-.g-thumb .gallery-placeholder{font-size:36px;}
 .gallery-badge{position:absolute;top:16px;left:16px;background:var(--amber);color:#fff;font-size:10px;font-weight:800;padding:5px 12px;border-radius:6px;letter-spacing:.06em;font-family:'Bricolage Grotesque',sans-serif;z-index:2;}
 .gallery-photo-btn{position:absolute;bottom:16px;right:16px;background:rgba(15,31,61,.75);color:#fff;border:none;padding:9px 18px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Instrument Sans',sans-serif;backdrop-filter:blur(8px);z-index:2;transition:background .2s;}
 .gallery-photo-btn:hover{background:rgba(15,31,61,.92);}
+.save-share{position:absolute;top:16px;right:16px;display:flex;gap:8px;z-index:2;}
+.icon-btn-sm{background:rgba(255,255,255,.9);border:none;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .2s;backdrop-filter:blur(6px);}
+.icon-btn-sm:hover{background:#fff;transform:scale(1.08);}
+
 .gallery-modal{position:fixed;inset:0;background:rgba(15,31,61,.82);display:none;align-items:center;justify-content:center;z-index:1200;padding:20px;}
 .gallery-modal.open{display:flex;}
-.gallery-modal-inner{max-width:980px;width:100%;max-height:90vh;background:#fff;border-radius:14px;overflow:auto;padding:16px;border:1px solid var(--border);}
+.gallery-modal-inner{max-width:980px;width:100%;max-height:90vh;background:#fff;border-radius:14px;overflow:auto;padding:16px;}
 .gallery-modal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
 .gallery-modal-grid img{width:100%;height:220px;object-fit:cover;border-radius:10px;}
 .gallery-close{position:absolute;top:16px;right:16px;background:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;}
-.save-share{position:absolute;top:16px;right:16px;display:flex;gap:8px;z-index:2;}
-.icon-btn{background:rgba(255,255,255,.9);border:none;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .2s;backdrop-filter:blur(6px);}
-.icon-btn:hover{background:#fff;transform:scale(1.08);}
 
-/* ── SECTIONS ── */
+.detail-page-grid{display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start;}
+
 .section-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:28px 32px;box-shadow:var(--card-sh);margin-bottom:20px;}
 .sec-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--navy);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.step-badge{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Bricolage Grotesque',sans-serif;}
-.step-badge.teal{background:var(--teal);}
-.step-badge.amber{background:var(--amber);}
-.step-badge.green{background:var(--green);}
+.step-badge-sm{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Bricolage Grotesque',sans-serif;}
+.step-badge-sm.teal{background:var(--teal);}
+.step-badge-sm.amber{background:var(--amber);}
+.step-badge-sm.green{background:var(--green);}
+
 .breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:16px;}
 .breadcrumb a{color:var(--muted);text-decoration:none;}
-.breadcrumb a:hover{color:var(--navy);}
 .bc-sep{color:var(--border);}
-.page-grid{display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start;padding:32px 0 80px;}
 
-/* ── INFO GRID ── */
 .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
 .info-item{background:var(--off);border-radius:12px;padding:14px 16px;border:1px solid var(--border);}
 .i-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
@@ -96,7 +45,6 @@ nav{position:sticky;top:0;z-index:500;height:68px;display:flex;align-items:cente
 .i-val.amber{color:var(--amber);}
 .i-val.muted{font-size:12px;color:var(--muted);}
 
-/* ── PRICING ── */
 .price-highlight{background:linear-gradient(135deg,var(--navy),#1a3260);border-radius:14px;padding:22px 26px;margin-bottom:20px;color:#fff;}
 .price-big{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:40px;color:#fff;line-height:1;}
 .incl-grid{display:flex;flex-wrap:wrap;gap:8px;}
@@ -104,30 +52,26 @@ nav{position:sticky;top:0;z-index:500;height:68px;display:flex;align-items:cente
 .incl-yes{background:#F0FDF4;color:#059669;border:1px solid #A7F3D0;}
 .incl-no{background:var(--off);color:var(--muted);border:1px solid var(--border);text-decoration:line-through;opacity:.6;}
 
-/* ── AMENITIES ── */
-.amenity-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.amenity-item{border:1.5px solid var(--border);border-radius:12px;padding:14px 10px;background:#fff;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;transition:all .2s;}
+.amenity-grid-detail{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.amenity-item{border:1.5px solid var(--border);border-radius:12px;padding:14px 10px;background:#fff;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;}
 .amenity-item.active{border-color:var(--teal);background:var(--teal-lt);}
-.amenity-item.inactive{opacity:.45;filter:grayscale(.4);}
+.amenity-item.inactive{opacity:.45;}
 .ame-icon{font-size:22px;line-height:1;}
-.ame-label{font-size:11px;font-weight:600;text-align:center;line-height:1.3;color:var(--muted);}
-.amenity-item.active .ame-label{color:var(--teal);}
-.ame-check-dot{width:16px;height:16px;border-radius:50%;background:var(--teal);display:none;align-items:center;justify-content:center;position:absolute;top:6px;right:6px;font-size:9px;color:#fff;animation:checkPop .25s ease;}
+.ame-label-d{font-size:11px;font-weight:600;text-align:center;line-height:1.3;color:var(--muted);}
+.amenity-item.active .ame-label-d{color:var(--teal);}
+.ame-check-dot{width:16px;height:16px;border-radius:50%;background:var(--teal);display:none;align-items:center;justify-content:center;position:absolute;top:6px;right:6px;font-size:9px;color:#fff;}
 .amenity-item.active .ame-check-dot{display:flex;}
 
-/* ── FURNISHING ── */
 .furnish-group{display:flex;gap:10px;flex-wrap:wrap;}
 .furnish-btn{border:1.5px solid var(--border);border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:7px;background:#fff;}
 .furnish-btn.active{border-color:var(--teal);background:var(--teal-lt);color:var(--teal);}
 .f-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0;}
 
-/* ── PHOTOS ── */
 .photos-scroll{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px;}
 .photo-thumb{aspect-ratio:4/3;border-radius:10px;background:var(--off);border:1px solid var(--border);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--border);}
 .photo-thumb img{width:100%;height:100%;object-fit:cover;}
 
-/* ── TABS ── */
-.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:20px;gap:0;}
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:20px;}
 .tab-btn{padding:10px 18px;font-size:13px;font-weight:600;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .2s;margin-bottom:-1px;font-family:'Instrument Sans',sans-serif;}
 .tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);}
 .tab-panel{display:none;}
@@ -138,239 +82,106 @@ nav{position:sticky;top:0;z-index:500;height:68px;display:flex;align-items:cente
 .rule-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);margin-top:4px;flex-shrink:0;}
 .loc-tags{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
 .loc-tag{display:flex;align-items:center;gap:8px;background:var(--off);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:500;color:var(--navy);}
-.loc-tag span{font-size:18px;}
 .map-box{height:180px;background:linear-gradient(145deg,#ddf0fa,#c5e7f7);border-radius:14px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);position:relative;overflow:hidden;}
 .map-grid-lines{position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(14,165,201,.15) 39px,rgba(14,165,201,.15) 40px),repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(14,165,201,.15) 59px,rgba(14,165,201,.15) 60px);}
 .map-pin{width:40px;height:40px;background:var(--teal);border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(14,165,201,.45);}
 .map-pin-inner{width:14px;height:14px;background:#fff;border-radius:50%;transform:rotate(45deg);}
 .map-label{position:absolute;bottom:12px;left:12px;background:rgba(255,255,255,.9);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--navy);backdrop-filter:blur(6px);}
 
-/* ── PREFS ── */
 .pref-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .pref-item{background:var(--off);border-radius:12px;padding:14px 16px;border:1px solid var(--border);}
 .pref-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
 .pref-val{font-size:13px;font-weight:600;color:var(--navy);}
 .pref-bar-wrap{margin-top:8px;height:6px;background:var(--border);border-radius:99px;overflow:hidden;}
 .pref-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),#0993b3);}
-.clean-1{width:10%;}
-.clean-2{width:20%;}
-.clean-3{width:30%;}
-.clean-4{width:40%;}
-.clean-5{width:50%;}
-.clean-6{width:60%;}
-.clean-7{width:70%;}
-.clean-8{width:80%;}
-.clean-9{width:90%;}
-.clean-10{width:100%;}
 .radio-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;font-size:12px;font-weight:600;}
 .radio-pill.active{background:var(--teal-lt);color:var(--teal);border:1px solid rgba(14,165,201,.3);}
-.radio-pill.inactive{background:var(--off);color:var(--muted);border:1px solid var(--border);}
 .radio-dot2{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;}
 .host-note{background:var(--teal-lt);border:1px solid rgba(14,165,201,.2);border-radius:12px;padding:16px 18px;margin-top:4px;}
-.host-note-label{font-size:10px;font-weight:800;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
 
-/* ── CONTACT ── */
 .contact-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .contact-item{background:var(--off);border:1px solid var(--border);border-radius:12px;padding:14px 16px;}
 .contact-item a{color:var(--teal);text-decoration:none;font-weight:600;}
 
-/* ── REVIEWS ── */
 .rating-big{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:48px;color:var(--navy);line-height:1;}
 .stars-row{display:flex;gap:3px;margin:6px 0;}
 .star{width:16px;height:16px;background:var(--amber);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
 .star.half{opacity:.4;}
 .review-card{border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:12px;}
 .rev-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.rev-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;flex-shrink:0;font-family:'Bricolage Grotesque',sans-serif;}
+.rev-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;flex-shrink:0;}
 .rev-name{font-size:13px;font-weight:600;color:var(--navy);}
 .rev-date{font-size:11px;color:var(--muted);}
 .rev-text{font-size:13px;color:var(--muted);line-height:1.7;}
 
-/* ── SIDEBAR ── */
-.sidebar-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:24px;box-shadow:var(--card-sh2);}
-.price-tag-big{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:32px;color:var(--navy);}
-.avail-dot{width:9px;height:9px;border-radius:50%;background:var(--green);flex-shrink:0;}
-.cta-btn{width:100%;padding:14px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;cursor:pointer;border:none;margin-top:10px;transition:all .2s;letter-spacing:-.01em;}
-.cta-teal{background:var(--teal);color:#fff;}
-.cta-teal:hover{background:#0993b3;transform:translateY(-1px);}
-.cta-navy{background:var(--navy);color:#fff;}
-.cta-navy:hover{background:#1a3260;transform:translateY(-1px);}
-.cta-ghost{background:transparent;color:var(--navy);border:1.5px solid var(--border);}
-.cta-ghost:hover{border-color:var(--navy);background:var(--off);}
-.host-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:22px;box-shadow:var(--card-sh);margin-top:16px;}
-.host-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;flex-shrink:0;}
-.stat-2col{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;}
-.stat-box{background:var(--off);border-radius:10px;padding:12px;text-align:center;}
-.stat-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:var(--navy);}
-.stat-lbl{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-top:2px;}
-.trust-row{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;}
-.trust-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;background:var(--green-lt);border-radius:99px;font-size:11px;font-weight:600;color:#059669;border:1px solid #A7F3D0;}
-.divider{border:none;border-top:1px solid var(--border);margin:14px 0;}
-.why-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--card-sh);margin-top:16px;}
+/* review form */
+.review-form-wrap{background:linear-gradient(135deg,#f0fdfa,#e0f4fb);border:1px solid rgba(14,165,201,.2);border-radius:16px;padding:24px;margin-bottom:24px;}
+.picker-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+.star-picker{display:flex;gap:6px;flex-direction:row-reverse;justify-content:flex-end;}
+.star-picker input{display:none;}
+.star-picker label svg{width:30px;height:30px;fill:var(--border);transition:fill .15s;cursor:pointer;}
+.star-picker input:checked ~ label svg,.star-picker label:hover svg,.star-picker label:hover ~ label svg{fill:var(--amber);}
+.cat-ratings{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+.cat-item{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 14px;}
+.cat-name{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;}
+.cat-stars{display:flex;gap:4px;flex-direction:row-reverse;justify-content:flex-end;}
+.cat-stars input{display:none;}
+.cat-stars label svg{width:20px;height:20px;fill:var(--border);transition:fill .15s;cursor:pointer;}
+.cat-stars input:checked ~ label svg,.cat-stars label:hover svg,.cat-stars label:hover ~ label svg{fill:var(--amber);}
+.sm-textarea{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-size:14px;font-family:'Instrument Sans',sans-serif;color:var(--navy);resize:vertical;min-height:100px;background:#fff;outline:none;transition:border-color .2s;line-height:1.7;}
+.sm-textarea:focus{border-color:var(--teal);}
+.sm-btn{width:100%;background:var(--teal);color:#fff;padding:14px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:background .2s,transform .2s;}
+.sm-btn:hover{background:#0993b3;transform:translateY(-1px);}
+.sm-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;transform:none;}
+.bar-row{display:flex;align-items:center;gap:8px;}
+.bar-label{font-size:11px;color:var(--muted);width:80px;flex-shrink:0;}
+.bar-track{flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden;}
+.bar-fill{height:100%;background:var(--amber);border-radius:99px;}
+.bar-val{font-size:11px;color:var(--navy);font-weight:700;min-width:24px;text-align:right;}
+
+/* sidebar */
+.sidebar-sticky{position:sticky;top:90px;display:flex;flex-direction:column;gap:16px;}
+.sidebar-main-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:24px;box-shadow:var(--card-sh2);}
+.why-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--card-sh);}
 .why-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
 .why-item:last-child{border-bottom:none;padding-bottom:0;}
 .why-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
-.benefit-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--off);border-radius:12px;border:1px solid var(--border);}
-.benefit-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.trust-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;background:var(--green-lt);border-radius:99px;font-size:11px;font-weight:600;color:#059669;border:1px solid #A7F3D0;}
+.msg-error{background:#fff7ed;border:1px solid #fcd34d;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:#92400e;}
+.msg-success-r{background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:#059669;}
 
-/* ── FOOTER ── */
-footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
+/* ask ai */
+.faq-chat{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;max-height:360px;overflow-y:auto;padding:4px;}
+.faq-input-row{display:flex;gap:10px;}
+.faq-input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:14px;font-family:'Instrument Sans',sans-serif;color:var(--navy);outline:none;transition:border-color .2s;}
+.faq-input:focus{border-color:var(--teal);}
+.faq-btn{background:var(--teal);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.faq-btn:hover{background:#0993b3;}
 
-/* ── RESPONSIVE ── */
-@media(max-width:1024px){
-  nav{padding:0 28px;}
-  .container{padding:0 28px;}
-  .page-grid{grid-template-columns:1fr !important;}
-  .sidebar-card{position:static !important;}
-  .host-card{position:static !important;}
-  .amenity-grid{grid-template-columns:repeat(3,1fr)!important;}
-  .info-grid{grid-template-columns:repeat(2,1fr)!important;}
-  .pref-grid{grid-template-columns:repeat(2,1fr)!important;}
+@media(max-width:1100px){
+  .detail-page-grid{grid-template-columns:1fr;}
+  .sidebar-sticky{position:static;}
+  .amenity-grid-detail{grid-template-columns:repeat(3,1fr);}
+  .info-grid{grid-template-columns:repeat(2,1fr);}
+  .pref-grid{grid-template-columns:repeat(2,1fr);}
 }
 @media(max-width:768px){
-  nav{padding:0 20px;height:60px;}
-  .nav-links,.nav-desktop-btns{display:none;}
-  .hamburger{display:flex;}
-  .container{padding:0 20px;}
   .gallery-grid{grid-template-columns:1fr;grid-template-rows:280px;height:280px;}
   .g-thumb{display:none;}
-  .amenity-grid{grid-template-columns:repeat(2,1fr)!important;}
-  .info-grid{grid-template-columns:1fr 1fr!important;}
-  .pref-grid{grid-template-columns:1fr!important;}
-  .contact-row{grid-template-columns:1fr!important;}
-  .photos-scroll{grid-template-columns:repeat(2,1fr)!important;}
-  .section-card{padding:20px!important;}
-  .footer-top{flex-direction:column!important;gap:32px!important;}
-  .footer-links{flex-wrap:wrap!important;gap:28px!important;}
-  .footer-bottom{flex-direction:column!important;gap:8px!important;text-align:center!important;}
+  .amenity-grid-detail{grid-template-columns:repeat(2,1fr);}
+  .info-grid{grid-template-columns:1fr 1fr;}
+  .pref-grid{grid-template-columns:1fr;}
+  .contact-row{grid-template-columns:1fr;}
+  .photos-scroll{grid-template-columns:repeat(2,1fr);}
+  .section-card{padding:20px;}
+  .cat-ratings{grid-template-columns:1fr;}
 }
-@media(max-width:480px){
-  .amenity-grid{grid-template-columns:repeat(2,1fr)!important;}
-  .gallery-grid{height:220px;}
-  .photos-scroll{grid-template-columns:repeat(2,1fr)!important;}
-}
-
-*{box-sizing:border-box;margin:0;padding:0;}
-  :root{
-    --navy:#0F1F3D;--teal:#0EA5C9;--teal-lt:#E0F4FB;--amber:#F59E0B;--amber-lt:#FEF3C7;
-    --green:#10B981;--green-lt:#F0FDF4;--off:#F6F7FB;--border:#E4E8F0;--muted:#6B7A99;
-  }
-  .sm-wrap{font-family:'Instrument Sans',system-ui,sans-serif;background:var(--off);padding:0;color:var(--navy);}
-  .section-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:28px 32px;box-shadow:0 4px 24px rgba(15,31,61,.10);margin-bottom:20px;}
-  .sec-title{font-family:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;font-weight:700;font-size:17px;color:var(--navy);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-  .step-badge-green{width:28px;height:28px;border-radius:50%;background:var(--green);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-
-  /* ── WRITE REVIEW FORM (UPAR) ── */
-  .review-form-wrap{background:linear-gradient(135deg,#f0fdfa,#e0f4fb);border:1px solid rgba(14,165,201,.2);border-radius:16px;padding:24px;margin-bottom:24px;}
-  .picker-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
-  .star-picker{display:flex;gap:6px;flex-direction:row-reverse;justify-content:flex-end;}
-  .star-picker input{display:none;}
-  .star-picker label{cursor:pointer;}
-  .star-picker label svg{width:30px;height:30px;fill:var(--border);transition:fill .15s;}
-  .star-picker input:checked ~ label svg,
-  .star-picker label:hover svg,
-  .star-picker label:hover ~ label svg{fill:var(--amber);}
-  .cat-ratings{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
-  .cat-item{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 14px;}
-  .cat-name{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;}
-  .cat-stars{display:flex;gap:4px;flex-direction:row-reverse;justify-content:flex-end;}
-  .cat-stars input{display:none;}
-  .cat-stars label svg{width:20px;height:20px;fill:var(--border);transition:fill .15s;cursor:pointer;}
-  .cat-stars input:checked ~ label svg,
-  .cat-stars label:hover svg,
-  .cat-stars label:hover ~ label svg{fill:var(--amber);}
-  .pros-cons-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
-  .pc-box{border-radius:12px;padding:14px;}
-  .pc-box.pros{background:#f0fdf4;border:1px solid #a7f3d0;}
-  .pc-box.cons{background:#fff7ed;border:1px solid #fcd34d;}
-  .pc-label{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;}
-  .pc-label.pros{color:#059669;}
-  .pc-label.cons{color:#d97706;}
-  .tag-input-wrap{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
-  .tag-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:600;}
-  .pro-chip{background:#dcfce7;color:#059669;border:1px solid #86efac;}
-  .con-chip{background:#fef9c3;color:#92400e;border:1px solid #fde68a;}
-  .tag-add-input{border:none;outline:none;font-size:12px;font-family:'Instrument Sans',system-ui,sans-serif;color:var(--navy);background:transparent;width:90px;}
-  .tag-add-input::placeholder{color:var(--muted);}
-  .sm-textarea{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-size:14px;font-family:'Instrument Sans',system-ui,sans-serif;color:var(--navy);resize:vertical;min-height:100px;background:#fff;outline:none;transition:border-color .2s;line-height:1.7;}
-  .sm-textarea:focus{border-color:var(--teal);}
-  .sm-textarea::placeholder{color:var(--muted);}
-  .sm-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:14px;font-family:'Instrument Sans',system-ui,sans-serif;color:var(--navy);outline:none;background:#fff;transition:border-color .2s;}
-  .sm-input:focus{border-color:var(--teal);}
-  .sm-btn{width:100%;background:var(--teal);color:#fff;padding:14px;border-radius:10px;font-family:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:background .2s,transform .2s;}
-  .sm-btn:hover{background:#0993b3;transform:translateY(-1px);}
-  .sm-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;transform:none;}
-
-  /* success */
-  .success-box{display:none;background:var(--green-lt);border:1px solid #a7f3d0;border-radius:14px;padding:20px 24px;text-align:center;margin-bottom:24px;}
-  .success-box.show{display:block;}
-
-  /* divider */
-  .reviews-divider{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
-  .reviews-divider span{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;}
-  .reviews-divider::before,.reviews-divider::after{content:'';flex:1;height:1px;background:var(--border);}
-
-  /* rating overview */
-  .rating-big{font-family:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;font-weight:800;font-size:48px;color:var(--navy);line-height:1;}
-  .stars-row{display:flex;gap:3px;margin:6px 0;}
-  .bar-row{display:flex;align-items:center;gap:8px;}
-  .bar-label{font-size:11px;color:var(--muted);width:80px;flex-shrink:0;}
-  .bar-track{flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden;}
-  .bar-fill{height:100%;background:var(--amber);border-radius:99px;}
-  .bar-val{font-size:11px;color:var(--navy);font-weight:700;min-width:24px;text-align:right;}
-
-  /* review cards */
-  .review-card{border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:12px;}
-  .rev-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-  .rev-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;flex-shrink:0;}
-  .rev-name{font-size:13px;font-weight:600;color:var(--navy);}
-  .rev-date{font-size:11px;color:var(--muted);}
-  .rev-text{font-size:13px;color:var(--muted);line-height:1.7;}
-  .stars-sm{display:flex;gap:3px;}
-
-  .guest-badge{display:inline-flex;align-items:center;gap:5px;background:var(--amber-lt);border:1px solid #fcd34d;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;color:#92400e;margin-bottom:16px;}
-
-  @media(max-width:600px){
-    .section-card{padding:20px 16px;}
-    .cat-ratings{grid-template-columns:1fr;}
-    .pros-cons-grid{grid-template-columns:1fr;}
-    .review-form-wrap{padding:18px 16px;}
-    .rating-overview{flex-direction:column!important;gap:16px!important;}
-  }
-
-  .msg-error{background:#fff7ed;border:1px solid #fcd34d;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:#92400e;}
-.msg-success{background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:#059669;}
 </style>
-</head>
-<body>
+{% endblock %}
 
-<!-- ══ NAV ══ -->
-<nav>
-  <a href="index.html" class="nav-logo display">Stay<span class="grad">Match</span></a>
-  <div class="nav-links">
-    <a href="#" class="nav-a">Discover</a>
-    <a href="#" class="nav-a">How It Works</a>
-    <a href="#" class="nav-a active">List a Room</a>
-    <a href="#" class="nav-a">About</a>
-  </div>
-  <div class="nav-desktop-btns" style="display:flex;gap:10px;align-items:center;">
-    <a href="#" class="btn-outline" style="padding:9px 20px;font-size:14px;">Log In</a>
-    <a href="#" class="btn-primary" style="padding:10px 22px;font-size:14px;">Dashboard →</a>
-  </div>
-  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
-</nav>
-<div class="mobile-nav" id="mobileNav">
-  <a href="#" class="nav-a">Discover</a>
-  <a href="#" class="nav-a">How It Works</a>
-  <a href="#" class="nav-a active">List a Room</a>
-  <a href="#" class="nav-a">About</a>
-  <div class="mobile-nav-btns">
-    <a href="#" class="btn-outline" style="flex:1;">Log In</a>
-    <a href="#" class="btn-primary" style="flex:1;">Dashboard →</a>
-  </div>
-</div>
+{% block content %}
 
-<!-- ══ GALLERY ══ -->
+<!-- GALLERY -->
 <div class="fu d1">
   <div class="gallery-grid">
     <div class="g-main" id="mainPhoto">
@@ -381,15 +192,15 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
       <div class="gallery-placeholder">🏠</div>
       {% endif %}
       {% endwith %}
-      <div class="gallery-badge" id="availBadge">AVAILABLE NOW</div>
+      <div class="gallery-badge">AVAILABLE NOW</div>
       <div class="save-share">
-        <button class="icon-btn" title="Save" onclick="toggleSave(this)">♡</button>
-        <button class="icon-btn" title="Share">↗</button>
+        <button class="icon-btn-sm" onclick="toggleSave(this)">♡</button>
+        <button class="icon-btn-sm">↗</button>
       </div>
       <button class="gallery-photo-btn" id="photoCountBtn">📸 View All {{ room.images.count }} Photos</button>
     </div>
     {% for img in room.images.all %}
-      {% if not forloop.first and forloop.counter <= 3 %}
+      {% if not forloop.first %}
       <div class="g-thumb"><img src="{{ img.image.url }}" alt="{{ room.title }}" class="gallery-thumb-img"></div>
       {% endif %}
     {% empty %}
@@ -399,6 +210,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
   </div>
 </div>
 
+<!-- GALLERY MODAL -->
 <div class="gallery-modal" id="galleryModal">
   <button class="gallery-close" id="galleryCloseBtn">✕</button>
   <div class="gallery-modal-inner">
@@ -412,420 +224,415 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
   </div>
 </div>
 
-<!-- ══ BODY ══ -->
-<div class="container">
-  <div class="page-grid">
+<!-- BREADCRUMB -->
+<div class="breadcrumb fu d1">
+  <a href="{% url 'dashboard' %}">Home</a><span class="bc-sep">›</span>
+  <a href="#">{{ room.city }}</a><span class="bc-sep">›</span>
+  <a href="#">{{ room.area }}</a><span class="bc-sep">›</span>
+  <span>{{ room.room_type }}</span>
+</div>
 
-    <!-- ══ LEFT ══ -->
-    <div>
-
-      <!-- Breadcrumb + Heading -->
-      <div class="fu d1">
-        <div class="breadcrumb">
-          <a href="#">Home</a><span class="bc-sep">›</span>
-          <a href="#" id="bcCity">{{ room.city }}</a><span class="bc-sep">›</span>
-          <a href="#" id="bcArea">{{ room.area }}</a><span class="bc-sep">›</span>
-          <span id="bcType">{{ room.room_type }}</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
-          <div style="flex:1;">
-            <h1 class="display" id="detailTitle" style="font-size:clamp(22px,3.5vw,30px);font-weight:800;letter-spacing:-.02em;color:var(--navy);line-height:1.15;margin-bottom:8px;">{{ room.title }}</h1>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-              <span style="font-size:13px;color:var(--muted);">📍 <span id="detailLoc">{{ room.area }}, {{ room.city }}</span></span>
-            </div>
-          </div>
-        </div>
-        <!-- Quick chips -->
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
-          <div class="chip" style="background:#EBF9FD;color:var(--teal);" id="chip-type">🏠 {{ room.room_type }}</div>
-          <div class="chip" style="background:var(--amber-lt);color:#92400E;" id="chip-bhk">🏢 {{ room.bhk_config }}</div>
-          <div class="chip" style="background:var(--off);color:var(--navy);" id="chip-floor">📐 {{ room.floor }}</div>
-          <div class="chip" style="background:var(--green-lt);color:#059669;" id="chip-avail">📅 Available: {{ room.available_from }}</div>
-          <div class="chip" style="background:var(--off);color:var(--navy);" id="chip-minstay">📆 Min. Stay: {{ room.min_stay }}</div>
-          <div class="chip" style="background:var(--teal-lt);color:var(--teal);" id="chip-furnish">🪑 {{ room.get_furnishing_status_display }}</div>
-        </div>
+<!-- HEADING -->
+<div class="fu d1" style="margin-bottom:20px;">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+    
+    <div style="flex:1;">
+      <h1 class="display" style="font-size:clamp(22px,3.5vw,30px);font-weight:800;color:var(--navy);margin-bottom:8px;">{{ room.title }}</h1>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+        <span style="font-size:13px;color:var(--muted);">📍 {{ room.area }}, {{ room.city }}</span>
       </div>
-
-      <!-- ── STEP 1: ROOM BASICS ── -->
-      <div class="section-card fu d1">
-        <div class="sec-title"><div class="step-badge">1</div> Room Basics</div>
-        <div class="info-grid">
-          <div class="info-item" style="grid-column:1/-1;"><div class="i-label">Listing Title</div><div class="i-val" id="d-title" style="font-size:15px;">{{ room.title }}</div></div>
-          <div class="info-item"><div class="i-label">City</div><div class="i-val teal" id="d-city">{{ room.city }}</div></div>
-          <div class="info-item"><div class="i-label">Locality / Area</div><div class="i-val" id="d-area">{{ room.area }}</div></div>
-          <div class="info-item"><div class="i-label">Full Address</div><div class="i-val muted">{{ room.address }}</div></div>
-          <div class="info-item"><div class="i-label">Room Type</div><div class="i-val teal" id="d-roomtype">{{ room.room_type }}</div></div>
-          <div class="info-item"><div class="i-label">BHK Config</div><div class="i-val" id="d-bhk">{{ room.bhk_config }}</div></div>
-          <div class="info-item"><div class="i-label">Floor</div><div class="i-val" id="d-floor">{{ room.floor }}</div></div>
-          <div class="info-item"><div class="i-label">Available From</div><div class="i-val green" id="d-avail">{{ room.available_from }}</div></div>
-          <div class="info-item"><div class="i-label">Minimum Stay</div><div class="i-val" id="d-minstay">{{ room.min_stay }}</div></div>
-        </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <div class="chip" style="background:#EBF9FD;color:var(--teal);">🏠 {{ room.room_type }}</div>
+        <div class="chip" style="background:var(--amber-lt);color:#92400E;">🏢 {{ room.bhk_config }}</div>
+        <div class="chip" style="background:var(--off);color:var(--navy);">📐 {{ room.floor }}</div>
+        <div class="chip" style="background:var(--green-lt);color:#059669;">📅 Available: {{ room.available_from }}</div>
+        <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🪑 {{ room.get_furnishing_status_display }}</div>
       </div>
+    </div>
 
-      <!-- ── STEP 2: PRICING & DEPOSIT ── -->
-      <div class="section-card fu d2">
-        <div class="sec-title"><div class="step-badge teal">2</div> Pricing &amp; Deposit</div>
-        <div class="price-highlight">
-          <div style="display:flex;align-items:baseline;gap:6px;">
-            <span style="font-size:18px;color:rgba(255,255,255,.6);font-weight:600;">₹</span>
-            <span class="price-big" id="d-rent">{{ room.rent }}</span>
-            <span style="font-size:14px;color:rgba(255,255,255,.7);margin-left:4px;">/ month</span>
-          </div>
-          <div style="display:flex;gap:24px;margin-top:12px;flex-wrap:wrap;">
-            <div>
-              <div style="font-size:10px;color:rgba(255,255,255,.45);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;">Security Deposit</div>
-              <div style="font-size:14px;font-weight:600;color:#fff;" id="d-deposit">{{ room.deposit }}</div>
-            </div>
-            <div>
-              <div style="font-size:10px;color:rgba(255,255,255,.45);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;">Maintenance</div>
-              <div style="font-size:14px;font-weight:600;color:#fff;" id="d-maintenance">{{ room.maintenance }}</div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">What's Included in Rent</div>
-          <div class="incl-grid" id="d-included">
-            <span class="incl-chip {% if included.wifi %}incl-yes{% else %}incl-no{% endif %}">{% if included.wifi %}✓{% else %}✗{% endif %} WiFi</span>
-            <span class="incl-chip {% if included.electricity %}incl-yes{% else %}incl-no{% endif %}">{% if included.electricity %}✓{% else %}✗{% endif %} Electricity</span>
-            <span class="incl-chip {% if included.water %}incl-yes{% else %}incl-no{% endif %}">{% if included.water %}✓{% else %}✗{% endif %} Water</span>
-            <span class="incl-chip {% if included.gas %}incl-yes{% else %}incl-no{% endif %}">{% if included.gas %}✓{% else %}✗{% endif %} Gas</span>
-            <span class="incl-chip {% if included.cooking %}incl-yes{% else %}incl-no{% endif %}">{% if included.cooking %}✓{% else %}✗{% endif %} Cooking</span>
-            <span class="incl-chip {% if included.housekeeping %}incl-yes{% else %}incl-no{% endif %}">{% if included.housekeeping %}✓{% else %}✗{% endif %} Housekeeping</span>
-          </div>
-        </div>
-      </div>
+    <!-- Edit + Delete buttons — sirf owner ko dikhe -->
+    {% if request.user == room.owner %}
+    <div style="display:flex;gap:8px;align-items:flex-start;margin-top:4px;">
+      <a href="{% url 'room_edit' room.id %}"
+         style="display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--border);color:var(--navy);padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;transition:all .2s;"
+         onmouseover="this.style.borderColor='var(--teal)';this.style.color='var(--teal)'"
+         onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--navy)'">
+        ✏️ Edit
+      </a>
+      <button onclick="document.getElementById('deleteModal').style.display='flex'"
+        style="display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #fca5a5;color:#dc2626;padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;"
+        onmouseover="this.style.background='#fef2f2'"
+        onmouseout="this.style.background='#fff'">
+        🗑️ Delete
+      </button>
+    </div>
+    {% endif %}
 
-      <!-- ── STEP 3: AMENITIES & FURNISHING ── -->
-      <div class="section-card fu d2">
-        <div class="sec-title"><div class="step-badge teal">3</div> Amenities &amp; Furnishing</div>
-        <div style="margin-bottom:20px;">
-          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">Furnishing Status</div>
-          <div class="furnish-group" id="d-furnish">
-            <div class="furnish-btn {% if room.furnishing_status == 'Fully' %}active{% endif %}"><div class="f-dot"></div>Fully Furnished</div>
-            <div class="furnish-btn {% if room.furnishing_status == 'Semi' %}active{% endif %}"><div class="f-dot"></div>Semi Furnished</div>
-            <div class="furnish-btn {% if room.furnishing_status == 'Unfurnished' %}active{% endif %}"><div class="f-dot"></div>Unfurnished</div>
-          </div>
-        </div>
-        <div>
-          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">Available Amenities <span style="color:var(--teal);font-size:11px;text-transform:none;letter-spacing:0;">(highlighted = available)</span></div>
-          <div class="amenity-grid" id="d-amenities">
-            {% for amenity in room.amenities.all %}
-            <div class="amenity-item active"><div class="ame-check-dot">✓</div><div class="ame-icon">{{ amenity.icon }}</div><div class="ame-label">{{ amenity.name }}</div></div>
-            {% empty %}
-            <div class="amenity-item inactive"><div class="ame-check-dot">✓</div><div class="ame-icon">—</div><div class="ame-label">No amenities added</div></div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-
-      <!-- ── STEP 4: PHOTOS ── -->
-      <div class="section-card fu d3">
-        <div class="sec-title"><div class="step-badge amber">4</div> Photos</div>
-        <p style="font-size:13px;color:var(--muted);line-height:1.6;">This listing has <strong style="color:var(--navy);" id="photoCount">{{ room.images.count }} photos</strong> — room, bathroom, kitchen &amp; building views. Listings with 4+ photos get <strong style="color:var(--navy);">5× more inquiries.</strong></p>
-        <div class="photos-scroll" id="d-photos">
-          {% for img in room.images.all %}
-          <div class="photo-thumb"><img src="{{ img.image.url }}" alt="{{ room.title }}"></div>
-          {% empty %}
-          <div class="photo-thumb">🏠</div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <!-- ── STEP 5: DESCRIPTION & RULES ── -->
-      <div class="section-card fu d3">
-        <div class="sec-title"><div class="step-badge amber">5</div> Description &amp; Rules</div>
-        <div class="tabs">
-          <button class="tab-btn active" onclick="switchTab('about',this)">About the Room</button>
-          <button class="tab-btn" onclick="switchTab('rules',this)">House Rules</button>
-          <button class="tab-btn" onclick="switchTab('location',this)">Location &amp; Nearby</button>
-        </div>
-        <div id="tab-about" class="tab-panel active">
-          <p class="desc-text" id="d-desc">{{ room.description }}</p>
-        </div>
-        <div id="tab-rules" class="tab-panel">
-          <ul class="rules-list" id="d-rules">
-            <li class="rule-item"><div class="rule-dot"></div><span>{{ room.house_rules }}</span></li>
-          </ul>
-        </div>
-        <div id="tab-location" class="tab-panel">
-          <div class="loc-tags" id="d-location">
-            <div class="loc-tag"><span>🚇</span><div><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Nearest Metro / Station</div><strong id="d-metro">{{ room.nearest_metro }}</strong></div></div>
-            <div class="loc-tag"><span>🏢</span><div><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Distance from Office Hub</div><strong id="d-office">{{ room.distance_to_hub }}</strong></div></div>
-          </div>
-          <div class="map-box">
-            <div class="map-grid-lines"></div>
-            <div style="position:relative;z-index:1;"><div class="map-pin"><div class="map-pin-inner"></div></div></div>
-            <div class="map-label">📍 <span id="d-maplabel">{{ room.area }}, {{ room.city }}</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── STEP 6: FLATMATE PREFERENCES ── -->
-      <div class="section-card fu d4">
-        <div class="sec-title"><div class="step-badge amber">6</div> Flatmate Preferences</div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Our AI uses these preferences to score and rank compatible flatmate profiles. Be honest — the right match matters!</p>
-        <div class="pref-grid">
-          <div class="pref-item">
-            <div class="pref-label">Preferred Gender</div>
-            <div class="pref-val" id="d-gender">{{ room.pref_gender }}</div>
-          </div>
-          <div class="pref-item">
-            <div class="pref-label">Preferred Occupation</div>
-            <div class="pref-val" id="d-occupation">{{ room.pref_occupation }}</div>
-          </div>
-          <div class="pref-item" style="grid-column:1/-1;">
-            <div class="pref-label">Sleep Schedule Preference</div>
-            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;" id="d-sleep">
-              <div class="radio-pill active"><div class="radio-dot2"></div>{{ room.sleep_schedule }}</div>
-            </div>
-          </div>
-          <div class="pref-item" style="grid-column:1/-1;">
-            <div class="pref-label">Cleanliness Expectation</div>
-            <div style="display:flex;align-items:baseline;gap:6px;margin:8px 0 10px;">
-              <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:28px;color:var(--navy);" id="d-clean">{{ room.cleanliness_level }}</span>
-              <span style="font-size:13px;color:var(--muted);">/ 10</span>
-            </div>
-            <div class="pref-bar-wrap"><div class="pref-bar-fill clean-{{ room.cleanliness_level }}" id="d-clean-bar"></div></div>
-            <div style="display:flex;justify-content:space-between;margin-top:5px;"><span style="font-size:10px;color:var(--muted);">Relaxed</span><span style="font-size:10px;color:var(--muted);">Very tidy</span></div>
-          </div>
-          <div class="pref-item" style="grid-column:1/-1;">
-            <div class="pref-label">Guest / Visitor Policy</div>
-            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;" id="d-guest">
-              <div class="radio-pill active"><div class="radio-dot2"></div>{{ room.guest_policy }}</div>
-            </div>
-          </div>
-        </div>
-        <div class="host-note" style="margin-top:16px;" id="d-hostnote">
-          <div class="host-note-label">Anything else in a flatmate?</div>
-          <p style="font-size:13px;color:var(--navy);line-height:1.7;">{{ room.house_rules }}</p>
-        </div>
-      </div>
-
-      <!-- ── STEP 7: CONTACT DETAILS ── -->
-      <div class="section-card fu d4">
-        <div class="sec-title"><div class="step-badge">7</div> Host Contact Details</div>
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap;">
-          <div class="host-avatar" id="d-hostInitials">👤</div>
-          <div>
-            <div style="font-weight:700;font-size:16px;color:var(--navy);" id="d-hostName">{{ room.contact_name|default:room.owner.get_full_name }}</div>
-            <div style="font-size:12px;color:var(--muted);">Host since January 2024</div>
-          </div>
-          <div style="margin-left:auto;">
-            <div class="trust-chip">✓ ID Verified</div>
-          </div>
-        </div>
-        <div class="contact-row" id="d-contact">
-          <div class="contact-item">
-            <div class="i-label">Phone</div>
-            <div class="i-val" style="margin-top:4px;">📱 <a href="tel:{{ room.contact_phone }}">{{ room.contact_phone }}</a></div>
-          </div>
-          <div class="contact-item">
-            <div class="i-label">Email</div>
-            <div class="i-val" style="margin-top:4px;">📧 <a href="mailto:{{ room.contact_email }}">{{ room.contact_email }}</a></div>
-          </div>
-        </div>
-        <div style="background:var(--teal-lt);border-radius:12px;padding:14px 16px;margin-top:14px;font-size:13px;color:var(--navy);line-height:1.7;border:1px solid rgba(14,165,201,.15);">
-          🔒 <strong>Privacy protected:</strong> Full address is shared only after a match is confirmed through StayMatch. Your safety is our priority.
-        </div>
-      </div>
-      
-<div class="section-card fu d4">
-        <div class="sec-title"><div class="step-badge green">★</div> Reviews from Previous Tenants</div>
-
-        {% if messages %}{% for message in messages %}{% if message.tags == 'error' %}<div class="msg-error">⚠️ Aapne pehle hi review submit kar di hai!</div>{% elif message.tags == 'success' %}<div class="msg-success">✅ {{ message }}</div>{% endif %}{% endfor %}{% endif %}
-
-        {% if already_reviewed %}
-        <div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:20px;text-align:center;margin-bottom:20px;">
-          <div style="font-size:24px;margin-bottom:6px;">✅</div>
-          <div style="font-weight:700;color:#059669;font-size:15px;">Already submitted!</div>
-          <div style="font-size:13px;color:var(--muted);margin-top:4px;">Thank you for your feedback 🙏</div>
-        </div>
-        {% else %}
-        <form method="POST" action="{% url 'submit_review' room.id %}" class="review-form-wrap" id="reviewForm">
-          {% csrf_token %}
-          <input type="hidden" name="rating" id="overallValue">
-          <input type="hidden" name="cleanliness_rating" id="cleanValue">
-          <input type="hidden" name="location_rating" id="locValue">
-          <input type="hidden" name="value_rating" id="valValue">
-          <input type="hidden" name="host_rating" id="hostValue">
-          <div style="margin-bottom:18px;">
-            <div class="picker-label">Overall Rating</div>
-            <div class="star-picker" id="overallPicker">
-              <input type="radio" name="overall" id="s5" value="5"><label for="s5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-              <input type="radio" name="overall" id="s4" value="4"><label for="s4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-              <input type="radio" name="overall" id="s3" value="3"><label for="s3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-              <input type="radio" name="overall" id="s2" value="2"><label for="s2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-              <input type="radio" name="overall" id="s1" value="1"><label for="s1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
-            </div>
-            <div style="font-size:12px;color:var(--teal);margin-top:6px;height:16px;" id="ratingLabel"></div>
-          </div>
-          <div class="picker-label" style="margin-bottom:10px;">Category Rating</div>
-          <div class="cat-ratings">
-            <div class="cat-item"><div class="cat-name">Cleanliness</div><div class="cat-stars"><input type="radio" name="clean" id="c5" value="5"><label for="c5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="clean" id="c4" value="4"><label for="c4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="clean" id="c3" value="3"><label for="c3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="clean" id="c2" value="2"><label for="c2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="clean" id="c1" value="1"><label for="c1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label></div></div>
-            <div class="cat-item"><div class="cat-name">Location</div><div class="cat-stars"><input type="radio" name="loc" id="l5" value="5"><label for="l5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="loc" id="l4" value="4"><label for="l4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="loc" id="l3" value="3"><label for="l3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="loc" id="l2" value="2"><label for="l2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="loc" id="l1" value="1"><label for="l1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label></div></div>
-            <div class="cat-item"><div class="cat-name">Value for Money</div><div class="cat-stars"><input type="radio" name="val" id="v5" value="5"><label for="v5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="val" id="v4" value="4"><label for="v4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="val" id="v3" value="3"><label for="v3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="val" id="v2" value="2"><label for="v2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="val" id="v1" value="1"><label for="v1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label></div></div>
-            <div class="cat-item"><div class="cat-name">Host Behaviour</div><div class="cat-stars"><input type="radio" name="host" id="h1" value="1"><label for="h1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="host" id="h2" value="2"><label for="h2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="host" id="h3" value="3"><label for="h3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="host" id="h4" value="4"><label for="h4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="host" id="h5" value="5"><label for="h5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label></div></div>
-          </div>
-          <div style="margin-bottom:14px;">
-            <div class="picker-label" style="margin-bottom:8px;">Your Feedback</div>
-            <textarea class="sm-textarea" id="reviewText" name="comment" placeholder="Apna experience share karein..." rows="4"></textarea>
-            <div style="text-align:right;font-size:11px;color:var(--muted);margin-top:4px;" id="charCount">0 / 500</div>
-          </div>
-          <button type="submit" class="sm-btn" id="submitBtn" disabled>Give Feedback</button>
-        </form>
-        {% endif %}
-
-        <div style="display:flex;align-items:flex-start;gap:24px;margin:20px 0;flex-wrap:wrap;">
-          <div>
-            <div class="rating-big">{{ avg_rating|default:"—" }}</div>
-            <div class="stars-row">
-              {% with rating=avg_rating|default:0 %}
-              {% if rating >= 1 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-              {% if rating >= 2 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-              {% if rating >= 3 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-              {% if rating >= 4 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-              {% if rating >= 5 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-              {% endwith %}
-            </div>
-            <div style="font-size:12px;color:var(--muted);">{{ total_reviews }} Based on reviews</div>
-          </div>
-          <div style="flex:1;min-width:160px;padding-top:6px;">
-            <div style="display:flex;flex-direction:column;gap:7px;">
-              <div class="bar-row"><span class="bar-label">Cleanliness</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_cleanliness_percent }}%"></div></div><span class="bar-val">{{ avg_cleanliness|default:"—" }}</span></div>
-              <div class="bar-row"><span class="bar-label">Location</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_location_percent }}%"></div></div><span class="bar-val">{{ avg_location|default:"—" }}</span></div>
-              <div class="bar-row"><span class="bar-label">Value</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_value_percent }}%"></div></div><span class="bar-val">{{ avg_value|default:"—" }}</span></div>
-              <div class="bar-row"><span class="bar-label">Host</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_host_percent }}%"></div></div><span class="bar-val">{{ avg_host|default:"—" }}</span></div>
-            </div>
-          </div>
-        </div>
-
-        <div id="reviewsList">
-          {% for review in reviews %}
-          <div class="review-card">
-            <div class="rev-top">
-              <div style="display:flex;align-items:center;gap:10px;">
-                <div class="rev-avatar" style="background:linear-gradient(135deg,#0EA5C9,#0F1F3D);">{{ review.user.username|slice:":2"|upper }}</div>
-                <div><div class="rev-name">{{ review.user.username }}</div><div class="rev-date">{{ review.created_at|date:"M Y" }}</div></div>
-              </div>
-              <div style="display:flex;gap:3px;">
-                {% if review.rating >= 1 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-                {% if review.rating >= 2 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-                {% if review.rating >= 3 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-                {% if review.rating >= 4 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-                {% if review.rating >= 5 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
-              </div>
-            </div>
-            <p class="rev-text">{{ review.comment }}</p>
-          </div>
-          {% empty %}
-          <p style="text-align:center;color:var(--muted);padding:20px;">No reviews yet.</p>
-          {% endfor %}
-        </div>
-
-      </div>
-
-    </div><!-- end left -->
-
-    <!-- ── FAQ SECTION ── -->
-<div class="section-card fu d4">
-  <div class="sec-title"><div class="step-badge teal">?</div> Ask About This Room</div>
-  <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Have a question about this room? Ask our AI — it knows everything about this listing!</p>
-  
-  <!-- Chat History -->
-  <div id="faqChat" style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;max-height:360px;overflow-y:auto;"></div>
-  
-  <!-- Input -->
-  <div style="display:flex;gap:10px;">
-    <input type="text" id="faqInput" placeholder="e.g. Is parking available? Is it near metro?" 
-      style="flex:1;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:14px;font-family:'Instrument Sans',sans-serif;color:var(--navy);outline:none;"
-      onkeydown="if(event.key==='Enter') askFaq()"/>
-    <button onclick="askFaq()" id="faqBtn"
-      style="background:var(--teal);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;white-space:nowrap;">
-      Ask AI ✦
-    </button>
   </div>
 </div>
+  
+<!-- PAGE GRID -->
+<div class="detail-page-grid">
 
+  <!-- LEFT -->
+  <div>
 
-    <!-- ══ SIDEBAR ══ -->
-    <!-- ══ SIDEBAR ══ -->
-    <div>
-      <div class="sidebar-card" style="padding: 24px; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border-radius: 16px;">
-    
-    <div style="margin-bottom: 20px;">
-        <div style="display:flex; align-items:baseline; gap:4px;">
-            <span style="font-size:28px; font-weight: 800; color: #1e293b;">₹{{ room.rent }}</span>
-            <span style="font-size:14px; color:#64748b; font-weight: 500;">/ month</span>
-        </div>
-        <div style="font-size:13px; color:#64748b; margin-top: 4px; display: flex; align-items: center; gap: 6px;">
-            <span style="background: #f1f5f9; padding: 2px 8px; border-radius: 4px;">+ ₹{{ room.maintenance }} Maint.</span>
-            <span style="color: #cbd5e1;">|</span>
-            <span>Deposit: <strong>₹{{ room.deposit }}</strong></span>
-        </div>
+    <!-- STEP 1: ROOM BASICS -->
+    <div class="section-card fu d1">
+      <div class="sec-title"><div class="step-badge-sm">1</div> Room Basics</div>
+      <div class="info-grid">
+        <div class="info-item" style="grid-column:1/-1;"><div class="i-label">Listing Title</div><div class="i-val" style="font-size:15px;">{{ room.title }}</div></div>
+        <div class="info-item"><div class="i-label">City</div><div class="i-val teal">{{ room.city }}</div></div>
+        <div class="info-item"><div class="i-label">Locality / Area</div><div class="i-val">{{ room.area }}</div></div>
+        <div class="info-item"><div class="i-label">Full Address</div><div class="i-val muted">{{ room.address }}</div></div>
+        <div class="info-item"><div class="i-label">Room Type</div><div class="i-val teal">{{ room.room_type }}</div></div>
+        <div class="info-item"><div class="i-label">BHK Config</div><div class="i-val">{{ room.bhk_config }}</div></div>
+        <div class="info-item"><div class="i-label">Floor</div><div class="i-val">{{ room.floor }}</div></div>
+        <div class="info-item"><div class="i-label">Available From</div><div class="i-val green">{{ room.available_from }}</div></div>
+        <div class="info-item"><div class="i-label">Minimum Stay</div><div class="i-val">{{ room.min_stay }}</div></div>
+      </div>
     </div>
 
-    <div style="background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%); border: 1px solid #99f6e4; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
-        <div style="display:flex; align-items:center; gap:12px;">
-            <div style="width:48px; height:48px; background: #0d9488; color:white; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size: 18px; font-weight:bold; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
-                {{ room.owner.username|slice:":1"|upper }}
-            </div>
-            <div style="flex: 1;">
-                <div style="font-weight:700; font-size:15px; color:#134e4a;">{{ room.contact_name|default:room.owner.username }}</div>
-                <div style="display: flex; align-items: center; gap: 4px; font-size:11px; color:#0f766e; font-weight: 600;">
-                    <span>🛡️ Verified Host</span>
-                    <span style="color: #5eead4;">•</span>
-                    <span>Jan 2024</span>
-                </div>
-            </div>
+    <!-- STEP 2: PRICING -->
+    <div class="section-card fu d2">
+      <div class="sec-title"><div class="step-badge-sm teal">2</div> Pricing &amp; Deposit</div>
+      <div class="price-highlight">
+        <div style="display:flex;align-items:baseline;gap:6px;">
+          <span style="font-size:18px;color:rgba(255,255,255,.6);font-weight:600;">₹</span>
+          <span class="price-big">{{ room.rent }}</span>
+          <span style="font-size:14px;color:rgba(255,255,255,.7);margin-left:4px;">/ month</span>
         </div>
+        <div style="display:flex;gap:24px;margin-top:12px;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:10px;color:rgba(255,255,255,.45);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;">Security Deposit</div>
+            <div style="font-size:14px;font-weight:600;color:#fff;">{{ room.deposit }}</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:rgba(255,255,255,.45);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;">Maintenance</div>
+            <div style="font-size:14px;font-weight:600;color:#fff;">{{ room.maintenance }}</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">What's Included in Rent</div>
+        <div class="incl-grid">
+          <span class="incl-chip {% if included.wifi %}incl-yes{% else %}incl-no{% endif %}">{% if included.wifi %}✓{% else %}✗{% endif %} WiFi</span>
+          <span class="incl-chip {% if included.electricity %}incl-yes{% else %}incl-no{% endif %}">{% if included.electricity %}✓{% else %}✗{% endif %} Electricity</span>
+          <span class="incl-chip {% if included.water %}incl-yes{% else %}incl-no{% endif %}">{% if included.water %}✓{% else %}✗{% endif %} Water</span>
+          <span class="incl-chip {% if included.gas %}incl-yes{% else %}incl-no{% endif %}">{% if included.gas %}✓{% else %}✗{% endif %} Gas</span>
+          <span class="incl-chip {% if included.cooking %}incl-yes{% else %}incl-no{% endif %}">{% if included.cooking %}✓{% else %}✗{% endif %} Cooking</span>
+          <span class="incl-chip {% if included.housekeeping %}incl-yes{% else %}incl-no{% endif %}">{% if included.housekeeping %}✓{% else %}✗{% endif %} Housekeeping</span>
+        </div>
+      </div>
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;">
-        <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; font-weight: 500;">
-            <span style="font-size: 16px;">📅</span> 
-            <span>Available from: <strong style="color: #0d9488;">{{ room.available_from|date:"M d, Y" }}</strong></span>
+    <!-- STEP 3: AMENITIES -->
+    <div class="section-card fu d2">
+      <div class="sec-title"><div class="step-badge-sm teal">3</div> Amenities &amp; Furnishing</div>
+      <div style="margin-bottom:20px;">
+        <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">Furnishing Status</div>
+        <div class="furnish-group">
+          <div class="furnish-btn {% if room.furnishing_status == 'Fully' %}active{% endif %}"><div class="f-dot"></div>Fully Furnished</div>
+          <div class="furnish-btn {% if room.furnishing_status == 'Semi' %}active{% endif %}"><div class="f-dot"></div>Semi Furnished</div>
+          <div class="furnish-btn {% if room.furnishing_status == 'Unfurnished' %}active{% endif %}"><div class="f-dot"></div>Unfurnished</div>
         </div>
-        <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:hsl(215, 25%, 27%); font-weight: 500;">
-            <span style="font-size: 16px;">⏱️</span> 
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">Available Amenities <span style="color:var(--teal);font-size:11px;text-transform:none;letter-spacing:0;">(highlighted = available)</span></div>
+        <div class="amenity-grid-detail">
+          {% for amenity in room.amenities.all %}
+          <div class="amenity-item active"><div class="ame-check-dot">✓</div><div class="ame-icon">{{ amenity.icon }}</div><div class="ame-label-d">{{ amenity.name }}</div></div>
+          {% empty %}
+          <div class="amenity-item inactive"><div class="ame-icon">—</div><div class="ame-label-d">No amenities added</div></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: PHOTOS -->
+    <div class="section-card fu d3">
+      <div class="sec-title"><div class="step-badge-sm amber">4</div> Photos</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;">This listing has <strong style="color:var(--navy);">{{ room.images.count }} photos</strong></p>
+      <div class="photos-scroll">
+        {% for img in room.images.all %}
+        <div class="photo-thumb"><img src="{{ img.image.url }}" alt="{{ room.title }}"></div>
+        {% empty %}
+        <div class="photo-thumb">🏠</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- STEP 5: DESCRIPTION -->
+    <div class="section-card fu d3">
+      <div class="sec-title"><div class="step-badge-sm amber">5</div> Description &amp; Rules</div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('about',this)">About the Room</button>
+        <button class="tab-btn" onclick="switchTab('rules',this)">House Rules</button>
+        <button class="tab-btn" onclick="switchTab('location',this)">Location &amp; Nearby</button>
+      </div>
+      <div id="tab-about" class="tab-panel active">
+        <p class="desc-text">{{ room.description }}</p>
+      </div>
+      <div id="tab-rules" class="tab-panel">
+        <ul class="rules-list">
+          <li class="rule-item"><div class="rule-dot"></div><span>{{ room.house_rules }}</span></li>
+        </ul>
+      </div>
+      <div id="tab-location" class="tab-panel">
+        <div class="loc-tags">
+          <div class="loc-tag"><span>🚇</span><div><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Nearest Metro</div><strong>{{ room.nearest_metro }}</strong></div></div>
+          <div class="loc-tag"><span>🏢</span><div><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Distance from Office Hub</div><strong>{{ room.distance_to_hub }}</strong></div></div>
+        </div>
+        <div class="map-box">
+          <div class="map-grid-lines"></div>
+          <div style="position:relative;z-index:1;"><div class="map-pin"><div class="map-pin-inner"></div></div></div>
+          <div class="map-label">📍 {{ room.area }}, {{ room.city }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6: FLATMATE PREFERENCES -->
+    <div class="section-card fu d4">
+      <div class="sec-title"><div class="step-badge-sm amber">6</div> Flatmate Preferences</div>
+      <div class="pref-grid">
+        <div class="pref-item"><div class="pref-label">Preferred Gender</div><div class="pref-val">{{ room.pref_gender }}</div></div>
+        <div class="pref-item"><div class="pref-label">Preferred Occupation</div><div class="pref-val">{{ room.pref_occupation }}</div></div>
+        <div class="pref-item" style="grid-column:1/-1;">
+          <div class="pref-label">Sleep Schedule Preference</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+            <div class="radio-pill active"><div class="radio-dot2"></div>{{ room.sleep_schedule }}</div>
+          </div>
+        </div>
+        <div class="pref-item" style="grid-column:1/-1;">
+          <div class="pref-label">Cleanliness Expectation</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin:8px 0 10px;">
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:28px;color:var(--navy);">{{ room.cleanliness_level }}</span>
+            <span style="font-size:13px;color:var(--muted);">/ 10</span>
+          </div>
+          <div class="pref-bar-wrap"><div class="pref-bar-fill" style="width:{{ room.cleanliness_level }}0%"></div></div>
+          <div style="display:flex;justify-content:space-between;margin-top:5px;"><span style="font-size:10px;color:var(--muted);">Relaxed</span><span style="font-size:10px;color:var(--muted);">Very tidy</span></div>
+        </div>
+        <div class="pref-item" style="grid-column:1/-1;">
+          <div class="pref-label">Guest / Visitor Policy</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+            <div class="radio-pill active"><div class="radio-dot2"></div>{{ room.guest_policy }}</div>
+          </div>
+        </div>
+      </div>
+      {% if room.house_rules %}
+      <div class="host-note" style="margin-top:16px;">
+        <div style="font-size:10px;font-weight:800;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;">Anything else in a flatmate?</div>
+        <p style="font-size:13px;color:var(--navy);line-height:1.7;">{{ room.house_rules }}</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- STEP 7: CONTACT -->
+    <div class="section-card fu d4">
+      <div class="sec-title"><div class="step-badge-sm">7</div> Host Contact Details</div>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap;">
+        <div class="rev-avatar" style="width:48px;height:48px;font-size:18px;">{{ room.owner.username|slice:":1"|upper }}</div>
+        <div>
+          <div style="font-weight:700;font-size:16px;color:var(--navy);">{{ room.contact_name|default:room.owner.get_full_name }}</div>
+          <div style="font-size:12px;color:var(--muted);">Host since January 2024</div>
+        </div>
+        <div style="margin-left:auto;"><span class="trust-chip">✓ ID Verified</span></div>
+      </div>
+      <div class="contact-row">
+        <div class="contact-item">
+          <div class="i-label">Phone</div>
+          <div class="i-val" style="margin-top:4px;">📱 <a href="tel:{{ room.contact_phone }}">{{ room.contact_phone }}</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="i-label">Email</div>
+          <div class="i-val" style="margin-top:4px;">📧 <a href="mailto:{{ room.contact_email }}">{{ room.contact_email }}</a></div>
+        </div>
+      </div>
+      <div style="background:var(--teal-lt);border-radius:12px;padding:14px 16px;margin-top:14px;font-size:13px;color:var(--navy);line-height:1.7;border:1px solid rgba(14,165,201,.15);">
+        🔒 <strong>Privacy protected:</strong> Full address shared only after match confirmation.
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="section-card fu d4">
+      <div class="sec-title"><div class="step-badge-sm green">★</div> Reviews from Previous Tenants</div>
+
+      {% if messages %}{% for message in messages %}
+        {% if message.tags == 'error' %}<div class="msg-error">⚠️ Aapne pehle hi review submit kar di hai!</div>
+        {% elif message.tags == 'success' %}<div class="msg-success-r">✅ {{ message }}</div>{% endif %}
+      {% endfor %}{% endif %}
+
+      {% if already_reviewed %}
+      <div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:20px;text-align:center;margin-bottom:20px;">
+        <div style="font-size:24px;margin-bottom:6px;">✅</div>
+        <div style="font-weight:700;color:#059669;font-size:15px;">Already submitted!</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:4px;">Thank you for your feedback 🙏</div>
+      </div>
+      {% else %}
+      <form method="POST" action="{% url 'submit_review' room.id %}" class="review-form-wrap">
+        {% csrf_token %}
+        <input type="hidden" name="rating" id="overallValue">
+        <input type="hidden" name="cleanliness_rating" id="cleanValue">
+        <input type="hidden" name="location_rating" id="locValue">
+        <input type="hidden" name="value_rating" id="valValue">
+        <input type="hidden" name="host_rating" id="hostValue">
+        <div style="margin-bottom:18px;">
+          <div class="picker-label">Overall Rating</div>
+          <div class="star-picker">
+            <input type="radio" name="overall" id="s5" value="5"><label for="s5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+            <input type="radio" name="overall" id="s4" value="4"><label for="s4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+            <input type="radio" name="overall" id="s3" value="3"><label for="s3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+            <input type="radio" name="overall" id="s2" value="2"><label for="s2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+            <input type="radio" name="overall" id="s1" value="1"><label for="s1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label>
+          </div>
+          <div style="font-size:12px;color:var(--teal);margin-top:6px;height:16px;" id="ratingLabel"></div>
+        </div>
+        <div class="picker-label" style="margin-bottom:10px;">Category Ratings</div>
+        <div class="cat-ratings">
+          <div class="cat-item"><div class="cat-name">Cleanliness</div><div class="cat-stars"><input type="radio" name="clean" id="c5" value="5"><label for="c5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="clean" id="c4" value="4"><label for="c4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="clean" id="c3" value="3"><label for="c3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="clean" id="c2" value="2"><label for="c2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="clean" id="c1" value="1"><label for="c1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label></div></div>
+          <div class="cat-item"><div class="cat-name">Location</div><div class="cat-stars"><input type="radio" name="loc" id="l5" value="5"><label for="l5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="loc" id="l4" value="4"><label for="l4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="loc" id="l3" value="3"><label for="l3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="loc" id="l2" value="2"><label for="l2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="loc" id="l1" value="1"><label for="l1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label></div></div>
+          <div class="cat-item"><div class="cat-name">Value for Money</div><div class="cat-stars"><input type="radio" name="val" id="v5" value="5"><label for="v5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="val" id="v4" value="4"><label for="v4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="val" id="v3" value="3"><label for="v3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="val" id="v2" value="2"><label for="v2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="val" id="v1" value="1"><label for="v1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label></div></div>
+          <div class="cat-item"><div class="cat-name">Host Behaviour</div><div class="cat-stars"><input type="radio" name="host" id="h5" value="5"><label for="h5"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="host" id="h4" value="4"><label for="h4"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="host" id="h3" value="3"><label for="h3"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="host" id="h2" value="2"><label for="h2"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label><input type="radio" name="host" id="h1" value="1"><label for="h1"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></label></div></div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div class="picker-label" style="margin-bottom:8px;">Your Feedback</div>
+          <textarea class="sm-textarea" id="reviewText" name="comment" placeholder="Apna experience share karein..." rows="4"></textarea>
+          <div style="text-align:right;font-size:11px;color:var(--muted);margin-top:4px;" id="charCount">0 / 500</div>
+        </div>
+        <button type="submit" class="sm-btn" id="submitBtn" disabled>Give Feedback</button>
+      </form>
+      {% endif %}
+
+      <!-- Rating Overview -->
+      <div style="display:flex;align-items:flex-start;gap:24px;margin:20px 0;flex-wrap:wrap;">
+        <div>
+          <div class="rating-big">{{ avg_rating|default:"—" }}</div>
+          <div class="stars-row">
+            {% with rating=avg_rating|default:0 %}
+            {% if rating >= 1 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+            {% if rating >= 2 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+            {% if rating >= 3 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+            {% if rating >= 4 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+            {% if rating >= 5 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+            {% endwith %}
+          </div>
+          <div style="font-size:12px;color:var(--muted);">{{ total_reviews }} reviews</div>
+        </div>
+        <div style="flex:1;min-width:160px;padding-top:6px;">
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div class="bar-row"><span class="bar-label">Cleanliness</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_cleanliness_percent }}%"></div></div><span class="bar-val">{{ avg_cleanliness|default:"—" }}</span></div>
+            <div class="bar-row"><span class="bar-label">Location</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_location_percent }}%"></div></div><span class="bar-val">{{ avg_location|default:"—" }}</span></div>
+            <div class="bar-row"><span class="bar-label">Value</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_value_percent }}%"></div></div><span class="bar-val">{{ avg_value|default:"—" }}</span></div>
+            <div class="bar-row"><span class="bar-label">Host</span><div class="bar-track"><div class="bar-fill" style="width:{{ avg_host_percent }}%"></div></div><span class="bar-val">{{ avg_host|default:"—" }}</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Cards -->
+      {% for review in reviews %}
+      <div class="review-card">
+        <div class="rev-top">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="rev-avatar">{{ review.user.username|slice:":2"|upper }}</div>
+            <div><div class="rev-name">{{ review.user.username }}</div><div class="rev-date">{{ review.created_at|date:"M Y" }}</div></div>
+          </div>
+          <div style="display:flex;gap:3px;">
+            {% if review.rating >= 1 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+            {% if review.rating >= 2 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+            {% if review.rating >= 3 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+            {% if review.rating >= 4 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+            {% if review.rating >= 5 %}<div class="star"></div>{% else %}<div class="star half"></div>{% endif %}
+          </div>
+        </div>
+        <p class="rev-text">{{ review.comment }}</p>
+      </div>
+      {% empty %}
+      <p style="text-align:center;color:var(--muted);padding:20px;">No reviews yet.</p>
+      {% endfor %}
+    </div>
+
+    <!-- ASK AI — left column ke andar, reviews ke baad -->
+    <div class="section-card fu d4">
+      <div class="sec-title"><div class="step-badge-sm teal">?</div> Ask About This Room</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Have a question? Ask our AI — it knows everything about this listing!</p>
+      <div class="faq-chat" id="faqChat"></div>
+      <div class="faq-input-row">
+        <input type="text" class="faq-input" id="faqInput" placeholder="e.g. Is parking available? Is it near metro?" onkeydown="if(event.key==='Enter') askFaq()"/>
+        <button class="faq-btn" onclick="askFaq()" id="faqBtn">Ask AI ✦</button>
+      </div>
+    </div>
+
+  </div><!-- end left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-sticky">
+
+      <!-- Enquiry Card -->
+      <div class="sidebar-main-card">
+        <div style="margin-bottom:20px;">
+          <div style="display:flex;align-items:baseline;gap:4px;">
+            <span style="font-size:28px;font-weight:800;color:var(--navy);">₹{{ room.rent }}</span>
+            <span style="font-size:14px;color:var(--muted);font-weight:500;">/ month</span>
+          </div>
+          <div style="font-size:13px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <span style="background:var(--off);padding:2px 8px;border-radius:4px;">+ {{ room.maintenance }} Maint.</span>
+            <span style="color:var(--border);">|</span>
+            <span>Deposit: <strong>{{ room.deposit }}</strong></span>
+          </div>
+        </div>
+
+        <!-- Host -->
+        <div style="background:linear-gradient(135deg,#f0fdfa,#ccfbf1);border:1px solid #99f6e4;border-radius:12px;padding:16px;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:48px;height:48px;background:#0d9488;color:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;font-family:'Bricolage Grotesque',sans-serif;">
+              {{ room.owner.username|slice:":1"|upper }}
+            </div>
+            <div>
+              <div style="font-weight:700;font-size:15px;color:#134e4a;">{{ room.contact_name|default:room.owner.username }}</div>
+              <div style="font-size:11px;color:#0f766e;font-weight:600;">🛡️ Verified Host · Jan 2024</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Availability -->
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--navy);font-weight:500;">
+            <span style="font-size:16px;">📅</span>
+            <span>Available from: <strong style="color:#0d9488;">{{ room.available_from|date:"M d, Y" }}</strong></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--navy);font-weight:500;">
+            <span style="font-size:16px;">⏱️</span>
             <span>Min. Stay: <strong>{{ room.min_stay }}</strong></span>
+          </div>
         </div>
-    </div>
 
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-        <form action="{% url 'send_message' room.id %}" method="POST" style="margin: 0;">
-    {% csrf_token %}
-    <input type="hidden" name="body"
-           value="Hi, I am interested in your room '{{ room.title }}'. Please share more details.">
-    <button type="submit" class="cta-btn"
-        style="width:100%; background:#0d9488; color:white; border:none; padding:14px; border-radius:10px; font-weight:700; cursor:pointer; font-size:15px; transition: 0.3s; box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.3);">
-        💬 Send Direct Enquiry
-    </button>
-</form>
-
-        <button class="cta-btn" style="width:100%; background:#1e293b; color:white; border:none; padding:14px; border-radius:10px; font-weight:700; cursor:pointer; font-size:15px;">
+        <!-- CTAs -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <form action="{% url 'send_message' room.id %}" method="POST" style="margin:0;">
+            {% csrf_token %}
+            <input type="hidden" name="body" value="Hi, I am interested in your room '{{ room.title }}'. Please share more details.">
+            <button type="submit" style="width:100%;background:#0d9488;color:#fff;border:none;padding:14px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;box-shadow:0 4px 6px -1px rgba(13,148,136,.3);">
+              💬 Send Direct Enquiry
+            </button>
+          </form>
+          <button style="width:100%;background:var(--navy);color:#fff;border:none;padding:14px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;">
             📅 Schedule a Visit
-        </button>
-
-        <div style="display: flex; gap: 8px;">
-            <button style="flex: 1; background:white; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #475569; cursor: pointer;">
-                ♡ Wishlist
-            </button>
-            <button style="flex: 1; background:white; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #475569; cursor: pointer;">
-                📱 Call Host
-            </button>
+          </button>
+          <div style="display:flex;gap:8px;">
+            <button style="flex:1;background:#fff;border:1px solid var(--border);padding:10px;border-radius:8px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;">♡ Wishlist</button>
+            <button style="flex:1;background:#fff;border:1px solid var(--border);padding:10px;border-radius:8px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;">📱 Call Host</button>
+          </div>
         </div>
-    </div>
 
-    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #e2e8f0; text-align: center;">
-        <div style="font-size:11px; color:#94a3b8; font-weight: 500;">
-            Typical Response Rate: <span style="color: #0d9488;">98%</span>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px dashed var(--border);text-align:center;">
+          <div style="font-size:11px;color:var(--muted);">Typical Response Rate: <span style="color:#0d9488;font-weight:700;">98%</span></div>
         </div>
-    </div>
-</div>
+      </div>
 
       <!-- Why StayMatch -->
       <div class="why-card">
-        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">Why StayMatch?</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">Why StayMatch?</div>
         <div class="why-item">
           <div class="why-icon" style="background:var(--teal-lt);">🔒</div>
           <div><div style="font-weight:600;font-size:13px;color:var(--navy);margin-bottom:2px;">Safe &amp; verified</div><div style="font-size:12px;color:var(--muted);">All enquiries from ID-verified users only.</div></div>
@@ -840,237 +647,103 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 0 32px;}
         </div>
       </div>
 
-    </div><!-- end sidebar -->
-  </div><!-- end page-grid -->
-</div>
+    </div>
+  </div><!-- end sidebar -->
 
-<!-- ══ FOOTER ══ -->
-<footer>
-  <div class="container">
-    <div class="footer-top" style="display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08);">
-      <div style="max-width:260px;">
-        <div class="display" style="font-size:22px;font-weight:800;color:#fff;margin-bottom:10px;">StayMatch</div>
-        <p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,.4);">AI-powered flatmate matching for students and professionals across India.</p>
-      </div>
-      <div class="footer-links" style="display:flex;gap:56px;flex-wrap:wrap;">
-        <div>
-          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">PRODUCT</div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">How It Works</a>
-            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Browse Listings</a>
-            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">List a Room</a>
-            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Pricing</a>
-          </div>
-        </div>
-        <div>
-          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">CITIES</div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Bangalore</a>
-            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Mumbai</a>
-            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Delhi</a>
-            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Hyderabad</a>
-          </div>
-        </div>
-        <div>
-          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">COMPANY</div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">About Us</a>
-            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Blog</a>
-            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Privacy Policy</a>
-            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Terms of Use</a>
-          </div>
-        </div>
-        <div>
-          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">CONTACT US</div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <a href="mailto:hello@staymatch.in" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">📧 hello@staymatch.in</a>
-            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">📱 +91 98765 43210</a>
-            <span style="color:rgba(255,255,255,.55);font-size:14px;">📍 Koramangala, Bangalore</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom" style="padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-      <div style="font-size:13px;color:rgba(255,255,255,.25);">© 2026 StayMatch Technologies Pvt. Ltd. · Made in India 🇮🇳</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.25);">Bangalore · Mumbai · Delhi · Hyderabad · Pune · Chennai · Kolkata · Patna</div>
-    </div>
-  </div>
-</footer>
+</div><!-- end page grid -->
 
 <script>
-/* ── hamburger ── */
-const hBtn = document.getElementById('hamburgerBtn');
-const mNav = document.getElementById('mobileNav');
-hBtn.addEventListener('click', () => {
-  const open = mNav.classList.toggle('open');
-  hBtn.classList.toggle('open', open);
-  document.body.style.overflow = open ? 'hidden' : '';
-});
-mNav.querySelectorAll('a').forEach(l => l.addEventListener('click', () => {
-  mNav.classList.remove('open'); hBtn.classList.remove('open'); document.body.style.overflow = '';
-}));
-
-/* ── tabs ── */
-function switchTab(id, el) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
+/* hamburger already in base */
+function switchTab(id,el){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
   el.classList.add('active');
 }
-
-/* ── save heart toggle ── */
-function toggleSave(btn) {
-  const saved = btn.textContent === '♡';
-  btn.textContent = saved ? '♥' : '♡';
-  btn.style.background = saved ? '#fff0f0' : 'rgba(255,255,255,.9)';
-  btn.style.color = saved ? '#ef4444' : '';
+function toggleSave(btn){
+  const saved=btn.textContent==='♡';
+  btn.textContent=saved?'♥':'♡';
+  btn.style.background=saved?'#fff0f0':'rgba(255,255,255,.9)';
 }
 
-/* ── gallery ── */
-const mainGalleryImg = document.getElementById('mainGalleryImg');
-document.querySelectorAll('.gallery-thumb-img').forEach(thumb => {
-  thumb.addEventListener('click', () => { if (mainGalleryImg) mainGalleryImg.src = thumb.src; });
+/* gallery */
+document.querySelectorAll('.gallery-thumb-img').forEach(thumb=>{
+  thumb.addEventListener('click',()=>{
+    const main=document.getElementById('mainGalleryImg');
+    if(main) main.src=thumb.src;
+  });
 });
-const photoCountBtn = document.getElementById('photoCountBtn');
-const galleryModal = document.getElementById('galleryModal');
-const galleryCloseBtn = document.getElementById('galleryCloseBtn');
-if (photoCountBtn && galleryModal) photoCountBtn.addEventListener('click', () => galleryModal.classList.add('open'));
-if (galleryCloseBtn && galleryModal) {
-  galleryCloseBtn.addEventListener('click', () => galleryModal.classList.remove('open'));
-  galleryModal.addEventListener('click', e => { if (e.target === galleryModal) galleryModal.classList.remove('open'); });
+const photoBtn=document.getElementById('photoCountBtn');
+const modal=document.getElementById('galleryModal');
+const closeBtn=document.getElementById('galleryCloseBtn');
+if(photoBtn&&modal) photoBtn.addEventListener('click',()=>modal.classList.add('open'));
+if(closeBtn&&modal){
+  closeBtn.addEventListener('click',()=>modal.classList.remove('open'));
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open');});
 }
 
-/* ── star SVG helper ── */
-function starSVG(filled) {
-  const f = filled ? '#F59E0B' : '#E4E8F0';
-  return `<svg width="16" height="16" viewBox="0 0 24 24" fill="${f}"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+/* review form */
+const ratingLabels={1:'Bahut kharab',2:'Theek-thaak',3:'Acha',4:'Bahut acha',5:'Excellent!'};
+function checkForm(){
+  const hasR=document.getElementById('overallValue').value;
+  const ta=document.getElementById('reviewText');
+  const hasT=ta&&ta.value.trim().length>=10;
+  const btn=document.getElementById('submitBtn');
+  if(btn) btn.disabled=!(hasR&&hasT);
 }
-function renderStars(id, rating) {
-  const el = document.getElementById(id); if (!el) return;
-  let h = ''; for (let i = 1; i <= 5; i++) h += starSVG(i <= rating);
-  el.innerHTML = h;
-}
-renderStars('avgStarsRow', 4.6);
-renderStars('rev1stars', 5);
-renderStars('rev2stars', 4);
-
-
-/* ── review form ── */
-const textarea = document.getElementById('reviewText');
-const charCount = document.getElementById('charCount');
-function checkForm() {
-  const hasR = document.getElementById('overallValue').value;
-  const hasT = textarea && textarea.value.trim().length >= 10;
-  const btn = document.getElementById('submitBtn');
-  if (btn) btn.disabled = !(hasR && hasT);
-}
-
-// Overall rating
-const ratingLabels = {1:'Bahut kharab', 2:'Theek-thaak', 3:'Acha', 4:'Bahut acha', 5:'Excellent!'};
-document.querySelectorAll('input[name="overall"]').forEach(r => {
-  r.addEventListener('change', () => {
-    const ov = document.getElementById('overallValue');
-    if (ov) ov.value = r.value;
-    const rl = document.getElementById('ratingLabel');
-    if (rl) rl.textContent = ratingLabels[r.value] + ' (' + r.value + '/5)';
+document.querySelectorAll('input[name="overall"]').forEach(r=>{
+  r.addEventListener('change',()=>{
+    document.getElementById('overallValue').value=r.value;
+    const rl=document.getElementById('ratingLabel');
+    if(rl) rl.textContent=ratingLabels[r.value]+' ('+r.value+'/5)';
     checkForm();
   });
 });
-
-// Overall rating — label click pe bhi catch karo
-// Jab bhi koi category star click kare, hidden field update ho
-document.querySelectorAll('input[name="clean"]').forEach(r => {
-    r.addEventListener('change', () => {
-        document.getElementById('cleanValue').value = r.value;
-    });
-});
-
-document.querySelectorAll('input[name="loc"]').forEach(r => {
-    r.addEventListener('change', () => {
-        document.getElementById('locValue').value = r.value;
-    });
-});
-
-document.querySelectorAll('input[name="val"]').forEach(r => {
-    r.addEventListener('change', () => {
-        document.getElementById('valValue').value = r.value;
-    });
-});
-
-document.querySelectorAll('input[name="host"]').forEach(r => {
-    r.addEventListener('change', () => {
-        document.getElementById('hostValue').value = r.value;
-    });
-});
-
-document.querySelectorAll('input[name="overall"]').forEach(r => {
-    r.addEventListener('change', () => {
-        document.getElementById('overallValue').value = r.value;
-    });
-});
-// Textarea char count
-if (textarea) {
-  textarea.addEventListener('input', () => {
-    const l = Math.min(textarea.value.length, 500);
-    if (charCount) charCount.textContent = l + ' / 500';
-    if (textarea.value.length > 500) textarea.value = textarea.value.slice(0, 500);
+document.querySelectorAll('input[name="clean"]').forEach(r=>r.addEventListener('change',()=>document.getElementById('cleanValue').value=r.value));
+document.querySelectorAll('input[name="loc"]').forEach(r=>r.addEventListener('change',()=>document.getElementById('locValue').value=r.value));
+document.querySelectorAll('input[name="val"]').forEach(r=>r.addEventListener('change',()=>document.getElementById('valValue').value=r.value));
+document.querySelectorAll('input[name="host"]').forEach(r=>r.addEventListener('change',()=>document.getElementById('hostValue').value=r.value));
+const textarea=document.getElementById('reviewText');
+const charCount=document.getElementById('charCount');
+if(textarea){
+  textarea.addEventListener('input',()=>{
+    const l=Math.min(textarea.value.length,500);
+    if(charCount) charCount.textContent=l+' / 500';
+    if(textarea.value.length>500) textarea.value=textarea.value.slice(0,500);
     checkForm();
   });
 }
 
-const ROOM_ID = {{ room.id }};
-
-async function askFaq() {
-  const input = document.getElementById('faqInput');
-  const btn = document.getElementById('faqBtn');
-  const chat = document.getElementById('faqChat');
-  const question = input.value.trim();
-  
-  if (!question) return;
-
-  // User bubble
-  chat.innerHTML += `
-    <div style="align-self:flex-end;background:var(--navy);color:#fff;padding:10px 16px;border-radius:14px 14px 4px 14px;font-size:13px;max-width:80%;">
-      ${question}
-    </div>`;
-
-  input.value = '';
-  btn.disabled = true;
-  btn.textContent = '...';
-
-  // Loading bubble
-  chat.innerHTML += `<div id="loadingBubble" style="align-self:flex-start;background:var(--off);border:1px solid var(--border);padding:10px 16px;border-radius:14px 14px 14px 4px;font-size:13px;color:var(--muted);">AI soch raha hai...</div>`;
-  chat.scrollTop = chat.scrollHeight;
-
-  try {
-    const formData = new FormData();
-    formData.append('question', question);
-    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-
-    const res = await fetch(`/rooms/room/${ROOM_ID}/faqs/`, {
-      method: 'POST',
-      body: formData
-    });
-    const data = await res.json();
-
+/* Ask AI */
+const ROOM_ID='{{ room.id }}';
+async function askFaq(){
+  const input=document.getElementById('faqInput');
+  const btn=document.getElementById('faqBtn');
+  const chat=document.getElementById('faqChat');
+  const question=input.value.trim();
+  if(!question) return;
+  chat.innerHTML+=`<div style="align-self:flex-end;background:var(--navy);color:#fff;padding:10px 16px;border-radius:14px 14px 4px 14px;font-size:13px;max-width:80%;">${question}</div>`;
+  input.value='';
+  btn.disabled=true;
+  btn.textContent='...';
+  chat.innerHTML+=`<div id="loadingBubble" style="align-self:flex-start;background:var(--off);border:1px solid var(--border);padding:10px 16px;border-radius:14px 14px 14px 4px;font-size:13px;color:var(--muted);">AI soch raha hai...</div>`;
+  chat.scrollTop=chat.scrollHeight;
+  try{
+    const fd=new FormData();
+    fd.append('question',question);
+    fd.append('csrfmiddlewaretoken','{{ csrf_token }}');
+    const res=await fetch(`/rooms/room/${ROOM_ID}/faqs/`,{method:'POST',body:fd});
+    const data=await res.json();
     document.getElementById('loadingBubble').remove();
-
-    chat.innerHTML += `
-      <div style="align-self:flex-start;background:var(--teal-lt);border:1px solid rgba(14,165,201,.2);padding:10px 16px;border-radius:14px 14px 14px 4px;font-size:13px;color:var(--navy);max-width:85%;line-height:1.7;">
-        <span style="font-size:10px;font-weight:800;color:var(--teal);letter-spacing:.06em;display:block;margin-bottom:4px;">AI ✦</span>
-        ${data.answer}
-      </div>`;
-
-  } catch(err) {
+    chat.innerHTML+=`<div style="align-self:flex-start;background:var(--teal-lt);border:1px solid rgba(14,165,201,.2);padding:10px 16px;border-radius:14px 14px 14px 4px;font-size:13px;color:var(--navy);max-width:85%;line-height:1.7;"><span style="font-size:10px;font-weight:800;color:var(--teal);letter-spacing:.06em;display:block;margin-bottom:4px;">AI ✦</span>${data.answer}</div>`;
+  }catch(err){
     document.getElementById('loadingBubble').remove();
-    chat.innerHTML += `<div style="color:#ef4444;font-size:13px;">Kuch galat hua, dobara try karo.</div>`;
+    chat.innerHTML+=`<div style="color:#ef4444;font-size:13px;">Kuch galat hua, dobara try karo.</div>`;
   }
-
-  btn.disabled = false;
-  btn.textContent = 'Ask AI ✦';
-  chat.scrollTop = chat.scrollHeight;
+  btn.disabled=false;
+  btn.textContent='Ask AI ✦';
+  chat.scrollTop=chat.scrollHeight;
 }
-
 </script>
-</body>
-</html>
+
+{% endblock %}

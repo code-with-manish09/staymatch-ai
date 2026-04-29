@@ -1,1989 +1,434 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>List Your Room — StayMatch</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap"
-        rel="stylesheet" />
-    <style>
-        :root {
-            --navy: #0F1F3D;
-            --teal: #0EA5C9;
-            --teal-lt: #E0F4FB;
-            --amber: #F59E0B;
-            --amber-lt: #FEF3C7;
-            --green: #10B981;
-            --white: #FFFFFF;
-            --off: #F6F7FB;
-            --border: #E4E8F0;
-            --txt: #0F1F3D;
-            --muted: #6B7A99;
-            --card-sh: 0 4px 24px rgba(15, 31, 61, 0.10);
-            --card-sh2: 0 12px 40px rgba(15, 31, 61, 0.14);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Instrument Sans', sans-serif;
-            background: var(--white);
-            color: var(--txt);
-            overflow-x: hidden;
-        }
-
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--off);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--teal);
-            border-radius: 99px;
-        }
-
-        .display {
-            font-family: 'Bricolage Grotesque', sans-serif;
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 9998;
-            opacity: .5;
-        }
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(24px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes gradPan {
-
-            0%,
-            100% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: .7;
-                transform: scale(.94);
-            }
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes checkPop {
-            0% {
-                transform: scale(0);
-            }
-
-            70% {
-                transform: scale(1.2);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes blobMorph {
-
-            0%,
-            100% {
-                border-radius: 60% 40% 70% 30%/50% 60% 40% 50%;
-            }
-
-            50% {
-                border-radius: 40% 60% 30% 70%/60% 40% 70% 30%;
-            }
-        }
-
-        .fu {
-            animation: fadeUp .6s ease forwards;
-            opacity: 0;
-        }
-
-        .d1 {
-            animation-delay: .06s
-        }
-
-        .d2 {
-            animation-delay: .14s
-        }
-
-        .d3 {
-            animation-delay: .24s
-        }
-
-        .d4 {
-            animation-delay: .36s
-        }
-
-        .grad {
-            background: linear-gradient(120deg, var(--teal), var(--navy));
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradPan 5s ease infinite;
-        }
-
-        /* ── nav ── */
-        nav {
-            position: sticky;
-            top: 0;
-            z-index: 500;
-            height: 68px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 48px;
-            background: rgba(255, 255, 255, .92);
-            backdrop-filter: blur(18px);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .nav-logo {
-            font-family: 'Bricolage Grotesque', sans-serif;
-            font-weight: 800;
-            font-size: 22px;
-            letter-spacing: -.02em;
-            color: var(--navy);
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 36px;
-        }
-
-        .nav-a {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--muted);
-            text-decoration: none;
-            transition: color .2s;
-        }
-
-        .nav-a:hover,
-        .nav-a.active {
-            color: var(--navy);
-        }
-
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 6px;
-            width: 36px;
-            height: 36px;
-        }
-
-        .hamburger span {
-            display: block;
-            width: 22px;
-            height: 2px;
-            background: var(--navy);
-            border-radius: 2px;
-            transition: all .3s ease;
-            transform-origin: center;
-        }
-
-        .hamburger.open span:nth-child(1) {
-            transform: translateY(7px) rotate(45deg);
-        }
-
-        .hamburger.open span:nth-child(2) {
-            opacity: 0;
-            transform: scaleX(0);
-        }
-
-        .hamburger.open span:nth-child(3) {
-            transform: translateY(-7px) rotate(-45deg);
-        }
-
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            top: 68px;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, .97);
-            backdrop-filter: blur(18px);
-            border-bottom: 1px solid var(--border);
-            padding: 20px 24px 28px;
-            flex-direction: column;
-            gap: 4px;
-            z-index: 499;
-            animation: slideDown .25s ease forwards;
-        }
-
-        .mobile-nav.open {
-            display: flex;
-        }
-
-        .mobile-nav .nav-a {
-            font-size: 16px;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .mobile-nav-btns {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-        }
-
-        /* ── buttons ── */
-        .btn-primary {
-            background: var(--navy);
-            color: #fff;
-            padding: 13px 28px;
-            border-radius: 10px;
-            font-family: 'Bricolage Grotesque', sans-serif;
-            font-weight: 700;
-            font-size: 15px;
-            border: none;
-            cursor: pointer;
-            transition: background .2s, transform .2s, box-shadow .2s;
-            letter-spacing: -.01em;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-primary:hover {
-            background: #1a3260;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(15, 31, 61, .2);
-        }
-
-        .btn-teal {
-            background: var(--teal);
-            color: #fff;
-            padding: 13px 28px;
-            border-radius: 10px;
-            font-family: 'Bricolage Grotesque', sans-serif;
-            font-weight: 700;
-            font-size: 15px;
-            border: none;
-            cursor: pointer;
-            transition: all .2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-teal:hover {
-            background: #0993b3;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(14, 165, 201, .3);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--navy);
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-family: 'Bricolage Grotesque', sans-serif;
-            font-weight: 600;
-            font-size: 14px;
-            border: 1.5px solid var(--border);
-            cursor: pointer;
-            transition: all .2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-outline:hover {
-            border-color: var(--navy);
-            background: var(--off);
-        }
-
-        .section-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            background: var(--teal-lt);
-            color: var(--teal);
-            padding: 6px 16px;
-            border-radius: 99px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: .04em;
-            margin-bottom: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 48px;
-        }
-
-        .chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 11px;
-            border-radius: 99px;
-            font-size: 11px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        /* ── form card ── */
-        .form-card {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 32px;
-            box-shadow: var(--card-sh);
-        }
-
-        .form-section-title {
-            font-family: 'Bricolage Grotesque', sans-serif;
-            font-weight: 700;
-            font-size: 17px;
-            color: var(--navy);
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .form-section-title .step-badge {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--navy);
-            color: #fff;
-            font-size: 12px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .form-section-title .step-badge.teal {
-            background: var(--teal);
-        }
-
-        .form-section-title .step-badge.amber {
-            background: var(--amber);
-        }
-
-        /* ── inputs ── */
-        .field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .field-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--navy);
-        }
-
-        .field-hint {
-            font-size: 11px;
-            color: var(--muted);
-        }
-
-        .field-input {
-            width: 100%;
-            padding: 11px 14px;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            font-family: 'Instrument Sans', sans-serif;
-            font-size: 14px;
-            color: var(--navy);
-            background: #fff;
-            transition: border-color .2s, box-shadow .2s;
-            outline: none;
-            appearance: none;
-        }
-
-        .field-input:focus {
-            border-color: var(--teal);
-            box-shadow: 0 0 0 3px rgba(14, 165, 201, .12);
-        }
-
-        .field-input::placeholder {
-            color: var(--muted);
-        }
-
-        .field-input.error {
-            border-color: #EF4444;
-        }
-
-        select.field-input {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7A99' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 14px center;
-            padding-right: 36px;
-            cursor: pointer;
-        }
-
-        textarea.field-input {
-            resize: vertical;
-            min-height: 100px;
-            line-height: 1.6;
-        }
-
-        /* ── grid layouts ── */
-        .form-row-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
-        }
-
-        .form-row-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 18px;
-        }
-
-        /* ── amenity toggles ── */
-        .amenity-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .amenity-btn {
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            padding: 12px 10px;
-            background: #fff;
-            cursor: pointer;
-            transition: all .2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            font-family: 'Instrument Sans', sans-serif;
-        }
-
-        .amenity-btn .ame-icon {
-            font-size: 22px;
-            line-height: 1;
-        }
-
-        .amenity-btn .ame-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--muted);
-            text-align: center;
-            line-height: 1.3;
-        }
-
-        .amenity-btn:hover {
-            border-color: var(--teal);
-            background: var(--teal-lt);
-        }
-
-        .amenity-btn.selected {
-            border-color: var(--teal);
-            background: var(--teal-lt);
-        }
-
-        .amenity-btn.selected .ame-label {
-            color: var(--teal);
-        }
-
-        .amenity-btn.selected .ame-check {
-            display: flex;
-        }
-
-        .ame-check {
-            display: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--teal);
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            animation: checkPop .25s ease;
-        }
-
-        .amenity-btn {
-            position: relative;
-        }
-
-        /* ── image upload ── */
-        .upload-zone {
-            border: 2px dashed var(--border);
-            border-radius: 16px;
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all .2s;
-            background: var(--off);
-        }
-
-        .upload-zone:hover,
-        .upload-zone.dragover {
-            border-color: var(--teal);
-            background: var(--teal-lt);
-        }
-
-        .upload-zone input[type="file"] {
-            display: none;
-        }
-
-        .img-preview-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .img-thumb {
-            aspect-ratio: 4/3;
-            border-radius: 10px;
-            background: var(--off);
-            border: 1px solid var(--border);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .img-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .img-thumb .remove-btn {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: rgba(15, 31, 61, .7);
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .img-thumb.placeholder {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: var(--border);
-        }
-
-        /* ── range slider ── */
-        .range-wrap {
-            position: relative;
-        }
-
-        .range-input {
-            width: 100%;
-            -webkit-appearance: none;
-            height: 6px;
-            border-radius: 99px;
-            background: linear-gradient(90deg, var(--teal) 0%, var(--teal) var(--pct, 50%), #EEF0F6 var(--pct, 50%));
-            outline: none;
-            cursor: pointer;
-        }
-
-        .range-input::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--navy);
-            border: 3px solid #fff;
-            box-shadow: 0 2px 8px rgba(15, 31, 61, .25);
-            cursor: pointer;
-        }
-
-        .range-input::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--navy);
-            border: 3px solid #fff;
-            box-shadow: 0 2px 8px rgba(15, 31, 61, .25);
-            cursor: pointer;
-        }
-
-        .range-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 6px;
-        }
-
-        .range-label {
-            font-size: 11px;
-            color: var(--muted);
-        }
-
-        .range-val {
-            font-family: 'Bricolage Grotesque', sans-serif;
-            font-weight: 800;
-            font-size: 22px;
-            color: var(--navy);
-        }
-
-        .range-unit {
-            font-size: 13px;
-            color: var(--muted);
-            margin-left: 3px;
-        }
-
-        /* ── radio group ── */
-        .radio-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .radio-btn {
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 16px;
-            background: #fff;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--muted);
-            transition: all .2s;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .radio-btn:hover {
-            border-color: var(--teal);
-        }
-
-        .radio-btn.active {
-            border-color: var(--teal);
-            background: var(--teal-lt);
-            color: var(--teal);
-        }
-
-        .radio-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: currentColor;
-            flex-shrink: 0;
-        }
-
-        /* ── preview card ── */
-        .preview-card {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--card-sh2);
-            position: sticky;
-            top: 88px;
-        }
-
-        .preview-img {
-            height: 180px;
-            background: linear-gradient(135deg, #0EA5C9, #0F1F3D);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .preview-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .preview-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: var(--amber);
-            color: #fff;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 6px;
-            letter-spacing: .04em;
-        }
-
-        .preview-img-placeholder {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            font-size: 48px;
-            opacity: .3;
-        }
-
-        /* ── progress steps ── */
-        .progress-steps {
-            display: flex;
-            align-items: center;
-            gap: 0;
-            margin-bottom: 36px;
-        }
-
-        .prog-step {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-        }
-
-        .prog-dot {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 700;
-            flex-shrink: 0;
-            transition: all .3s;
-            font-family: 'Bricolage Grotesque', sans-serif;
-        }
-
-        .prog-dot.done {
-            background: var(--green);
-            color: #fff;
-        }
-
-        .prog-dot.active {
-            background: var(--navy);
-            color: #fff;
-            box-shadow: 0 0 0 4px rgba(15, 31, 61, .12);
-        }
-
-        .prog-dot.pending {
-            background: var(--off);
-            color: var(--muted);
-            border: 1.5px solid var(--border);
-        }
-
-        .prog-line {
-            flex: 1;
-            height: 2px;
-            background: var(--border);
-            margin: 0 4px;
-        }
-
-        .prog-line.done {
-            background: var(--green);
-        }
-
-        .prog-label {
-            font-size: 11px;
-            font-weight: 600;
-            margin-top: 4px;
-        }
-
-        /* ── benefit pills ── */
-        .benefit-row {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .benefit-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 14px 16px;
-            background: var(--off);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .benefit-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-
-        /* ── success state ── */
-        .success-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 31, 61, .6);
-            backdrop-filter: blur(6px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .success-box {
-            background: #fff;
-            border-radius: 24px;
-            padding: 48px 40px;
-            text-align: center;
-            max-width: 480px;
-            width: 100%;
-            box-shadow: 0 24px 64px rgba(15, 31, 61, .25);
-        }
-
-        /* ── footer ── */
-        footer {
-            background: var(--navy);
-            color: rgba(255, 255, 255, .55);
-            padding: 48px 0 32px;
-        }
-
-        /* ══════════════════════════
-   RESPONSIVE
-══════════════════════════ */
-        @media(max-width:1024px) {
-            nav {
-                padding: 0 28px;
-            }
-
-            .container {
-                padding: 0 28px;
-            }
-
-            .page-grid {
-                grid-template-columns: 1fr !important;
-            }
-
-            .preview-card {
-                position: static !important;
-            }
-
-            .amenity-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-            }
-
-            .img-preview-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-            }
-        }
-
-        @media(max-width:768px) {
-            nav {
-                padding: 0 20px;
-                height: 60px;
-            }
-
-            .nav-links,
-            .nav-desktop-btns {
-                display: none;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
-            .container {
-                padding: 0 20px;
-            }
-
-            .form-row-2,
-            .form-row-3 {
-                grid-template-columns: 1fr !important;
-            }
-
-            .amenity-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-
-            .img-preview-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-
-            .radio-group {
-                flex-direction: column;
-            }
-
-            .hero-h1 {
-                font-size: clamp(28px, 7vw, 40px) !important;
-            }
-
-            .progress-steps {
-                overflow-x: auto;
-                padding-bottom: 4px;
-            }
-
-            .form-card {
-                padding: 20px;
-            }
-
-            .footer-top {
-                flex-direction: column !important;
-                gap: 32px !important;
-            }
-
-            .footer-links {
-                flex-wrap: wrap !important;
-                gap: 28px !important;
-            }
-
-            .footer-bottom {
-                flex-direction: column !important;
-                gap: 8px !important;
-                text-align: center !important;
-            }
-
-            .hero-cols {
-                grid-template-columns: 1fr !important;
-            }
-
-            .hero-right {
-                display: none !important;
-            }
-        }
-
-        @media(max-width:480px) {
-            .amenity-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-
-            .success-box {
-                padding: 32px 24px !important;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <!-- ══ NAV ══ -->
-    <nav>
-        <a href="index.html" class="nav-logo">Stay<span class="grad">Match</span></a>
-        <div class="nav-links">
-            <a href="#" class="nav-a">Discover</a>
-            <a href="#" class="nav-a">How It Works</a>
-            <a href="#" class="nav-a active">List a Room</a>
-            <a href="#" class="nav-a">About</a>
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+/* ── post room specific ── */
+.form-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:32px;box-shadow:var(--card-sh);margin-bottom:24px;}
+.form-section-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--navy);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.form-section-title .step-badge{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.form-section-title .step-badge.teal{background:var(--teal);}
+.form-section-title .step-badge.amber{background:var(--amber);}
+
+.field-group{display:flex;flex-direction:column;gap:6px;}
+.field-label{font-size:13px;font-weight:600;color:var(--navy);}
+.field-hint{font-size:11px;color:var(--muted);}
+.field-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'Instrument Sans',sans-serif;font-size:14px;color:var(--navy);background:#fff;transition:border-color .2s,box-shadow .2s;outline:none;appearance:none;}
+.field-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(14,165,201,.12);}
+.field-input::placeholder{color:var(--muted);}
+select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7A99' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;}
+textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
+
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+
+.amenity-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.amenity-btn{border:1.5px solid var(--border);border-radius:12px;padding:12px 10px;background:#fff;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:'Instrument Sans',sans-serif;position:relative;}
+.amenity-btn .ame-icon{font-size:22px;line-height:1;}
+.amenity-btn .ame-label{font-size:11px;font-weight:600;color:var(--muted);text-align:center;line-height:1.3;}
+.amenity-btn:hover{border-color:var(--teal);background:var(--teal-lt);}
+.amenity-btn.selected{border-color:var(--teal);background:var(--teal-lt);}
+.amenity-btn.selected .ame-label{color:var(--teal);}
+.amenity-btn.selected .ame-check{display:flex;}
+.ame-check{display:none;width:16px;height:16px;border-radius:50%;background:var(--teal);align-items:center;justify-content:center;position:absolute;top:6px;right:6px;font-size:10px;color:#fff;}
+
+.upload-zone{border:2px dashed var(--border);border-radius:16px;padding:40px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--off);}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--teal);background:var(--teal-lt);}
+.upload-zone input[type="file"]{display:none;}
+.img-preview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;}
+.img-thumb{aspect-ratio:4/3;border-radius:10px;background:var(--off);border:1px solid var(--border);overflow:hidden;position:relative;}
+.img-thumb img{width:100%;height:100%;object-fit:cover;}
+.img-thumb .remove-btn{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(15,31,61,.7);color:#fff;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;}
+
+.range-input{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:99px;background:linear-gradient(90deg,var(--teal) 0%,var(--teal) var(--pct,50%),#EEF0F6 var(--pct,50%));outline:none;cursor:pointer;}.range-input::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--navy);border:3px solid #fff;box-shadow:0 2px 8px rgba(15,31,61,.25);cursor:pointer;}
+.range-labels{display:flex;justify-content:space-between;margin-top:6px;}
+.range-label{font-size:11px;color:var(--muted);}
+.range-val{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--navy);}
+.range-unit{font-size:13px;color:var(--muted);margin-left:3px;}
+
+.radio-group{display:flex;gap:10px;flex-wrap:wrap;}
+.radio-btn{border:1.5px solid var(--border);border-radius:10px;padding:10px 16px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);transition:all .2s;display:flex;align-items:center;gap:7px;}
+.radio-btn:hover{border-color:var(--teal);}
+.radio-btn.active{border-color:var(--teal);background:var(--teal-lt);color:var(--teal);}
+.radio-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0;}
+
+.success-overlay{display:none;position:fixed;inset:0;background:rgba(15,31,61,.6);backdrop-filter:blur(6px);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.success-box{background:#fff;border-radius:24px;padding:48px 40px;text-align:center;max-width:480px;width:100%;box-shadow:0 24px 64px rgba(15,31,61,.25);}
+
+/* hero section */
+.post-hero{background:linear-gradient(135deg,var(--navy),#1a3260);border-radius:20px;padding:32px;margin-bottom:28px;position:relative;overflow:hidden;}
+.post-hero::before{content:'';position:absolute;top:-60px;right:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,201,.2),transparent);pointer-events:none;}
+.post-hero-title{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(22px,3vw,32px);font-weight:800;color:#fff;margin-bottom:8px;position:relative;z-index:1;}
+.post-hero-sub{font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;max-width:500px;position:relative;z-index:1;}
+.post-hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;position:relative;z-index:1;}
+.post-hero-chip{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-size:12px;font-weight:600;padding:5px 13px;border-radius:99px;border:1px solid rgba(255,255,255,.12);}
+
+@media(max-width:900px){
+  .form-row-2,.form-row-3{grid-template-columns:1fr;}
+  .amenity-grid{grid-template-columns:repeat(2,1fr);}
+  .img-preview-grid{grid-template-columns:repeat(2,1fr);}
+  .radio-group{flex-direction:column;}
+  .form-card{padding:20px;}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<div class="post-hero fu d1">
+  <div class="post-hero-title">🏠 Post a Room</div>
+  <div class="post-hero-sub">Fill in your room details once. Our AI matches you with compatible flatmates — vetted, verified, and genuinely suited to your lifestyle.</div>
+  <div class="post-hero-chips">
+    <span class="post-hero-chip">⚡ Live in 5 minutes</span>
+    <span class="post-hero-chip">🤖 AI-matched tenants</span>
+    <span class="post-hero-chip">🎉 Free for landlords</span>
+  </div>
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+<div style="display:flex;flex-direction:column;gap:24px;">
+
+  <!-- STEP 1: BASICS -->
+  <div class="form-card fu d1">
+    <div class="form-section-title"><div class="step-badge">1</div> Room Basics</div>
+    <div style="display:flex;flex-direction:column;gap:18px;">
+      <div class="field-group">
+        <label class="field-label">Listing Title *</label>
+        <input type="text" name="title" class="field-input" placeholder="e.g. Cozy private room near Koramangala metro" id="titleInput" oninput="updatePreview()" required/>
+        <span class="field-hint">A clear, catchy title gets 3× more views.</span>
+      </div>
+      <div class="form-row-2">
+        <div class="field-group">
+          <label class="field-label">City *</label>
+          <select name="city" class="field-input" id="cityInput" onchange="updatePreview()" required>
+            <option value="">Select city</option>
+            <option>Bangalore</option><option>Mumbai</option><option>Delhi</option>
+            <option>Hyderabad</option><option>Pune</option><option>Chennai</option>
+            <option>Kolkata</option><option>Patna</option>
+          </select>
         </div>
-        <div class="nav-desktop-btns" style="display:flex;gap:10px;align-items:center;">
-            <a href="#" class="btn-outline" style="padding:9px 20px;font-size:14px;">Log In</a>
-            <a href="#" class="btn-primary" style="padding:10px 22px;font-size:14px;">Get Started →</a>
+        <div class="field-group">
+          <label class="field-label">Locality / Area *</label>
+          <input type="text" name="area" class="field-input" placeholder="e.g. Indiranagar" id="areaInput" oninput="updatePreview()" required/>
         </div>
-        <button class="hamburger" id="hamburgerBtn"
-            aria-label="Open menu"><span></span><span></span><span></span></button>
-    </nav>
-
-    <div class="mobile-nav" id="mobileNav">
-        
-        <div class="mobile-nav-btns">
-            <!-- <a href="#" class="btn-outline" style="flex:1;">Log In</a> -->
-            <a href="#" class="btn-primary" style="flex:1;">Dashboard →</a>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Full Address</label>
+        <input type="text" name="address" class="field-input" placeholder="Street, building, landmark (shared only with matched tenants)"/>
+        <span class="field-hint">Not shown publicly — only revealed after a match is confirmed.</span>
+      </div>
+      <div class="form-row-3">
+        <div class="field-group">
+          <label class="field-label">Room Type *</label>
+          <select name="room_type" class="field-input" id="roomTypeInput" onchange="updatePreview()" required>
+            <option value="">Select</option>
+            <option>Private Room</option><option>Shared Room</option>
+            <option>Studio / 1BHK</option><option>Master Bedroom</option><option>PG / Hostel</option>
+          </select>
         </div>
+        <div class="field-group">
+          <label class="field-label">BHK Config</label>
+          <select name="bhk_config" class="field-input">
+            <option>1 BHK</option><option>2 BHK</option><option>3 BHK</option><option>4+ BHK</option><option>Studio</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Floor</label>
+          <input type="text" name="floor" class="field-input" placeholder="e.g. 3rd of 6"/>
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="field-group">
+          <label class="field-label">Available From *</label>
+          <input type="date" name="available_from" class="field-input" id="availableInput" onchange="updatePreview()" required/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Minimum Stay</label>
+          <select name="min_stay" class="field-input">
+            <option>1 month</option><option>3 months</option><option>6 months</option><option>1 year</option><option>Flexible</option>
+          </select>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- ══ HERO ══ -->
-    <section style="background:var(--off);padding:64px 0 56px;position:relative;overflow:hidden;">
-        <div
-            style="position:absolute;width:480px;height:480px;background:radial-gradient(circle,rgba(14,165,201,.1),transparent 70%);top:-160px;right:-100px;pointer-events:none;animation:blobMorph 12s ease infinite;border-radius:50%;">
+  <!-- STEP 2: PRICING -->
+  <div class="form-card fu d2">
+    <div class="form-section-title"><div class="step-badge teal">2</div> Pricing &amp; Deposit</div>
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      <div class="field-group">
+        <label class="field-label">Monthly Rent</label>
+        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:10px;">
+          <span style="font-size:16px;color:var(--muted);font-weight:600;">₹</span>
+          <span class="range-val" id="rentVal">12,000</span>
+          <span class="range-unit">/ month</span>
         </div>
-        <div
-            style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(15,31,61,.06) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;">
+        <input type="range" class="range-input" id="rentSlider" name="rent" min="2000" max="80000" value="12000" step="500" oninput="updateRent(this)"/>
+        <div class="range-labels"><span class="range-label">₹2,000</span><span class="range-label">₹80,000</span></div>
+      </div>
+      <div class="form-row-2">
+        <div class="field-group">
+          <label class="field-label">Security Deposit</label>
+          <select name="deposit" class="field-input">
+            <option>1 month rent</option><option>2 months rent</option><option>3 months rent</option><option>Negotiable</option><option>No deposit</option>
+          </select>
         </div>
-        <div class="container">
-            <div class="hero-cols" style="display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center;">
-                <div>
-                    <div class="fu d1 section-label">🏠 List Your Space</div>
-                    <h1 class="display fu d2 hero-h1"
-                        style="font-size:clamp(32px,4vw,56px);font-weight:800;line-height:1.05;letter-spacing:-.03em;color:var(--navy);margin-bottom:16px;">
-                        Your room deserves<br />the <span class="grad">right flatmate.</span>
-                    </h1>
-                    <p class="fu d3" style="font-size:16px;line-height:1.75;color:var(--muted);max-width:480px;">
-                        Fill in your room details once. Our AI matches you with compatible flatmates — vetted, verified,
-                        and genuinely suited to your lifestyle.
-                    </p>
-                </div>
-                <!-- mini benefit pills on desktop -->
-                <div class="hero-right fu d4" style="display:flex;flex-direction:column;gap:10px;min-width:240px;">
-                    <div
-                        style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;">
-                        <div
-                            style="width:36px;height:36px;border-radius:10px;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
-                            ⚡</div>
-                        <div>
-                            <div style="font-weight:600;font-size:13px;color:var(--navy);">Live in 5 minutes</div>
-                            <div style="font-size:11px;color:var(--muted);">Simple step-by-step form</div>
-                        </div>
-                    </div>
-                    <div
-                        style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;">
-                        <div
-                            style="width:36px;height:36px;border-radius:10px;background:var(--amber-lt);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
-                            🤖</div>
-                        <div>
-                            <div style="font-weight:600;font-size:13px;color:var(--navy);">AI-matched tenants</div>
-                            <div style="font-size:11px;color:var(--muted);">Compatibility-first results</div>
-                        </div>
-                    </div>
-                    <div
-                        style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;">
-                        <div
-                            style="width:36px;height:36px;border-radius:10px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
-                            🎉</div>
-                        <div>
-                            <div style="font-weight:600;font-size:13px;color:var(--navy);">Free for landlords</div>
-                            <div style="font-size:11px;color:var(--muted);">No listing fees, ever</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="field-group">
+          <label class="field-label">Maintenance</label>
+          <select name="maintenance" class="field-input">
+            <option>Included in rent</option><option>₹500 / month</option><option>₹1,000 / month</option><option>₹1,500 / month</option><option>Varies (ask me)</option>
+          </select>
         </div>
-    </section>
-
-    <!-- ══ MAIN CONTENT ══ -->
-    <section style="padding:56px 0 80px;background:var(--white);">
-        <div class="container">
-
-            <!-- progress bar -->
-            <div class="progress-steps fu d1" id="progressBar" style="margin-bottom:40px;">
-                <div class="prog-step">
-                    <div style="display:flex;flex-direction:column;align-items:center;">
-                        <div class="prog-dot active" id="dot1">1</div>
-                        <div class="prog-label" style="color:var(--navy);">Basics</div>
-                    </div>
-                    <div class="prog-line" id="line1"></div>
-                </div>
-                <div class="prog-step">
-                    <div style="display:flex;flex-direction:column;align-items:center;">
-                        <div class="prog-dot pending" id="dot2">2</div>
-                        <div class="prog-label" style="color:var(--muted);">Details</div>
-                    </div>
-                    <div class="prog-line" id="line2"></div>
-                </div>
-                <div class="prog-step">
-                    <div style="display:flex;flex-direction:column;align-items:center;">
-                        <div class="prog-dot pending" id="dot3">3</div>
-                        <div class="prog-label" style="color:var(--muted);">Photos</div>
-                    </div>
-                    <div class="prog-line" id="line3"></div>
-                </div>
-                <div class="prog-step" style="flex:0;">
-                    <div style="display:flex;flex-direction:column;align-items:center;">
-                        <div class="prog-dot pending" id="dot4">4</div>
-                        <div class="prog-label" style="color:var(--muted);">Preferences</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- page grid -->
-            <div class="page-grid" style="display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start;">
-
-                <!-- LEFT: FORM -->
-                <div style="display:flex;flex-direction:column;gap:24px;">
-
-                    <!-- STEP 1: BASICS -->
-                    <div class="form-card fu d1" id="step1">
-                        <div class="form-section-title">
-                            <div class="step-badge">1</div> Room Basics
-                        </div>
-
-                        <div style="display:flex;flex-direction:column;gap:18px;">
-                            <div class="field-group">
-                                <label class="field-label">Listing Title *</label>
-                                <input type="text" class="field-input"
-                                    placeholder="e.g. Cozy private room near Koramangala metro" id="titleInput"
-                                    oninput="updatePreview()" />
-                                <span class="field-hint">A clear, catchy title gets 3× more views.</span>
-                            </div>
-
-                            <div class="form-row-2">
-                                <div class="field-group">
-                                    <label class="field-label">City *</label>
-                                    <select class="field-input" id="cityInput" onchange="updatePreview()">
-                                        <option value="">Select city</option>
-                                        <option>Bangalore</option>
-                                        <option>Mumbai</option>
-                                        <option>Delhi</option>
-                                        <option>Hyderabad</option>
-                                        <option>Pune</option>
-                                        <option>Chennai</option>
-                                        <option>Kolkata</option>
-                                        <option>Patna</option>
-                                    </select>
-                                </div>
-                                <div class="field-group">
-                                    <label class="field-label">Locality / Area *</label>
-                                    <input type="text" class="field-input" placeholder="e.g. Indiranagar" id="areaInput"
-                                        oninput="updatePreview()" />
-                                </div>
-                            </div>
-
-                            <div class="field-group">
-                                <label class="field-label">Full Address</label>
-                                <input type="text" class="field-input"
-                                    placeholder="Street, building, landmark (shared only with matched tenants)" />
-                                <span class="field-hint">Not shown publicly — only revealed after a match is
-                                    confirmed.</span>
-                            </div>
-
-                            <div class="form-row-3">
-                                <div class="field-group">
-                                    <label class="field-label">Room Type *</label>
-                                    <select class="field-input" id="roomTypeInput" onchange="updatePreview()">
-                                        <option value="">Select</option>
-                                        <option>Private Room</option>
-                                        <option>Shared Room</option>
-                                        <option>Studio / 1BHK</option>
-                                        <option>Master Bedroom</option>
-                                        <option>PG / Hostel</option>
-                                    </select>
-                                </div>
-                                <div class="field-group">
-                                    <label class="field-label">BHK Config</label>
-                                    <select class="field-input">
-                                        <option>1 BHK</option>
-                                        <option>2 BHK</option>
-                                        <option>3 BHK</option>
-                                        <option>4+ BHK</option>
-                                        <option>Studio</option>
-                                    </select>
-                                </div>
-                                <div class="field-group">
-                                    <label class="field-label">Floor</label>
-                                    <input type="text" class="field-input" placeholder="e.g. 3rd of 6" />
-                                </div>
-                            </div>
-
-                            <div class="form-row-2">
-                                <div class="field-group">
-                                    <label class="field-label">Available From *</label>
-                                    <input type="date" class="field-input" id="availableInput"
-                                        onchange="updatePreview()" />
-                                </div>
-                                <div class="field-group">
-                                    <label class="field-label">Minimum Stay</label>
-                                    <select class="field-input">
-                                        <option>1 month</option>
-                                        <option>3 months</option>
-                                        <option>6 months</option>
-                                        <option>1 year</option>
-                                        <option>Flexible</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- STEP 2: PRICING -->
-                    <div class="form-card fu d2" id="step2">
-                        <div class="form-section-title">
-                            <div class="step-badge teal">2</div> Pricing &amp; Deposit
-                        </div>
-
-                        <div style="display:flex;flex-direction:column;gap:24px;">
-                            <!-- rent slider -->
-                            <div class="field-group">
-                                <label class="field-label">Monthly Rent</label>
-                                <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:10px;">
-                                    <span style="font-size:16px;color:var(--muted);font-weight:600;">₹</span>
-                                    <span class="range-val" id="rentVal">12,000</span>
-                                    <span class="range-unit">/ month</span>
-                                </div>
-                                <input type="range" class="range-input" id="rentSlider" min="2000" max="80000"
-                                    value="12000" step="500" oninput="updateRent(this)" />
-                                <div class="range-labels"><span class="range-label">₹2,000</span><span
-                                        class="range-label">₹80,000</span></div>
-                            </div>
-
-                            <div class="form-row-2">
-                                <div class="field-group">
-                                    <label class="field-label">Security Deposit</label>
-                                    <select class="field-input">
-                                        <option>1 month rent</option>
-                                        <option>2 months rent</option>
-                                        <option>3 months rent</option>
-                                        <option>Negotiable</option>
-                                        <option>No deposit</option>
-                                    </select>
-                                </div>
-                                <div class="field-group">
-                                    <label class="field-label">Maintenance</label>
-                                    <select class="field-input">
-                                        <option>Included in rent</option>
-                                        <option>₹500 / month</option>
-                                        <option>₹1,000 / month</option>
-                                        <option>₹1,500 / month</option>
-                                        <option>Varies (ask me)</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- what's included -->
-                            <div class="field-group">
-                                <label class="field-label" style="margin-bottom:10px;">What's included in rent?</label>
-                                <div style="display:flex;flex-wrap:wrap;gap:8px;" id="includedGroup">
-                                    <button type="button" class="radio-btn active" onclick="toggleIncluded(this)">
-                                        <div class="radio-dot"></div>WiFi
-                                    </button>
-                                    <button type="button" class="radio-btn" onclick="toggleIncluded(this)">
-                                        <div class="radio-dot"></div>Electricity
-                                    </button>
-                                    <button type="button" class="radio-btn" onclick="toggleIncluded(this)">
-                                        <div class="radio-dot"></div>Water
-                                    </button>
-                                    <button type="button" class="radio-btn active" onclick="toggleIncluded(this)">
-                                        <div class="radio-dot"></div>Gas
-                                    </button>
-                                    <button type="button" class="radio-btn" onclick="toggleIncluded(this)">
-                                        <div class="radio-dot"></div>Cooking
-                                    </button>
-                                    <button type="button" class="radio-btn" onclick="toggleIncluded(this)">
-                                        <div class="radio-dot"></div>Housekeeping
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- STEP 3: AMENITIES -->
-                    <div class="form-card fu d2">
-                        <div class="form-section-title">
-                            <div class="step-badge teal">3</div> Amenities &amp; Furnishing
-                        </div>
-
-                        <div style="display:flex;flex-direction:column;gap:20px;">
-                            <div>
-                                <div class="field-label" style="margin-bottom:12px;">Furnishing Status</div>
-                                <div class="radio-group" id="furnishGroup">
-                                    <button type="button" class="radio-btn active"
-                                        onclick="setRadio('furnishGroup',this)">
-                                        <div class="radio-dot"></div>Fully Furnished
-                                    </button>
-                                    <button type="button" class="radio-btn" onclick="setRadio('furnishGroup',this)">
-                                        <div class="radio-dot"></div>Semi Furnished
-                                    </button>
-                                    <button type="button" class="radio-btn" onclick="setRadio('furnishGroup',this)">
-                                        <div class="radio-dot"></div>Unfurnished
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div class="field-label" style="margin-bottom:12px;">Select all amenities available
-                                </div>
-                                <div class="amenity-grid" id="amenityGrid">
-                                    <button type="button" class="amenity-btn selected" onclick="toggleAmenity(this)">
-                                        <div class="ame-check">✓</div>
-                                        <div class="ame-icon">📶</div>
-                                        <div class="ame-label">High-Speed WiFi</div>
-                                    </button>
-                                    <button type="button" class="amenity-btn" onclick="toggleAmenity(this)">
-                                        <div class="ame-check">✓</div>
-                                        <div class="ame-icon">❄️</div>
-                                        <div class="ame-label">Air Conditioning</div>
-                                    </button>
-                                    <button type="button" class="amenity-btn selected" onclick="toggleAmenity(this)">
-                                        <div class="ame-check">✓</div>
-                                        <div class="ame-icon">🛏️</div>
-                                        <div class="ame-label">Bed &amp; Mattress</div>
-                                    </button>
-                                    <button type="button" class="amenity-btn" onclick="toggleAmenity(this)">
-                                        <div class="ame-check">✓</div>
-                                        <div class="ame-icon">🧺</div>
-                                        <div class="ame-label">Washing Machine</div>
-                                    </button>
-                                    <button type="button" class="amenity-btn selected" onclick="toggleAmenity(this)">
-                                        <div class="ame-check">✓</div>
-                                        <div class="ame-icon">🍳</div>
-                                        <div class="ame-label">Kitchen Access</div>
-                                    </button>
-                                    <button type="button" class="amenity-btn" onclick="toggleAmenity(this)">
-                                        <div class="ame-check">✓</div>
-                                        <div class="ame-icon">🚿</div>
-                                        <div class="ame-label">Attached Bath</div>
-                                    </button>
-                                    <button type="button" class="amenity-btn" onclick="toggleAmenity(this)">
-                                        <div class="ame-check">✓</div>
-                                        <div class="ame-icon">🅿️</div>
-                                        <div class="ame-label">Parking</div>
-                                    </button>
-                                    <button type="button" class="amenity-btn" onclick="toggleAmenity(this)">
-                                        <div class="ame-check">✓</div>
-                                        <div class="ame-icon">🏋️</div>
-                                        <div class="ame-label">Gym Access</div>
-                                    </button>
-                                    <button type="button" class="amenity-btn" onclick="toggleAmenity(this)">
-                                        <div class="ame-check">✓</div>
-                                        <div class="ame-icon">🔒</div>
-                                        <div class="ame-label">24h Security</div>
-                                    </button>
-                                    <button type="button" class="amenity-btn" onclick="toggleAmenity(this)">
-                                        <div class="ame-check">✓</div>
-                                        <div class="ame-icon">🛗</div>
-                                        <div class="ame-label">Lift / Elevator</div>
-                                    </button>
-                                    <button type="button" class="amenity-btn" onclick="toggleAmenity(this)">
-                                        <div class="ame-check">✓</div>
-                                        <div class="ame-icon">⚡</div>
-                                        <div class="ame-label">Power Backup</div>
-                                    </button>
-                                    <button type="button" class="amenity-btn" onclick="toggleAmenity(this)">
-                                        <div class="ame-check">✓</div>
-                                        <div class="ame-icon">🐾</div>
-                                        <div class="ame-label">Pet Friendly</div>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- STEP 4: PHOTOS -->
-                    <div class="form-card fu d3">
-                        <div class="form-section-title">
-                            <div class="step-badge amber">4</div> Photos
-                        </div>
-                        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Listings with
-                            4+ photos get <strong style="color:var(--navy);">5× more inquiries.</strong> Add photos of
-                            the room, bathroom, kitchen, and building.</p>
-
-                        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
-                            <input type="file" id="fileInput" accept="image/*" multiple
-                                onchange="handleFiles(this.files)" />
-                            <div style="font-size:40px;margin-bottom:12px;">📸</div>
-                            <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:6px;">Drop photos
-                                here or click to browse</div>
-                            <div style="font-size:12px;color:var(--muted);">JPG, PNG · Max 5MB each · Up to 10 photos
-                            </div>
-                        </div>
-
-                        <div class="img-preview-grid" id="imgPreviewGrid"></div>
-                    </div>
-
-                    <!-- STEP 5: DESCRIPTION -->
-                    <div class="form-card fu d3">
-                        <div class="form-section-title">
-                            <div class="step-badge amber">5</div> Description &amp; Rules
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:18px;">
-                            <div class="field-group">
-                                <label class="field-label">About the Room</label>
-                                <textarea class="field-input"
-                                    placeholder="Describe the room, the flat, neighbourhood vibe, nearest metro/college, what makes it special…"
-                                    id="descInput" oninput="updateCharCount(this,'descCount',400)"
-                                    style="min-height:120px;"></textarea>
-                                <div style="display:flex;justify-content:flex-end;margin-top:4px;"><span
-                                        class="field-hint" id="descCount">0 / 400</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label">House Rules</label>
-                                <textarea class="field-input"
-                                    placeholder="e.g. No smoking indoors, no pets, visitors only till 10pm, vegetarian kitchen only…"
-                                    style="min-height:90px;"></textarea>
-                            </div>
-                            <div class="form-row-2">
-                                <div class="field-group">
-                                    <label class="field-label">Nearest Metro / Station</label>
-                                    <input type="text" class="field-input"
-                                        placeholder="e.g. Indiranagar Metro (800m)" />
-                                </div>
-                                <div class="field-group">
-                                    <label class="field-label">Distance from Office Hub</label>
-                                    <input type="text" class="field-input"
-                                        placeholder="e.g. 2km to Manyata Tech Park" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- STEP 6: FLATMATE PREFERENCES -->
-                    <div class="form-card fu d4">
-                        <div class="form-section-title">
-                            <div class="step-badge" style="background:var(--amber);">6</div> Flatmate Preferences
-                        </div>
-                        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Help our AI
-                            find the right match. These preferences are used to score compatibility — be honest!</p>
-                        <div style="display:flex;flex-direction:column;gap:20px;">
-
-                            <div class="form-row-2">
-                                <div class="field-group">
-                                    <label class="field-label">Preferred Gender</label>
-                                    <select class="field-input">
-                                        <option>Any</option>
-                                        <option>Female only</option>
-                                        <option>Male only</option>
-                                    </select>
-                                </div>
-                                <div class="field-group">
-                                    <label class="field-label">Preferred Occupation</label>
-                                    <select class="field-input">
-                                        <option>Any</option>
-                                        <option>Students only</option>
-                                        <option>Working professionals</option>
-                                        <option>Students &amp; professionals</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="field-group">
-                                <label class="field-label" style="margin-bottom:10px;">Sleep Schedule Preference</label>
-                                <div class="radio-group" id="sleepGroup">
-                                    <button type="button" class="radio-btn" onclick="setRadio('sleepGroup',this)">
-                                        <div class="radio-dot"></div>🌅 Early bird (before 10pm)
-                                    </button>
-                                    <button type="button" class="radio-btn active"
-                                        onclick="setRadio('sleepGroup',this)">
-                                        <div class="radio-dot"></div>🌙 Night owl (after midnight)
-                                    </button>
-                                    <button type="button" class="radio-btn" onclick="setRadio('sleepGroup',this)">
-                                        <div class="radio-dot"></div>No preference
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="field-group">
-                                <label class="field-label" style="margin-bottom:10px;">Cleanliness Expectation</label>
-                                <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:8px;">
-                                    <span class="range-val" style="font-size:18px;" id="cleanVal">7</span>
-                                    <span class="range-unit">/ 10</span>
-                                </div>
-                                <input type="range" class="range-input" id="cleanSlider" min="1" max="10" value="7"
-                                    step="1" oninput="updateClean(this)" />
-                                <div class="range-labels"><span class="range-label">Relaxed</span><span
-                                        class="range-label">Very tidy</span></div>
-                            </div>
-
-                            <div class="field-group">
-                                <label class="field-label" style="margin-bottom:10px;">Guest / Visitor Policy</label>
-                                <div class="radio-group" id="guestGroup">
-                                    <button type="button" class="radio-btn active"
-                                        onclick="setRadio('guestGroup',this)">
-                                        <div class="radio-dot"></div>Occasional guests OK
-                                    </button>
-                                    <button type="button" class="radio-btn" onclick="setRadio('guestGroup',this)">
-                                        <div class="radio-dot"></div>No overnight guests
-                                    </button>
-                                    <button type="button" class="radio-btn" onclick="setRadio('guestGroup',this)">
-                                        <div class="radio-dot"></div>Very flexible
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="field-group">
-                                <label class="field-label">Anything else you want in a flatmate?</label>
-                                <textarea class="field-input"
-                                    placeholder="e.g. Looking for someone who respects quiet hours, likes to cook occasionally, and is generally friendly…"
-                                    style="min-height:80px;"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CONTACT -->
-                    <div class="form-card fu d4">
-                        <div class="form-section-title">
-                            <div class="step-badge">7</div> Your Contact Details
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:18px;">
-                            <div class="form-row-2">
-                                <div class="field-group">
-                                    <label class="field-label">Full Name *</label>
-                                    <input type="text" class="field-input" placeholder="Your name" id="nameInput"
-                                        oninput="updatePreview()" />
-                                </div>
-                                <div class="field-group">
-                                    <label class="field-label">Phone *</label>
-                                    <input type="tel" class="field-input" placeholder="+91 98765 43210" id="phoneInput" />
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label">Email *</label>
-                                <input type="email" class="field-input" placeholder="you@example.com" id="emailInput" />
-                            </div>
-                            <div
-                                style="display:flex;align-items:flex-start;gap:10px;background:var(--teal-lt);border-radius:12px;padding:14px 16px;">
-                                <input type="checkbox" id="agreeCheck"
-                                    style="margin-top:2px;accent-color:var(--teal);width:16px;height:16px;" />
-                                <label for="agreeCheck"
-                                    style="font-size:13px;color:var(--navy);line-height:1.6;cursor:pointer;">I confirm
-                                    this listing is accurate and I agree to StayMatch's <a href="#"
-                                        style="color:var(--teal);font-weight:600;">Terms of Use</a> and <a href="#"
-                                        style="color:var(--teal);font-weight:600;">Privacy Policy</a>.</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SUBMIT -->
-                    <div class="fu d4" style="display:flex;gap:14px;flex-wrap:wrap;">
-                        <button class="btn-teal" style="font-size:16px;padding:16px 40px;flex:1;"
-                            onclick="handleSubmit()">
-                            🚀 Publish Listing
-                        </button>
-                        <button class="btn-outline" style="font-size:15px;padding:16px 28px;">
-                            Save as Draft
-                        </button>
-                    </div>
-
-                </div><!-- end form left -->
-
-                <!-- RIGHT: PREVIEW CARD -->
-                <div>
-                    <div class="preview-card">
-                        <div class="preview-img" id="previewImgBox">
-                            <div class="preview-img-placeholder">🏠</div>
-                            <div class="preview-badge">NEW</div>
-                        </div>
-                        <div style="padding:20px;">
-                            <div
-                                style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-                                <div>
-                                    <div class="display"
-                                        style="font-weight:700;font-size:16px;color:var(--navy);line-height:1.2;"
-                                        id="previewTitle">Your listing title</div>
-                                    <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="previewLocation">
-                                        City · Area</div>
-                                </div>
-                            </div>
-                            <div style="display:flex;flex-wrap:wrap;gap:5px;margin:10px 0;" id="previewChips">
-                                <div class="chip" style="background:#EBF9FD;color:var(--teal);" id="previewType">🏠
-                                    Private Room</div>
-                                <div class="chip" style="background:var(--teal-lt);color:var(--teal);"
-                                    id="previewAvail">📅 Available now</div>
-                            </div>
-                            <div
-                                style="padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-                                <div>
-                                    <div style="font-size:15px;font-weight:700;color:var(--navy);" id="previewRent">
-                                        ₹12,000 / mo</div>
-                                    <div style="font-size:11px;color:var(--muted);" id="previewPostedBy">Posted by —
-                                    </div>
-                                </div>
-                                <button class="btn-primary" style="padding:8px 16px;font-size:12px;">Enquire</button>
-                            </div>
-
-                            <!-- live amenity preview -->
-                            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-                                <div
-                                    style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.05em;margin-bottom:8px;">
-                                    SELECTED AMENITIES</div>
-                                <div id="previewAmenities" style="display:flex;flex-wrap:wrap;gap:5px;font-size:11px;">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- benefits -->
-                    <div style="margin-top:20px;display:flex;flex-direction:column;gap:12px;">
-                        <div class="benefit-item">
-                            <div class="benefit-icon" style="background:var(--teal-lt);">🔒</div>
-                            <div>
-                                <div style="font-weight:600;font-size:13px;color:var(--navy);margin-bottom:2px;">Safe
-                                    &amp; verified</div>
-                                <div style="font-size:12px;color:var(--muted);">All enquiries come from ID-verified
-                                    users.</div>
-                            </div>
-                        </div>
-                        <div class="benefit-item">
-                            <div class="benefit-icon" style="background:var(--amber-lt);">📊</div>
-                            <div>
-                                <div style="font-weight:600;font-size:13px;color:var(--navy);margin-bottom:2px;">
-                                    Compatibility scoring</div>
-                                <div style="font-size:12px;color:var(--muted);">AI ranks every applicant against your
-                                    preferences.</div>
-                            </div>
-                        </div>
-                        <div class="benefit-item">
-                            <div class="benefit-icon" style="background:#F0FDF4;">💬</div>
-                            <div>
-                                <div style="font-weight:600;font-size:13px;color:var(--navy);margin-bottom:2px;">Chat
-                                    before you decide</div>
-                                <div style="font-size:12px;color:var(--muted);">Message interested tenants in-app at
-                                    zero cost.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div><!-- end page grid -->
+      </div>
+      <div class="field-group">
+        <label class="field-label" style="margin-bottom:10px;">What's included in rent?</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;" id="includedGroup">
+          <button type="button" class="radio-btn active" onclick="toggleIncluded(this)"><div class="radio-dot"></div>WiFi</button>
+          <button type="button" class="radio-btn" onclick="toggleIncluded(this)"><div class="radio-dot"></div>Electricity</button>
+          <button type="button" class="radio-btn" onclick="toggleIncluded(this)"><div class="radio-dot"></div>Water</button>
+          <button type="button" class="radio-btn active" onclick="toggleIncluded(this)"><div class="radio-dot"></div>Gas</button>
+          <button type="button" class="radio-btn" onclick="toggleIncluded(this)"><div class="radio-dot"></div>Cooking</button>
+          <button type="button" class="radio-btn" onclick="toggleIncluded(this)"><div class="radio-dot"></div>Housekeeping</button>
         </div>
-    </section>
-
-    <!-- ══ FOOTER ══ -->
-    <footer>
-        <div class="container">
-            <div class="footer-top"
-                style="display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08);">
-                <div style="max-width:260px;">
-                    <div class="display" style="font-size:22px;font-weight:800;color:#fff;margin-bottom:10px;">StayMatch
-                    </div>
-                    <p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,.4);">AI-powered flatmate matching
-                        for students and professionals across India.</p>
-                </div>
-                <div class="footer-links" style="display:flex;gap:56px;flex-wrap:wrap;">
-                    <div>
-                        <div
-                            style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">
-                            PRODUCT</div>
-                        <div style="display:flex;flex-direction:column;gap:10px;">
-                            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">How It
-                                Works</a>
-                            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Browse
-                                Listings</a>
-                            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">List a
-                                Room</a>
-                            <a href="#"
-                                style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Pricing</a>
-                        </div>
-                    </div>
-                    <div>
-                        <div
-                            style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">
-                            CITIES</div>
-                        <div style="display:flex;flex-direction:column;gap:10px;">
-                            <a href="#"
-                                style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Bangalore</a>
-                            <a href="#"
-                                style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Mumbai</a>
-                            <a href="#"
-                                style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Delhi</a>
-                            <a href="#"
-                                style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Hyderabad</a>
-                        </div>
-                    </div>
-                    <div>
-                        <div
-                            style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">
-                            COMPANY</div>
-                        <div style="display:flex;flex-direction:column;gap:10px;">
-                            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">About
-                                Us</a>
-                            <a href="#"
-                                style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Blog</a>
-                            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Privacy
-                                Policy</a>
-                            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Terms
-                                of Use</a>
-                        </div>
-                    </div>
-                    <div>
-                        <div
-                            style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">
-                            CONTACT US</div>
-                        <div style="display:flex;flex-direction:column;gap:10px;">
-                            <a href="mailto:hello@staymatch.in"
-                                style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">📧
-                                hello@staymatch.in</a>
-                            <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">📱 +91
-                                98765 43210</a>
-                            <span style="color:rgba(255,255,255,.55);font-size:14px;">📍 Koramangala, Bangalore</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom"
-                style="padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-                <div style="font-size:13px;color:rgba(255,255,255,.25);">© 2026 StayMatch Technologies Pvt. Ltd. · Made
-                    in India 🇮🇳</div>
-                <div style="font-size:13px;color:rgba(255,255,255,.25);">Bangalore · Mumbai · Delhi · Hyderabad · Pune ·
-                    Chennai · Kolkata · Patna</div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- ══ SUCCESS OVERLAY ══ -->
-    <div class="success-overlay" id="successOverlay">
-        <div class="success-box">
-            <div
-                style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--green));display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 24px;">
-                ✓</div>
-            <h2 class="display" style="font-size:28px;font-weight:800;color:var(--navy);margin-bottom:10px;">Listing
-                Published! 🎉</h2>
-            <p style="font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:28px;">Your room is now live on
-                StayMatch. We'll notify you as soon as compatible flatmates show interest.</p>
-            <div style="background:var(--off);border-radius:14px;padding:16px 20px;margin-bottom:24px;text-align:left;">
-                <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.05em;margin-bottom:10px;">
-                    WHAT HAPPENS NEXT</div>
-                <div style="display:flex;flex-direction:column;gap:8px;">
-                    <div style="font-size:13px;color:var(--navy);display:flex;gap:8px;align-items:flex-start;">
-                        <span>⚡</span><span>Our AI starts matching your listing with compatible profiles
-                            immediately</span></div>
-                    <div style="font-size:13px;color:var(--navy);display:flex;gap:8px;align-items:flex-start;">
-                        <span>📩</span><span>You'll receive SMS + email when someone sends an enquiry</span></div>
-                    <div style="font-size:13px;color:var(--navy);display:flex;gap:8px;align-items:flex-start;">
-                        <span>💬</span><span>Chat directly in-app before sharing any personal details</span></div>
-                </div>
-            </div>
-            <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                <button class="btn-teal" style="flex:1;" onclick="closeSuccess()">View My Listing →</button>
-                <button class="btn-outline" style="flex:1;" onclick="closeSuccess()">Back to Home</button>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        /* ── hamburger ── */
-        const btn = document.getElementById('hamburgerBtn');
-        const nav = document.getElementById('mobileNav');
-        btn.addEventListener('click', () => {
-            const open = nav.classList.toggle('open');
-            btn.classList.toggle('open', open);
-            document.body.style.overflow = open ? 'hidden' : '';
-        });
-        nav.querySelectorAll('a').forEach(l => l.addEventListener('click', () => {
-            nav.classList.remove('open'); btn.classList.remove('open'); document.body.style.overflow = '';
-        }));
+  <!-- STEP 3: AMENITIES -->
+  <div class="form-card fu d2">
+    <div class="form-section-title"><div class="step-badge teal">3</div> Amenities &amp; Furnishing</div>
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div>
+        <div class="field-label" style="margin-bottom:12px;">Furnishing Status</div>
+        <div class="radio-group" id="furnishGroup">
+          <button type="button" class="radio-btn active" onclick="setRadio('furnishGroup',this)"><div class="radio-dot"></div>Fully Furnished</button>
+          <button type="button" class="radio-btn" onclick="setRadio('furnishGroup',this)"><div class="radio-dot"></div>Semi Furnished</button>
+          <button type="button" class="radio-btn" onclick="setRadio('furnishGroup',this)"><div class="radio-dot"></div>Unfurnished</button>
+        </div>
+      </div>
+      <div>
+        <div class="field-label" style="margin-bottom:12px;">Select all amenities available</div>
+        <div class="amenity-grid" id="amenityGrid">
+          <button type="button" class="amenity-btn selected" onclick="toggleAmenity(this)"><div class="ame-check">✓</div><div class="ame-icon">📶</div><div class="ame-label">High-Speed WiFi</div></button>
+          <button type="button" class="amenity-btn" onclick="toggleAmenity(this)"><div class="ame-check">✓</div><div class="ame-icon">❄️</div><div class="ame-label">Air Conditioning</div></button>
+          <button type="button" class="amenity-btn selected" onclick="toggleAmenity(this)"><div class="ame-check">✓</div><div class="ame-icon">🛏️</div><div class="ame-label">Bed &amp; Mattress</div></button>
+          <button type="button" class="amenity-btn" onclick="toggleAmenity(this)"><div class="ame-check">✓</div><div class="ame-icon">🧺</div><div class="ame-label">Washing Machine</div></button>
+          <button type="button" class="amenity-btn selected" onclick="toggleAmenity(this)"><div class="ame-check">✓</div><div class="ame-icon">🍳</div><div class="ame-label">Kitchen Access</div></button>
+          <button type="button" class="amenity-btn" onclick="toggleAmenity(this)"><div class="ame-check">✓</div><div class="ame-icon">🚿</div><div class="ame-label">Attached Bath</div></button>
+          <button type="button" class="amenity-btn" onclick="toggleAmenity(this)"><div class="ame-check">✓</div><div class="ame-icon">🅿️</div><div class="ame-label">Parking</div></button>
+          <button type="button" class="amenity-btn" onclick="toggleAmenity(this)"><div class="ame-check">✓</div><div class="ame-icon">🏋️</div><div class="ame-label">Gym Access</div></button>
+          <button type="button" class="amenity-btn" onclick="toggleAmenity(this)"><div class="ame-check">✓</div><div class="ame-icon">🔒</div><div class="ame-label">24h Security</div></button>
+          <button type="button" class="amenity-btn" onclick="toggleAmenity(this)"><div class="ame-check">✓</div><div class="ame-icon">🛗</div><div class="ame-label">Lift / Elevator</div></button>
+          <button type="button" class="amenity-btn" onclick="toggleAmenity(this)"><div class="ame-check">✓</div><div class="ame-icon">⚡</div><div class="ame-label">Power Backup</div></button>
+          <button type="button" class="amenity-btn" onclick="toggleAmenity(this)"><div class="ame-check">✓</div><div class="ame-icon">🐾</div><div class="ame-label">Pet Friendly</div></button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        /* ── rent slider ── */
-        function updateRent(el) {
-            const v = parseInt(el.value);
-            const pct = ((v - 2000) / (80000 - 2000)) * 100;
-            el.style.setProperty('--pct', pct + '%');
-            document.getElementById('rentVal').textContent = v.toLocaleString('en-IN');
-            document.getElementById('previewRent').textContent = '₹' + v.toLocaleString('en-IN') + ' / mo';
-        }
-        updateRent(document.getElementById('rentSlider'));
+  <!-- STEP 4: PHOTOS -->
+  <div class="form-card fu d3">
+    <div class="form-section-title"><div class="step-badge amber">4</div> Photos</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Listings with 4+ photos get <strong style="color:var(--navy);">5× more inquiries.</strong></p>
+    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+      <input type="file" id="fileInput" name="images" accept="image/*" multiple onchange="handleFiles(this.files)"/>
+      <div style="font-size:40px;margin-bottom:12px;">📸</div>
+      <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:6px;">Drop photos here or click to browse</div>
+      <div style="font-size:12px;color:var(--muted);">JPG, PNG · Max 5MB each · Up to 10 photos</div>
+    </div>
+    <div class="img-preview-grid" id="imgPreviewGrid"></div>
+  </div>
 
-        /* ── cleanliness slider ── */
-        function updateClean(el) {
-            const v = el.value;
-            const pct = ((v - 1) / 9) * 100;
-            el.style.setProperty('--pct', pct + '%');
-            document.getElementById('cleanVal').textContent = v;
-        }
-        updateClean(document.getElementById('cleanSlider'));
+  <!-- STEP 5: DESCRIPTION -->
+  <div class="form-card fu d3">
+    <div class="form-section-title"><div class="step-badge amber">5</div> Description &amp; Rules</div>
+    <div style="display:flex;flex-direction:column;gap:18px;">
+      <div class="field-group">
+        <label class="field-label">About the Room</label>
+        <textarea name="description" class="field-input" placeholder="Describe the room, the flat, neighbourhood vibe, nearest metro/college…" id="descInput" oninput="updateCharCount(this,'descCount',400)" style="min-height:120px;"></textarea>
+        <div style="display:flex;justify-content:flex-end;margin-top:4px;"><span class="field-hint" id="descCount">0 / 400</span></div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">House Rules</label>
+        <textarea name="house_rules" class="field-input" placeholder="e.g. No smoking indoors, no pets, visitors only till 10pm…" style="min-height:90px;"></textarea>
+      </div>
+      <div class="form-row-2">
+        <div class="field-group">
+          <label class="field-label">Nearest Metro / Station</label>
+          <input type="text" name="nearest_metro" class="field-input" placeholder="e.g. Indiranagar Metro (800m)"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Distance from Office Hub</label>
+          <input type="text" name="distance_to_hub" class="field-input" placeholder="e.g. 2km to Manyata Tech Park"/>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        /* ── radio groups ── */
-        function setRadio(groupId, clickedBtn) {
-            document.querySelectorAll('#' + groupId + ' .radio-btn').forEach(b => b.classList.remove('active'));
-            clickedBtn.classList.add('active');
-        }
-        function toggleIncluded(b) { b.classList.toggle('active'); }
+  <!-- STEP 6: FLATMATE PREFERENCES -->
+  <div class="form-card fu d4">
+    <div class="form-section-title"><div class="step-badge amber">6</div> Flatmate Preferences</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Help our AI find the right match.</p>
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div class="form-row-2">
+        <div class="field-group">
+          <label class="field-label">Preferred Gender</label>
+          <select name="pref_gender" class="field-input">
+            <option>Any</option><option>Female only</option><option>Male only</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Preferred Occupation</label>
+          <select name="pref_occupation" class="field-input">
+            <option>Any</option><option>Students only</option><option>Working professionals</option><option>Students &amp; professionals</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" style="margin-bottom:10px;">Sleep Schedule Preference</label>
+        <div class="radio-group" id="sleepGroup">
+          <button type="button" class="radio-btn" onclick="setRadio('sleepGroup',this)"><div class="radio-dot"></div>🌅 Early bird</button>
+          <button type="button" class="radio-btn active" onclick="setRadio('sleepGroup',this)"><div class="radio-dot"></div>🌙 Night owl</button>
+          <button type="button" class="radio-btn" onclick="setRadio('sleepGroup',this)"><div class="radio-dot"></div>No preference</button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" style="margin-bottom:10px;">Cleanliness Expectation</label>
+        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:8px;">
+          <span class="range-val" style="font-size:18px;" id="cleanVal">7</span>
+          <span class="range-unit">/ 10</span>
+        </div>
+        <input type="range" class="range-input" name="cleanliness_level" id="cleanSlider" min="1" max="10" value="7" step="1" oninput="updateClean(this)"/>
+        <div class="range-labels"><span class="range-label">Relaxed</span><span class="range-label">Very tidy</span></div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" style="margin-bottom:10px;">Guest / Visitor Policy</label>
+        <div class="radio-group" id="guestGroup">
+          <button type="button" class="radio-btn active" onclick="setRadio('guestGroup',this)"><div class="radio-dot"></div>Occasional guests OK</button>
+          <button type="button" class="radio-btn" onclick="setRadio('guestGroup',this)"><div class="radio-dot"></div>No overnight guests</button>
+          <button type="button" class="radio-btn" onclick="setRadio('guestGroup',this)"><div class="radio-dot"></div>Very flexible</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- CONTACT DETAILS -->
+<div class="form-card fu d4">
+  <div class="form-section-title"><div class="step-badge">7</div> Your Contact Details</div>
+  <div style="display:flex;flex-direction:column;gap:18px;">
+    <div class="form-row-2">
+      <div class="field-group">
+        <label class="field-label">Full Name *</label>
+        <input type="text" name="contact_name" class="field-input" placeholder="Your name" required/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Phone *</label>
+        <input type="tel" name="contact_phone" class="field-input" placeholder="+91 98765 43210" required/>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Email *</label>
+      <input type="email" name="contact_email" class="field-input" placeholder="you@example.com" required/>
+    </div>
+  </div>
+</div>
 
-        /* ── amenity toggles ── */
-        function toggleAmenity(b) {
-            b.classList.toggle('selected');
-            updateAmenityPreview();
-        }
-        function updateAmenityPreview() {
-            const selected = document.querySelectorAll('.amenity-btn.selected .ame-label');
-            const box = document.getElementById('previewAmenities');
-            box.innerHTML = '';
-            selected.forEach(s => {
-                const chip = document.createElement('div');
-                chip.className = 'chip';
-                chip.style.cssText = 'background:#EBF9FD;color:var(--teal);';
-                chip.textContent = s.textContent;
-                box.appendChild(chip);
-            });
-        }
-        updateAmenityPreview();
+  <!-- SUBMIT -->
+  <div class="fu d4 form-card">
+    <div style="display:flex;align-items:flex-start;gap:10px;background:var(--teal-lt);border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+      <input type="checkbox" id="agreeCheck" style="margin-top:2px;accent-color:var(--teal);width:16px;height:16px;flex-shrink:0;"/>
+      <label for="agreeCheck" style="font-size:13px;color:var(--navy);line-height:1.6;cursor:pointer;">
+        I confirm this listing is accurate and I agree to StayMatch's 
+        <a href="#" style="color:var(--teal);font-weight:600;">Terms of Use</a> and 
+        <a href="#" style="color:var(--teal);font-weight:600;">Privacy Policy</a>.
+      </label>
+    </div>
+    <button type="submit" class="btn-teal" style="width:100%;font-size:16px;padding:16px 40px;" onclick="return checkAgree()">
+      🚀 Publish Listing
+    </button>
+  </div>
 
-        /* ── live preview update ── */
-        function updatePreview() {
-            const title = document.getElementById('titleInput').value;
-            const city = document.getElementById('cityInput').value;
-            const area = document.getElementById('areaInput').value;
-            const type = document.getElementById('roomTypeInput').value;
-            const avail = document.getElementById('availableInput').value;
-            const name = document.getElementById('nameInput').value;
-            document.getElementById('previewTitle').textContent = title || 'Your listing title';
-            document.getElementById('previewLocation').textContent = [city, area].filter(Boolean).join(' · ') || 'City · Area';
-            document.getElementById('previewType').textContent = (type ? '🏠 ' + type : '🏠 Room Type');
-            if (avail) {
-                const d = new Date(avail);
-                const now = new Date();
-                document.getElementById('previewAvail').textContent = d <= now ? '📅 Available now' : '📅 From ' + d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-            }
-            document.getElementById('previewPostedBy').textContent = name ? 'Posted by ' + name : 'Posted by —';
-        }
+</div>
 
-        /* ── char counter ── */
-        function updateCharCount(el, countId, max) {
-            const len = el.value.length;
-            document.getElementById(countId).textContent = len + ' / ' + max;
-            if (len > max * 0.9) document.getElementById(countId).style.color = 'var(--amber)';
-            else document.getElementById(countId).style.color = 'var(--muted)';
-        }
+<!-- Hidden fields for radio values -->
+<input type="hidden" name="furnishing_status" id="furnishingVal"/>
+<input type="hidden" name="sleep_schedule" id="sleepVal"/>
+<input type="hidden" name="guest_policy" id="guestVal"/>
+<input type="hidden" name="included_items" id="includedVal"/>
+<input type="hidden" name="amenities" id="amenitiesVal"/>
 
-        /* ── file upload / image preview ── */
-        let uploadedImgs = [];
-        let uploadedFiles = [];
-        function handleFiles(files) {
-            Array.from(files).slice(0, 10 - uploadedImgs.length).forEach(file => {
-                if (!file.type.startsWith('image/')) return;
-                uploadedFiles.push(file);
-                const reader = new FileReader();
-                reader.onload = e => {
-                    uploadedImgs.push(e.target.result);
-                    renderImgPreviews();
-                    // show first as card preview
-                    if (uploadedImgs.length === 1) {
-                        const imgBox = document.getElementById('previewImgBox');
-                        imgBox.innerHTML = `<div class="preview-badge">NEW</div><img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;"/>`;
-                    }
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-        function renderImgPreviews() {
-            const grid = document.getElementById('imgPreviewGrid');
-            grid.innerHTML = '';
-            uploadedImgs.forEach((src, i) => {
-                const d = document.createElement('div');
-                d.className = 'img-thumb';
-                d.innerHTML = `<img src="${src}" alt="preview"/><button class="remove-btn" onclick="removeImg(${i})">✕</button>`;
-                grid.appendChild(d);
-            });
-        }
-        function removeImg(i) {
-            uploadedImgs.splice(i, 1);
-            uploadedFiles.splice(i, 1);
-            renderImgPreviews();
-        }
+</form>
 
-        // drag & drop
-        const zone = document.getElementById('uploadZone');
-        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
-        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-        zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay" style="display:none;">
+  <div class="success-box">
+    <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--green));display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 24px;">✓</div>
+    <h2 class="display" style="font-size:28px;font-weight:800;color:var(--navy);margin-bottom:10px;">Listing Published! 🎉</h2>
+    <p style="font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:28px;">Your room is now live on StayMatch.</p>
+    <button class="btn-teal" style="width:100%;" onclick="window.location.href='/dashboard/'">Go to Dashboard →</button>
+  </div>
+</div>
 
-        /* ── submit ── */
-        function getActiveText(groupId) {
-            const active = document.querySelector('#' + groupId + ' .radio-btn.active');
-            return active ? active.textContent.trim() : '';
-        }
+<script>
+function updateRent(el){
+  const v=parseInt(el.value);
+  const pct=((v-2000)/(80000-2000))*100;
+  el.style.setProperty('--pct',pct+'%');
+  document.getElementById('rentVal').textContent=v.toLocaleString('en-IN');
+}
+updateRent(document.getElementById('rentSlider'));
 
-        function handleSubmit() {
-            const agree = document.getElementById('agreeCheck').checked;
-            if (!agree) { alert('Please agree to the Terms of Use to publish your listing.'); return; }
+function updateClean(el){
+  const pct=((el.value-1)/9)*100;
+  el.style.setProperty('--pct',pct+'%');
+  document.getElementById('cleanVal').textContent=el.value;
+}
+updateClean(document.getElementById('cleanSlider'));
 
-            const formData = new FormData();
-            formData.append('title', document.getElementById('titleInput').value || 'Untitled Listing');
-            formData.append('city', document.getElementById('cityInput').value || 'Bangalore');
-            formData.append('area', document.getElementById('areaInput').value || 'Not specified');
-            formData.append('room_type', document.getElementById('roomTypeInput').value || 'Private Room');
-            formData.append('available_from', document.getElementById('availableInput').value);
-            formData.append('rent', document.getElementById('rentSlider').value || '12000');
-            formData.append('description', document.getElementById('descInput').value || '');
-            formData.append('contact_name', document.getElementById('nameInput').value || '');
-            formData.append('contact_phone', document.getElementById('phoneInput').value || '');
-            formData.append('contact_email', document.getElementById('emailInput').value || '');
+function setRadio(groupId,btn){
+  document.querySelectorAll('#'+groupId+' .radio-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggleIncluded(b){b.classList.toggle('active');}
+function toggleAmenity(b){b.classList.toggle('selected');}
 
-            const selectedAmenities = Array.from(document.querySelectorAll('#amenityGrid .amenity-btn.selected .ame-label'))
-                .map(el => el.textContent.trim());
-            selectedAmenities.forEach(name => formData.append('amenities', name));
+function updateCharCount(el,countId,max){
+  const len=el.value.length;
+  document.getElementById(countId).textContent=len+' / '+max;
+  document.getElementById(countId).style.color=len>max*.9?'var(--amber)':'var(--muted)';
+}
 
-            const selectedIncludedItems = Array.from(document.querySelectorAll('#includedGroup .radio-btn.active'))
-                .map(el => el.textContent.trim());
-            selectedIncludedItems.forEach(item => formData.append('included_items', item));
+function updatePreview(){}
 
-            for (let i = 0; i < uploadedFiles.length; i++) {
-                formData.append('images', uploadedFiles[i]);
-                formData.append('images[]', uploadedFiles[i]);
-            }
+let uploadedFiles=[];
+function handleFiles(files){
+  Array.from(files).slice(0,10-uploadedFiles.length).forEach(file=>{
+    if(!file.type.startsWith('image/'))return;
+    uploadedFiles.push(file);
+    const reader=new FileReader();
+    reader.onload=e=>{
+      uploadedFiles[uploadedFiles.length-1]._dataUrl=e.target.result;
+      renderImgPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function renderImgPreviews(){
+  const grid=document.getElementById('imgPreviewGrid');
+  grid.innerHTML='';
+  uploadedFiles.forEach((f,i)=>{
+    const d=document.createElement('div');
+    d.className='img-thumb';
+    d.innerHTML=`<img src="${f._dataUrl}" alt="preview"/><button class="remove-btn" type="button" onclick="removeImg(${i})">✕</button>`;
+    grid.appendChild(d);
+  });
+}
+function removeImg(i){uploadedFiles.splice(i,1);renderImgPreviews();}
 
-            // Optional fields with safe defaults
-            formData.append('address', 'Address not provided');
-            formData.append('bhk_config', '1 BHK');
-            formData.append('floor', 'Not specified');
-            formData.append('min_stay', '1 month');
-            formData.append('deposit', '1 month rent');
-            formData.append('maintenance', 'Included in rent');
-            formData.append('furnishing_status', getActiveText('furnishGroup').includes('Semi') ? 'Semi' : (getActiveText('furnishGroup').includes('Unfurnished') ? 'Unfurnished' : 'Fully'));
-            formData.append('house_rules', '');
-            formData.append('nearest_metro', '');
-            formData.append('distance_to_hub', '');
-            formData.append('pref_gender', 'Any');
-            formData.append('pref_occupation', 'Any');
-            formData.append('sleep_schedule', getActiveText('sleepGroup') || 'No preference');
-            formData.append('cleanliness_level', document.getElementById('cleanSlider').value || '7');
-            formData.append('guest_policy', getActiveText('guestGroup') || 'Occasional guests OK');
+const zone=document.getElementById('uploadZone');
+zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('dragover');});
+zone.addEventListener('dragleave',()=>zone.classList.remove('dragover'));
+zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('dragover');handleFiles(e.dataTransfer.files);});
+</script>
 
-            fetch(window.location.pathname, {
-                method: 'POST',
-                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
-                body: formData
-            })
-                .then(response => {
-                    if (response.redirected) {
-                        window.location.href = response.url;
-                        return;
-                    }
-                    if (!response.ok) throw new Error('Save failed');
-                    window.location.href = '/dashboard/';
-                })
-                .catch(() => alert('Listing save nahi ho paayi. Please try again.'));
-        }
-        function closeSuccess() {
-            document.getElementById('successOverlay').style.display = 'none';
-            document.body.style.overflow = '';
-        }
-    </script>
-</body>
-
-</html>
+{% endblock %}
