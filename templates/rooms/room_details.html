@@ -180,7 +180,6 @@
 {% endblock %}
 
 {% block content %}
-
 <!-- GALLERY -->
 <div class="fu d1">
   <div class="gallery-grid">
@@ -197,11 +196,26 @@
         <button class="icon-btn-sm" onclick="toggleSave(this)">♡</button>
         <button class="icon-btn-sm">↗</button>
       </div>
-      <button class="gallery-photo-btn" id="photoCountBtn">📸 View All {{ room.images.count }} Photos</button>
+      {% if room.images.count > 1 %}
+      <button class="gallery-photo-btn" id="photoCountBtn">
+        📸 View All {{ room.images.count }} Photos
+      </button>
+      {% endif %}
     </div>
+
     {% for img in room.images.all %}
-      {% if not forloop.first %}
-      <div class="g-thumb"><img src="{{ img.image.url }}" alt="{{ room.title }}" class="gallery-thumb-img"></div>
+      {% if not forloop.first and forloop.counter <= 3 %}
+      <div class="g-thumb" style="position:relative;cursor:pointer;" onclick="setMainPhoto('{{ img.image.url }}')">
+        <img src="{{ img.image.url }}" alt="{{ room.title }}" class="gallery-thumb-img">
+        {% if forloop.counter == 3 and room.images.count > 3 %}
+        <div onclick="document.getElementById('galleryModal').classList.add('open')"
+          style="position:absolute;inset:0;background:rgba(15,31,61,.55);display:flex;align-items:center;justify-content:center;">
+          <span style="color:#fff;font-weight:800;font-size:20px;font-family:'Bricolage Grotesque',sans-serif;">
+            +{{ room.images.count|add:"-3" }}
+          </span>
+        </div>
+        {% endif %}
+      </div>
       {% endif %}
     {% empty %}
     <div class="g-thumb"><div class="gallery-placeholder" style="font-size:36px;">🛁</div></div>
@@ -209,7 +223,6 @@
     {% endfor %}
   </div>
 </div>
-
 <!-- GALLERY MODAL -->
 <div class="gallery-modal" id="galleryModal">
   <button class="gallery-close" id="galleryCloseBtn">✕</button>
@@ -744,6 +757,39 @@ async function askFaq(){
   btn.textContent='Ask AI ✦';
   chat.scrollTop=chat.scrollHeight;
 }
+
+function setMainPhoto(url){
+  const main = document.getElementById('mainGalleryImg');
+  if(main){
+    main.style.transition = 'opacity 0.15s';
+    main.style.opacity = '0';
+    setTimeout(()=>{ main.src = url; main.style.opacity = '1'; }, 150);
+  }
+}
 </script>
+{% if request.user == room.owner %}
+<div id="deleteModal" style="display:none;position:fixed;inset:0;background:rgba(15,31,61,.6);z-index:2000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);">
+  <div style="background:#fff;border-radius:20px;padding:32px;max-width:400px;width:100%;box-shadow:0 25px 50px rgba(0,0,0,.2);text-align:center;">
+    <div style="width:64px;height:64px;background:#fef2f2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px;">🗑️</div>
+    <h3 style="font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:800;color:var(--navy);margin-bottom:8px;">Delete This Room?</h3>
+    <p style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px;">
+      "<strong style="color:var(--navy);">{{ room.title }}</strong>" will be deleted permanently. This action cannot be undone.
+    </p>
+    <div style="display:flex;gap:12px;">
+      <button onclick="document.getElementById('deleteModal').style.display='none'"
+        style="flex:1;background:var(--off);border:1px solid var(--border);color:var(--navy);padding:13px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;cursor:pointer;">
+        Cancel
+      </button>
+      <form action="{% url 'room_delete' room.id %}" method="POST" style="flex:1;margin:0;">
+        {% csrf_token %}
+        <button type="submit"
+          style="width:100%;background:#dc2626;color:#fff;border:none;padding:13px;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;cursor:pointer;">
+          Yes, Delete
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
 
 {% endblock %}
