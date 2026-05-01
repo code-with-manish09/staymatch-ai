@@ -1,345 +1,382 @@
-  {% extends 'base.html' %}
+{% extends 'base.html' %}
 
-    {% block content %}
- 
-    <div id="sec-discover">
+{% block content %}
 
-      <!-- Welcome Banner -->
-      <div class="welcome-banner fu d1">
-        {% if request.user.profile.profile_picture %}
-        <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:30px; height:30px; border-radius: 50%; object-fit: cover;" alt="{{ user.username }}"/>
-        {% else %}
-        <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px; height:30px; border-radius: 50%;" alt="{{ user.username }}"/>
-        {% endif %}
-        <div style="flex:1;position:relative;z-index:1;">
-          <div class="wb-name">Hey {{ request.user.profile.full_name }}, welcome back ! 👋</div>
-          <div class="wb-chips">
-  {% if request.user.profile.personality_tags %}
-    {% for tag in request.user.profile.personality_tags %}
-      <span class="wb-chip">{{ tag }}</span>
-    {% endfor %}
-  {% else %}
-    <span class="wb-chip">🏷️ Quiz lo aur tags pao</span>
-  {% endif %}
-</div>
-          <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
-            <span class="verified-badge">🎓 Student Verified</span>
-            <span class="quiz-done">🧠 Personality Quiz Done</span>
-            <span class="phase-badge p1">Phase 1 Active</span>
-          </div>
-        </div>
-        <div class="vibe-score">
-          <div class="vibe-num">87</div>
-          <div class="vibe-lbl">Vibe Score</div>
-        </div>
-      </div>
+<div id="sec-discover">
 
-      <!-- Stats -->
-      <div class="stats-row fu d2">
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--teal-lt);">🤖</div>
-          <div>
-            <div class="stat-val">24</div>
-            <div class="stat-lbl">AI Matches Found</div>
-            <div class="stat-trend trend-up">↑ 6 new today</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--amber-lt);">👁</div>
-          <div>
-            <div class="stat-val">142</div>
-            <div class="stat-lbl">Profile Views</div>
-            <div class="stat-trend trend-up">↑ 18 this week</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#F0FDF4;">💬</div>
-          <div>
-            <div class="stat-val">8</div>
-            <div class="stat-lbl">Active Chats</div>
-            <div class="stat-trend trend-up">3 unread</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#FFF1F2;">🔖</div>
-          <div>
-            <div class="stat-val">7</div>
-            <div class="stat-lbl">Saved Rooms</div>
-            <div class="stat-trend trend-dn">2 price dropped</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- AI Quick Access -->
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;" class="fu d2">
-        <div onclick="showSec('quiz')" style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;box-shadow:var(--card-sh);text-align:center;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='var(--border)'">
-          <div style="font-size:24px;margin-bottom:6px;">🧠</div>
-          <div style="font-weight:700;font-size:12px;color:var(--navy);">Personality Quiz</div>
-          <div style="font-size:10px;color:var(--teal);font-weight:600;margin-top:2px;">Take Quiz →</div>
-        </div>
-        <div onclick="showSec('safety')" style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;box-shadow:var(--card-sh);text-align:center;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='var(--border)'">
-          <div style="font-size:24px;margin-bottom:6px;">🛡️</div>
-          <div style="font-weight:700;font-size:12px;color:var(--navy);">Safety Centre</div>
-          <div style="font-size:10px;color:var(--teal);font-weight:600;margin-top:2px;">View Scores →</div>
-        </div>
-        <div onclick="showSec('addroom')" style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;box-shadow:var(--card-sh);text-align:center;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='var(--border)'">
-          <div style="font-size:24px;margin-bottom:6px;">💰</div>
-          <div style="font-weight:700;font-size:12px;color:var(--navy);">AI Rent Suggest</div>
-          <div style="font-size:10px;color:var(--teal);font-weight:600;margin-top:2px;">Post a Room →</div>
-        </div>
-        <div onclick="openVibe()" style="background:var(--navy);border:1px solid var(--navy);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;box-shadow:var(--card-sh);text-align:center;">
-          <div style="font-size:24px;margin-bottom:6px;">✨</div>
-          <div style="font-weight:700;font-size:12px;color:#fff;">Find Your Vibe</div>
-          <div style="font-size:10px;color:var(--teal);font-weight:600;margin-top:2px;">AI Match →</div>
-        </div>
-      </div>
-
-      <!-- Filter Bar -->
-      <div class="filter-bar fu d3">
-        <span class="filter-lbl">🔍 Filters:</span>
-        <select class="filter-select">
-          <option>📍 All Cities</option>
-          <option>Bangalore</option>
-          <option>Mumbai</option>
-          <option>Delhi</option>
-          <option>Hyderabad</option>
-          <option>Pune</option>
-        </select>
-        <select class="filter-select">
-          <option>💰 Any Budget</option>
-          <option>Under ₹8,000</option>
-          <option>₹8k – ₹12k</option>
-          <option>₹12k – ₹18k</option>
-          <option>₹18k+</option>
-        </select>
-        <select class="filter-select">
-          <option>👤 Any Gender</option>
-          <option>Male only</option>
-          <option>Female only</option>
-        </select>
-        <div class="filter-chip on" onclick="this.classList.toggle('on')">🌙 Night Owl</div>
-        <div class="filter-chip" onclick="this.classList.toggle('on')">🐶 Pet-friendly</div>
-        <div class="filter-chip" onclick="this.classList.toggle('on')">🚇 Near Metro</div>
-        <div class="filter-chip" onclick="this.classList.toggle('on')">🏋️ Gym</div>
-        <div class="filter-chip" onclick="this.classList.toggle('on')">📚 Study Friendly</div>
-        <div class="filter-chip" onclick="this.classList.toggle('on')">🔇 Low Noise</div>
-        <div class="filter-chip" onclick="this.classList.toggle('on');showToast('AI Price Mode ON','Showing AI rent suggestions for each listing 🤖')">🤖 AI Price</div>
-        <button class="btn-vibe" onclick="openVibe()">✨ Find Your Vibe</button>
-      </div>
-
-      
-      <!-- Room Listings -->
-<div class="sec-hd fu d4">
-  <div class="sec-title">🏠 Recommended for You</div>
-  <a class="sec-link">View all 48 listings →</a>
-</div>
-<div class="rooms-grid fu d4">
-  {% for room in listings %}
-  <div class="room-card">
-    <div class="room-img">
-      {% with first_img=room.images.first %}
-        {% if first_img %}
-        <img src="{{ first_img.image.url }}" alt="{{ room.title }}" onerror="this.style.display='none'"/>
-        {% else %}
-        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" alt="Room"/>
-        {% endif %}
-      {% endwith %}
-      <div class="match-badge teal">
-        🎯
-        {% if room.cleanliness_level >= 9 %}96% Match
-        {% elif room.cleanliness_level >= 7 %}92% Match
-        {% elif room.cleanliness_level >= 5 %}88% Match
-        {% else %}82% Match{% endif %}
-      </div>
-      <div class="room-save"
-           id="save-icon-{{ room.id }}"
-           onclick="handleRoomSave('{{ room.id }}')">
-        {% if room.id in saved_room_ids %}❤️{% else %}🤍{% endif %}
-      </div>
-      <div class="room-type">{{ room.bhk_config }} · {{ room.get_furnishing_status_display }}</div>
-    </div>
-    <div class="room-body">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:3px;">
-        <div class="room-title" style="margin-bottom:0;">{{ room.title }}</div>
-        <span class="verified-badge gold" style="flex-shrink:0;margin-left:6px;margin-top:2px;">✅ Verified</span>
-      </div>
-      <div class="room-loc">📍 {{ room.area }} · {{ room.city }}</div>
-      <div class="safety-row">
-        <div class="safety-stars">★★★★★</div>
-        <span class="safety-lbl">Safety 4.7</span>
-        <span class="clean-pill">🧹 Clean</span>
-      </div>
-      <div class="room-chips">
-        <div class="chip mutual-chip match">🏠 {{ room.room_type }}</div>
-        <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🪑 {{ room.get_furnishing_status_display }}</div>
-        {% if room.nearest_metro %}
-        <div class="chip" style="background:#F0FDF4;color:#059669;">🚇 Near Metro</div>
-        {% endif %}
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-        <div class="ai-price-pill">🤖 AI Fair: ₹{{ room.rent }}</div>
-        <div class="env-score">🌿 Env <span>8.2/10</span></div>
-      </div>
-      <div class="room-footer">
-        <div class="room-price">₹{{ room.rent }} <small>/mo</small></div>
-        <a href="{% url 'room_details_by_id' room.id %}" class="btn-sm btn-sm-teal" style="text-decoration:none;text-align:center;display:inline-block;">
-          View Details
-        </a>
-      </div>
-    </div>
-  </div>
-  {% empty %}
-  <div class="feat-card" style="grid-column:1/-1;text-align:center;padding:40px;">
-    <div style="font-size:40px;margin-bottom:10px;">🏠</div>
-    <p style="color:var(--muted);">Abhi koi listing nahi mili. Filters change karo!</p>
-  </div>
-  {% endfor %}
-</div>
-<div class="bottom-grid fu d5">
-
-<!-- Trending Section -->
-<div class="trending-wrap">
-  <div class="trend-header">
-    <div class="sec-title">🔥 Trending Now</div>
-    <a class="sec-link">See all →</a>
-  </div>
-  <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">
-    Most viewed in last 24 hours
-  </p>
-  <div class="trend-fire-badge">🔥 Hot Market</div>
-
-  {% for room in trending_rooms %}
-  <a href="{% url 'room_details_by_id' room.id %}" class="trend-item" style="text-decoration:none;">
-    
-    <div class="trend-rank {% if forloop.counter == 1 %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">
-      {{ forloop.counter }}
-    </div>
-
-    {% if room.images.first %}
-    <img src="{{ room.images.first.image.url }}" class="trend-img" alt="{{ room.title }}"/>
+  <!-- Welcome Banner -->
+  <div class="welcome-banner fu d1">
+    {% if request.user.profile.profile_picture %}
+    <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:30px; height:30px; border-radius: 50%; object-fit: cover;" alt="{{ user.username }}"/>
     {% else %}
-    <div class="trend-img" style="background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:20px;">🏠</div>
+    <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px; height:30px; border-radius: 50%;" alt="{{ user.username }}"/>
     {% endif %}
-
-    <div class="trend-info">
-      <div class="trend-name">{{ room.title }}</div>
-      <div class="trend-sub">📍 {{ room.area }} · {{ room.city }}</div>
-      <div style="display:flex;gap:5px;margin-top:4px;">
-        {% if room.avg_rating %}
-        <span class="chip" style="background:var(--amber-lt);color:#B45309;padding:2px 8px;">
-          ⭐ {{ room.avg_rating|floatformat:1 }}
-        </span>
-        {% endif %}
-        <span class="chip" style="background:#F0FDF4;color:#059669;padding:2px 8px;">
-          {{ room.review_count }} reviews
-        </span>
-      </div>
-    </div>
-
-    <div class="trend-right">
-      <div class="trend-price">₹{{ room.rent }}</div>
-      <div class="trend-pct {% if forloop.counter == 1 %}hot{% elif forloop.counter <= 3 %}warm{% endif %}">
-        {% if room.avg_rating %}
-          {% if room.avg_rating >= 4.5 %}🔥{% else %}📈{% endif %}
-          {{ room.avg_rating|floatformat:1 }}/5
+    <div style="flex:1;position:relative;z-index:1;">
+      <div class="wb-name">Hey {{ request.user.profile.full_name }}, welcome back ! 👋</div>
+      <div class="wb-chips">
+        {% if request.user.profile.personality_tags %}
+          {% for tag in request.user.profile.personality_tags %}
+            <span class="wb-chip">{{ tag }}</span>
+          {% endfor %}
         {% else %}
-          🆕 New
+          <span class="wb-chip">🏷️ Quiz lo aur tags pao</span>
         {% endif %}
       </div>
+      <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+        <span class="verified-badge">🎓 Student Verified</span>
+        <span class="quiz-done">🧠 Personality Quiz Done</span>
+        <span class="phase-badge p1">Phase 1 Active</span>
+      </div>
     </div>
+    <div class="vibe-score">
+      <div class="vibe-num">87</div>
+      <div class="vibe-lbl">Vibe Score</div>
+    </div>
+  </div>
 
-  </a>
-  {% empty %}
-  <p style="text-align:center;color:var(--muted);padding:20px;">Koi trending room nahi mila.</p>
-  {% endfor %}
+  <!-- Filter Bar -->
+  <div class="filter-bar fu d3">
+    <span class="filter-lbl">🔍 Filters:</span>
+    <select class="filter-select">
+      <option>📍 All Cities</option>
+      <option>Bangalore</option>
+      <option>Mumbai</option>
+      <option>Delhi</option>
+      <option>Hyderabad</option>
+      <option>Pune</option>
+    </select>
+    <select class="filter-select">
+      <option>💰 Any Budget</option>
+      <option>Under ₹8,000</option>
+      <option>₹8k – ₹12k</option>
+      <option>₹12k – ₹18k</option>
+      <option>₹18k+</option>
+    </select>
+    <select class="filter-select">
+      <option>👤 Any Gender</option>
+      <option>Male only</option>
+      <option>Female only</option>
+    </select>
+    <div class="filter-chip on" onclick="this.classList.toggle('on')">🌙 Night Owl</div>
+    <div class="filter-chip" onclick="this.classList.toggle('on')">🐶 Pet-friendly</div>
+    <div class="filter-chip" onclick="this.classList.toggle('on')">🚇 Near Metro</div>
+    <div class="filter-chip" onclick="this.classList.toggle('on')">🏋️ Gym</div>
+    <div class="filter-chip" onclick="this.classList.toggle('on')">📚 Study Friendly</div>
+    <div class="filter-chip" onclick="this.classList.toggle('on')">🔇 Low Noise</div>
+  </div>
+
+
+  <!-- Stats -->
+<div class="stats-row fu d2">
+
+  <div class="stat-card">
+    <div class="stat-icon" style="background:var(--teal-lt);">🤖</div>
+    <div>
+      <div class="stat-val">{{ total_matches }}</div>
+      <div class="stat-lbl">AI Matches Found</div>
+      <div class="stat-trend trend-up">↑ 6 new today</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#F0FDF4;">💬</div>
+    <div>
+      <div class="stat-val">{{ active_chats }}</div>
+      <div class="stat-lbl">Active Chats</div>
+      <div class="stat-trend trend-up">{{ unread_count }} unread</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#FFF1F2;">🔖</div>
+    <div>
+      <div class="stat-val">{{ saved_count }}</div>
+      <div class="stat-lbl">Saved Rooms</div>
+      <div class="stat-trend trend-dn">your bookmarks</div>
+    </div>
+  </div>
+
+  <!-- Find Your Vibe card -->
+  <div class="stat-card" onclick="openVibe()" style="cursor:pointer;background:var(--navy);border:1px solid var(--navy);">
+  <div class="stat-icon" style="background:rgba(255,255,255,.1);">✨</div>
+  <div>
+    <div class="stat-lbl" style="color:#fff;font-weight:700;">Find Your Vibe</div>
+    <div class="stat-trend" style="color:var(--teal);">AI Match →</div>
+  </div>
+</div>
 
 </div>
- 
-  <!-- ── REAL MESSAGES PANEL ── -->
-  <div class="real-msg-panel">
- 
-    <div class="rmp-header">
-      <div class="sec-title" style="font-size:16px;">💬 Recent Messages</div>
-      <a href="{% url 'inbox' %}" class="btn-sm btn-sm-teal"
-         style="font-size:12px;text-decoration:none;padding:6px 14px;border-radius:8px;">
-        View All →
-      </a>
+
+  <!-- ══ CITY · PLATFORM STATS · REVIEWS ══ -->
+  <!-- 8 boxes ki jagah ye section — 2 row layout, clean aur premium -->
+  <div class="fu d2" style="margin-bottom:24px;">
+
+    <!-- Row 1: City rooms + Platform numbers -->
+    <div style="display:grid;grid-template-columns:1fr 290px;gap:16px;margin-bottom:16px;">
+
+      <!-- City Rooms Grid -->
+      <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:20px 22px;box-shadow:var(--card-sh);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);">🏙️ Rooms by City</div>
+          <span style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;">● Live</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+  {% for cd in city_stats %}
+<div style="background:var(--off);border:1px solid var(--border);border-radius:12px;padding:14px 12px;display:flex;align-items:center;gap:10px;">
+  <div style="font-size:13px;width:28px;height:28px;border-radius:8px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">🏙️</div>
+  <div style="flex:1;min-width:0;">
+    <div style="font-size:11px;color:var(--muted);font-weight:600;">{{ cd.city }}</div>
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;color:var(--navy);line-height:1;">{{ cd.count }}</div>
+  </div>
+  <div style="font-size:10px;color:var(--teal);font-weight:700;background:var(--teal-lt);padding:2px 7px;border-radius:6px;">rooms</div>
+</div>
+{% empty %}
+<p style="color:var(--muted);">No rooms available.</p>
+{% endfor %}
+</div>
+      </div>
+
+      <!-- Platform Numbers (right side) -->
+      <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:20px 22px;box-shadow:var(--card-sh);display:flex;flex-direction:column;gap:0;">
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);margin-bottom:16px;">📊 Platform Stats</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+
+          <div style="display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--border);">
+            <div style="width:40px;height:40px;border-radius:10px;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">👥</div>
+            <div style="flex:1;">
+              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--navy);line-height:1;">{{ total_users|default:"—" }}</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;font-weight:600;">Users Joined</div>
+            </div>
+            <div style="font-size:11px;font-weight:700;color:var(--green);">↑ Growing</div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--border);">
+            <div style="width:40px;height:40px;border-radius:10px;background:var(--amber-lt);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏠</div>
+            <div style="flex:1;">
+              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--navy);line-height:1;">{{ total_listings|default:"—" }}</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;font-weight:600;">Total Listings</div>
+            </div>
+            <div style="font-size:11px;font-weight:700;color:var(--teal);">Live ●</div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:40px;height:40px;border-radius:10px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">⚡</div>
+            <div style="flex:1;">
+              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--navy);line-height:1;">{{ total_matches|default:"—" }}</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;font-weight:600;">AI Matches Made</div>
+            </div>
+            <div style="font-size:11px;font-weight:700;color:var(--green);">↑ Today</div>
+          </div>
+
+        </div>
+      </div>
     </div>
- 
-    <div class="rmp-scroll">
- 
-      {% if recent_messages %}
-        {% for conv in recent_messages %}
- 
-          <!-- Click karne pe seedha us conversation mein jao -->
-          {% if conv.listing.owner == request.user %}
-            <a class="rmp-item {% if conv.unread %}unread{% endif %}"
-               href="{% url 'chat_view' conv.listing.id %}?user={{ conv.other_user.id }}">
+
+
+
+  </div>
+  <!-- ══ END CITY · USERS · REVIEWS ══ -->
+
+  
+  <!-- Room Listings -->
+  <div class="sec-hd fu d4">
+    <div class="sec-title">🏠 Recommended for You</div>
+    <a class="sec-link">View all 48 listings →</a>
+  </div>
+  <div class="rooms-grid fu d4">
+    {% for room in listings %}
+    <div class="room-card">
+      <div class="room-img">
+        {% with first_img=room.images.first %}
+          {% if first_img %}
+          <img src="{{ first_img.image.url }}" alt="{{ room.title }}" onerror="this.style.display='none'"/>
           {% else %}
-            <a class="rmp-item {% if conv.unread %}unread{% endif %}"
-               href="{% url 'chat_view' conv.listing.id %}">
+          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" alt="Room"/>
           {% endif %}
- 
-            <div class="rmp-av">
-              {{ conv.other_user.username|slice:":1"|upper }}
-              {% if conv.unread %}<div class="unread-dot"></div>{% endif %}
-            </div>
- 
-            <div class="rmp-info">
-              <div class="rmp-top">
-                <span class="rmp-name">{{ conv.other_user.username }}</span>
-                <span class="rmp-time">
-                  {{ conv.last_msg.created_at|timesince|slice:":5" }}
-                </span>
-              </div>
-              <div class="rmp-preview {% if conv.unread %}bold{% endif %}">
-                {{ conv.last_msg.body|truncatechars:40 }}
-              </div>
-              <div class="rmp-listing">
-                🏠 {{ conv.listing.title|truncatechars:30 }}
-              </div>
-            </div>
- 
-            {% if conv.unread %}
-              <div class="rmp-unread-badge">{{ conv.unread }}</div>
-            {% endif %}
- 
-          </a>
- 
-        {% endfor %}
- 
-      {% else %}
-        <!-- Koi message nahi abhi tak -->
-        <div class="rmp-empty">
-          <span>💬</span>
-          <p>Koi message nahi abhi tak</p>
-          <a href="{% url 'inbox' %}"
-             style="font-size:12px;color:var(--teal);font-weight:600;text-decoration:none;">
-            Inbox open karo →
+        {% endwith %}
+        <div class="match-badge teal">
+          🎯
+          {% if room.cleanliness_level >= 9 %}96% Match
+          {% elif room.cleanliness_level >= 7 %}92% Match
+          {% elif room.cleanliness_level >= 5 %}88% Match
+          {% else %}82% Match{% endif %}
+        </div>
+        <div class="room-save"
+             id="save-icon-{{ room.id }}"
+             onclick="handleRoomSave('{{ room.id }}')">
+          {% if room.id in saved_room_ids %}❤️{% else %}🤍{% endif %}
+        </div>
+        <div class="room-type">{{ room.bhk_config }} · {{ room.get_furnishing_status_display }}</div>
+      </div>
+      <div class="room-body">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:3px;">
+          <div class="room-title" style="margin-bottom:0;">{{ room.title }}</div>
+          <span class="verified-badge gold" style="flex-shrink:0;margin-left:6px;margin-top:2px;">✅ Verified</span>
+        </div>
+        <div class="room-loc">📍 {{ room.area }} · {{ room.city }}</div>
+        <div class="safety-row">
+          <div class="safety-stars">★★★★★</div>
+          <span class="safety-lbl">Safety 4.7</span>
+          <span class="clean-pill">🧹 Clean</span>
+        </div>
+        <div class="room-chips">
+          <div class="chip mutual-chip match">🏠 {{ room.room_type }}</div>
+          <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🪑 {{ room.get_furnishing_status_display }}</div>
+          {% if room.nearest_metro %}
+          <div class="chip" style="background:#F0FDF4;color:#059669;">🚇 Near Metro</div>
+          {% endif %}
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <div class="ai-price-pill">🤖 AI Fair: ₹{{ room.rent }}</div>
+          <div class="env-score">🌿 Env <span>8.2/10</span></div>
+        </div>
+        <div class="room-footer">
+          <div class="room-price">₹{{ room.rent }} <small>/mo</small></div>
+          <a href="{% url 'room_details_by_id' room.id %}" class="btn-sm btn-sm-teal" style="text-decoration:none;text-align:center;display:inline-block;">
+            View Details
           </a>
         </div>
-      {% endif %}
- 
-    </div>
- 
-    <!-- Footer — inbox pe jaane ka button -->
-    <div class="rmp-footer">
-      <a href="{% url 'inbox' %}" class="rmp-footer-btn">
-        💬 Open Full Inbox
-      </a>
-   </div>
       </div>
-      
+    </div>
+    {% empty %}
+    <div class="feat-card" style="grid-column:1/-1;text-align:center;padding:40px;">
+      <div style="font-size:40px;margin-bottom:10px;">🏠</div>
+      <p style="color:var(--muted);">Abhi koi listing nahi mili. Filters change karo!</p>
+    </div>
+    {% endfor %}
+  </div>
+   <!-- Row 2: Recent Reviews -->
+    <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:20px 22px;box-shadow:var(--card-sh);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);">💬 What People Are Saying</div>
+        <span style="background:var(--amber-lt);color:#B45309;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;">⭐ Recent Reviews</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+
+        {% for review in recent_reviews %}
+        <div style="background:var(--off);border:1px solid var(--border);border-radius:12px;padding:14px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--teal-lt);color:var(--teal);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              {{ review.user.username|slice:":1"|upper }}
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:12px;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ review.user.username }}</div>
+              <div style="font-size:10px;color:var(--muted);">
+                {% for i in "12345"|make_list %}
+                  {% if forloop.counter <= review.rating %}⭐{% endif %}
+                {% endfor %}
+              </div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);flex-shrink:0;">{{ review.created_at|timesince|slice:":8" }} ago</div>
+          </div>
+          <p style="font-size:12px;color:var(--navy);line-height:1.55;margin:0;">{{ review.comment|truncatechars:80 }}</p>
+          <div style="font-size:10px;color:var(--teal);font-weight:600;margin-top:6px;">🏠 {{ review.listing.title|truncatechars:25 }}</div>
+        </div>
+        {% empty %}
+        <p style="color:var(--muted);">Koi review nahi abhi.</p>   
+    
+        {% endfor %}
+
+      </div>
+    </div>
+
+  <div class="bottom-grid fu d5">
+
+    <!-- Trending Section -->
+    <div class="trending-wrap">
+      <div class="trend-header">
+        <div class="sec-title">🔥 Trending Now</div>
+        <a class="sec-link">See all →</a>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Most viewed in last 24 hours</p>
+      <div class="trend-fire-badge">🔥 Hot Market</div>
+
+      {% for room in trending_rooms %}
+      <a href="{% url 'room_details_by_id' room.id %}" class="trend-item" style="text-decoration:none;">
+        <div class="trend-rank {% if forloop.counter == 1 %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">
+          {{ forloop.counter }}
+        </div>
+        {% if room.images.first %}
+        <img src="{{ room.images.first.image.url }}" class="trend-img" alt="{{ room.title }}"/>
+        {% else %}
+        <div class="trend-img" style="background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:20px;">🏠</div>
+        {% endif %}
+        <div class="trend-info">
+          <div class="trend-name">{{ room.title }}</div>
+          <div class="trend-sub">📍 {{ room.area }} · {{ room.city }}</div>
+          <div style="display:flex;gap:5px;margin-top:4px;">
+            {% if room.avg_rating %}
+            <span class="chip" style="background:var(--amber-lt);color:#B45309;padding:2px 8px;">⭐ {{ room.avg_rating|floatformat:1 }}</span>
+            {% endif %}
+            <span class="chip" style="background:#F0FDF4;color:#059669;padding:2px 8px;">{{ room.review_count }} reviews</span>
+          </div>
+        </div>
+        <div class="trend-right">
+          <div class="trend-price">₹{{ room.rent }}</div>
+          <div class="trend-pct {% if forloop.counter == 1 %}hot{% elif forloop.counter <= 3 %}warm{% endif %}">
+            {% if room.avg_rating %}
+              {% if room.avg_rating >= 4.5 %}🔥{% else %}📈{% endif %}
+              {{ room.avg_rating|floatformat:1 }}/5
+            {% else %}
+              🆕 New
+            {% endif %}
+          </div>
+        </div>
+      </a>
+      {% empty %}
+      <p style="text-align:center;color:var(--muted);padding:20px;">Koi trending room nahi mila.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Messages Panel -->
+    <div class="real-msg-panel">
+      <div class="rmp-header">
+        <div class="sec-title" style="font-size:16px;">💬 Recent Messages</div>
+        <a href="{% url 'inbox' %}" class="btn-sm btn-sm-teal" style="font-size:12px;text-decoration:none;padding:6px 14px;border-radius:8px;">View All →</a>
+      </div>
+      <div class="rmp-scroll">
+        {% if recent_messages %}
+          {% for conv in recent_messages %}
+            {% if conv.listing.owner == request.user %}
+              <a class="rmp-item {% if conv.unread %}unread{% endif %}" href="{% url 'chat_view' conv.listing.id %}?user={{ conv.other_user.id }}">
+            {% else %}
+              <a class="rmp-item {% if conv.unread %}unread{% endif %}" href="{% url 'chat_view' conv.listing.id %}">
+            {% endif %}
+              <div class="rmp-av">
+                {{ conv.other_user.username|slice:":1"|upper }}
+                {% if conv.unread %}<div class="unread-dot"></div>{% endif %}
+              </div>
+              <div class="rmp-info">
+                <div class="rmp-top">
+                  <span class="rmp-name">{{ conv.other_user.username }}</span>
+                  <span class="rmp-time">{{ conv.last_msg.created_at|timesince|slice:":5" }}</span>
+                </div>
+                <div class="rmp-preview {% if conv.unread %}bold{% endif %}">{{ conv.last_msg.body|truncatechars:40 }}</div>
+                <div class="rmp-listing">🏠 {{ conv.listing.title|truncatechars:30 }}</div>
+              </div>
+              {% if conv.unread %}<div class="rmp-unread-badge">{{ conv.unread }}</div>{% endif %}
+            </a>
+          {% endfor %}
+        {% else %}
+          <div class="rmp-empty">
+            <span>💬</span>
+            <p>Koi message nahi abhi tak</p>
+            <a href="{% url 'inbox' %}" style="font-size:12px;color:var(--teal);font-weight:600;text-decoration:none;">Inbox open karo →</a>
+          </div>
+        {% endif %}
+      </div>
+      <div class="rmp-footer">
+        <a href="{% url 'inbox' %}" class="rmp-footer-btn">💬 Open Full Inbox</a>
+      </div>
     </div>
 
   </div>
-  
-  <!-- ══ MATCHES ══ -->
-    
-    <!-- ══ SAVED ══ -->
-    <div id="sec-saved" style="display:none;">
-  <div class="sec-hd"><div class="sec-title">🔖 Saved Rooms</div></div>
 
+</div>
+
+<!-- ══ SAVED ══ -->
+<div id="sec-saved" style="display:none;">
+  <div class="sec-hd"><div class="sec-title">🔖 Saved Rooms</div></div>
   <div class="rooms-grid">
     {% for item in user_saved_rooms %}
     <div class="room-card" id="saved-card-{{ item.room.id }}">
@@ -351,9 +388,7 @@
           <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" style="width:100%;height:160px;object-fit:cover;" alt="Room"/>
           {% endif %}
         {% endwith %}
-        <div class="room-save"
-             id="save-icon-{{ item.room.id }}"
-             onclick="handleRoomSave('{{ item.room.id }}')">❤️</div>
+        <div class="room-save" id="save-icon-{{ item.room.id }}" onclick="handleRoomSave('{{ item.room.id }}')">❤️</div>
       </div>
       <div class="room-body">
         <div class="room-title">{{ item.room.title }}</div>
@@ -372,29 +407,27 @@
     </div>
     {% endfor %}
   </div>
-
   <button class="btn-outline" style="margin-top:20px;" onclick="showSec('discover')">← Back to Discover</button>
 </div>
-    <!-- ══ MESSAGES ══ -->
-    <div id="sec-messages" style="display:none;">
-      <div class="feat-card" style="text-align:center;padding:56px 28px;">
-        <div style="font-size:48px;margin-bottom:14px;">💬</div>
-        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;">Messages</div>
-        <p style="color:var(--muted);font-size:14px;margin-bottom:20px;">3 unread conversations waiting.</p>
-        <button class="btn-teal" style="font-size:14px;padding:11px 28px;" onclick="showSec('discover')">← Back</button>
-      </div>
-    </div>
 
-        <!-- ══ NOTIFICATIONS ══ -->
+<!-- ══ MESSAGES ══ -->
+<div id="sec-messages" style="display:none;">
+  <div class="feat-card" style="text-align:center;padding:56px 28px;">
+    <div style="font-size:48px;margin-bottom:14px;">💬</div>
+    <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;">Messages</div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:20px;">3 unread conversations waiting.</p>
+    <button class="btn-teal" style="font-size:14px;padding:11px 28px;" onclick="showSec('discover')">← Back</button>
+  </div>
+</div>
 
-    <div id="sec-notifications" style="display:none;">
+<!-- ══ NOTIFICATIONS ══ -->
+<div id="sec-notifications" style="display:none;">
   <div class="feat-card" style="padding:28px;">
     <div style="font-size:20px;font-weight:800;color:var(--navy);margin-bottom:20px;">🔔 Notifications</div>
-
     {% if recent_messages %}
       {% for conv in recent_messages %}
         {% if conv.unread %}
-          <a href="{% url 'chat_view' conv.listing.id %}" 
+          <a href="{% url 'chat_view' conv.listing.id %}"
              style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:12px;background:#f0fdfa;border:1px solid #99f6e4;margin-bottom:10px;text-decoration:none;">
             <div style="width:42px;height:42px;border-radius:50%;background:#0d9488;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">
               {{ conv.other_user.username|slice:":1"|upper }}
@@ -416,223 +449,153 @@
         <p>No new notifications.</p>
       </div>
     {% endif %}
-
     <button class="btn-teal" style="font-size:14px;padding:11px 28px;margin-top:16px;width:100%;" onclick="showSec('discover')">← Back</button>
   </div>
 </div>
 
-    <!-- ══ PROFILE — REDESIGNED ══ -->
-    <div id="sec-profile" style="display:none;">
-      <div class="sec-hd">
-        <div class="sec-title">👤 My Profile</div>
-        <div class="section-label" style="margin-bottom:0;">Account</div>
+<!-- ══ PROFILE ══ -->
+<div id="sec-profile" style="display:none;">
+  <div class="sec-hd">
+    <div class="sec-title">👤 My Profile</div>
+    <div class="section-label" style="margin-bottom:0;">Account</div>
+  </div>
+  <div class="feat-card" style="max-width:820px;margin:0 auto;padding:28px;">
+    <div style="display:flex;align-items:center;gap:18px;margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid var(--border);flex-wrap:wrap;">
+      {% if request.user.profile.profile_picture %}
+      <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:30px; height:30px; border-radius: 50%; object-fit: cover;" alt="{{ user.username }}"/>
+      {% else %}
+      <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px; height:30px; border-radius: 50%;" alt="{{ user.username }}"/>
+      {% endif %}
+      <div style="flex:1;min-width:180px;">
+        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:2px;">{{ request.user.profile.full_name }}</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">@{{ request.user.username }}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="verified-badge">🎓 Student Verified</span>
+          <span class="quiz-done">🧠 Quiz Done</span>
+          <span class="verified-badge gold">✅ ID Verified</span>
+          <span class="phase-badge p1">Phase 1</span>
+        </div>
       </div>
-
-      <div class="feat-card" style="max-width:820px;margin:0 auto;padding:28px;">
-
-        <!-- Avatar Row -->
-        <div style="display:flex;align-items:center;gap:18px;margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid var(--border);flex-wrap:wrap;">
-          <!-- Avatar with Django template check -->
-          {% if request.user.profile.profile_picture %}
-          <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:30px; height:30px; border-radius: 50%; object-fit: cover;" alt="{{ user.username }}"/>
-          {% else %}
-          <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px; height:30px; border-radius: 50%;" alt="{{ user.username }}"/>
-          {% endif %} 
-
-          <div style="flex:1;min-width:180px;">
-            <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:2px;">
-               
-              {{ request.user.profile.full_name }}
-            </div>
-            <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">
-               @{{ request.user.username }} 
-            </div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <span class="verified-badge">🎓 Student Verified</span>
-              <span class="quiz-done">🧠 Quiz Done</span>
-              <span class="verified-badge gold">✅ ID Verified</span>
-              <span class="phase-badge p1">Phase 1</span>
-            </div>
-          </div>
-
-          <!-- Vibe Score circle (top-right of avatar row) -->
-          <div style="text-align:center;flex-shrink:0;">
-            <div style="position:relative;width:80px;height:80px;margin:0 auto 4px;">
-              <svg viewBox="0 0 80 80" style="width:80px;height:80px;transform:rotate(-90deg);">
-                <circle cx="40" cy="40" r="33" fill="none" stroke="var(--border)" stroke-width="6"/>
-                <circle cx="40" cy="40" r="33" fill="none" stroke="var(--teal)" stroke-width="6"
-                        stroke-dasharray="207.3"
-                        stroke-dashoffset="26.9"
-                        stroke-linecap="round"/>
-              </svg>
-              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-                <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:var(--teal);">87</span>
-              </div>
-            </div>
-            <div style="font-size:11px;color:var(--muted);font-weight:600;">Vibe Score</div>
+      <div style="text-align:center;flex-shrink:0;">
+        <div style="position:relative;width:80px;height:80px;margin:0 auto 4px;">
+          <svg viewBox="0 0 80 80" style="width:80px;height:80px;transform:rotate(-90deg);">
+            <circle cx="40" cy="40" r="33" fill="none" stroke="var(--border)" stroke-width="6"/>
+            <circle cx="40" cy="40" r="33" fill="none" stroke="var(--teal)" stroke-width="6" stroke-dasharray="207.3" stroke-dashoffset="26.9" stroke-linecap="round"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:var(--teal);">87</span>
           </div>
         </div>
-
-        <!-- Two-Column Grid -->
-        <div class="profile-grid">
-
-          <!-- LEFT — The Identity -->
-          <div>
-            <div class="profile-col-header">
-              <span class="profile-col-bar" style="background:var(--navy);"></span>
-              The Identity
-            </div>
-
-            <div class="profile-field">
-              <div class="profile-field-label">Username</div>
-              <div class="profile-field-value">
-                <span style="font-size:16px;">🪪</span>
-                 @{{ request.user.username }} 
-              </div>
-            </div>
-
-            <div class="profile-field">
-              <div class="profile-field-label">Full Name</div>
-              <div class="profile-field-value">
-                <span style="font-size:16px;">👤</span>
-                 {{ request.user.profile.full_name|default:user.username }} 
-              </div>
-            </div>
-
-            <div class="profile-field">
-              <div class="profile-field-label">Email</div>
-              <div class="profile-field-value" style="font-size:13px;">
-                <span style="font-size:16px;flex-shrink:0;">✉️</span>
-                {{ request.user.email|default:"—" }} 
-                
-              </div>
-            </div>
-
-            <div class="profile-field">
-              <div class="profile-field-label">Contact</div>
-              <div class="profile-field-value">
-                <span style="font-size:16px;">📱</span>
-                {{ request.user.profile.contacts|default:"—" }}
-              </div>
-            </div>
-
-            <div class="profile-field" style="border-bottom:none;">
-              <div class="profile-field-label">Location</div>
-              <div class="profile-field-value">
-                <span style="font-size:16px;">📍</span>
-                {{ request.user.profile.location|default:"bihar" }}
-              </div>
-            </div>
-          </div>
-
-          <!-- RIGHT — The Vibe -->
-          <div>
-            <div class="profile-col-header">
-              <span class="profile-col-bar" style="background:var(--teal);"></span>
-              The Vibe
-            </div>
-
-            <div class="profile-field">
-              <div class="profile-field-label">Age &amp; Gender</div>
-              <div class="profile-field-value">
-                <span style="font-size:16px;">🧬</span>
-                {{ request.user.profile.age|default:"—" }} yrs
-                <span style="color:var(--border);font-size:16px;margin:0 2px;">|</span>
-                {{ request.user.profile.gender|default:"—" }}
-              </div>
-            </div>
-
-            <div class="profile-field">
-              <div class="profile-field-label">Personality Tags</div>
-              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">
-  {% if request.user.profile.personality_tags %}
-    {% for tag in request.user.profile.personality_tags %}
-      <span class="chip" style="background:var(--teal-lt);color:var(--teal);">{{ tag }}</span>
-    {% endfor %}
-  {% else %}
-    <span style="font-size:12px;color:var(--muted);">selected tags 🏷️</span>
-  {% endif %}
-</div>
-            </div>
-
-            <div class="profile-field">
-              <div class="profile-field-label">Profile Ratings</div>
-              <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
-                <div style="display:flex;align-items:center;gap:8px;">
-                  <span style="font-size:11px;color:var(--muted);width:76px;flex-shrink:0;">Cleanliness</span>
-                  <div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:90%;"></div></div>
-                  <span style="font-size:11px;font-weight:700;color:var(--teal);width:28px;text-align:right;">9/10</span>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px;">
-                  <span style="font-size:11px;color:var(--muted);width:76px;flex-shrink:0;">Noise Level</span>
-                  <div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:40%;background:linear-gradient(90deg,var(--amber),#FCD34D);"></div></div>
-                  <span style="font-size:11px;font-weight:700;color:var(--amber);width:28px;text-align:right;">Mid</span>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px;">
-                  <span style="font-size:11px;color:var(--muted);width:76px;flex-shrink:0;">Reliability</span>
-                  <div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:95%;"></div></div>
-                  <span style="font-size:11px;font-weight:700;color:var(--teal);width:28px;text-align:right;">9.5</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="profile-field" style="border-bottom:none;">
-              <div class="profile-field-label">Mutual Interests</div>
-              <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;">
-                <span class="chip mutual-chip match">🎮 Gaming</span>
-                <span class="chip mutual-chip match">🌙 Night Owl</span>
-                <span class="chip mutual-chip">💻 Tech</span>
-                <span class="chip mutual-chip">📚 Books</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-        <!-- end profile-grid -->
-
-        <!-- Emergency Contact -->
-        <div class="emergency-bar" style="margin-bottom:18px;">
-          <div class="emergency-icon">🆘</div>
-          <div class="emergency-text">
-            Emergency Contact: Priya Singh (Sister) · +91 98765 XXXXX<br/>
-            <span style="font-weight:400;color:#BE185D;">Auto-notified if no check-in after property visit</span>
-          </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <a href="{% url 'update_profile' %}"
-          style="background:#0EA5C9;color:white;padding:11px 22px;border-radius:12px;
-          font-weight:600;font-size:14px;text-decoration:none;display:inline-block;">
-          Update Profile
-         </a>
-          <button class="btn-outline"
-                  style="padding:12px 20px;font-size:14px;"
-                  onclick="showSec('discover')">
-            ← Back to Discover
-          </button>
-        </div>
-
-      </div>
-    </div><!-- /sec-profile -->
-
-    <!-- ══ SETTINGS ══ -->
-    <div id="sec-settings" style="display:none;">
-      <div class="feat-card" style="text-align:center;padding:56px 28px;">
-        <div style="font-size:48px;margin-bottom:14px;">⚙️</div>
-        <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;">Settings</div>
-        <button class="btn-teal" style="font-size:14px;padding:11px 28px;margin-top:12px;" onclick="showSec('discover')">← Back</button>
+        <div style="font-size:11px;color:var(--muted);font-weight:600;">Vibe Score</div>
       </div>
     </div>
+    <div class="profile-grid">
+      <div>
+        <div class="profile-col-header"><span class="profile-col-bar" style="background:var(--navy);"></span>The Identity</div>
+        <div class="profile-field">
+          <div class="profile-field-label">Username</div>
+          <div class="profile-field-value"><span style="font-size:16px;">🪪</span> @{{ request.user.username }}</div>
+        </div>
+        <div class="profile-field">
+          <div class="profile-field-label">Full Name</div>
+          <div class="profile-field-value"><span style="font-size:16px;">👤</span> {{ request.user.profile.full_name|default:user.username }}</div>
+        </div>
+        <div class="profile-field">
+          <div class="profile-field-label">Email</div>
+          <div class="profile-field-value" style="font-size:13px;"><span style="font-size:16px;flex-shrink:0;">✉️</span> {{ request.user.email|default:"—" }}</div>
+        </div>
+        <div class="profile-field">
+          <div class="profile-field-label">Contact</div>
+          <div class="profile-field-value"><span style="font-size:16px;">📱</span> {{ request.user.profile.contacts|default:"—" }}</div>
+        </div>
+        <div class="profile-field" style="border-bottom:none;">
+          <div class="profile-field-label">Location</div>
+          <div class="profile-field-value"><span style="font-size:16px;">📍</span> {{ request.user.profile.location|default:"bihar" }}</div>
+        </div>
+      </div>
+      <div>
+        <div class="profile-col-header"><span class="profile-col-bar" style="background:var(--teal);"></span>The Vibe</div>
+        <div class="profile-field">
+          <div class="profile-field-label">Age &amp; Gender</div>
+          <div class="profile-field-value">
+            <span style="font-size:16px;">🧬</span>
+            {{ request.user.profile.age|default:"—" }} yrs
+            <span style="color:var(--border);font-size:16px;margin:0 2px;">|</span>
+            {{ request.user.profile.gender|default:"—" }}
+          </div>
+        </div>
+        <div class="profile-field">
+          <div class="profile-field-label">Personality Tags</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">
+            {% if request.user.profile.personality_tags %}
+              {% for tag in request.user.profile.personality_tags %}
+                <span class="chip" style="background:var(--teal-lt);color:var(--teal);">{{ tag }}</span>
+              {% endfor %}
+            {% else %}
+              <span style="font-size:12px;color:var(--muted);">selected tags 🏷️</span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="profile-field">
+          <div class="profile-field-label">Profile Ratings</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:11px;color:var(--muted);width:76px;flex-shrink:0;">Cleanliness</span>
+              <div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:90%;"></div></div>
+              <span style="font-size:11px;font-weight:700;color:var(--teal);width:28px;text-align:right;">9/10</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:11px;color:var(--muted);width:76px;flex-shrink:0;">Noise Level</span>
+              <div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:40%;background:linear-gradient(90deg,var(--amber),#FCD34D);"></div></div>
+              <span style="font-size:11px;font-weight:700;color:var(--amber);width:28px;text-align:right;">Mid</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:11px;color:var(--muted);width:76px;flex-shrink:0;">Reliability</span>
+              <div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:95%;"></div></div>
+              <span style="font-size:11px;font-weight:700;color:var(--teal);width:28px;text-align:right;">9.5</span>
+            </div>
+          </div>
+        </div>
+        <div class="profile-field" style="border-bottom:none;">
+          <div class="profile-field-label">Mutual Interests</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;">
+            <span class="chip mutual-chip match">🎮 Gaming</span>
+            <span class="chip mutual-chip match">🌙 Night Owl</span>
+            <span class="chip mutual-chip">💻 Tech</span>
+            <span class="chip mutual-chip">📚 Books</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="emergency-bar" style="margin-bottom:18px;">
+      <div class="emergency-icon">🆘</div>
+      <div class="emergency-text">
+        Emergency Contact: Priya Singh (Sister) · +91 98765 XXXXX<br/>
+        <span style="font-weight:400;color:#BE185D;">Auto-notified if no check-in after property visit</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a href="{% url 'update_profile' %}" style="background:#0EA5C9;color:white;padding:11px 22px;border-radius:12px;font-weight:600;font-size:14px;text-decoration:none;display:inline-block;">Update Profile</a>
+      <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="showSec('discover')">← Back to Discover</button>
+    </div>
+  </div>
+</div>
 
-    <!-- ══ PERSONALITY QUIZ ══ -->
-    <div id="sec-quiz" style="display:none;">
- 
+<!-- ══ SETTINGS ══ -->
+<div id="sec-settings" style="display:none;">
+  <div class="feat-card" style="text-align:center;padding:56px 28px;">
+    <div style="font-size:48px;margin-bottom:14px;">⚙️</div>
+    <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;">Settings</div>
+    <button class="btn-teal" style="font-size:14px;padding:11px 28px;margin-top:12px;" onclick="showSec('discover')">← Back</button>
+  </div>
+</div>
+
+<!-- ══ PERSONALITY QUIZ ══ -->
+<div id="sec-quiz" style="display:none;">
   <div class="sec-hd">
     <div class="sec-title">🧠 Personality Quiz</div>
     <div class="section-label" style="margin-bottom:0;">AI Feature</div>
   </div>
- 
   <div class="quiz-hero">
     <div class="quiz-hero-text">
       <div class="quiz-hero-title">Discover Your<br/>Flatmate Personality</div>
@@ -657,8 +620,6 @@
       <div style="margin-top:8px;"><span style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;">Top 12% in Bangalore</span></div>
     </div>
   </div>
- 
-  <!-- 8 Step Cards -->
   <div class="sec-title" style="font-size:15px;margin-bottom:14px;">📋 What We Ask You</div>
   <div class="quiz-steps-row">
     <div class="quiz-step-card"><div class="qs-icon">🌙</div><div class="qs-label">Sleep Cycle</div><div class="qs-sublabel">Night owl or early bird?</div></div>
@@ -670,8 +631,6 @@
     <div class="quiz-step-card"><div class="qs-icon">⚽</div><div class="qs-label">Sports</div><div class="qs-sublabel">Cricket, gym, yoga?</div></div>
     <div class="quiz-step-card"><div class="qs-icon">💼</div><div class="qs-label">Occupation</div><div class="qs-sublabel">Student, IT, startup?</div></div>
   </div>
- 
-  <!-- How It Works -->
   <div class="how-it-works">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
       <div class="display" style="font-weight:700;font-size:15px;color:var(--navy);">How It Works</div>
@@ -683,8 +642,6 @@
       <div class="hiw-item"><div class="hiw-num">3</div><div><div class="hiw-text">Tags profile pe dikhhte hain</div><div class="hiw-sub">Sahi roommates tumhe dhundhhte hain</div></div></div>
     </div>
   </div>
- 
-  <!-- Tags Preview — All 7 categories -->
   <div class="tags-preview">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
       <div class="display" style="font-weight:700;font-size:15px;color:var(--navy);">🏷️ Tags You Can Get</div>
@@ -733,16 +690,12 @@
       </div>
     </div>
   </div>
- 
   <div style="margin-top:20px;">
     <button class="btn-outline" onclick="showSec('discover')">← Back to Discover</button>
   </div>
- 
 </div>
-<!-- /sec-quiz -->
- 
- 
-<!-- ══ VIBE MODAL — replace existing vibeModal div ══ -->
+
+<!-- ══ VIBE MODAL ══ -->
 <div class="modal-overlay" id="vibeModal" onclick="closeVibe(event)">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-head">
@@ -757,8 +710,6 @@
         <div class="sdot active" id="sd0"></div><div class="sdot" id="sd1"></div><div class="sdot" id="sd2"></div><div class="sdot" id="sd3"></div>
         <div class="sdot" id="sd4"></div><div class="sdot" id="sd5"></div><div class="sdot" id="sd6"></div><div class="sdot" id="sd7"></div>
       </div>
- 
-      <!-- Step 1 -->
       <div id="sv1">
         <div class="q-title">🌙 Sleep cycle kya hai?</div>
         <div class="q-sub">Flatmate conflict ki sabse badi wajah — honest raho!</div>
@@ -770,8 +721,6 @@
         </div>
         <button class="btn-teal" style="width:100%;padding:13px;font-size:14px;" onclick="goStep(2)">Next →</button>
       </div>
- 
-      <!-- Step 2 -->
       <div id="sv2" style="display:none;">
         <div class="q-title">🍽️ Food preferences?</div>
         <div class="q-sub">Shared kitchen mein sab ko samajhna padta hai!</div>
@@ -786,8 +735,6 @@
           <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(3)">Next →</button>
         </div>
       </div>
- 
-      <!-- Step 3 -->
       <div id="sv3" style="display:none;">
         <div class="q-title">🔊 Noise & social vibe?</div>
         <div class="q-sub">Ghar kitna quiet ya lively chahiye?</div>
@@ -806,8 +753,6 @@
           <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(4)">Next →</button>
         </div>
       </div>
- 
-      <!-- Step 4 -->
       <div id="sv4" style="display:none;">
         <div class="q-title">💰 Monthly budget?</div>
         <div class="q-sub">Max rent including utilities.</div>
@@ -821,8 +766,6 @@
           <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(5)">Next →</button>
         </div>
       </div>
- 
-      <!-- Step 5 -->
       <div id="sv5" style="display:none;">
         <div class="q-title">🧬 Personality type?</div>
         <div class="q-sub">Ghar mein tum kaisa feel karte ho?</div>
@@ -837,8 +780,6 @@
           <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(6)">Next →</button>
         </div>
       </div>
- 
-      <!-- Step 6 — Hobbies MULTI SELECT -->
       <div id="sv6" style="display:none;">
         <div class="q-title">🎮 Hobbies & Interests?</div>
         <div class="q-sub">Multiple select kar sakte ho!</div>
@@ -857,8 +798,6 @@
           <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(7)">Next →</button>
         </div>
       </div>
- 
-      <!-- Step 7 — Sports MULTI SELECT -->
       <div id="sv7" style="display:none;">
         <div class="q-title">⚽ Favourite Sports?</div>
         <div class="q-sub">Play karte ho ya dekhte ho — dono count hota hai!</div>
@@ -877,8 +816,6 @@
           <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="goStep(8)">Next →</button>
         </div>
       </div>
- 
-      <!-- Step 8 — Job -->
       <div id="sv8" style="display:none;">
         <div class="q-title">💼 Job / Occupation?</div>
         <div class="q-sub">Isse schedule aur lifestyle match hoti hai!</div>
@@ -894,235 +831,213 @@
         </div>
         <div style="display:flex;gap:10px;margin-top:4px;">
           <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(7)">← Back</button>
-          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="runAI()">🏷️ Add Tags</button>   
-     </div>
+          <button class="btn-teal" style="flex:1;padding:12px;font-size:14px;" onclick="runAI()">🏷️ Add Tags</button>
+        </div>
       </div>
- 
-      <!-- Loading -->
       <div id="sv-loading" style="display:none;text-align:center;padding:36px 0;">
         <div class="spinner"></div>
         <div class="display" style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:6px;">Building your profile…</div>
         <div style="font-size:13px;color:var(--muted);line-height:1.6;">your tags are in progress!</div>
       </div>
- 
-      <!-- Result — tags added success -->
-<div id="sv-result" style="display:none;">
-  <div style="text-align:center;margin-bottom:24px;">
-    <div style="font-size:40px;margin-bottom:10px;animation:popIn .5s ease;">🎉</div>
-    <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;">Tags Successfully Added!</div>
-    <div style="font-size:18px; font-weight:700; color:var(--teal); margin-bottom:4px;">
-       Vibe Score: <span id="result-score">0</span>
+      <div id="sv-result" style="display:none;">
+        <div style="text-align:center;margin-bottom:24px;">
+          <div style="font-size:40px;margin-bottom:10px;animation:popIn .5s ease;">🎉</div>
+          <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;">Tags Successfully Added!</div>
+          <div style="font-size:18px;font-weight:700;color:var(--teal);margin-bottom:4px;">Vibe Score: <span id="result-score">0</span></div>
+          <div style="font-size:13px;color:var(--muted);">Your personality profile is live on your account</div>
+        </div>
+        <div style="background:var(--teal-lt);border:1px solid rgba(14,165,201,.2);border-radius:16px;padding:20px;margin-bottom:16px;">
+          <div style="font-size:12px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">🏷️ Your Personality Tags</div>
+          <div id="result-tags" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+          <div style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.6;">Yeh tags tumhare profile pe add ho gaye — roommates tumhe inhi se dhundhenge.</div>
+        </div>
+        <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div style="font-size:20px;flex-shrink:0;">✅</div>
+          <div style="font-size:13px;color:#065F46;font-weight:600;line-height:1.5;">Profile tags successfully added!</div>
+        </div>
+        <div style="background:linear-gradient(135deg,var(--navy),#1a3260);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+          <div style="font-size:22px;flex-shrink:0;">✨</div>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:13px;color:#fff;margin-bottom:3px;">Wanna know your AI Match?</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.5;">Try our feature Match-Ai</div>
+          </div>
+          <div style="background:rgba(14,165,201,.2);color:var(--teal);font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap;flex-shrink:0;">Soon →</div>
+        </div>
+        <button class="btn-teal" style="width:100%;padding:13px;font-size:14px;" onclick="closeVibe();showToast('Tags Added!','Profile pe tags add ho gaye 🏷️')">Done ✓</button>
+      </div>
     </div>
-    <div style="font-size:13px;color:var(--muted);">Your personality profile is live on your account</div>
   </div>
+</div>
 
-  <!-- Tags display -->
-  <div style="background:var(--teal-lt);border:1px solid rgba(14,165,201,.2);border-radius:16px;padding:20px;margin-bottom:16px;">
-    <div style="font-size:12px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">🏷️ Your Personality Tags</div>
-    <div id="result-tags" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
-    <div style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.6;">Yeh tags tumhare profile pe add ho gaye — roommates tumhe inhi se dhundhenge.</div>
+<!-- ══ FAQs / SAFETY ══ -->
+<div id="sec-safety" style="display:none;">
+  <div class="sec-hd">
+    <div class="sec-title">🛡️ FAQs</div>
+    <div class="section-label" style="margin-bottom:0;">AI Feature</div>
   </div>
-
-  <!-- Success notice -->
-  <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-    <div style="font-size:20px;flex-shrink:0;">✅</div>
-    <div style="font-size:13px;color:#065F46;font-weight:600;line-height:1.5;">Profile tags succesfully added!</div>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Every listing and profile is scored by our AI Safety Engine across multiple parameters.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+    <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--card-sh);">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:22px;">🎓</div>
+        <div>
+          <div style="font-weight:700;font-size:15px;color:var(--navy);">Student Verified</div>
+          <div style="font-size:12px;color:var(--muted);">IIT Bangalore · 2024</div>
+        </div>
+        <div style="margin-left:auto;background:#F0FDF4;color:var(--green);font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;">✓ Active</div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;">Your student verification badge is active. Verified users get 3× more connection requests.</div>
+      <div style="background:var(--off);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--navy);font-weight:600;">🏅 Badge visible on your profile</div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--card-sh);">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:#FFF1F2;display:flex;align-items:center;justify-content:center;font-size:22px;">🚨</div>
+        <div>
+          <div style="font-weight:700;font-size:15px;color:var(--navy);">Emergency Contact</div>
+          <div style="font-size:12px;color:var(--muted);">Safety Feature</div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;">Add an emergency contact. In case of any issue, NestMate can notify them instantly.</div>
+      <button class="btn-sm btn-sm-navy" style="width:100%;font-size:13px;padding:10px;" onclick="showToast('Contact Added!','Emergency contact saved securely 🔒')">+ Add Emergency Contact</button>
+    </div>
   </div>
-
-  <!-- AI Match teaser — future feature -->
-  <div style="background:linear-gradient(135deg,var(--navy),#1a3260);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px;">
-    <div style="font-size:22px;flex-shrink:0;">✨</div>
+  <div class="sec-hd"><div class="sec-title">🏠 Listing Safety Scores</div></div>
+  <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 20px;box-shadow:var(--card-sh);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=60&q=70" style="width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
+      <div style="flex:1;min-width:160px;">
+        <div style="font-weight:700;font-size:13px;color:var(--navy);">Modern 2BHK · Koramangala</div>
+        <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;">
+          <span class="chip" style="background:#F0FDF4;color:#059669;">✓ Verified Owner</span>
+          <span class="chip" style="background:var(--teal-lt);color:var(--teal);">📸 Real Photos</span>
+        </div>
+      </div>
+      <div style="text-align:center;flex-shrink:0;">
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:var(--green);">9.2</div>
+        <div style="font-size:10px;color:var(--muted);">Safety Score</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 20px;box-shadow:var(--card-sh);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=60&q=70" style="width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
+      <div style="flex:1;min-width:160px;">
+        <div style="font-weight:700;font-size:13px;color:var(--navy);">Cozy 1BHK · HSR Layout</div>
+        <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;">
+          <span class="chip" style="background:#F0FDF4;color:#059669;">✓ Verified Owner</span>
+          <span class="chip" style="background:var(--teal-lt);color:var(--teal);">🔇 Low Noise</span>
+        </div>
+      </div>
+      <div style="text-align:center;flex-shrink:0;">
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:var(--green);">8.7</div>
+        <div style="font-size:10px;color:var(--muted);">Safety Score</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 20px;box-shadow:var(--card-sh);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=60&q=70" style="width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
+      <div style="flex:1;min-width:160px;">
+        <div style="font-weight:700;font-size:13px;color:var(--navy);">Spacious 3BHK · Indiranagar</div>
+        <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;">
+          <span class="chip" style="background:var(--amber-lt);color:#B45309;">⚠️ Unverified Owner</span>
+          <span class="chip" style="background:var(--teal-lt);color:var(--teal);">📸 Real Photos</span>
+        </div>
+      </div>
+      <div style="text-align:center;flex-shrink:0;">
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:var(--amber);">6.4</div>
+        <div style="font-size:10px;color:var(--muted);">Safety Score</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:linear-gradient(135deg,var(--navy),#1a3260);border-radius:16px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+    <div style="font-size:32px;flex-shrink:0;">🤖</div>
     <div style="flex:1;">
-      <div style="font-weight:700;font-size:13px;color:#fff;margin-bottom:3px;">Wanna know your AI Match?</div>
-      <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.5;">Try our feature Match-Ai</div>
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:#fff;margin-bottom:3px;">AI Fake Listing Detection</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.5;">Our ML model scans every listing for fake photos, inflated prices, and suspicious patterns — keeping you safe 24/7.</div>
     </div>
-    <div style="background:rgba(14,165,201,.2);color:var(--teal);font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap;flex-shrink:0;">Soon →</div>
+    <div style="background:var(--teal);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:6px;white-space:nowrap;flex-shrink:0;">Active ✓</div>
   </div>
-
-  <button class="btn-teal" style="width:100%;padding:13px;font-size:14px;" onclick="closeVibe();showToast('Tags Added!','Profile pe tags add ho gaye 🏷️')">Done ✓</button>
+  <button class="btn-outline" onclick="showSec('discover')">← Back to Discover</button>
 </div>
- 
+
+<!-- ══ POST A ROOM ══ -->
+<div id="sec-addroom" style="display:none;">
+  <div class="sec-hd">
+    <div class="sec-title">➕ Post a Room</div>
+    <div class="section-label" style="margin-bottom:0;">Room Listing Module</div>
+  </div>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Fill in your room details. Our AI will suggest the optimal rent price based on location, amenities, and current market data.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:24px;box-shadow:var(--card-sh);">
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:18px;">Room Details</div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;">Room Title</div>
+          <input style="width:100%;background:var(--off);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;font-family:'Instrument Sans',sans-serif;color:var(--txt);outline:none;" placeholder="e.g. 2BHK Furnished in Koramangala"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;">City</div>
+            <select class="filter-select" style="width:100%;"><option>Bangalore</option><option>Mumbai</option><option>Delhi</option><option>Hyderabad</option><option>Pune</option></select>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;">BHK Type</div>
+            <select class="filter-select" style="width:100%;"><option>1BHK</option><option>2BHK</option><option>3BHK</option><option>Studio</option><option>PG Room</option></select>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;">Monthly Rent (₹)</div>
+          <input style="width:100%;background:var(--off);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;font-family:'Instrument Sans',sans-serif;color:var(--txt);outline:none;" placeholder="e.g. 14000" type="number"/>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;">Description</div>
+          <textarea style="width:100%;background:var(--off);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Instrument Sans',sans-serif;color:var(--txt);outline:none;resize:none;height:80px;" placeholder="Describe the room, amenities, house rules…"></textarea>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;">Room Tags</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <div class="filter-chip on" onclick="this.classList.toggle('on')">📚 Study Friendly</div>
+            <div class="filter-chip" onclick="this.classList.toggle('on')">🔇 Low Noise</div>
+            <div class="filter-chip" onclick="this.classList.toggle('on')">🐶 Pet Friendly</div>
+            <div class="filter-chip" onclick="this.classList.toggle('on')">🚇 Near Metro</div>
+            <div class="filter-chip" onclick="this.classList.toggle('on')">🏋️ Gym Access</div>
+            <div class="filter-chip" onclick="this.classList.toggle('on')">📶 WiFi</div>
+          </div>
+        </div>
+        <button class="btn-teal" style="width:100%;padding:13px;font-size:14px;" onclick="showToast('Room Posted!','Your listing is live and visible to matches 🏠')">Post Room Listing →</button>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--card-sh);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:18px;">🤖</div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);">AI Rent Price Suggestion</div>
+        </div>
+        <div style="background:var(--off);border-radius:12px;padding:16px;text-align:center;margin-bottom:14px;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">Suggested Price Range</div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:800;color:var(--teal);">₹13,000 – ₹16,000</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">Based on 48 similar listings in Koramangala</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);">
+          <div style="display:flex;justify-content:space-between;"><span>Market average</span><span style="font-weight:600;color:var(--navy);">₹14,200</span></div>
+          <div style="display:flex;justify-content:space-between;"><span>Similar 2BHK furnished</span><span style="font-weight:600;color:var(--navy);">₹13,800 – ₹15,500</span></div>
+          <div style="display:flex;justify-content:space-between;"><span>Demand this week</span><span style="font-weight:600;color:var(--green);">High ↑</span></div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--card-sh);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:18px;">🌿</div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);">Room Environment Score</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:90px;">Cleanliness</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:90%;background:linear-gradient(90deg,var(--green),#6EE7B7);"></div></div><span style="font-size:11px;font-weight:700;color:var(--green);">90%</span></div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:90px;">Noise Level</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:75%;"></div></div><span style="font-size:11px;font-weight:700;color:var(--teal);">Low</span></div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:90px;">Study Friendly</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:95%;background:linear-gradient(90deg,var(--amber),#FCD34D);"></div></div><span style="font-size:11px;font-weight:700;color:var(--amber);">95%</span></div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:90px;">Safety Rating</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:92%;background:linear-gradient(90deg,var(--green),#6EE7B7);"></div></div><span style="font-size:11px;font-weight:700;color:var(--green);">9.2</span></div>
+        </div>
+      </div>
     </div>
   </div>
+  <div style="margin-top:16px;">
+    <button class="btn-outline" onclick="showSec('discover')">← Back to Discover</button>
+  </div>
 </div>
- 
- 
-</div>
-    <!-- ══ FAQs══ -->
-    <div id="sec-safety" style="display:none;">
-      <div class="sec-hd">
-        <div class="sec-title">🛡️ FAQs</div>
-        <div class="section-label" style="margin-bottom:0;">AI Feature</div>
-      </div>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Every listing and profile is scored by our AI Safety Engine across multiple parameters.</p>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
-        <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--card-sh);">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-            <div style="width:44px;height:44px;border-radius:12px;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:22px;">🎓</div>
-            <div>
-              <div style="font-weight:700;font-size:15px;color:var(--navy);">Student Verified</div>
-              <div style="font-size:12px;color:var(--muted);">IIT Bangalore · 2024</div>
-            </div>
-            <div style="margin-left:auto;background:#F0FDF4;color:var(--green);font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;">✓ Active</div>
-          </div>
-          <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;">Your student verification badge is active. Verified users get 3× more connection requests.</div>
-          <div style="background:var(--off);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--navy);font-weight:600;">🏅 Badge visible on your profile</div>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--card-sh);">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-            <div style="width:44px;height:44px;border-radius:12px;background:#FFF1F2;display:flex;align-items:center;justify-content:center;font-size:22px;">🚨</div>
-            <div>
-              <div style="font-weight:700;font-size:15px;color:var(--navy);">Emergency Contact</div>
-              <div style="font-size:12px;color:var(--muted);">Safety Feature</div>
-            </div>
-          </div>
-          <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;">Add an emergency contact. In case of any issue, NestMate can notify them instantly.</div>
-          <button class="btn-sm btn-sm-navy" style="width:100%;font-size:13px;padding:10px;" onclick="showToast('Contact Added!','Emergency contact saved securely 🔒')">+ Add Emergency Contact</button>
-        </div>
-      </div>
-
-      <div class="sec-hd"><div class="sec-title">🏠 Listing Safety Scores</div></div>
-      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
-        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 20px;box-shadow:var(--card-sh);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=60&q=70" style="width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-          <div style="flex:1;min-width:160px;">
-            <div style="font-weight:700;font-size:13px;color:var(--navy);">Modern 2BHK · Koramangala</div>
-            <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;">
-              <span class="chip" style="background:#F0FDF4;color:#059669;">✓ Verified Owner</span>
-              <span class="chip" style="background:var(--teal-lt);color:var(--teal);">📸 Real Photos</span>
-            </div>
-          </div>
-          <div style="text-align:center;flex-shrink:0;">
-            <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:var(--green);">9.2</div>
-            <div style="font-size:10px;color:var(--muted);">Safety Score</div>
-          </div>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 20px;box-shadow:var(--card-sh);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=60&q=70" style="width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-          <div style="flex:1;min-width:160px;">
-            <div style="font-weight:700;font-size:13px;color:var(--navy);">Cozy 1BHK · HSR Layout</div>
-            <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;">
-              <span class="chip" style="background:#F0FDF4;color:#059669;">✓ Verified Owner</span>
-              <span class="chip" style="background:var(--teal-lt);color:var(--teal);">🔇 Low Noise</span>
-            </div>
-          </div>
-          <div style="text-align:center;flex-shrink:0;">
-            <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:var(--green);">8.7</div>
-            <div style="font-size:10px;color:var(--muted);">Safety Score</div>
-          </div>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 20px;box-shadow:var(--card-sh);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-          <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=60&q=70" style="width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-          <div style="flex:1;min-width:160px;">
-            <div style="font-weight:700;font-size:13px;color:var(--navy);">Spacious 3BHK · Indiranagar</div>
-            <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;">
-              <span class="chip" style="background:var(--amber-lt);color:#B45309;">⚠️ Unverified Owner</span>
-              <span class="chip" style="background:var(--teal-lt);color:var(--teal);">📸 Real Photos</span>
-            </div>
-          </div>
-          <div style="text-align:center;flex-shrink:0;">
-            <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:var(--amber);">6.4</div>
-            <div style="font-size:10px;color:var(--muted);">Safety Score</div>
-          </div>
-        </div>
-      </div>
-
-      <div style="background:linear-gradient(135deg,var(--navy),#1a3260);border-radius:16px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin-bottom:20px;">
-        <div style="font-size:32px;flex-shrink:0;">🤖</div>
-        <div style="flex:1;">
-          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:#fff;margin-bottom:3px;">AI Fake Listing Detection</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.5;">Our ML model scans every listing for fake photos, inflated prices, and suspicious patterns — keeping you safe 24/7.</div>
-        </div>
-        <div style="background:var(--teal);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:6px;white-space:nowrap;flex-shrink:0;">Active ✓</div>
-      </div>
-      <button class="btn-outline" onclick="showSec('discover')">← Back to Discover</button>
-    </div>
-
-    <!-- ══ POST A ROOM ══ -->
-    <div id="sec-addroom" style="display:none;">
-      <div class="sec-hd">
-        <div class="sec-title">➕ Post a Room</div>
-        <div class="section-label" style="margin-bottom:0;">Room Listing Module</div>
-      </div>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Fill in your room details. Our AI will suggest the optimal rent price based on location, amenities, and current market data.</p>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-        <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:24px;box-shadow:var(--card-sh);">
-          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:18px;">Room Details</div>
-          <div style="display:flex;flex-direction:column;gap:14px;">
-            <div>
-              <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;">Room Title</div>
-              <input style="width:100%;background:var(--off);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;font-family:'Instrument Sans',sans-serif;color:var(--txt);outline:none;" placeholder="e.g. 2BHK Furnished in Koramangala"/>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-              <div>
-                <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;">City</div>
-                <select class="filter-select" style="width:100%;"><option>Bangalore</option><option>Mumbai</option><option>Delhi</option><option>Hyderabad</option><option>Pune</option></select>
-              </div>
-              <div>
-                <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;">BHK Type</div>
-                <select class="filter-select" style="width:100%;"><option>1BHK</option><option>2BHK</option><option>3BHK</option><option>Studio</option><option>PG Room</option></select>
-              </div>
-            </div>
-            <div>
-              <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;">Monthly Rent (₹)</div>
-              <input style="width:100%;background:var(--off);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;font-family:'Instrument Sans',sans-serif;color:var(--txt);outline:none;" placeholder="e.g. 14000" type="number"/>
-            </div>
-            <div>
-              <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;">Description</div>
-              <textarea style="width:100%;background:var(--off);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Instrument Sans',sans-serif;color:var(--txt);outline:none;resize:none;height:80px;" placeholder="Describe the room, amenities, house rules…"></textarea>
-            </div>
-            <div>
-              <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;">Room Tags</div>
-              <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                <div class="filter-chip on" onclick="this.classList.toggle('on')">📚 Study Friendly</div>
-                <div class="filter-chip" onclick="this.classList.toggle('on')">🔇 Low Noise</div>
-                <div class="filter-chip" onclick="this.classList.toggle('on')">🐶 Pet Friendly</div>
-                <div class="filter-chip" onclick="this.classList.toggle('on')">🚇 Near Metro</div>
-                <div class="filter-chip" onclick="this.classList.toggle('on')">🏋️ Gym Access</div>
-                <div class="filter-chip" onclick="this.classList.toggle('on')">📶 WiFi</div>
-              </div>
-            </div>
-            <button class="btn-teal" style="width:100%;padding:13px;font-size:14px;" onclick="showToast('Room Posted!','Your listing is live and visible to matches 🏠')">Post Room Listing →</button>
-          </div>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:16px;">
-          <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--card-sh);">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-              <div style="width:38px;height:38px;border-radius:10px;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:18px;">🤖</div>
-              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);">AI Rent Price Suggestion</div>
-            </div>
-            <div style="background:var(--off);border-radius:12px;padding:16px;text-align:center;margin-bottom:14px;">
-              <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">Suggested Price Range</div>
-              <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:800;color:var(--teal);">₹13,000 – ₹16,000</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:4px;">Based on 48 similar listings in Koramangala</div>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);">
-              <div style="display:flex;justify-content:space-between;"><span>Market average</span><span style="font-weight:600;color:var(--navy);">₹14,200</span></div>
-              <div style="display:flex;justify-content:space-between;"><span>Similar 2BHK furnished</span><span style="font-weight:600;color:var(--navy);">₹13,800 – ₹15,500</span></div>
-              <div style="display:flex;justify-content:space-between;"><span>Demand this week</span><span style="font-weight:600;color:var(--green);">High ↑</span></div>
-            </div>
-          </div>
-          <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--card-sh);">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-              <div style="width:38px;height:38px;border-radius:10px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:18px;">🌿</div>
-              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);">Room Environment Score</div>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:90px;">Cleanliness</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:90%;background:linear-gradient(90deg,var(--green),#6EE7B7);"></div></div><span style="font-size:11px;font-weight:700;color:var(--green);">90%</span></div>
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:90px;">Noise Level</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:75%;"></div></div><span style="font-size:11px;font-weight:700;color:var(--teal);">Low</span></div>
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:90px;">Study Friendly</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:95%;background:linear-gradient(90deg,var(--amber),#FCD34D);"></div></div><span style="font-size:11px;font-weight:700;color:var(--amber);">95%</span></div>
-              <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:var(--muted);width:90px;">Safety Rating</span><div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:92%;background:linear-gradient(90deg,var(--green),#6EE7B7);"></div></div><span style="font-size:11px;font-weight:700;color:var(--green);">9.2</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top:16px;">
-        <button class="btn-outline" onclick="showSec('discover')">← Back to Discover</button>
-      </div>
-    </div>
-  
-
-    {% endblock %}
+{% endblock %}

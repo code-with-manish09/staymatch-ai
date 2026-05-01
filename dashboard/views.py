@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from rooms.models import Listing,Saved_Rooms
+from rooms.models import Listing,Saved_Rooms,Review
 from inbox.views import get_conversations  
+from django.contrib.auth.models import User
+
 
 #==========profile===============
 def get_user_profile_or_none(user):
@@ -38,6 +40,16 @@ def dashboard(request):
         review_count=Count('reviews')
     ).order_by('-review_count', '-avg_rating')[:5]
 
+    saved_count = Saved_Rooms.objects.filter(user=request.user).count()
+    total_matches = 0
+
+    city_stats = Listing.objects.filter(is_published=True).values('city').annotate(count=Count('id')).order_by('-count')
+
+    total_users = User.objects.count()
+    total_listings = Listing.objects.filter(is_published=True).count()
+
+    recent_reviews = Review.objects.select_related('user', 'listing').order_by('-created_at')[:3]
+
     
     context = {
         'listings': all_rooms,
@@ -46,6 +58,13 @@ def dashboard(request):
         'recent_messages': recent_messages,
         'unread_count': unread_count,
         'trending_rooms': trending_rooms,
+        'saved_count': saved_count,
+        'total_matches': total_matches,
+        'active_chats': len(recent_messages),
+        'city_stats': city_stats,
+        'total_users': total_users,
+        'total_listings': total_listings,
+        'recent_reviews': recent_reviews,
     }
 
     return render(request, 'dashboard/dashboard.html', context)
