@@ -423,54 +423,73 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
     </div>
 
   </div><!-- /form-col -->
+<!-- RIGHT: LIVE PREVIEW CARD -->
+<div class="fu d2">
 
-  <!-- RIGHT: LIVE PREVIEW CARD -->
-  <div class="fu d2">
-    <div class="vibe-preview">
-      <div class="vibe-preview-title">👁️ Live Preview</div>
-      <div class="vibe-avatar" id="prevEmoji">😊</div>
-      <div class="vibe-name" id="prevName">Tumhara Naam</div>
-      <div class="vibe-sub" id="prevSub">Occupation · City</div>
-      <div class="vibe-tags" id="prevTags">
-        <span class="vibe-tag">Tags yahan dikhenge</span>
+  <!-- Person Card Preview -->
+  <div style="position:sticky;top:86px;">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+      <div style="width:3px;height:12px;border-radius:2px;background:var(--teal);display:inline-block;"></div>
+      Live Preview
+    </div>
+
+    <!-- THE CARD -->
+    <div style="background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--card-sh);">
+      <!-- gradient header -->
+      <div id="prevHeader" style="height:100px;background:linear-gradient(135deg,#0EA5C9,#0F1F3D);border-radius:20px 20px 0 0;position:relative;">
+        <div id="prevAvatarBox" style="width:68px;height:68px;border-radius:50%;background:var(--teal-lt);border:3px solid #fff;position:absolute;bottom:-34px;left:20px;display:flex;align-items:center;justify-content:center;font-size:28px;">😊</div>
+        <div style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.15);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;">⚡ Live Preview</div>
       </div>
-      <div class="vibe-budget-row">
-        <span class="vibe-budget-lbl">Max Budget</span>
-        <span class="vibe-budget-val" id="prevBudget">₹12,000/mo</span>
-      </div>
-      <div style="margin-top:12px;background:rgba(255,255,255,.07);border-radius:12px;padding:10px 14px;">
-        <div style="font-size:10px;color:rgba(255,255,255,.35);font-weight:700;letter-spacing:.06em;margin-bottom:6px;">MATCH SCORE EST.</div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden;">
-            <div id="matchBar" style="height:100%;border-radius:99px;background:var(--teal);transition:width .4s;width:10%;"></div>
+
+      <div style="padding:44px 20px 20px;">
+        <!-- name + gender -->
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+          <div>
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--navy);" id="prevName">Tumhara Naam</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:2px;" id="prevSub">Occupation · City</div>
           </div>
-          <span id="matchPct" style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;color:var(--teal);">10%</span>
+          <div id="prevGenderBadge" style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;">—</div>
         </div>
-        <div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:5px;">Tags add karte jao — score badhega</div>
+
+        <!-- interest chips -->
+        <div id="prevTags" style="display:flex;flex-wrap:wrap;gap:5px;margin:14px 0;">
+          <div style="font-size:12px;color:var(--muted);font-style:italic;">Tags select karo…</div>
+        </div>
+
+        <!-- footer: budget + connect -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border);">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--navy);" id="prevBudget">₹12,000 / mo</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;" id="prevArea">Area · City</div>
+          </div>
+          <button class="btn-primary" style="padding:8px 18px;font-size:13px;cursor:default;">Connect</button>
+        </div>
       </div>
     </div>
 
-    <!-- Tips card -->
+    <!-- Tips -->
     <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;margin-top:16px;box-shadow:var(--card-sh);">
-      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:6px;">💡 Tips for better matches</div>
+      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px;">💡 Tips for better matches</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <div style="display:flex;gap:8px;align-items:flex-start;">
           <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0;"></div>
-          <span style="font-size:12px;color:var(--muted);line-height:1.6;">Kam se kam <strong style="color:var(--navy);">5 tags</strong> select karo better matching ke liye</span>
+          <span style="font-size:12px;color:var(--muted);line-height:1.6;">Kam se kam <strong style="color:var(--navy);">5 tags</strong> select karo</span>
         </div>
         <div style="display:flex;gap:8px;align-items:flex-start;">
           <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0;"></div>
-          <span style="font-size:12px;color:var(--muted);line-height:1.6;">Bio mein apni daily routine mention karo</span>
+          <span style="font-size:12px;color:var(--muted);line-height:1.6;">Bio mein daily routine mention karo</span>
         </div>
         <div style="display:flex;gap:8px;align-items:flex-start;">
           <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0;"></div>
-          <span style="font-size:12px;color:var(--muted);line-height:1.6;">Realistic budget set karo — exact area ke hisaab se</span>
+          <span style="font-size:12px;color:var(--muted);line-height:1.6;">Realistic budget set karo</span>
         </div>
       </div>
     </div>
-  </div>
 
-</div><!-- /two-col-layout -->
+
+  </div>
+  </div>
+</div>
 
 <!-- Hidden fields -->
 <input type="hidden" name="sleep_schedule" id="sleepVal"/>
@@ -487,7 +506,7 @@ function updateBudget(el){
   const pct=((v-2000)/(60000-2000))*100;
   el.style.setProperty('--pct',pct+'%');
   document.getElementById('budgetVal').textContent=v.toLocaleString('en-IN');
-  document.getElementById('prevBudget').textContent='₹'+v.toLocaleString('en-IN')+'/mo';
+  document.getElementById('prevBudget').textContent='₹'+v.toLocaleString('en-IN')+' / mo';
 }
 updateBudget(document.getElementById('budgetSlider'));
 
@@ -505,8 +524,28 @@ function setRadio(groupId,btn){
   btn.classList.add('active');
 }
 
-// ── Tag toggle + live preview ──
+// ── Tag data ──
 let selectedTags=[];
+const tagEmojis={
+  'Gaming':'🎮','Music':'🎵','Reading':'📚','Cooking':'🍳','Art & Design':'🎨',
+  'Travel':'✈️','Tech & Coding':'💻','Movies & OTT':'🎬','Photography':'📸',
+  'Writing':'✍️','Podcasts':'🎙️','Anime':'🌸','Cricket':'🏏','Football':'⚽',
+  'Badminton':'🏸','Gym':'🏋️','Running':'🏃','Yoga':'🧘','Swimming':'🏊',
+  'Cycling':'🚴','Pure Veg':'🥗','Non-Veg':'🍗','Vegan':'🌿','Foodie':'😋',
+  'Home Cook':'🥘','Café Hopper':'☕','Introvert':'📚','Extrovert':'🎉',
+  'Ambivert':'⚖️','Early Bird':'🌅','Night Owl':'🌙','Hustler':'🚀',
+  'Zen':'🧘','Creative':'🎨'
+};
+const chipColors=[
+  'background:#EBF9FD;color:var(--teal)',
+  'background:#FEF3C7;color:#B45309',
+  'background:#F0FDF4;color:#059669',
+  'background:#F5F3FF;color:#7C3AED',
+  'background:#FFF1F2;color:#E11D48',
+  'background:#EFF6FF;color:#2563EB',
+];
+
+// ── Tag toggle ──
 function toggleTag(el){
   const tag=el.dataset.tag;
   if(el.classList.contains('selected')){
@@ -519,64 +558,73 @@ function toggleTag(el){
   document.getElementById('interestTagsInput').value=selectedTags.join(',');
   updateTagCounter();
   updatePreviewTags();
-  updateMatchScore();
 }
 
 function updateTagCounter(){
-  const c=selectedTags.length;
-  document.getElementById('tagsCounter').textContent=c+' selected';
+  document.getElementById('tagsCounter').textContent=selectedTags.length+' selected';
 }
-
-const tagEmojis={
-  'Gaming':'🎮','Music':'🎵','Reading':'📚','Cooking':'🍳','Art & Design':'🎨',
-  'Travel':'✈️','Tech & Coding':'💻','Movies & OTT':'🎬','Photography':'📸',
-  'Writing':'✍️','Podcasts':'🎙️','Anime':'🌸','Cricket':'🏏','Football':'⚽',
-  'Badminton':'🏸','Gym':'🏋️','Running':'🏃','Yoga':'🧘','Swimming':'🏊',
-  'Cycling':'🚴','Pure Veg':'🥗','Non-Veg':'🍗','Vegan':'🌿','Foodie':'😋',
-  'Home Cook':'🥘','Café Hopper':'☕','Introvert':'📚','Extrovert':'🎉',
-  'Ambivert':'⚖️','Early Bird':'🌅','Night Owl':'🌙','Hustler':'🚀',
-  'Zen':'🧘','Creative':'🎨'
-};
 
 function updatePreviewTags(){
   const container=document.getElementById('prevTags');
   if(selectedTags.length===0){
-    container.innerHTML='<span class="vibe-tag">Tags yahan dikhenge</span>';
+    container.innerHTML='<div style="font-size:12px;color:var(--muted);font-style:italic;">Tags select karo…</div>';
     return;
   }
-  container.innerHTML=selectedTags.slice(0,6).map(t=>`<span class="vibe-tag">${tagEmojis[t]||''} ${t}</span>`).join('');
-  if(selectedTags.length>6) container.innerHTML+=`<span class="vibe-tag">+${selectedTags.length-6} more</span>`;
+  container.innerHTML=selectedTags.slice(0,4).map((t,i)=>
+    `<div style="display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:99px;font-size:11px;font-weight:600;white-space:nowrap;${chipColors[i%chipColors.length]}">${tagEmojis[t]||''} ${t}</div>`
+  ).join('');
+  if(selectedTags.length>4)
+    container.innerHTML+=`<div style="display:inline-flex;align-items:center;padding:4px 11px;border-radius:99px;font-size:11px;font-weight:700;background:var(--off);color:var(--muted);">+${selectedTags.length-4} more</div>`;
 }
 
-function updateMatchScore(){
-  const base=10;
-  const score=Math.min(base+(selectedTags.length*8),95);
-  document.getElementById('matchBar').style.width=score+'%';
-  document.getElementById('matchPct').textContent=score+'%';
+// ── Live preview ──
+const gradients={
+  'Student':'linear-gradient(135deg,#10B981,#0EA5C9)',
+  'Software / IT':'linear-gradient(135deg,#0EA5C9,#0F1F3D)',
+  'Corporate Professional':'linear-gradient(135deg,#0F1F3D,#1a3260)',
+  'Freelancer':'linear-gradient(135deg,#F59E0B,#EF4444)',
+  'Healthcare':'linear-gradient(135deg,#10B981,#059669)',
+  'Startup':'linear-gradient(135deg,#F59E0B,#0EA5C9)',
+  'Research / Academia':'linear-gradient(135deg,#6366F1,#0F1F3D)',
+  'Creative / Media':'linear-gradient(135deg,#F59E0B,#EF4444)',
+  'Other':'linear-gradient(135deg,#0EA5C9,#0F1F3D)',
+};
+const emojiMap={
+  'Student':'🎓','Software / IT':'💻','Corporate Professional':'🏢',
+  'Freelancer':'🎨','Healthcare':'🏥','Startup':'🚀',
+  'Research / Academia':'📚','Creative / Media':'🎭','Other':'😊'
+};
+const genderColors={
+  'Male':'background:#EFF6FF;color:#2563EB',
+  'Female':'background:var(--teal-lt);color:var(--teal)',
+  'Non-binary':'background:#F5F3FF;color:#7C3AED',
+  'Prefer not to say':'background:var(--off);color:var(--muted)',
+};
+
+function updatePreview(){
+  const name=document.querySelector('[name="name"]')?.value;
+  const occ=document.querySelector('[name="occupation"]')?.value;
+  const city=document.querySelector('[name="city"]')?.value;
+  const area=document.querySelector('[name="preferred_area"]')?.value;
+  const gender=document.querySelector('[name="gender"]')?.value;
+
+  document.getElementById('prevName').textContent=name||'Tumhara Naam';
+  document.getElementById('prevSub').textContent=(occ||'Occupation')+' · '+(city||'City');
+  document.getElementById('prevArea').textContent=(area||'Area')+' · '+(city||'City');
+
+  if(occ){
+    document.getElementById('prevHeader').style.background=gradients[occ]||gradients['Other'];
+    document.getElementById('prevAvatarBox').textContent=emojiMap[occ]||'😊';
+  }
+  if(gender&&genderColors[gender]){
+    const badge=document.getElementById('prevGenderBadge');
+    badge.style.cssText=genderColors[gender]+';font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;';
+    badge.textContent=gender;
+  }
 }
 
-// ── Live preview: name, sub ──
-document.addEventListener('input',function(e){
-  const name=document.querySelector('[name="name"]');
-  const occ=document.querySelector('[name="occupation"]');
-  const city=document.querySelector('[name="city"]');
-  if(name) document.getElementById('prevName').textContent=name.value||'Tumhara Naam';
-  const occVal=occ&&occ.value?occ.value:'Occupation';
-  const cityVal=city&&city.value?city.value:'City';
-  document.getElementById('prevSub').textContent=occVal+' · '+cityVal;
-
-  // emoji based on occupation
-  const emojiMap={'Student':'🎓','Software / IT':'💻','Corporate Professional':'🏢',
-    'Freelancer':'🎨','Healthcare':'🏥','Startup':'🚀','Research / Academia':'📚',
-    'Creative / Media':'🎭','Other':'😊'};
-  if(occ&&occ.value) document.getElementById('prevEmoji').textContent=emojiMap[occ.value]||'😊';
-});
-
-document.querySelector('[name="city"]').addEventListener('change',function(){
-  const occ=document.querySelector('[name="occupation"]');
-  const occVal=occ&&occ.value?occ.value:'Occupation';
-  document.getElementById('prevSub').textContent=occVal+' · '+(this.value||'City');
-});
+document.addEventListener('input', updatePreview);
+document.addEventListener('change', updatePreview);
 
 // ── Char count ──
 function updateCharCount(el,countId,max){
@@ -585,17 +633,16 @@ function updateCharCount(el,countId,max){
   document.getElementById(countId).style.color=len>max*.9?'var(--amber)':'var(--muted)';
 }
 
-// ── Submit validation ──
+// ── Submit ──
 function submitForm(){
   if(!document.getElementById('agreeCheck').checked){
     alert('Pehle terms agree karo!');
     return false;
   }
   if(selectedTags.length<3){
-    alert('Kam se kam 3 interest tags select karo better matching ke liye!');
+    alert('Kam se kam 3 interest tags select karo!');
     return false;
   }
-  // Collect radio values
   const sleepBtn=document.querySelector('#sleepGroup .radio-btn.active');
   if(sleepBtn) document.getElementById('sleepVal').value=sleepBtn.textContent.trim();
   const guestBtn=document.querySelector('#guestGroup .radio-btn.active');
