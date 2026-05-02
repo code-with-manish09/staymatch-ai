@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+.gate-wrap{
+  min-height:calc(100vh - 66px);
+  display:flex;align-items:center;justify-content:center;
+  padding:40px 20px;
+}
+.gate-box{width:100%;max-width:780px;}
+
+.gate-label{
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:12px;
+}
+.gate-title{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-size:clamp(28px,4vw,42px);font-weight:800;
+  color:var(--navy);margin-bottom:8px;line-height:1.15;
+}
+.gate-sub{font-size:15px;color:var(--muted);margin-bottom:36px;line-height:1.6;}
+
+/* ── Cards ── */
+.gate-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+
+.gate-card{
+  border:2px solid var(--border);border-radius:20px;
+  padding:28px 26px 24px;background:#fff;
+  cursor:pointer;transition:all .25s cubic-bezier(.22,.68,0,1.2);
+  position:relative;
+}
+.gate-card:hover{border-color:var(--teal);box-shadow:0 8px 32px rgba(14,165,201,.12);transform:translateY(-3px);}
+.gate-card.selected{
+  border-color:var(--teal);
+  box-shadow:0 0 0 1px var(--teal), 0 12px 40px rgba(14,165,201,.18);
+}
+
+/* radio circle top-right */
+.gate-radio{
+  position:absolute;top:22px;right:22px;
+  width:22px;height:22px;border-radius:50%;
+  border:2px solid var(--border);background:#fff;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;
+}
+.gate-card.selected .gate-radio{
+  border-color:var(--teal);background:var(--teal);
+}
+.gate-radio::after{
+  content:'';width:8px;height:8px;border-radius:50%;
+  background:#fff;opacity:0;transition:opacity .2s;
+}
+.gate-card.selected .gate-radio::after{opacity:1;}
+
+/* icon box */
+.gate-icon-box{
+  width:64px;height:64px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;margin-bottom:18px;
+}
+.gate-icon-box.blue{background:var(--teal-lt);}
+.gate-icon-box.amber{background:var(--amber-lt);}
+
+.gate-card-title{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:800;font-size:18px;color:var(--navy);margin-bottom:8px;
+}
+.gate-card-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:18px;}
+
+/* feature chips inside card */
+.gate-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.gate-chip{
+  padding:4px 12px;border-radius:99px;
+  font-size:11px;font-weight:700;
+  border:1.5px solid;white-space:nowrap;
+}
+.gate-chip.teal{color:var(--teal);border-color:rgba(14,165,201,.3);background:var(--teal-lt);}
+.gate-chip.amber{color:#B45309;border-color:rgba(245,158,11,.3);background:var(--amber-lt);}
+
+/* ── Continue button ── */
+.gate-btn{
+  width:100%;padding:17px;border-radius:14px;
+  background:var(--border);color:var(--muted);
+  border:none;cursor:not-allowed;
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;
+  transition:all .3s;letter-spacing:-.01em;
+}
+.gate-btn.ready{
+  background:var(--navy);color:#fff;cursor:pointer;
+}
+.gate-btn.ready:hover{
+  background:var(--teal);transform:translateY(-2px);
+  box-shadow:0 8px 28px rgba(14,165,201,.3);
+}
+
+@media(max-width:620px){
+  .gate-cards{grid-template-columns:1fr;}
+  .gate-box{max-width:100%;}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="gate-wrap">
+  <div class="gate-box fu d1">
+
+    <div class="gate-label">POST A LISTING</div>
+    <div class="gate-title">What are you looking for?</div>
+    <div class="gate-sub">Choose one — we'll open the right form for you.</div>
+
+    <div class="gate-cards">
+
+      <!-- Card 1: Room to Rent -->
+      <div class="gate-card fu d2" id="card-room" onclick="selectCard('room')">
+        <div class="gate-radio" id="radio-room"></div>
+        <div class="gate-icon-box blue">🏠</div>
+        <div class="gate-card-title">I have a room to rent</div>
+        <div class="gate-card-desc">Post your listing — set rent, location, amenities and find tenants.</div>
+        <div class="gate-chips">
+          <span class="gate-chip teal">Room listing</span>
+          <span class="gate-chip teal">Set your price</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Looking for Flatmate -->
+      <div class="gate-card fu d2" id="card-flatmate" onclick="selectCard('flatmate')">
+        <div class="gate-radio" id="radio-flatmate"></div>
+        <div class="gate-icon-box amber">👥</div>
+        <div class="gate-card-title">I'm looking for a flatmate</div>
+        <div class="gate-card-desc">Share your vibe, budget and preferences — match with compatible people.</div>
+        <div class="gate-chips">
+          <span class="gate-chip amber">Tag-based match</span>
+          <span class="gate-chip amber">AI compatible</span>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="gate-btn" id="continueBtn" disabled onclick="goNext()">
+      Continue
+    </button>
+
+  </div>
+</div>
+
+<script>
+let selected = null;
+
+function selectCard(type) {
+  selected = type;
+  ['room','flatmate'].forEach(t => {
+    document.getElementById('card-'+t).classList.toggle('selected', t === type);
+  });
+  const btn = document.getElementById('continueBtn');
+  btn.classList.add('ready');
+  btn.disabled = false;
+  btn.textContent = type === 'room' ? 'Continue → Post a Room' : 'Continue → Find a Flatmate';
+}
+
+function goNext() {
+  if (!selected) return;
+  if (selected === 'room') {
+    window.location.href = "{% url 'post_room' %}";
+  } else {
+    window.location.href = "{% url 'post_flatmate' %}";
+  }
+}
+</script>
+{% endblock %}

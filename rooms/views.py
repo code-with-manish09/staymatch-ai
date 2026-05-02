@@ -459,4 +459,19 @@ def delete_room(request, pk):
         messages.success(request, '✅ Room deleted successfully!')
         return redirect('dashboard')
     return redirect('room_details_by_id', room_id=pk)
+
+#===============post gate====================
+@login_required
+def post_gate(request):
+    return render(request, 'rooms/post_gate.html')
+
+
+#==============post flatmate====================
+
+@login_required
+def post_flatmate(request):
+    if request.method == 'POST':
+        messages.success(request, 'Profile post ho gayi! 🎉')
+        return redirect('dashboard')
+    return render(request, 'rooms/post_flatmate.html')
  
