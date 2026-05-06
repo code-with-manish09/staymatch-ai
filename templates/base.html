@@ -562,7 +562,6 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 /* ══ FOOTER ══ */
 .site-footer{
   background:var(--navy);
-  margin-left:248px;
   border-top:1px solid rgba(255,255,255,.06);
 }
 .site-footer .container{
@@ -657,7 +656,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
     <span class="nav-badge teal">New</span>
   </a>
   <a href="{% url 'dashboard' %}?sec=safety" class="nav-item">
-    <span class="nav-icon">🛡️</span> Safety Ratings
+    <span class="nav-icon">📂</span>  My Activity
   </a>
   <a href="{% url 'post_gate' %}" class="nav-item">
     <span class="nav-icon">➕</span> Post a Room
@@ -719,8 +718,6 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   <div class="content">
     {% block content %}{% endblock %}
   </div>
-
-  </div><!-- /main-wrapper -->
 
   <!-- ════════════════════════════ FOOTER ════════════════════════════ -->
   <footer class="site-footer">
@@ -797,6 +794,8 @@ input[type=range]{width:100%;accent-color:var(--teal);}
       </div>
     </div>
   </footer>
+  </div><!-- /main-wrapper -->
+
 
 </div><!-- /app -->
 
@@ -1066,6 +1065,25 @@ if(urlSec) {
       el.classList.add('active');
     }
   });
+}
+function switchTab(tab) {
+  const isRooms = tab === 'rooms';
+  document.getElementById('tab-rooms').style.display = isRooms ? '' : 'none';
+  document.getElementById('tab-flatmate').style.display = isRooms ? 'none' : '';
+  document.getElementById('tab-rooms-btn').style.cssText += isRooms ? 'background:var(--navy);color:#fff;' : 'background:transparent;color:var(--muted);';
+  document.getElementById('tab-flatmate-btn').style.cssText += isRooms ? 'background:transparent;color:var(--muted);' : 'background:var(--navy);color:#fff;';
+}
+
+function filterListings(status) {
+  document.querySelectorAll('.activity-row').forEach(row => {
+    row.style.display = (status === 'all' || row.dataset.status === status) ? 'grid' : 'none';
+  });
+  document.querySelectorAll('[id^="filter-"]').forEach(btn => btn.classList.remove('on'));
+  document.getElementById('filter-' + status).classList.add('on');
+}
+
+function confirmDelete(url) {
+  if (confirm('Pakka delete karna hai?')) window.location.href = url;
 }
 
 </script>

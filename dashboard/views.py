@@ -49,6 +49,8 @@ def dashboard(request):
     total_listings = Listing.objects.filter(is_published=True).count()
 
     recent_reviews = Review.objects.select_related('user', 'listing').order_by('-created_at')[:3]
+    my_listings = Listing.objects.filter(owner=request.user).prefetch_related('images')
+
 
     
     context = {
@@ -65,6 +67,10 @@ def dashboard(request):
         'total_users': total_users,
         'total_listings': total_listings,
         'recent_reviews': recent_reviews,
+        'my_listings': my_listings,
+        'my_listings_available': my_listings.filter(is_published=True).count(),
+        'my_total_inquiries': 0, 
+
     }
 
     return render(request, 'dashboard/dashboard.html', context)

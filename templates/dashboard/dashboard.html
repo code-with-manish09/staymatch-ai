@@ -869,92 +869,267 @@
   </div>
 </div>
 
-<!-- ══ FAQs / SAFETY ══ -->
+<!-- ══ MY ACTIVITY ══ -->
 <div id="sec-safety" style="display:none;">
+
   <div class="sec-hd">
-    <div class="sec-title">🛡️ FAQs</div>
-    <div class="section-label" style="margin-bottom:0;">AI Feature</div>
+    <div class="sec-title">📋 My Activity</div>
+    <div class="section-label" style="margin-bottom:0;">Your Posts & Records</div>
   </div>
-  <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Every listing and profile is scored by our AI Safety Engine across multiple parameters.</p>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
-    <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--card-sh);">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-        <div style="width:44px;height:44px;border-radius:12px;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:22px;">🎓</div>
+
+  <!-- Tab Buttons -->
+  <div style="display:flex;gap:8px;margin-bottom:22px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:6px;box-shadow:var(--card-sh);width:fit-content;">
+    <button id="tab-rooms-btn" onclick="switchTab('rooms')"
+      style="padding:10px 24px;border-radius:10px;border:none;cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;background:var(--navy);color:#fff;transition:all .2s;">
+      🏠 My Room Listings
+    </button>
+    <button id="tab-flatmate-btn" onclick="switchTab('flatmate')"
+      style="padding:10px 24px;border-radius:10px;border:none;cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;background:transparent;color:var(--muted);transition:all .2s;">
+      👥 My Flatmate Posts
+    </button>
+  </div>
+
+  <!-- ══ TAB A: MY ROOM LISTINGS ══ -->
+  <div id="tab-rooms">
+
+    <!-- Stats -->
+    <div class="stats-row" style="margin-bottom:18px;">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--teal-lt);">🏠</div>
         <div>
-          <div style="font-weight:700;font-size:15px;color:var(--navy);">Student Verified</div>
-          <div style="font-size:12px;color:var(--muted);">IIT Bangalore · 2024</div>
+          <div class="stat-val">{{ my_listings.count|default:"0" }}</div>
+          <div class="stat-lbl">Total Posted</div>
+          <div class="stat-trend trend-up">all time</div>
         </div>
-        <div style="margin-left:auto;background:#F0FDF4;color:var(--green);font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;">✓ Active</div>
       </div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;">Your student verification badge is active. Verified users get 3× more connection requests.</div>
-      <div style="background:var(--off);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--navy);font-weight:600;">🏅 Badge visible on your profile</div>
-    </div>
-    <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--card-sh);">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-        <div style="width:44px;height:44px;border-radius:12px;background:#FFF1F2;display:flex;align-items:center;justify-content:center;font-size:22px;">🚨</div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#F0FDF4;">✅</div>
         <div>
-          <div style="font-weight:700;font-size:15px;color:var(--navy);">Emergency Contact</div>
-          <div style="font-size:12px;color:var(--muted);">Safety Feature</div>
+          <div class="stat-val">{{ my_listings_available|default:"0" }}</div>
+          <div class="stat-lbl">Available</div>
+          <div class="stat-trend trend-up">live now</div>
         </div>
       </div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;">Add an emergency contact. In case of any issue, NestMate can notify them instantly.</div>
-      <button class="btn-sm btn-sm-navy" style="width:100%;font-size:13px;padding:10px;" onclick="showToast('Contact Added!','Emergency contact saved securely 🔒')">+ Add Emergency Contact</button>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--amber-lt);">📩</div>
+        <div>
+          <div class="stat-val">{{ my_total_inquiries|default:"0" }}</div>
+          <div class="stat-lbl">Total Inquiries</div>
+          <div class="stat-trend trend-up">from seekers</div>
+        </div>
+      </div>
+      <div class="stat-card" style="background:var(--navy);border-color:var(--navy);cursor:pointer;">
+        <div class="stat-icon" style="background:rgba(255,255,255,.1);">➕</div>
+        <div>
+          <a href="{% url 'post_gate' %}" style="text-decoration:none;">
+            <div class="stat-lbl" style="color:#fff;font-weight:700;">Post New Room</div>
+            <div class="stat-trend" style="color:var(--teal);">Add listing →</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+      <span style="font-size:13px;font-weight:600;color:var(--muted);">Filter:</span>
+      <button class="filter-chip on" id="filter-all" onclick="filterListings('all')">All</button>
+      <button class="filter-chip" id="filter-available" onclick="filterListings('available')">✅ Available</button>
+      <button class="filter-chip" id="filter-draft" onclick="filterListings('draft')">◌ Draft</button>
+    </div>
+
+    <!-- Listings Table -->
+    <div style="background:#fff;border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--card-sh);">
+
+      <!-- Header -->
+      <div style="display:grid;grid-template-columns:2fr 100px 80px 80px 100px 130px;gap:10px;padding:13px 20px;background:var(--off);border-bottom:1px solid var(--border);">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Room</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Status</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Views</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Leads</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Rent</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Actions</div>
+      </div>
+
+      <!-- Rows -->
+      {% for room in my_listings %}
+      <div class="activity-row"
+        data-status="{% if room.is_published %}available{% else %}draft{% endif %}"           
+        style="display:grid;grid-template-columns:2fr 100px 80px 80px 100px 130px;gap:10px;padding:15px 20px;border-bottom:1px solid var(--border);align-items:center;transition:background .15s;"
+             onmouseover="this.style.background='var(--off)'"
+           onmouseout="this.style.background='#fff'">
+
+        <!-- Room Info -->
+        <div style="display:flex;align-items:center;gap:12px;min-width:0;">
+          {% if room.images.first %}
+            <img src="{{ room.images.first.image.url }}"
+                 style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0;"/>
+          {% else %}
+            <div style="width:44px;height:44px;border-radius:10px;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🏠</div>
+          {% endif %}
+          <div style="min-width:0;">
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ room.title }}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">📍 {{ room.area }}, {{ room.city }}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px;">{{ room.bhk_config }} · {{ room.get_furnishing_status_display }}</div>
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div>
+         {% if room.is_published %}
+          <span style="background:#F0FDF4;color:#059669;font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;border:1px solid #BBF7D0;">● Live</span>
+        {% else %}
+          <span style="background:var(--off);color:var(--muted);font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;border:1px solid var(--border);">◌ Draft</span>
+        {% endif %}
+          </div>
+
+        <!-- Views -->
+        <div style="text-align:center;">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);">{{ room.view_count|default:"0" }}</div>
+          <div style="font-size:10px;color:var(--muted);">views</div>
+        </div>
+
+        <!-- Inquiries -->
+        <div style="text-align:center;">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--teal);">{{ room.inquiry_count|default:"0" }}</div>
+          <div style="font-size:10px;color:var(--muted);">leads</div>
+        </div>
+
+        <!-- Rent -->
+        <div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;color:var(--navy);">₹{{ room.rent }}</div>
+          <div style="font-size:10px;color:var(--muted);">/month</div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:5px;">
+          <a href="{% url 'room_details_by_id' room.id %}"
+             class="btn-sm btn-sm-out"
+             style="font-size:11px;padding:6px 10px;text-decoration:none;">👁</a>
+          <a href="{% url 'room_edit' room.id %}"
+             class="btn-sm btn-sm-navy"
+             style="font-size:11px;padding:6px 10px;text-decoration:none;">✏️</a>
+          <button class="btn-sm"
+                  style="font-size:11px;padding:6px 10px;background:#FFF1F2;color:var(--coral);border:1px solid #FECDD3;border-radius:8px;cursor:pointer;"
+onclick="confirmDelete(`{% url 'room_delete' room.id %}`)">🗑</button>        </div>
+
+      </div>
+      {% empty %}
+      <div style="text-align:center;padding:52px 20px;">
+        <div style="font-size:44px;margin-bottom:12px;">🏠</div>
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px;">Koi room post nahi kiya abhi tak</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Apna pehla room post karo — seekers tak pahuncho.</p>
+        <a href="{% url 'post_gate' %}" class="btn-teal" style="display:inline-block;text-decoration:none;padding:12px 28px;border-radius:10px;font-size:14px;">➕ Post Your First Room</a>
+      </div>
+      {% endfor %}
+
     </div>
   </div>
-  <div class="sec-hd"><div class="sec-title">🏠 Listing Safety Scores</div></div>
-  <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
-    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 20px;box-shadow:var(--card-sh);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-      <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=60&q=70" style="width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-      <div style="flex:1;min-width:160px;">
-        <div style="font-weight:700;font-size:13px;color:var(--navy);">Modern 2BHK · Koramangala</div>
-        <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;">
-          <span class="chip" style="background:#F0FDF4;color:#059669;">✓ Verified Owner</span>
-          <span class="chip" style="background:var(--teal-lt);color:var(--teal);">📸 Real Photos</span>
+
+  <!-- ══ TAB B: MY FLATMATE POSTS ══ -->
+  <div id="tab-flatmate" style="display:none;">
+
+    <!-- Stats -->
+    <div class="stats-row" style="margin-bottom:18px;">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--teal-lt);">👥</div>
+        <div>
+          <div class="stat-val">{{ my_flatmate_posts.count|default:"0" }}</div>
+          <div class="stat-lbl">Posts Made</div>
+          <div class="stat-trend trend-up">all time</div>
         </div>
       </div>
-      <div style="text-align:center;flex-shrink:0;">
-        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:var(--green);">9.2</div>
-        <div style="font-size:10px;color:var(--muted);">Safety Score</div>
-      </div>
-    </div>
-    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 20px;box-shadow:var(--card-sh);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-      <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=60&q=70" style="width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-      <div style="flex:1;min-width:160px;">
-        <div style="font-weight:700;font-size:13px;color:var(--navy);">Cozy 1BHK · HSR Layout</div>
-        <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;">
-          <span class="chip" style="background:#F0FDF4;color:#059669;">✓ Verified Owner</span>
-          <span class="chip" style="background:var(--teal-lt);color:var(--teal);">🔇 Low Noise</span>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#F0FDF4;">💬</div>
+        <div>
+          <div class="stat-val">{{ my_flatmate_responses|default:"0" }}</div>
+          <div class="stat-lbl">Responses</div>
+          <div class="stat-trend trend-up">received</div>
         </div>
       </div>
-      <div style="text-align:center;flex-shrink:0;">
-        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:var(--green);">8.7</div>
-        <div style="font-size:10px;color:var(--muted);">Safety Score</div>
-      </div>
-    </div>
-    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 20px;box-shadow:var(--card-sh);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-      <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=60&q=70" style="width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt=""/>
-      <div style="flex:1;min-width:160px;">
-        <div style="font-weight:700;font-size:13px;color:var(--navy);">Spacious 3BHK · Indiranagar</div>
-        <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;">
-          <span class="chip" style="background:var(--amber-lt);color:#B45309;">⚠️ Unverified Owner</span>
-          <span class="chip" style="background:var(--teal-lt);color:var(--teal);">📸 Real Photos</span>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--amber-lt);">✅</div>
+        <div>
+          <div class="stat-val">{{ my_flatmate_active|default:"0" }}</div>
+          <div class="stat-lbl">Active Posts</div>
+          <div class="stat-trend trend-up">live now</div>
         </div>
       </div>
-      <div style="text-align:center;flex-shrink:0;">
-        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:var(--amber);">6.4</div>
-        <div style="font-size:10px;color:var(--muted);">Safety Score</div>
+      <div class="stat-card" style="background:var(--navy);border-color:var(--navy);cursor:pointer;">
+        <div class="stat-icon" style="background:rgba(255,255,255,.1);">➕</div>
+        <div>
+          <a href="{% url 'post_flatmate' %}" style="text-decoration:none;">
+            <div class="stat-lbl" style="color:#fff;font-weight:700;">New Flatmate Post</div>
+            <div class="stat-trend" style="color:var(--teal);">Post now →</div>
+          </a>
+        </div>
       </div>
     </div>
+
+    <!-- Flatmate Posts List -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      {% for post in my_flatmate_posts %}
+      <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--card-sh);display:flex;align-items:center;gap:16px;flex-wrap:wrap;transition:box-shadow .2s;"
+           onmouseover="this.style.boxShadow='var(--card-sh2)'"
+           onmouseout="this.style.boxShadow='var(--card-sh)'">
+
+        <!-- Avatar -->
+        <div style="width:48px;height:48px;border-radius:50%;background:var(--teal-lt);color:var(--teal);font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          {{ request.user.username|slice:":1"|upper }}
+        </div>
+
+        <!-- Info -->
+        <div style="flex:1;min-width:160px;">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;color:var(--navy);margin-bottom:3px;">
+            {{ post.title|default:"Looking for flatmate" }}
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">
+            📍 {{ post.preferred_area|default:"—" }} &nbsp;·&nbsp; 💰 ₹{{ post.budget|default:"—" }}/mo &nbsp;·&nbsp; 🕒 {{ post.created_at|timesince }} ago
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;">
+            {% for tag in post.tags|slice:":4" %}
+              <span style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">{{ tag }}</span>
+            {% empty %}
+              <span style="font-size:11px;color:var(--muted);">No tags</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Responses count -->
+        <div style="text-align:center;flex-shrink:0;">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--teal);">{{ post.response_count|default:"0" }}</div>
+          <div style="font-size:11px;color:var(--muted);">responses</div>
+        </div>
+
+        <!-- Status -->
+        <div style="flex-shrink:0;">
+          {% if post.is_active %}
+            <span style="background:#F0FDF4;color:#059669;font-size:10px;font-weight:700;padding:4px 12px;border-radius:99px;border:1px solid #BBF7D0;display:block;margin-bottom:8px;text-align:center;">● Active</span>
+          {% else %}
+            <span style="background:var(--off);color:var(--muted);font-size:10px;font-weight:700;padding:4px 12px;border-radius:99px;border:1px solid var(--border);display:block;margin-bottom:8px;text-align:center;">◌ Closed</span>
+          {% endif %}
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:6px;flex-shrink:0;">
+          <a href="{% url 'edit_flatmate' post.id %}" class="btn-sm btn-sm-navy" style="font-size:11px;padding:7px 12px;text-decoration:none;">✏️ Edit</a>
+          <button class="btn-sm" style="font-size:11px;padding:7px 12px;background:#FFF1F2;color:var(--coral);border:1px solid #FECDD3;border-radius:8px;cursor:pointer;"
+          onclick="confirmDelete(`{% url 'delete_flatmate' post.id %}`)">🗑</button>        </div>
+
+      </div>
+      {% empty %}
+      <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:52px 20px;text-align:center;box-shadow:var(--card-sh);">
+        <div style="font-size:44px;margin-bottom:12px;">👥</div>
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px;">Koi flatmate post nahi hai abhi</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Post karo aur compatible flatmates dhundho.</p>
+        <a href="{% url 'post_flatmate' %}" class="btn-teal" style="display:inline-block;text-decoration:none;padding:12px 28px;border-radius:10px;font-size:14px;">👥 Post Flatmate Listing</a>
+      </div>
+      {% endfor %}
+    </div>
+
   </div>
-  <div style="background:linear-gradient(135deg,var(--navy),#1a3260);border-radius:16px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin-bottom:20px;">
-    <div style="font-size:32px;flex-shrink:0;">🤖</div>
-    <div style="flex:1;">
-      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:#fff;margin-bottom:3px;">AI Fake Listing Detection</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.5;">Our ML model scans every listing for fake photos, inflated prices, and suspicious patterns — keeping you safe 24/7.</div>
-    </div>
-    <div style="background:var(--teal);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:6px;white-space:nowrap;flex-shrink:0;">Active ✓</div>
-  </div>
-  <button class="btn-outline" onclick="showSec('discover')">← Back to Discover</button>
+
+  <button class="btn-outline" style="margin-top:22px;" onclick="showSec('discover')">← Back to Discover</button>
+
 </div>
 
 <!-- ══ POST A ROOM ══ -->

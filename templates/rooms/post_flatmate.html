@@ -2,81 +2,413 @@
 
 {% block extra_css %}
 <style>
-/* ── post flatmate specific ── */
-.form-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:32px;box-shadow:var(--card-sh);margin-bottom:24px;}
-.form-section-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--navy);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.form-section-title .step-badge{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.form-section-title .step-badge.teal{background:var(--teal);}
-.form-section-title .step-badge.amber{background:var(--amber);}
-.form-section-title .step-badge.coral{background:var(--coral);}
+/* ══════════════════════════════════════════
+   FLATMATE FORM — IMPROVED
+   Changes:
+   1. Profile photo upload + live preview
+   2. Live Vibe Score from tags
+   3. Progress bar across steps
+   4. Cleaner section hierarchy
+   5. Better mobile layout
+════════════════════════════════════════════ */
 
-.field-group{display:flex;flex-direction:column;gap:6px;}
-.field-label{font-size:13px;font-weight:600;color:var(--navy);}
-.field-hint{font-size:11px;color:var(--muted);}
-.field-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'Instrument Sans',sans-serif;font-size:14px;color:var(--navy);background:#fff;transition:border-color .2s,box-shadow .2s;outline:none;appearance:none;}
-.field-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(14,165,201,.12);}
-.field-input::placeholder{color:var(--muted);}
-select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7A99' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;}
-textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
+/* ── Base form components ── */
+.form-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: var(--card-sh);
+  margin-bottom: 24px;
+}
+.form-section-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--navy);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.step-badge {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.step-badge.teal  { background: var(--teal); }
+.step-badge.amber { background: var(--amber); }
+.step-badge.coral { background: var(--coral); }
 
-.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+.field-group { display: flex; flex-direction: column; gap: 6px; }
+.field-label { font-size: 13px; font-weight: 600; color: var(--navy); }
+.field-hint  { font-size: 11px; color: var(--muted); }
 
-.radio-group{display:flex;gap:10px;flex-wrap:wrap;}
-.radio-btn{border:1.5px solid var(--border);border-radius:10px;padding:10px 16px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);transition:all .2s;display:flex;align-items:center;gap:7px;}
-.radio-btn:hover{border-color:var(--teal);}
-.radio-btn.active{border-color:var(--teal);background:var(--teal-lt);color:var(--teal);}
-.radio-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.field-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 14px; color: var(--navy);
+  background: #fff;
+  transition: border-color .2s, box-shadow .2s;
+  outline: none; appearance: none;
+}
+.field-input:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(14,165,201,.12);
+}
+.field-input::placeholder { color: var(--muted); }
 
-.range-input{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:99px;background:linear-gradient(90deg,var(--teal) 0%,var(--teal) var(--pct,50%),#EEF0F6 var(--pct,50%));outline:none;cursor:pointer;}
-.range-input::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--navy);border:3px solid #fff;box-shadow:0 2px 8px rgba(15,31,61,.25);cursor:pointer;}
-.range-labels{display:flex;justify-content:space-between;margin-top:6px;}
-.range-label{font-size:11px;color:var(--muted);}
-.range-val{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--navy);}
-.range-unit{font-size:13px;color:var(--muted);margin-left:3px;}
+select.field-input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7A99' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
 
-/* ── Tag selector ── */
-.tag-category{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border);}
-.tag-category:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
-.tag-cat-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-.tag-cat-label::before{content:'';display:inline-block;width:3px;height:12px;border-radius:2px;background:var(--teal);}
-.tag-options{display:flex;flex-wrap:wrap;gap:8px;}
-.tag-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;font-size:12px;font-weight:600;border:1.5px solid var(--border);color:var(--navy);background:var(--off);cursor:pointer;transition:all .18s;user-select:none;}
-.tag-pill:hover{border-color:var(--teal);background:var(--teal-lt);color:var(--teal);}
-.tag-pill.selected{border-color:var(--teal);background:var(--teal);color:#fff;}
-.tag-pill .tag-emoji{font-size:14px;line-height:1;}
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
 
-/* ── Vibe preview card ── */
-.vibe-preview{background:linear-gradient(135deg,var(--navy),#1a3260);border-radius:20px;padding:24px;position:sticky;top:86px;overflow:hidden;}
-.vibe-preview::before{content:'';position:absolute;top:-50px;right:-30px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,201,.2),transparent);pointer-events:none;}
-.vibe-preview-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px;}
-.vibe-avatar{width:64px;height:64px;border-radius:50%;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:12px;border:3px solid rgba(255,255,255,.1);}
-.vibe-name{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;color:#fff;margin-bottom:3px;}
-.vibe-sub{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:16px;}
-.vibe-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
-.vibe-tag{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-size:11px;font-weight:600;padding:4px 11px;border-radius:99px;border:1px solid rgba(255,255,255,.12);}
-.vibe-budget-row{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;}
-.vibe-budget-lbl{font-size:11px;color:rgba(255,255,255,.4);font-weight:600;}
-.vibe-budget-val{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:16px;color:var(--teal);}
+/* ── Radio buttons ── */
+.radio-group { display: flex; gap: 10px; flex-wrap: wrap; }
+.radio-btn {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  color: var(--muted);
+  transition: all .2s;
+  display: flex; align-items: center; gap: 7px;
+}
+.radio-btn:hover { border-color: var(--teal); }
+.radio-btn.active { border-color: var(--teal); background: var(--teal-lt); color: var(--teal); }
+.radio-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+/* ── Range sliders ── */
+.range-input {
+  width: 100%; -webkit-appearance: none; appearance: none;
+  height: 6px; border-radius: 99px;
+  background: linear-gradient(90deg, var(--teal) 0%, var(--teal) var(--pct,50%), #EEF0F6 var(--pct,50%));
+  outline: none; cursor: pointer;
+}
+.range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--navy);
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(15,31,61,.25);
+  cursor: pointer;
+}
+.range-labels { display: flex; justify-content: space-between; margin-top: 6px; }
+.range-label  { font-size: 11px; color: var(--muted); }
+.range-val    { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 22px; color: var(--navy); }
+.range-unit   { font-size: 13px; color: var(--muted); margin-left: 3px; }
+
+/* ── Tags ── */
+.tag-category { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.tag-category:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.tag-cat-label {
+  font-size: 10px; font-weight: 700; color: var(--muted);
+  letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.tag-cat-label::before {
+  content: ''; display: inline-block;
+  width: 3px; height: 12px; border-radius: 2px; background: var(--teal);
+}
+.tag-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 99px; font-size: 12px; font-weight: 600;
+  border: 1.5px solid var(--border); color: var(--navy); background: var(--off);
+  cursor: pointer; transition: all .18s; user-select: none;
+}
+.tag-pill:hover { border-color: var(--teal); background: var(--teal-lt); color: var(--teal); }
+.tag-pill.selected { border-color: var(--teal); background: var(--teal); color: #fff; }
+.tags-counter {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--teal-lt); color: var(--teal);
+  font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: 99px; margin-left: auto;
+}
+
+/* ══════════════════════════════════════════
+   NEW: PROFILE PHOTO UPLOAD
+════════════════════════════════════════════ */
+.photo-upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 16px;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+  background: var(--off);
+  position: relative;
+}
+.photo-upload-zone:hover,
+.photo-upload-zone.dragover {
+  border-color: var(--teal);
+  background: var(--teal-lt);
+}
+.photo-upload-zone input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.photo-preview-wrap {
+  display: none;
+  align-items: center;
+  gap: 20px;
+  padding: 16px;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+}
+.photo-preview-wrap.visible { display: flex; }
+.photo-preview-img {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--teal);
+  flex-shrink: 0;
+}
+.photo-preview-info { flex: 1; }
+.photo-preview-name { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+.photo-preview-size { font-size: 11px; color: var(--muted); }
+.photo-remove-btn {
+  background: #FFF1F2; color: var(--coral);
+  border: 1px solid #FECDD3; border-radius: 8px;
+  padding: 6px 12px; font-size: 12px; font-weight: 600;
+  cursor: pointer; flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════
+   NEW: PROGRESS BAR
+════════════════════════════════════════════ */
+.form-progress-bar {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--card-sh);
+  position: sticky;
+  top: 70px;
+  z-index: 50;
+}
+.progress-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  position: relative;
+}
+.progress-step::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+  z-index: 0;
+}
+.progress-step:last-child::after { display: none; }
+.progress-step.done::after  { background: var(--teal); }
+.ps-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800;
+  color: var(--muted);
+  position: relative; z-index: 1;
+  transition: all .3s;
+}
+.progress-step.done .ps-dot   { background: var(--teal); border-color: var(--teal); color: #fff; }
+.progress-step.active .ps-dot { background: var(--navy); border-color: var(--navy); color: #fff; }
+.ps-label { font-size: 10px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.progress-step.done .ps-label   { color: var(--teal); }
+.progress-step.active .ps-label { color: var(--navy); font-weight: 700; }
+
+/* ══════════════════════════════════════════
+   NEW: LIVE VIBE SCORE WIDGET (in preview)
+════════════════════════════════════════════ */
+.vibe-score-widget {
+  background: linear-gradient(135deg, var(--navy), #1a3260);
+  border-radius: 20px;
+  padding: 22px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.vibe-score-widget::before {
+  content: '';
+  position: absolute; top: -40px; right: -20px;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(14,165,201,.25), transparent);
+  pointer-events: none;
+}
+.vs-title {
+  font-size: 10px; font-weight: 700; color: rgba(255,255,255,.45);
+  letter-spacing: .08em; text-transform: uppercase; margin-bottom: 14px;
+}
+.vs-ring-wrap {
+  display: flex; align-items: center; gap: 16px;
+}
+.vs-ring {
+  position: relative; width: 80px; height: 80px; flex-shrink: 0;
+}
+.vs-ring svg { width: 80px; height: 80px; transform: rotate(-90deg); }
+.vs-ring-num {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800; font-size: 22px; color: #fff;
+}
+.vs-info { flex: 1; }
+.vs-score-label {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800; font-size: 13px; color: #fff; margin-bottom: 4px;
+}
+.vs-score-sub { font-size: 11px; color: rgba(255,255,255,.45); margin-bottom: 10px; line-height: 1.5; }
+.vs-breakdown {
+  display: flex; flex-direction: column; gap: 5px;
+}
+.vs-bar-row {
+  display: flex; align-items: center; gap: 8px;
+}
+.vs-bar-label { font-size: 10px; color: rgba(255,255,255,.4); width: 64px; flex-shrink: 0; }
+.vs-bar-track {
+  flex: 1; height: 4px; border-radius: 99px;
+  background: rgba(255,255,255,.1); overflow: hidden;
+}
+.vs-bar-fill {
+  height: 100%; border-radius: 99px;
+  background: var(--teal);
+  transition: width .5s ease;
+}
+
+/* ── Layout ── */
+.two-col-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  align-items: start;
+}
+.form-col { display: flex; flex-direction: column; gap: 0; }
 
 /* ── Hero ── */
-.post-hero{background:linear-gradient(135deg,var(--navy),#1a3260);border-radius:20px;padding:32px;margin-bottom:28px;position:relative;overflow:hidden;}
-.post-hero::before{content:'';position:absolute;top:-60px;right:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,201,.2),transparent);pointer-events:none;}
-.post-hero::after{content:'';position:absolute;bottom:-50px;left:100px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.1),transparent);pointer-events:none;}
-.post-hero-title{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(22px,3vw,32px);font-weight:800;color:#fff;margin-bottom:8px;position:relative;z-index:1;}
-.post-hero-sub{font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;max-width:520px;position:relative;z-index:1;}
-.post-hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;position:relative;z-index:1;}
-.post-hero-chip{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-size:12px;font-weight:600;padding:5px 13px;border-radius:99px;border:1px solid rgba(255,255,255,.12);}
+.post-hero {
+  background: linear-gradient(135deg, var(--navy), #1a3260);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 28px;
+  position: relative; overflow: hidden;
+}
+.post-hero::before {
+  content: ''; position: absolute; top: -60px; right: -40px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(14,165,201,.2), transparent);
+  pointer-events: none;
+}
+.post-hero::after {
+  content: ''; position: absolute; bottom: -50px; left: 100px;
+  width: 160px; height: 160px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(245,158,11,.1), transparent);
+  pointer-events: none;
+}
+.post-hero-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(22px,3vw,32px); font-weight: 800;
+  color: #fff; margin-bottom: 8px; position: relative; z-index: 1;
+}
+.post-hero-sub {
+  font-size: 14px; color: rgba(255,255,255,.55);
+  line-height: 1.7; max-width: 520px; position: relative; z-index: 1;
+}
+.post-hero-chips {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 16px; position: relative; z-index: 1;
+}
+.post-hero-chip {
+  background: rgba(255,255,255,.1); color: rgba(255,255,255,.8);
+  font-size: 12px; font-weight: 600;
+  padding: 5px 13px; border-radius: 99px;
+  border: 1px solid rgba(255,255,255,.12);
+}
 
-/* ── Layout wrapper ── */
-.two-col-layout{display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start;}
-.form-col{display:flex;flex-direction:column;gap:0;}
+/* ── Preview card ── */
+.preview-sticky { position: sticky; top: 86px; }
 
-/* selected tags counter */
-.tags-counter{display:inline-flex;align-items:center;gap:5px;background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;margin-left:auto;}
+/* ── Scroll highlight ── */
+.form-card:target { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(14,165,201,.12); }
 
-@media(max-width:1050px){.two-col-layout{grid-template-columns:1fr;}.vibe-preview{position:relative;top:0;}}
-@media(max-width:900px){.form-row-2,.form-row-3{grid-template-columns:1fr;}.form-card{padding:20px;}.radio-group{flex-direction:column;}}
+/* ── Tip pills ── */
+.tip-item {
+  display: flex; gap: 8px; align-items: flex-start;
+}
+.tip-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--teal); margin-top: 5px; flex-shrink: 0;
+}
+
+/* ── Photo tip banner ── */
+.photo-tip-banner {
+  background: linear-gradient(135deg, #FEF3C7, #FFF7ED);
+  border: 1px solid #FDE68A;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-top: 12px;
+}
+.photo-tip-icon { font-size: 16px; flex-shrink: 0; }
+.photo-tip-text { font-size: 12px; color: #92400E; line-height: 1.6; }
+
+/* ── Vibe badge on preview ── */
+.prev-vibe-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: linear-gradient(135deg, var(--teal), #0891b2);
+  color: #fff;
+  font-size: 11px; font-weight: 700;
+  padding: 4px 12px; border-radius: 99px;
+  margin-top: 8px;
+}
+
+/* ── Responsive ── */
+@media(max-width:1050px) {
+  .two-col-layout { grid-template-columns: 1fr; }
+  .preview-sticky { position: relative; top: 0; }
+  .form-progress-bar { position: relative; top: 0; }
+}
+@media(max-width:900px) {
+  .form-row-2, .form-row-3 { grid-template-columns: 1fr; }
+  .form-card { padding: 20px; }
+  .radio-group { flex-direction: column; }
+}
+@media(max-width:600px) {
+  .ps-label { display: none; }
+  .progress-step::after { top: 14px; }
+}
 </style>
 {% endblock %}
 
@@ -94,34 +426,106 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
   </div>
 </div>
 
-<form method="POST" id="flatmateForm">
+<!-- ══ PROGRESS BAR ══ -->
+<div class="form-progress-bar fu d1">
+  <div class="progress-steps" id="progressSteps">
+    <div class="progress-step active" id="ps1">
+      <div class="ps-dot">1</div>
+      <div class="ps-label">Basic Info</div>
+    </div>
+    <div class="progress-step" id="ps2">
+      <div class="ps-dot">2</div>
+      <div class="ps-label">Budget</div>
+    </div>
+    <div class="progress-step" id="ps3">
+      <div class="ps-dot">3</div>
+      <div class="ps-label">Vibe Tags</div>
+    </div>
+    <div class="progress-step" id="ps4">
+      <div class="ps-dot">4</div>
+      <div class="ps-label">Lifestyle</div>
+    </div>
+    <div class="progress-step" id="ps5">
+      <div class="ps-dot">5</div>
+      <div class="ps-label">Preference</div>
+    </div>
+    <div class="progress-step" id="ps6">
+      <div class="ps-dot">6</div>
+      <div class="ps-label">Contact</div>
+    </div>
+  </div>
+</div>
+
+<form method="POST" enctype="multipart/form-data" id="flatmateForm">
 {% csrf_token %}
 
 <div class="two-col-layout">
 
-  <!-- LEFT: FORM -->
+  <!-- ══ LEFT: FORM ══ -->
   <div class="form-col">
 
-    <!-- STEP 1: BASIC INFO -->
-    <div class="form-card fu d1">
+    <!-- ──────────────────────────────────────
+         STEP 1: BASIC INFO + PROFILE PHOTO
+    ────────────────────────────────────────── -->
+    <div class="form-card fu d1" id="section1">
       <div class="form-section-title">
-        <div class="step-badge">1</div> Basic Info
+        <div class="step-badge">1</div> Basic Info & Photo
       </div>
       <div style="display:flex;flex-direction:column;gap:18px;">
+
+        <!-- ══ PROFILE PHOTO — NEW ══ -->
+        <div class="field-group">
+          <label class="field-label">Profile Photo <span style="color:var(--muted);font-weight:400;">(recommended)</span></label>
+          <span class="field-hint">Clear face photo = 3x zyada connect requests milte hain</span>
+
+          <!-- Upload zone (shown when no photo) -->
+          <div class="photo-upload-zone" id="uploadZone">
+            <input type="file" name="profile_photo" id="profilePhotoInput" accept="image/*" onchange="handlePhotoUpload(this)"/>
+            <div style="font-size:36px;margin-bottom:10px;">📸</div>
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);margin-bottom:4px;">Photo Upload Karo</div>
+            <div style="font-size:12px;color:var(--muted);">Click karo ya drag & drop · JPG, PNG · Max 5MB</div>
+          </div>
+
+          <!-- Preview (shown after upload) -->
+          <div class="photo-preview-wrap" id="photoPreviewWrap">
+            <img id="photoPreviewImg" class="photo-preview-img" src="" alt="Preview"/>
+            <div class="photo-preview-info">
+              <div class="photo-preview-name" id="photoFileName">—</div>
+              <div class="photo-preview-size" id="photoFileSize">—</div>
+              <div style="display:flex;align-items:center;gap:6px;margin-top:8px;">
+                <span style="background:#F0FDF4;color:#059669;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;border:1px solid #BBF7D0;">✅ Photo Ready</span>
+              </div>
+            </div>
+            <button type="button" class="photo-remove-btn" onclick="removePhoto()">✕ Remove</button>
+          </div>
+
+          <!-- Tip -->
+          <div class="photo-tip-banner">
+            <div class="photo-tip-icon">💡</div>
+            <div class="photo-tip-text">
+              <strong>Tip:</strong> Profile photo aur 5+ tags wale profiles ko <strong>4x zyada responses</strong> milte hain. Face clearly dikhna chahiye — group photos use mat karo.
+            </div>
+          </div>
+        </div>
+
+        <!-- Name + Age -->
         <div class="form-row-2">
           <div class="field-group">
             <label class="field-label">Full Name *</label>
-            <input type="text" name="name" class="field-input" placeholder="Tumhara naam" required/>
+            <input type="text" name="name" class="field-input" placeholder="Tumhara naam" required
+                   oninput="updatePreview()"/>
           </div>
           <div class="field-group">
             <label class="field-label">Age *</label>
             <input type="number" name="age" class="field-input" placeholder="e.g. 22" min="18" max="45" required/>
           </div>
         </div>
+
+        <!-- Gender + Occupation -->
         <div class="form-row-2">
           <div class="field-group">
             <label class="field-label">Gender *</label>
-            <select name="gender" class="field-input" required>
+            <select name="gender" class="field-input" required onchange="updatePreview()">
               <option value="">Select</option>
               <option>Male</option>
               <option>Female</option>
@@ -131,7 +535,7 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
           </div>
           <div class="field-group">
             <label class="field-label">Occupation *</label>
-            <select name="occupation" class="field-input" required>
+            <select name="occupation" class="field-input" required onchange="updatePreview()">
               <option value="">Select</option>
               <option>Student</option>
               <option>Software / IT</option>
@@ -145,10 +549,12 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
             </select>
           </div>
         </div>
+
+        <!-- City + Area -->
         <div class="form-row-2">
           <div class="field-group">
             <label class="field-label">City *</label>
-            <select name="city" class="field-input" required>
+            <select name="city" class="field-input" required onchange="updatePreview()">
               <option value="">Select city</option>
               <option>Bangalore</option><option>Mumbai</option><option>Delhi</option>
               <option>Hyderabad</option><option>Pune</option><option>Chennai</option>
@@ -157,24 +563,49 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
           </div>
           <div class="field-group">
             <label class="field-label">Preferred Area / Locality</label>
-            <input type="text" name="preferred_area" class="field-input" placeholder="e.g. Koramangala, Indiranagar"/>
+            <input type="text" name="preferred_area" class="field-input" placeholder="e.g. Koramangala, Indiranagar"
+                   oninput="updatePreview()"/>
             <span class="field-hint">Jahan rehna chahte ho</span>
           </div>
         </div>
+
+        <!-- Language preference — NEW -->
+        <div class="field-group">
+          <label class="field-label">Preferred Language(s)</label>
+          <span class="field-hint">Flatmate se konsi language mein comfortable ho? (optional)</span>
+          <div class="radio-group" id="langGroup" style="margin-top:6px;">
+            <button type="button" class="radio-btn" onclick="setRadio('langGroup',this)"><div class="radio-dot"></div>Hindi</button>
+            <button type="button" class="radio-btn" onclick="setRadio('langGroup',this)"><div class="radio-dot"></div>English</button>
+            <button type="button" class="radio-btn" onclick="setRadio('langGroup',this)"><div class="radio-dot"></div>Hindi + English</button>
+            <button type="button" class="radio-btn" onclick="setRadio('langGroup',this)"><div class="radio-dot"></div>Any</button>
+          </div>
+        </div>
+
+        <!-- About You -->
         <div class="field-group">
           <label class="field-label">About You</label>
-          <textarea name="bio" class="field-input" placeholder="Apne baare mein thoda batao — kya karte ho, kaisi life hai, kya dhundh rahe ho flatmate mein…" style="min-height:90px;" id="bioInput" oninput="updateCharCount(this,'bioCount',300)"></textarea>
-          <div style="display:flex;justify-content:flex-end;margin-top:4px;"><span class="field-hint" id="bioCount">0 / 300</span></div>
+          <textarea name="bio" class="field-input"
+            placeholder="Apne baare mein thoda batao — kya karte ho, kaisi life hai, kya dhundh rahe ho flatmate mein…"
+            style="min-height:90px;" id="bioInput"
+            oninput="updateCharCount(this,'bioCount',300); updateVibeScore();"></textarea>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+            <span class="field-hint">Bio likhne se Vibe Score badh jaata hai ↑</span>
+            <span class="field-hint" id="bioCount">0 / 300</span>
+          </div>
         </div>
+
       </div>
     </div>
 
-    <!-- STEP 2: BUDGET -->
-    <div class="form-card fu d2">
+    <!-- ──────────────────────────────────────
+         STEP 2: BUDGET
+    ────────────────────────────────────────── -->
+    <div class="form-card fu d2" id="section2">
       <div class="form-section-title">
-        <div class="step-badge teal">2</div> Budget
+        <div class="step-badge teal">2</div> Budget & Room Preference
       </div>
       <div style="display:flex;flex-direction:column;gap:20px;">
+
         <div class="field-group">
           <label class="field-label">Maximum Monthly Budget</label>
           <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:10px;">
@@ -182,9 +613,15 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
             <span class="range-val" id="budgetVal">12,000</span>
             <span class="range-unit">/ month</span>
           </div>
-          <input type="range" class="range-input" id="budgetSlider" name="max_budget" min="2000" max="60000" value="12000" step="500" oninput="updateBudget(this)"/>
-          <div class="range-labels"><span class="range-label">₹2,000</span><span class="range-label">₹60,000</span></div>
+          <input type="range" class="range-input" id="budgetSlider"
+                 name="max_budget" min="2000" max="60000" value="12000" step="500"
+                 oninput="updateBudget(this); updateVibeScore();"/>
+          <div class="range-labels">
+            <span class="range-label">₹2,000</span>
+            <span class="range-label">₹60,000</span>
+          </div>
         </div>
+
         <div class="form-row-2">
           <div class="field-group">
             <label class="field-label">Room Type Preference</label>
@@ -207,81 +644,115 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
             </select>
           </div>
         </div>
+
+        <!-- NEW: Duration of Stay -->
+        <div class="field-group">
+          <label class="field-label">Expected Stay Duration</label>
+          <div class="radio-group" id="stayGroup">
+            <button type="button" class="radio-btn" onclick="setRadio('stayGroup',this)"><div class="radio-dot"></div>3–6 months</button>
+            <button type="button" class="radio-btn active" onclick="setRadio('stayGroup',this)"><div class="radio-dot"></div>6–12 months</button>
+            <button type="button" class="radio-btn" onclick="setRadio('stayGroup',this)"><div class="radio-dot"></div>1+ year</button>
+            <button type="button" class="radio-btn" onclick="setRadio('stayGroup',this)"><div class="radio-dot"></div>Flexible</button>
+          </div>
+          <span class="field-hint">Landlords aur flatmates ko stability pasand aati hai</span>
+        </div>
+
       </div>
     </div>
 
-    <!-- STEP 3: INTEREST TAGS (core of Find Your Vibe) -->
-    <div class="form-card fu d2">
+    <!-- ──────────────────────────────────────
+         STEP 3: VIBE TAGS
+    ────────────────────────────────────────── -->
+    <div class="form-card fu d2" id="section3">
       <div class="form-section-title">
         <div class="step-badge teal">3</div> Your Vibe — Interest Tags
         <span class="tags-counter" id="tagsCounter">0 selected</span>
       </div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Apne interests choose karo — inhi se tumhara match hoga. <strong style="color:var(--navy);">Jitne zyada tags, utna better match.</strong></p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">
+        Apne interests choose karo — inhi se tumhara match hoga.<br/>
+        <strong style="color:var(--navy);">Jitne zyada tags, utna better Vibe Score.</strong>
+      </p>
 
+      <!-- Tags: Hobbies -->
       <div class="tag-category">
         <div class="tag-cat-label">Hobbies & Passions</div>
         <div class="tag-options">
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Gaming">🎮 Gaming</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Music">🎵 Music</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Reading">📚 Reading</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Cooking">🍳 Cooking</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Art & Design">🎨 Art & Design</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Travel">✈️ Travel</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Tech & Coding">💻 Tech & Coding</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Movies & OTT">🎬 Movies & OTT</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Photography">📸 Photography</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Writing">✍️ Writing</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Podcasts">🎙️ Podcasts</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Anime">🌸 Anime</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Gaming" data-cat="hobby">🎮 Gaming</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Music" data-cat="hobby">🎵 Music</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Reading" data-cat="hobby">📚 Reading</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Cooking" data-cat="hobby">🍳 Cooking</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Art & Design" data-cat="hobby">🎨 Art & Design</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Travel" data-cat="hobby">✈️ Travel</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Tech & Coding" data-cat="hobby">💻 Tech & Coding</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Movies & OTT" data-cat="hobby">🎬 Movies & OTT</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Photography" data-cat="hobby">📸 Photography</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Writing" data-cat="hobby">✍️ Writing</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Podcasts" data-cat="hobby">🎙️ Podcasts</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Anime" data-cat="hobby">🌸 Anime</span>
         </div>
       </div>
 
+      <!-- Tags: Sports -->
       <div class="tag-category">
         <div class="tag-cat-label">Sports & Fitness</div>
         <div class="tag-options">
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Cricket">🏏 Cricket</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Football">⚽ Football</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Badminton">🏸 Badminton</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Gym">🏋️ Gym</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Running">🏃 Running</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Yoga">🧘 Yoga</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Swimming">🏊 Swimming</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Cycling">🚴 Cycling</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Cricket" data-cat="sport">🏏 Cricket</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Football" data-cat="sport">⚽ Football</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Badminton" data-cat="sport">🏸 Badminton</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Gym" data-cat="sport">🏋️ Gym</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Running" data-cat="sport">🏃 Running</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Yoga" data-cat="sport">🧘 Yoga</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Swimming" data-cat="sport">🏊 Swimming</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Cycling" data-cat="sport">🚴 Cycling</span>
         </div>
       </div>
 
+      <!-- Tags: Food -->
       <div class="tag-category">
         <div class="tag-cat-label">Food & Diet</div>
         <div class="tag-options">
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Pure Veg">🥗 Pure Veg</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Non-Veg">🍗 Non-Veg</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Vegan">🌿 Vegan</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Foodie">😋 Foodie</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Home Cook">🥘 Home Cook</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Café Hopper">☕ Café Hopper</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Pure Veg" data-cat="food">🥗 Pure Veg</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Non-Veg" data-cat="food">🍗 Non-Veg</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Vegan" data-cat="food">🌿 Vegan</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Foodie" data-cat="food">😋 Foodie</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Home Cook" data-cat="food">🥘 Home Cook</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Café Hopper" data-cat="food">☕ Café Hopper</span>
         </div>
       </div>
 
+      <!-- Tags: Personality -->
       <div class="tag-category">
         <div class="tag-cat-label">Personality</div>
         <div class="tag-options">
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Introvert">📚 Introvert</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Extrovert">🎉 Extrovert</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Ambivert">⚖️ Ambivert</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Early Bird">🌅 Early Bird</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Night Owl">🌙 Night Owl</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Hustler">🚀 Hustler</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Zen">🧘 Zen</span>
-          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Creative">🎨 Creative</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Introvert" data-cat="personality">📚 Introvert</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Extrovert" data-cat="personality">🎉 Extrovert</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Ambivert" data-cat="personality">⚖️ Ambivert</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Early Bird" data-cat="personality">🌅 Early Bird</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Night Owl" data-cat="personality">🌙 Night Owl</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Hustler" data-cat="personality">🚀 Hustler</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Zen" data-cat="personality">🧘 Zen</span>
+          <span class="tag-pill" onclick="toggleTag(this)" data-tag="Creative" data-cat="personality">🎨 Creative</span>
         </div>
       </div>
 
-      <!-- Hidden input for selected tags -->
       <input type="hidden" name="interest_tags" id="interestTagsInput"/>
+
+      <!-- Tag score indicator -->
+      <div style="margin-top:16px;padding:14px 16px;background:var(--off);border-radius:12px;border:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:12px;font-weight:600;color:var(--navy);">Tags se Vibe Score</span>
+          <span id="tagScoreLabel" style="font-size:12px;font-weight:700;color:var(--muted);">0 tags — score nahi banega</span>
+        </div>
+        <div style="height:6px;background:#EEF0F6;border-radius:99px;overflow:hidden;">
+          <div id="tagScoreBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--teal),#0891b2);border-radius:99px;transition:width .4s ease;"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- STEP 4: LIFESTYLE PREFERENCES -->
-    <div class="form-card fu d3">
+    <!-- ──────────────────────────────────────
+         STEP 4: LIFESTYLE PREFERENCES
+    ────────────────────────────────────────── -->
+    <div class="form-card fu d3" id="section4">
       <div class="form-section-title">
         <div class="step-badge amber">4</div> Lifestyle Preferences
       </div>
@@ -290,9 +761,9 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
         <div class="field-group">
           <label class="field-label" style="margin-bottom:10px;">Sleep Schedule</label>
           <div class="radio-group" id="sleepGroup">
-            <button type="button" class="radio-btn" onclick="setRadio('sleepGroup',this)"><div class="radio-dot"></div>🌅 Early Bird</button>
-            <button type="button" class="radio-btn active" onclick="setRadio('sleepGroup',this)"><div class="radio-dot"></div>🌙 Night Owl</button>
-            <button type="button" class="radio-btn" onclick="setRadio('sleepGroup',this)"><div class="radio-dot"></div>No Preference</button>
+            <button type="button" class="radio-btn" onclick="setRadio('sleepGroup',this); updateVibeScore()"><div class="radio-dot"></div>🌅 Early Bird</button>
+            <button type="button" class="radio-btn active" onclick="setRadio('sleepGroup',this); updateVibeScore()"><div class="radio-dot"></div>🌙 Night Owl</button>
+            <button type="button" class="radio-btn" onclick="setRadio('sleepGroup',this); updateVibeScore()"><div class="radio-dot"></div>No Preference</button>
           </div>
         </div>
 
@@ -302,12 +773,27 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
             <span class="range-val" style="font-size:18px;" id="cleanVal">7</span>
             <span class="range-unit">/ 10</span>
           </div>
-          <input type="range" class="range-input" name="cleanliness_level" id="cleanSlider" min="1" max="10" value="7" step="1" oninput="updateClean(this)"/>
-          <div class="range-labels"><span class="range-label">Relaxed</span><span class="range-label">Very Tidy</span></div>
+          <input type="range" class="range-input" name="cleanliness_level" id="cleanSlider"
+                 min="1" max="10" value="7" step="1"
+                 oninput="updateClean(this); updateVibeScore();"/>
+          <div class="range-labels">
+            <span class="range-label">Relaxed</span>
+            <span class="range-label">Very Tidy</span>
+          </div>
+        </div>
+
+        <!-- NEW: Noise tolerance -->
+        <div class="field-group">
+          <label class="field-label" style="margin-bottom:10px;">Noise Tolerance</label>
+          <div class="radio-group" id="noiseGroup">
+            <button type="button" class="radio-btn" onclick="setRadio('noiseGroup',this)"><div class="radio-dot"></div>🤫 Prefer Quiet</button>
+            <button type="button" class="radio-btn active" onclick="setRadio('noiseGroup',this)"><div class="radio-dot"></div>⚖️ Moderate OK</button>
+            <button type="button" class="radio-btn" onclick="setRadio('noiseGroup',this)"><div class="radio-dot"></div>🎉 Lively Fine</button>
+          </div>
         </div>
 
         <div class="field-group">
-          <label class="field-label" style="margin-bottom:10px;">Guest / Visitor Policy (apna)</label>
+          <label class="field-label" style="margin-bottom:10px;">Guest / Visitor Policy</label>
           <div class="radio-group" id="guestGroup">
             <button type="button" class="radio-btn active" onclick="setRadio('guestGroup',this)"><div class="radio-dot"></div>Occasional OK</button>
             <button type="button" class="radio-btn" onclick="setRadio('guestGroup',this)"><div class="radio-dot"></div>No Overnight</button>
@@ -334,26 +820,38 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
             </select>
           </div>
           <div class="field-group">
-            <label class="field-label">Pet Preference</label>
-            <select name="pets" class="field-input">
-              <option>No pets</option>
-              <option>Have a pet</option>
-              <option>OK with pets</option>
-              <option>Allergic to pets</option>
+            <label class="field-label">Alcohol</label>
+            <select name="alcohol" class="field-input">
+              <option>Don't drink</option>
+              <option>Occasionally</option>
+              <option>OK with drinkers</option>
             </select>
           </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Pet Preference</label>
+          <select name="pets" class="field-input">
+            <option>No pets</option>
+            <option>Have a pet</option>
+            <option>OK with pets</option>
+            <option>Allergic to pets</option>
+          </select>
         </div>
 
       </div>
     </div>
 
-    <!-- STEP 5: FLATMATE PREFERENCE -->
-    <div class="form-card fu d3">
+    <!-- ──────────────────────────────────────
+         STEP 5: FLATMATE PREFERENCE
+    ────────────────────────────────────────── -->
+    <div class="form-card fu d3" id="section5">
       <div class="form-section-title">
         <div class="step-badge coral">5</div> Flatmate ki Preference
       </div>
       <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Kaisa flatmate chahiye tumhe? Hum isi se match karenge.</p>
       <div style="display:flex;flex-direction:column;gap:20px;">
+
         <div class="form-row-2">
           <div class="field-group">
             <label class="field-label">Gender Preference</label>
@@ -364,24 +862,54 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
             </select>
           </div>
           <div class="field-group">
-            <label class="field-label">Occupation Preference</label>
-            <select name="pref_occupation" class="field-input">
+            <label class="field-label">Age Range Preference</label>
+            <select name="pref_age_range" class="field-input">
               <option>Any</option>
-              <option>Students only</option>
-              <option>Working professionals</option>
-              <option>Students & professionals</option>
+              <option>18–23 (Students)</option>
+              <option>22–28 (Young Professionals)</option>
+              <option>25–35</option>
+              <option>Flexible</option>
             </select>
           </div>
         </div>
+
+        <div class="field-group">
+          <label class="field-label">Occupation Preference</label>
+          <select name="pref_occupation" class="field-input">
+            <option>Any</option>
+            <option>Students only</option>
+            <option>Working professionals</option>
+            <option>Students & professionals</option>
+          </select>
+        </div>
+
+        <!-- NEW: Dealbreakers -->
+        <div class="field-group">
+          <label class="field-label">Dealbreakers <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+          <span class="field-hint">Kya cheezein absolutely nahi chalegi?</span>
+          <div class="radio-group" style="margin-top:8px;flex-wrap:wrap;" id="dealGroup">
+            <button type="button" class="radio-btn" onclick="this.classList.toggle('active')">🚬 Smoking inside</button>
+            <button type="button" class="radio-btn" onclick="this.classList.toggle('active')">🐾 Pets</button>
+            <button type="button" class="radio-btn" onclick="this.classList.toggle('active')">🎉 Late-night parties</button>
+            <button type="button" class="radio-btn" onclick="this.classList.toggle('active')">🔊 Loud music</button>
+            <button type="button" class="radio-btn" onclick="this.classList.toggle('active')">👥 Frequent guests</button>
+          </div>
+        </div>
+
         <div class="field-group">
           <label class="field-label">Flatmate se kya expect karte ho?</label>
-          <textarea name="flatmate_expectation" class="field-input" placeholder="e.g. Ek aisa insaan chahiye jo respectful ho, ghar saaf rakhe, aur thoda social bhi ho…" style="min-height:80px;"></textarea>
+          <textarea name="flatmate_expectation" class="field-input"
+            placeholder="e.g. Ek aisa insaan chahiye jo respectful ho, ghar saaf rakhe, aur thoda social bhi ho…"
+            style="min-height:80px;"></textarea>
         </div>
+
       </div>
     </div>
 
-    <!-- STEP 6: CONTACT -->
-    <div class="form-card fu d4">
+    <!-- ──────────────────────────────────────
+         STEP 6: CONTACT
+    ────────────────────────────────────────── -->
+    <div class="form-card fu d4" id="section6">
       <div class="form-section-title">
         <div class="step-badge">6</div> Contact Details
       </div>
@@ -396,6 +924,7 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
             <input type="email" name="contact_email" class="field-input" placeholder="you@example.com" required/>
           </div>
         </div>
+
         <div class="field-group">
           <label class="field-label" style="margin-bottom:10px;">Contact Preference</label>
           <div class="radio-group" id="contactGroup">
@@ -404,11 +933,41 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
             <button type="button" class="radio-btn" onclick="setRadio('contactGroup',this)"><div class="radio-dot"></div>💬 In-app only</button>
           </div>
         </div>
+
+        <!-- NEW: Visibility setting -->
+        <div style="background:var(--off);border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
+          <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:10px;">🔒 Contact Visibility</div>
+          <div class="radio-group" id="visibilityGroup">
+            <button type="button" class="radio-btn active" onclick="setRadio('visibilityGroup',this)"><div class="radio-dot"></div>Show after connect only</button>
+            <button type="button" class="radio-btn" onclick="setRadio('visibilityGroup',this)"><div class="radio-dot"></div>Show to everyone</button>
+          </div>
+          <span class="field-hint" style="display:block;margin-top:8px;">Recommended: Connect ke baad hi number share karo — spam avoid hoga</span>
+        </div>
+
       </div>
     </div>
 
-    <!-- SUBMIT -->
+    <!-- ──────────────────────────────────────
+         SUBMIT
+    ────────────────────────────────────────── -->
     <div class="fu d4 form-card">
+
+      <!-- Completion checklist -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">✅ Before you submit:</div>
+        <div style="display:flex;flex-direction:column;gap:6px;" id="checklistItems">
+          <div class="checklist-item" id="cl-photo" style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);">
+            <span id="cl-photo-icon">⭕</span> Profile photo upload karo <span style="color:var(--amber);font-size:10px;">(recommended)</span>
+          </div>
+          <div class="checklist-item" id="cl-tags" style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);">
+            <span id="cl-tags-icon">⭕</span> Kam se kam 5 interest tags select karo
+          </div>
+          <div class="checklist-item" id="cl-bio" style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);">
+            <span id="cl-bio-icon">⭕</span> About you section fill karo
+          </div>
+        </div>
+      </div>
+
       <div style="display:flex;align-items:flex-start;gap:10px;background:var(--teal-lt);border-radius:12px;padding:14px 16px;margin-bottom:16px;">
         <input type="checkbox" id="agreeCheck" style="margin-top:2px;accent-color:var(--teal);width:16px;height:16px;flex-shrink:0;"/>
         <label for="agreeCheck" style="font-size:13px;color:var(--navy);line-height:1.6;cursor:pointer;">
@@ -417,116 +976,381 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
           <a href="#" style="color:var(--teal);font-weight:600;">Privacy Policy</a> se agree karta/karti hoon.
         </label>
       </div>
+
       <button type="submit" class="btn-teal" style="width:100%;font-size:16px;padding:16px 40px;" onclick="return submitForm()">
         🚀 Find My Flatmate
       </button>
     </div>
 
   </div><!-- /form-col -->
-<!-- RIGHT: LIVE PREVIEW CARD -->
-<div class="fu d2">
 
-  <!-- Person Card Preview -->
-  <div style="position:sticky;top:86px;">
-    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
-      <div style="width:3px;height:12px;border-radius:2px;background:var(--teal);display:inline-block;"></div>
-      Live Preview
-    </div>
+  <!-- ══ RIGHT: LIVE PREVIEW ══ -->
+  <div class="fu d2">
+    <div class="preview-sticky">
 
-    <!-- THE CARD -->
-    <div style="background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--card-sh);">
-      <!-- gradient header -->
-      <div id="prevHeader" style="height:100px;background:linear-gradient(135deg,#0EA5C9,#0F1F3D);border-radius:20px 20px 0 0;position:relative;">
-        <div id="prevAvatarBox" style="width:68px;height:68px;border-radius:50%;background:var(--teal-lt);border:3px solid #fff;position:absolute;bottom:-34px;left:20px;display:flex;align-items:center;justify-content:center;font-size:28px;">😊</div>
-        <div style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.15);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;">⚡ Live Preview</div>
+      <!-- LABEL -->
+      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+        <div style="width:3px;height:12px;border-radius:2px;background:var(--teal);display:inline-block;"></div>
+        Live Preview
       </div>
 
-      <div style="padding:44px 20px 20px;">
-        <!-- name + gender -->
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-          <div>
-            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--navy);" id="prevName">Tumhara Naam</div>
-            <div style="font-size:13px;color:var(--muted);margin-top:2px;" id="prevSub">Occupation · City</div>
+      <!-- ══ VIBE SCORE WIDGET — NEW ══ -->
+      <div class="vibe-score-widget">
+        <div class="vs-title">✨ Your Vibe Score</div>
+        <div class="vs-ring-wrap">
+          <div class="vs-ring">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="6"/>
+              <circle cx="40" cy="40" r="32" fill="none" stroke="#0EA5C9" stroke-width="6"
+                      stroke-dasharray="201" stroke-dashoffset="201"
+                      stroke-linecap="round" id="vibeRingCircle"
+                      style="transition: stroke-dashoffset .6s ease;"/>
+            </svg>
+            <div class="vs-ring-num" id="vibeScoreNum">0</div>
           </div>
-          <div id="prevGenderBadge" style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;">—</div>
-        </div>
-
-        <!-- interest chips -->
-        <div id="prevTags" style="display:flex;flex-wrap:wrap;gap:5px;margin:14px 0;">
-          <div style="font-size:12px;color:var(--muted);font-style:italic;">Tags select karo…</div>
-        </div>
-
-        <!-- footer: budget + connect -->
-        <div style="display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border);">
-          <div>
-            <div style="font-size:13px;font-weight:700;color:var(--navy);" id="prevBudget">₹12,000 / mo</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:2px;" id="prevArea">Area · City</div>
+          <div class="vs-info">
+            <div class="vs-score-label" id="vibeScoreLabel">Profile Incomplete</div>
+            <div class="vs-score-sub" id="vibeScoreSub">Tags aur bio fill karo score badhane ke liye</div>
+            <div class="vs-breakdown">
+              <div class="vs-bar-row">
+                <div class="vs-bar-label">Tags</div>
+                <div class="vs-bar-track"><div class="vs-bar-fill" id="vsBarTags" style="width:0%"></div></div>
+              </div>
+              <div class="vs-bar-row">
+                <div class="vs-bar-label">Bio</div>
+                <div class="vs-bar-track"><div class="vs-bar-fill" id="vsBarBio" style="width:0%"></div></div>
+              </div>
+              <div class="vs-bar-row">
+                <div class="vs-bar-label">Lifestyle</div>
+                <div class="vs-bar-track"><div class="vs-bar-fill" id="vsBarLifestyle" style="width:0%"></div></div>
+              </div>
+              <div class="vs-bar-row">
+                <div class="vs-bar-label">Photo</div>
+                <div class="vs-bar-track"><div class="vs-bar-fill" id="vsBarPhoto" style="width:0%"></div></div>
+              </div>
+            </div>
           </div>
-          <button class="btn-primary" style="padding:8px 18px;font-size:13px;cursor:default;">Connect</button>
         </div>
       </div>
-    </div>
 
-    <!-- Tips -->
-    <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;margin-top:16px;box-shadow:var(--card-sh);">
-      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px;">💡 Tips for better matches</div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <div style="display:flex;gap:8px;align-items:flex-start;">
-          <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0;"></div>
-          <span style="font-size:12px;color:var(--muted);line-height:1.6;">Kam se kam <strong style="color:var(--navy);">5 tags</strong> select karo</span>
+      <!-- PROFILE CARD PREVIEW -->
+      <div style="background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--card-sh);">
+        <!-- gradient header -->
+        <div id="prevHeader" style="height:100px;background:linear-gradient(135deg,#0EA5C9,#0F1F3D);border-radius:20px 20px 0 0;position:relative;">
+          <!-- Profile photo or emoji avatar -->
+          <div id="prevAvatarBox"
+               style="width:68px;height:68px;border-radius:50%;background:var(--teal-lt);border:3px solid #fff;position:absolute;bottom:-34px;left:20px;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;">
+            😊
+          </div>
+          <div style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.15);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;">⚡ Live Preview</div>
         </div>
-        <div style="display:flex;gap:8px;align-items:flex-start;">
-          <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0;"></div>
-          <span style="font-size:12px;color:var(--muted);line-height:1.6;">Bio mein daily routine mention karo</span>
-        </div>
-        <div style="display:flex;gap:8px;align-items:flex-start;">
-          <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0;"></div>
-          <span style="font-size:12px;color:var(--muted);line-height:1.6;">Realistic budget set karo</span>
+
+        <div style="padding:44px 20px 20px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+            <div>
+              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--navy);" id="prevName">Tumhara Naam</div>
+              <div style="font-size:13px;color:var(--muted);margin-top:2px;" id="prevSub">Occupation · City</div>
+            </div>
+            <div id="prevGenderBadge" style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;">—</div>
+          </div>
+
+          <!-- Vibe badge on card -->
+          <div id="prevVibeBadge" style="display:none;" class="prev-vibe-badge">
+            ✨ Vibe Score: <span id="prevVibeNum">0</span>
+          </div>
+
+          <!-- interest chips -->
+          <div id="prevTags" style="display:flex;flex-wrap:wrap;gap:5px;margin:14px 0;">
+            <div style="font-size:12px;color:var(--muted);font-style:italic;">Tags select karo…</div>
+          </div>
+
+          <!-- footer -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border);">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--navy);" id="prevBudget">₹12,000 / mo</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;" id="prevArea">Area · City</div>
+            </div>
+            <button class="btn-primary" style="padding:8px 18px;font-size:13px;cursor:default;">Connect</button>
+          </div>
         </div>
       </div>
+
+      <!-- Tips -->
+      <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;margin-top:16px;box-shadow:var(--card-sh);">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px;">💡 Tips for better matches</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="tip-item">
+            <div class="tip-dot"></div>
+            <span style="font-size:12px;color:var(--muted);line-height:1.6;"><strong style="color:var(--navy);">Photo upload karo</strong> — responses 3x badh jaate hain</span>
+          </div>
+          <div class="tip-item">
+            <div class="tip-dot"></div>
+            <span style="font-size:12px;color:var(--muted);line-height:1.6;">Kam se kam <strong style="color:var(--navy);">5 tags</strong> select karo match quality ke liye</span>
+          </div>
+          <div class="tip-item">
+            <div class="tip-dot"></div>
+            <span style="font-size:12px;color:var(--muted);line-height:1.6;">Bio mein <strong style="color:var(--navy);">daily routine</strong> mention karo</span>
+          </div>
+          <div class="tip-item">
+            <div class="tip-dot"></div>
+            <span style="font-size:12px;color:var(--muted);line-height:1.6;">Realistic <strong style="color:var(--navy);">budget</strong> set karo — sahi matches milenge</span>
+          </div>
+        </div>
+      </div>
+
     </div>
-
-
   </div>
-  </div>
-</div>
 
-<!-- Hidden fields -->
-<input type="hidden" name="sleep_schedule" id="sleepVal"/>
-<input type="hidden" name="guest_policy" id="guestVal"/>
-<input type="hidden" name="work_style" id="workVal"/>
+</div><!-- /two-col-layout -->
+
+<!-- Hidden fields for radio values -->
+<input type="hidden" name="sleep_schedule"     id="sleepVal"/>
+<input type="hidden" name="guest_policy"       id="guestVal"/>
+<input type="hidden" name="work_style"         id="workVal"/>
 <input type="hidden" name="contact_preference" id="contactVal"/>
+<input type="hidden" name="noise_tolerance"    id="noiseVal"/>
+<input type="hidden" name="language_pref"      id="langVal"/>
+<input type="hidden" name="stay_duration"      id="stayVal"/>
+<input type="hidden" name="contact_visibility" id="visibilityVal"/>
+<input type="hidden" name="vibe_score"         id="vibeScoreInput"/>
 
 </form>
 
 <script>
-// ── Budget slider ──
-function updateBudget(el){
-  const v=parseInt(el.value);
-  const pct=((v-2000)/(60000-2000))*100;
-  el.style.setProperty('--pct',pct+'%');
-  document.getElementById('budgetVal').textContent=v.toLocaleString('en-IN');
-  document.getElementById('prevBudget').textContent='₹'+v.toLocaleString('en-IN')+' / mo';
+/* ══════════════════════════════════════════
+   PROFILE PHOTO
+════════════════════════════════════════════ */
+let hasPhoto = false;
+
+function handlePhotoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  // Validate
+  if (file.size > 5 * 1024 * 1024) {
+    alert('File 5MB se zyada nahi honi chahiye!');
+    return;
+  }
+  if (!file.type.startsWith('image/')) {
+    alert('Sirf image files allowed hain!');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    // Show preview
+    document.getElementById('photoPreviewImg').src = e.target.result;
+    document.getElementById('photoFileName').textContent = file.name;
+    document.getElementById('photoFileSize').textContent = (file.size / 1024).toFixed(0) + ' KB';
+
+    // Update preview card avatar
+    const avatarBox = document.getElementById('prevAvatarBox');
+    avatarBox.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`;
+
+    // Toggle zones
+    document.getElementById('uploadZone').style.display = 'none';
+    document.getElementById('photoPreviewWrap').classList.add('visible');
+
+    hasPhoto = true;
+    updateVibeScore();
+    updateChecklist();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePhoto() {
+  document.getElementById('profilePhotoInput').value = '';
+  document.getElementById('photoPreviewImg').src = '';
+  document.getElementById('uploadZone').style.display = '';
+  document.getElementById('photoPreviewWrap').classList.remove('visible');
+  document.getElementById('prevAvatarBox').innerHTML = emojiMap[document.querySelector('[name="occupation"]')?.value] || '😊';
+  hasPhoto = false;
+  updateVibeScore();
+  updateChecklist();
+}
+
+// Drag and drop
+const uploadZone = document.getElementById('uploadZone');
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    document.getElementById('profilePhotoInput').files = dt.files;
+    handlePhotoUpload(document.getElementById('profilePhotoInput'));
+  }
+});
+
+/* ══════════════════════════════════════════
+   VIBE SCORE CALCULATION
+   Max = 100
+   Tags:      up to 40 pts  (5pts per tag, max 8 tags)
+   Bio:       up to 20 pts  (chars / 300 * 20)
+   Lifestyle: up to 25 pts  (5 fields, 5pts each)
+   Photo:     15 pts        (flat bonus)
+════════════════════════════════════════════ */
+function calculateVibeScore() {
+  let score = 0;
+  let tagPts = 0, bioPts = 0, lifePts = 0, photoPts = 0;
+
+  // Tags (max 40)
+  const tCount = selectedTags.length;
+  tagPts = Math.min(tCount * 5, 40);
+
+  // Bio (max 20)
+  const bioLen = document.getElementById('bioInput').value.trim().length;
+  bioPts = Math.min(Math.round((bioLen / 300) * 20), 20);
+
+  // Lifestyle fields (max 25)
+  const sleepFilled  = !!document.querySelector('#sleepGroup .radio-btn.active');
+  const guestFilled  = !!document.querySelector('#guestGroup .radio-btn.active');
+  const workFilled   = !!document.querySelector('#workGroup .radio-btn.active');
+  const noiseFilled  = !!document.querySelector('#noiseGroup .radio-btn.active');
+  const cleanVal     = parseInt(document.getElementById('cleanSlider').value);
+  if (sleepFilled) lifePts += 5;
+  if (guestFilled) lifePts += 5;
+  if (workFilled)  lifePts += 5;
+  if (noiseFilled) lifePts += 5;
+  if (cleanVal > 1) lifePts += 5;
+
+  // Photo (15)
+  if (hasPhoto) photoPts = 15;
+
+  score = tagPts + bioPts + lifePts + photoPts;
+
+  return { score, tagPts, bioPts, lifePts, photoPts };
+}
+
+function updateVibeScore() {
+  const { score, tagPts, bioPts, lifePts, photoPts } = calculateVibeScore();
+
+  // Ring animation
+  const circle = document.getElementById('vibeRingCircle');
+  const circumference = 201;
+  const offset = circumference - (score / 100) * circumference;
+  circle.style.strokeDashoffset = offset;
+
+  // Number
+  document.getElementById('vibeScoreNum').textContent  = score;
+  document.getElementById('prevVibeNum').textContent   = score;
+  document.getElementById('vibeScoreInput').value      = score;
+
+  // Label
+  let label, sub;
+  if (score === 0) {
+    label = 'Profile Incomplete'; sub = 'Tags aur bio fill karo';
+    document.getElementById('prevVibeBadge').style.display = 'none';
+  } else if (score < 30) {
+    label = 'Getting Started 🌱'; sub = 'Thoda aur fill karo';
+    document.getElementById('prevVibeBadge').style.display = 'none';
+  } else if (score < 55) {
+    label = 'Good Vibe ✨';       sub = 'Decent profile hai!';
+    document.getElementById('prevVibeBadge').style.display = 'inline-flex';
+  } else if (score < 75) {
+    label = 'Strong Vibe 🔥';    sub = 'Bahut achha profile!';
+    document.getElementById('prevVibeBadge').style.display = 'inline-flex';
+  } else {
+    label = 'Top Vibes 🚀';      sub = 'Tu top 10% mein hai!';
+    document.getElementById('prevVibeBadge').style.display = 'inline-flex';
+  }
+  document.getElementById('vibeScoreLabel').textContent = label;
+  document.getElementById('vibeScoreSub').textContent   = sub;
+
+  // Breakdown bars
+  document.getElementById('vsBarTags').style.width     = (tagPts / 40 * 100)  + '%';
+  document.getElementById('vsBarBio').style.width      = (bioPts / 20 * 100)  + '%';
+  document.getElementById('vsBarLifestyle').style.width = (lifePts / 25 * 100) + '%';
+  document.getElementById('vsBarPhoto').style.width    = (photoPts / 15 * 100) + '%';
+
+  updateChecklist();
+  updateProgressBar();
+}
+
+/* ══════════════════════════════════════════
+   CHECKLIST
+════════════════════════════════════════════ */
+function updateChecklist() {
+  const photoOk = hasPhoto;
+  const tagsOk  = selectedTags.length >= 5;
+  const bioOk   = document.getElementById('bioInput').value.trim().length > 20;
+
+  setClItem('cl-photo', photoOk);
+  setClItem('cl-tags',  tagsOk);
+  setClItem('cl-bio',   bioOk);
+}
+
+function setClItem(id, ok) {
+  const el   = document.getElementById(id);
+  const icon = document.getElementById(id + '-icon');
+  if (ok) {
+    el.style.color   = 'var(--teal)';
+    icon.textContent = '✅';
+  } else {
+    el.style.color   = 'var(--muted)';
+    icon.textContent = '⭕';
+  }
+}
+
+/* ══════════════════════════════════════════
+   PROGRESS BAR — scroll-driven
+════════════════════════════════════════════ */
+function updateProgressBar() {
+  const sections = ['section1','section2','section3','section4','section5','section6'];
+  sections.forEach((id, i) => {
+    const el = document.getElementById(id);
+    const ps = document.getElementById('ps'+(i+1));
+    if (!el || !ps) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.6) {
+      ps.classList.add('done');
+      ps.classList.remove('active');
+      // mark next as active
+      const next = document.getElementById('ps'+(i+2));
+      if (next) { next.classList.add('active'); }
+    }
+  });
+}
+window.addEventListener('scroll', updateProgressBar, { passive: true });
+
+/* ══════════════════════════════════════════
+   BUDGET SLIDER
+════════════════════════════════════════════ */
+function updateBudget(el) {
+  const v = parseInt(el.value);
+  const pct = ((v - 2000) / (60000 - 2000)) * 100;
+  el.style.setProperty('--pct', pct + '%');
+  document.getElementById('budgetVal').textContent = v.toLocaleString('en-IN');
+  document.getElementById('prevBudget').textContent = '₹' + v.toLocaleString('en-IN') + ' / mo';
 }
 updateBudget(document.getElementById('budgetSlider'));
 
-// ── Cleanliness slider ──
-function updateClean(el){
-  const pct=((el.value-1)/9)*100;
-  el.style.setProperty('--pct',pct+'%');
-  document.getElementById('cleanVal').textContent=el.value;
+/* ══════════════════════════════════════════
+   CLEANLINESS SLIDER
+════════════════════════════════════════════ */
+function updateClean(el) {
+  const pct = ((el.value - 1) / 9) * 100;
+  el.style.setProperty('--pct', pct + '%');
+  document.getElementById('cleanVal').textContent = el.value;
 }
 updateClean(document.getElementById('cleanSlider'));
 
-// ── Radio groups ──
-function setRadio(groupId,btn){
-  document.querySelectorAll('#'+groupId+' .radio-btn').forEach(b=>b.classList.remove('active'));
+/* ══════════════════════════════════════════
+   RADIO GROUPS
+════════════════════════════════════════════ */
+function setRadio(groupId, btn) {
+  document.querySelectorAll('#' + groupId + ' .radio-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 }
 
-// ── Tag data ──
-let selectedTags=[];
-const tagEmojis={
+/* ══════════════════════════════════════════
+   TAG SYSTEM
+════════════════════════════════════════════ */
+let selectedTags = [];
+const tagEmojis = {
   'Gaming':'🎮','Music':'🎵','Reading':'📚','Cooking':'🍳','Art & Design':'🎨',
   'Travel':'✈️','Tech & Coding':'💻','Movies & OTT':'🎬','Photography':'📸',
   'Writing':'✍️','Podcasts':'🎙️','Anime':'🌸','Cricket':'🏏','Football':'⚽',
@@ -536,7 +1360,7 @@ const tagEmojis={
   'Ambivert':'⚖️','Early Bird':'🌅','Night Owl':'🌙','Hustler':'🚀',
   'Zen':'🧘','Creative':'🎨'
 };
-const chipColors=[
+const chipColors = [
   'background:#EBF9FD;color:var(--teal)',
   'background:#FEF3C7;color:#B45309',
   'background:#F0FDF4;color:#059669',
@@ -545,40 +1369,55 @@ const chipColors=[
   'background:#EFF6FF;color:#2563EB',
 ];
 
-// ── Tag toggle ──
-function toggleTag(el){
-  const tag=el.dataset.tag;
-  if(el.classList.contains('selected')){
+function toggleTag(el) {
+  const tag = el.dataset.tag;
+  if (el.classList.contains('selected')) {
     el.classList.remove('selected');
-    selectedTags=selectedTags.filter(t=>t!==tag);
+    selectedTags = selectedTags.filter(t => t !== tag);
   } else {
     el.classList.add('selected');
     selectedTags.push(tag);
   }
-  document.getElementById('interestTagsInput').value=selectedTags.join(',');
+  document.getElementById('interestTagsInput').value = selectedTags.join(',');
   updateTagCounter();
   updatePreviewTags();
+  updateVibeScore();
+
+  // Tag score bar in form
+  const tPts = Math.min(selectedTags.length * 5, 40);
+  const pct  = (tPts / 40) * 100;
+  document.getElementById('tagScoreBar').style.width = pct + '%';
+  const lbl = selectedTags.length === 0
+    ? '0 tags — score nahi banega'
+    : selectedTags.length < 3
+    ? `${selectedTags.length} tags — thoda aur select karo`
+    : selectedTags.length < 5
+    ? `${selectedTags.length} tags — achha! 5 se match improve hoga`
+    : `${selectedTags.length} tags — 🔥 solid vibe profile!`;
+  document.getElementById('tagScoreLabel').textContent = lbl;
 }
 
-function updateTagCounter(){
-  document.getElementById('tagsCounter').textContent=selectedTags.length+' selected';
+function updateTagCounter() {
+  document.getElementById('tagsCounter').textContent = selectedTags.length + ' selected';
 }
 
-function updatePreviewTags(){
-  const container=document.getElementById('prevTags');
-  if(selectedTags.length===0){
-    container.innerHTML='<div style="font-size:12px;color:var(--muted);font-style:italic;">Tags select karo…</div>';
+function updatePreviewTags() {
+  const container = document.getElementById('prevTags');
+  if (selectedTags.length === 0) {
+    container.innerHTML = '<div style="font-size:12px;color:var(--muted);font-style:italic;">Tags select karo…</div>';
     return;
   }
-  container.innerHTML=selectedTags.slice(0,4).map((t,i)=>
-    `<div style="display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:99px;font-size:11px;font-weight:600;white-space:nowrap;${chipColors[i%chipColors.length]}">${tagEmojis[t]||''} ${t}</div>`
+  container.innerHTML = selectedTags.slice(0, 4).map((t, i) =>
+    `<div style="display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:99px;font-size:11px;font-weight:600;white-space:nowrap;${chipColors[i % chipColors.length]}">${tagEmojis[t] || ''} ${t}</div>`
   ).join('');
-  if(selectedTags.length>4)
-    container.innerHTML+=`<div style="display:inline-flex;align-items:center;padding:4px 11px;border-radius:99px;font-size:11px;font-weight:700;background:var(--off);color:var(--muted);">+${selectedTags.length-4} more</div>`;
+  if (selectedTags.length > 4)
+    container.innerHTML += `<div style="display:inline-flex;align-items:center;padding:4px 11px;border-radius:99px;font-size:11px;font-weight:700;background:var(--off);color:var(--muted);">+${selectedTags.length - 4} more</div>`;
 }
 
-// ── Live preview ──
-const gradients={
+/* ══════════════════════════════════════════
+   LIVE PREVIEW — name, occ, city
+════════════════════════════════════════════ */
+const gradients = {
   'Student':'linear-gradient(135deg,#10B981,#0EA5C9)',
   'Software / IT':'linear-gradient(135deg,#0EA5C9,#0F1F3D)',
   'Corporate Professional':'linear-gradient(135deg,#0F1F3D,#1a3260)',
@@ -589,70 +1428,94 @@ const gradients={
   'Creative / Media':'linear-gradient(135deg,#F59E0B,#EF4444)',
   'Other':'linear-gradient(135deg,#0EA5C9,#0F1F3D)',
 };
-const emojiMap={
+const emojiMap = {
   'Student':'🎓','Software / IT':'💻','Corporate Professional':'🏢',
   'Freelancer':'🎨','Healthcare':'🏥','Startup':'🚀',
   'Research / Academia':'📚','Creative / Media':'🎭','Other':'😊'
 };
-const genderColors={
+const genderColors = {
   'Male':'background:#EFF6FF;color:#2563EB',
   'Female':'background:var(--teal-lt);color:var(--teal)',
   'Non-binary':'background:#F5F3FF;color:#7C3AED',
   'Prefer not to say':'background:var(--off);color:var(--muted)',
 };
 
-function updatePreview(){
-  const name=document.querySelector('[name="name"]')?.value;
-  const occ=document.querySelector('[name="occupation"]')?.value;
-  const city=document.querySelector('[name="city"]')?.value;
-  const area=document.querySelector('[name="preferred_area"]')?.value;
-  const gender=document.querySelector('[name="gender"]')?.value;
+function updatePreview() {
+  const name   = document.querySelector('[name="name"]')?.value;
+  const occ    = document.querySelector('[name="occupation"]')?.value;
+  const city   = document.querySelector('[name="city"]')?.value;
+  const area   = document.querySelector('[name="preferred_area"]')?.value;
+  const gender = document.querySelector('[name="gender"]')?.value;
 
-  document.getElementById('prevName').textContent=name||'Tumhara Naam';
-  document.getElementById('prevSub').textContent=(occ||'Occupation')+' · '+(city||'City');
-  document.getElementById('prevArea').textContent=(area||'Area')+' · '+(city||'City');
+  document.getElementById('prevName').textContent = name || 'Tumhara Naam';
+  document.getElementById('prevSub').textContent  = (occ || 'Occupation') + ' · ' + (city || 'City');
+  document.getElementById('prevArea').textContent = (area || 'Area') + ' · ' + (city || 'City');
 
-  if(occ){
-    document.getElementById('prevHeader').style.background=gradients[occ]||gradients['Other'];
-    document.getElementById('prevAvatarBox').textContent=emojiMap[occ]||'😊';
+  if (occ) {
+    document.getElementById('prevHeader').style.background = gradients[occ] || gradients['Other'];
+    // only update emoji if no photo uploaded
+    if (!hasPhoto) {
+      document.getElementById('prevAvatarBox').textContent = emojiMap[occ] || '😊';
+    }
   }
-  if(gender&&genderColors[gender]){
-    const badge=document.getElementById('prevGenderBadge');
-    badge.style.cssText=genderColors[gender]+';font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;';
-    badge.textContent=gender;
+  if (gender && genderColors[gender]) {
+    const badge = document.getElementById('prevGenderBadge');
+    badge.style.cssText = genderColors[gender] + ';font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;';
+    badge.textContent = gender;
   }
+
+  updateVibeScore();
 }
 
-document.addEventListener('input', updatePreview);
+document.addEventListener('input',  updatePreview);
 document.addEventListener('change', updatePreview);
 
-// ── Char count ──
-function updateCharCount(el,countId,max){
-  const len=el.value.length;
-  document.getElementById(countId).textContent=len+' / '+max;
-  document.getElementById(countId).style.color=len>max*.9?'var(--amber)':'var(--muted)';
+/* ══════════════════════════════════════════
+   CHAR COUNT
+════════════════════════════════════════════ */
+function updateCharCount(el, countId, max) {
+  const len = el.value.length;
+  document.getElementById(countId).textContent = len + ' / ' + max;
+  document.getElementById(countId).style.color = len > max * .9 ? 'var(--amber)' : 'var(--muted)';
 }
 
-// ── Submit ──
-function submitForm(){
-  if(!document.getElementById('agreeCheck').checked){
+/* ══════════════════════════════════════════
+   SUBMIT
+════════════════════════════════════════════ */
+function submitForm() {
+  if (!document.getElementById('agreeCheck').checked) {
     alert('Pehle terms agree karo!');
     return false;
   }
-  if(selectedTags.length<3){
+  if (selectedTags.length < 3) {
     alert('Kam se kam 3 interest tags select karo!');
     return false;
   }
-  const sleepBtn=document.querySelector('#sleepGroup .radio-btn.active');
-  if(sleepBtn) document.getElementById('sleepVal').value=sleepBtn.textContent.trim();
-  const guestBtn=document.querySelector('#guestGroup .radio-btn.active');
-  if(guestBtn) document.getElementById('guestVal').value=guestBtn.textContent.trim();
-  const workBtn=document.querySelector('#workGroup .radio-btn.active');
-  if(workBtn) document.getElementById('workVal').value=workBtn.textContent.trim();
-  const contactBtn=document.querySelector('#contactGroup .radio-btn.active');
-  if(contactBtn) document.getElementById('contactVal').value=contactBtn.textContent.trim();
+
+  // Capture all radio values
+  const groups = [
+    ['sleepGroup',      'sleepVal'],
+    ['guestGroup',      'guestVal'],
+    ['workGroup',       'workVal'],
+    ['contactGroup',    'contactVal'],
+    ['noiseGroup',      'noiseVal'],
+    ['langGroup',       'langVal'],
+    ['stayGroup',       'stayVal'],
+    ['visibilityGroup', 'visibilityVal'],
+  ];
+  groups.forEach(([group, hidden]) => {
+    const btn = document.querySelector('#' + group + ' .radio-btn.active');
+    if (btn) document.getElementById(hidden).value = btn.textContent.trim();
+  });
+
+  // Final vibe score
+  document.getElementById('vibeScoreInput').value = calculateVibeScore().score;
+
   return true;
 }
+
+// Init
+updateVibeScore();
 </script>
 
 {% endblock %}
