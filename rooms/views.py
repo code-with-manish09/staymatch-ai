@@ -468,10 +468,62 @@ def post_gate(request):
 
 #==============post flatmate====================
 
+def to_int(val, default=0):
+    try:
+        return int(val)
+    except:
+        return default
+
 @login_required
 def post_flatmate(request):
+    from .models import FlatmateProfile
+
     if request.method == 'POST':
-        messages.success(request, 'Profile post ho gayi! 🎉')
-        return redirect('dashboard')
+        try:
+            tags_str = request.POST.get('interest_tags', '')
+            tags_json = json.dumps([t.strip() for t in tags_str.split(',') if t.strip()])
+
+            FlatmateProfile.objects.create(
+                user            = request.user,
+                name            = request.POST.get('name', ''),
+                age             = to_int(request.POST.get('age'), 22),
+                gender          = request.POST.get('gender', ''),
+                occupation      = request.POST.get('occupation', ''),
+                city            = request.POST.get('city', ''),
+                preferred_area  = request.POST.get('preferred_area', ''),
+                language_pref   = request.POST.get('language_pref', ''),
+                bio             = request.POST.get('bio', ''),
+                profile_photo   = request.FILES.get('profile_photo'),
+                max_budget      = to_int(request.POST.get('max_budget'), 12000),
+                room_type_pref  = request.POST.get('room_type_pref', 'Any'),
+                move_in         = request.POST.get('move_in', 'Flexible'),
+                stay_duration   = request.POST.get('stay_duration', 'Flexible'),
+                interest_tags   =   tags_json,  
+                sleep_schedule  = request.POST.get('sleep_schedule', 'No Preference'),
+                cleanliness_level = to_int(request.POST.get('cleanliness_level'), 7),
+                noise_tolerance = request.POST.get('noise_tolerance', 'Moderate OK'),
+                guest_policy    = request.POST.get('guest_policy', 'Occasional OK'),
+                work_style      = request.POST.get('work_style', 'Hybrid'),
+                smoking         = request.POST.get('smoking', 'Non-smoker'),
+                alcohol         = request.POST.get('alcohol', "Don't drink"),
+                pets            = request.POST.get('pets', 'No pets'),
+                pref_gender     = request.POST.get('pref_gender', 'Any'),
+                pref_age_range  = request.POST.get('pref_age_range', 'Any'),
+                pref_occupation = request.POST.get('pref_occupation', 'Any'),
+                flatmate_expectation = request.POST.get('flatmate_expectation', ''),
+                contact_phone   = request.POST.get('contact_phone', ''),
+                contact_email   = request.POST.get('contact_email', ''),
+                contact_preference = request.POST.get('contact_preference', 'WhatsApp'),
+                contact_visibility = request.POST.get('contact_visibility', 'Show after connect only'),
+                vibe_score      = to_int(request.POST.get('vibe_score'), 0),
+            )
+            print("Save ho gaya")
+            messages.success(request, 'Profile post ho gayi! 🎉')
+            return redirect('dashboard')
+
+        except Exception as e:
+            print("ERROR:", e)
+
+            messages.error(request, f'Kuch galat hua: {str(e)}')
+
     return render(request, 'rooms/post_flatmate.html')
- 

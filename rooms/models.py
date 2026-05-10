@@ -129,3 +129,87 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user.username} → {self.listing.title} ({self.rating}★)"
+    
+#-----------flatmate post-----------------
+class FlatmateProfile(models.Model):
+
+    GENDER_CHOICES = [
+        ('Male', 'Male'), ('Female', 'Female'),
+        ('Non-binary', 'Non-binary'), ('Prefer not to say', 'Prefer not to say'),
+    ]
+    OCCUPATION_CHOICES = [
+        ('Student', 'Student'), ('Software / IT', 'Software / IT'),
+        ('Corporate Professional', 'Corporate Professional'),
+        ('Freelancer', 'Freelancer'), ('Healthcare', 'Healthcare'),
+        ('Startup', 'Startup'), ('Research / Academia', 'Research / Academia'),
+        ('Creative / Media', 'Creative / Media'), ('Other', 'Other'),
+    ]
+    CITY_CHOICES = [
+        ('Bangalore', 'Bangalore'), ('Mumbai', 'Mumbai'),
+        ('Delhi', 'Delhi'), ('Hyderabad', 'Hyderabad'),
+        ('Pune', 'Pune'), ('Chennai', 'Chennai'),
+        ('Kolkata', 'Kolkata'), ('Patna', 'Patna'),
+    ]
+    LANGUAGE_CHOICES = [
+        ('Hindi', 'Hindi'), ('English', 'English'),
+        ('Hindi+English', 'Hindi + English'), ('Any', 'Any'),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='flatmate_profile')
+
+    # Step 1
+    name           = models.CharField(max_length=120)
+    age            = models.IntegerField(validators=[MinValueValidator(18), MaxValueValidator(45)])
+    gender         = models.CharField(max_length=20, choices=GENDER_CHOICES)
+    occupation     = models.CharField(max_length=50, choices=OCCUPATION_CHOICES)
+    city           = models.CharField(max_length=50, choices=CITY_CHOICES)
+    preferred_area = models.CharField(max_length=100, blank=True)
+    language_pref  = models.CharField(max_length=50, choices=LANGUAGE_CHOICES, blank=True)
+    bio            = models.TextField(max_length=300, blank=True)
+    profile_photo  = models.ImageField(upload_to='flatmates/', blank=True, null=True)
+
+    # Step 2
+    max_budget     = models.IntegerField(default=12000)
+    room_type_pref = models.CharField(max_length=50, default='Any')
+    move_in        = models.CharField(max_length=50, default='Flexible')
+    stay_duration  = models.CharField(max_length=50, default='Flexible')
+
+    # Step 3
+    interest_tags  = models.TextField(blank=True)
+
+    # Step 4
+    sleep_schedule     = models.CharField(max_length=50, default='No Preference')
+    cleanliness_level  = models.IntegerField(default=7, validators=[MinValueValidator(1), MaxValueValidator(10)])
+    noise_tolerance    = models.CharField(max_length=50, default='Moderate OK')
+    guest_policy       = models.CharField(max_length=100, default='Occasional OK')
+    work_style         = models.CharField(max_length=50, default='Hybrid')
+    smoking            = models.CharField(max_length=50, default='Non-smoker')
+    alcohol            = models.CharField(max_length=50, default="Don't drink")
+    pets               = models.CharField(max_length=50, default='No pets')
+
+    # Step 5
+    pref_gender          = models.CharField(max_length=20, default='Any')
+    pref_age_range       = models.CharField(max_length=50, default='Any')
+    pref_occupation      = models.CharField(max_length=50, default='Any')
+    flatmate_expectation = models.TextField(max_length=400, blank=True)
+
+    # Step 6
+    contact_phone      = models.CharField(max_length=20)
+    contact_email      = models.EmailField()
+    contact_preference = models.CharField(max_length=50, default='WhatsApp')
+    contact_visibility = models.CharField(max_length=50, default='Show after connect only')
+
+    # Metadata
+    vibe_score = models.IntegerField(default=0)
+    is_active  = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def get_tags_list(self):
+        return [t.strip() for t in self.interest_tags.split(',') if t.strip()]
+
+    def __str__(self):
+        return f"{self.name} ({self.city}) — Score: {self.vibe_score}"
+
+    class Meta:
+        ordering = ['-vibe_score', '-created_at']
