@@ -1080,13 +1080,13 @@ onclick="confirmDelete(`{% url 'room_delete' room.id %}`)">🗑</button>        
         <!-- Info -->
         <div style="flex:1;min-width:160px;">
           <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;color:var(--navy);margin-bottom:3px;">
-            {{ post.title|default:"Looking for flatmate" }}
+            {{ post.name }}
           </div>
           <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">
-            📍 {{ post.preferred_area|default:"—" }} &nbsp;·&nbsp; 💰 ₹{{ post.budget|default:"—" }}/mo &nbsp;·&nbsp; 🕒 {{ post.created_at|timesince }} ago
+            📍 {{ post.preferred_area|default:"—" }} &nbsp;·&nbsp; 💰 ₹{{ post.max_budget|default:"—" }}/mo &nbsp;·&nbsp; 🕒 {{ post.created_at|timesince }} ago
           </div>
           <div style="display:flex;flex-wrap:wrap;gap:5px;">
-            {% for tag in post.tags|slice:":4" %}
+{% for tag in post.get_tags_list|slice:":4" %}
               <span style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">{{ tag }}</span>
             {% empty %}
               <span style="font-size:11px;color:var(--muted);">No tags</span>

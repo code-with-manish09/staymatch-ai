@@ -1,0 +1,848 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+/* ── Same CSS as post_flatmate.html ── */
+.form-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:32px;box-shadow:var(--card-sh);margin-bottom:24px;}
+.form-section-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--navy);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.step-badge{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-badge.teal{background:var(--teal);}
+.step-badge.amber{background:var(--amber);}
+.step-badge.coral{background:var(--coral);}
+.field-group{display:flex;flex-direction:column;gap:6px;}
+.field-label{font-size:13px;font-weight:600;color:var(--navy);}
+.field-hint{font-size:11px;color:var(--muted);}
+.field-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'Instrument Sans',sans-serif;font-size:14px;color:var(--navy);background:#fff;transition:border-color .2s,box-shadow .2s;outline:none;appearance:none;}
+.field-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(14,165,201,.12);}
+.field-input::placeholder{color:var(--muted);}
+select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7A99' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;}
+textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.radio-group{display:flex;gap:10px;flex-wrap:wrap;}
+.radio-btn{border:1.5px solid var(--border);border-radius:10px;padding:10px 16px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);transition:all .2s;display:flex;align-items:center;gap:7px;}
+.radio-btn:hover{border-color:var(--teal);}
+.radio-btn.active{border-color:var(--teal);background:var(--teal-lt);color:var(--teal);}
+.radio-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.range-input{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:99px;background:linear-gradient(90deg,var(--teal) 0%,var(--teal) var(--pct,50%),#EEF0F6 var(--pct,50%));outline:none;cursor:pointer;}
+.range-input::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--navy);border:3px solid #fff;box-shadow:0 2px 8px rgba(15,31,61,.25);cursor:pointer;}
+.range-labels{display:flex;justify-content:space-between;margin-top:6px;}
+.range-label{font-size:11px;color:var(--muted);}
+.range-val{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--navy);}
+.range-unit{font-size:13px;color:var(--muted);margin-left:3px;}
+.tag-category{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border);}
+.tag-category:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.tag-cat-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.tag-cat-label::before{content:'';display:inline-block;width:3px;height:12px;border-radius:2px;background:var(--teal);}
+.tag-options{display:flex;flex-wrap:wrap;gap:8px;}
+.tag-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;font-size:12px;font-weight:600;border:1.5px solid var(--border);color:var(--navy);background:var(--off);cursor:pointer;transition:all .18s;user-select:none;}
+.tag-pill:hover{border-color:var(--teal);background:var(--teal-lt);color:var(--teal);}
+.tag-pill.selected{border-color:var(--teal);background:var(--teal);color:#fff;}
+.tags-counter{display:inline-flex;align-items:center;gap:5px;background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;margin-left:auto;}
+.photo-upload-zone{border:2px dashed var(--border);border-radius:16px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--off);position:relative;}
+.photo-upload-zone:hover,.photo-upload-zone.dragover{border-color:var(--teal);background:var(--teal-lt);}
+.photo-upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.photo-preview-wrap{display:none;align-items:center;gap:20px;padding:16px;background:#fff;border:1.5px solid var(--border);border-radius:16px;}
+.photo-preview-wrap.visible{display:flex;}
+.photo-preview-img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--teal);flex-shrink:0;}
+.photo-remove-btn{background:#FFF1F2;color:var(--coral);border:1px solid #FECDD3;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;}
+.form-progress-bar{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 24px;margin-bottom:24px;box-shadow:var(--card-sh);position:sticky;top:70px;z-index:50;}
+.progress-steps{display:flex;align-items:center;}
+.progress-step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative;}
+.progress-step::after{content:'';position:absolute;top:14px;left:50%;width:100%;height:2px;background:var(--border);z-index:0;}
+.progress-step:last-child::after{display:none;}
+.progress-step.done::after{background:var(--teal);}
+.ps-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--muted);position:relative;z-index:1;transition:all .3s;}
+.progress-step.done .ps-dot{background:var(--teal);border-color:var(--teal);color:#fff;}
+.progress-step.active .ps-dot{background:var(--navy);border-color:var(--navy);color:#fff;}
+.ps-label{font-size:10px;font-weight:600;color:var(--muted);white-space:nowrap;}
+.progress-step.done .ps-label{color:var(--teal);}
+.progress-step.active .ps-label{color:var(--navy);font-weight:700;}
+.vibe-score-widget{background:linear-gradient(135deg,var(--navy),#1a3260);border-radius:20px;padding:22px;margin-bottom:16px;position:relative;overflow:hidden;}
+.vibe-score-widget::before{content:'';position:absolute;top:-40px;right:-20px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,201,.25),transparent);pointer-events:none;}
+.vs-title{font-size:10px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+.vs-ring-wrap{display:flex;align-items:center;gap:16px;}
+.vs-ring{position:relative;width:80px;height:80px;flex-shrink:0;}
+.vs-ring svg{width:80px;height:80px;transform:rotate(-90deg);}
+.vs-ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:#fff;}
+.vs-info{flex:1;}
+.vs-score-label{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;color:#fff;margin-bottom:4px;}
+.vs-score-sub{font-size:11px;color:rgba(255,255,255,.45);margin-bottom:10px;line-height:1.5;}
+.vs-breakdown{display:flex;flex-direction:column;gap:5px;}
+.vs-bar-row{display:flex;align-items:center;gap:8px;}
+.vs-bar-label{font-size:10px;color:rgba(255,255,255,.4);width:64px;flex-shrink:0;}
+.vs-bar-track{flex:1;height:4px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden;}
+.vs-bar-fill{height:100%;border-radius:99px;background:var(--teal);transition:width .5s ease;}
+.two-col-layout{display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start;}
+.form-col{display:flex;flex-direction:column;gap:0;}
+.edit-hero{background:linear-gradient(135deg,#0d9488,#0F1F3D);border-radius:20px;padding:32px;margin-bottom:28px;position:relative;overflow:hidden;}
+.edit-hero::before{content:'';position:absolute;top:-60px;right:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,201,.2),transparent);pointer-events:none;}
+.edit-hero-title{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(20px,3vw,28px);font-weight:800;color:#fff;margin-bottom:8px;position:relative;z-index:1;}
+.edit-hero-sub{font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;position:relative;z-index:1;}
+.prev-vibe-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,var(--teal),#0891b2);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:99px;margin-top:8px;}
+.tip-item{display:flex;gap:8px;align-items:flex-start;}
+.tip-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0;}
+.preview-sticky{position:sticky;top:86px;}
+@media(max-width:1050px){.two-col-layout{grid-template-columns:1fr;}.preview-sticky{position:relative;top:0;}.form-progress-bar{position:relative;top:0;}}
+@media(max-width:900px){.form-row-2{grid-template-columns:1fr;}.form-card{padding:20px;}.radio-group{flex-direction:column;}}
+@media(max-width:600px){.ps-label{display:none;}}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero — Edit mode -->
+<div class="edit-hero fu d1">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;position:relative;z-index:1;">
+    <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:18px;">✏️</div>
+    <span style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:11px;font-weight:700;padding:4px 12px;border-radius:99px;">Edit Mode</span>
+  </div>
+  <div class="edit-hero-title">✏️ Edit Your Flatmate Profile</div>
+  <div class="edit-hero-sub">Apni profile update karo — changes turant live ho jaate hain aur naye matches milne shuru ho jaate hain.</div>
+</div>
+
+<!-- Progress Bar -->
+<div class="form-progress-bar fu d1">
+  <div class="progress-steps" id="progressSteps">
+    <div class="progress-step active" id="ps1"><div class="ps-dot">1</div><div class="ps-label">Basic Info</div></div>
+    <div class="progress-step" id="ps2"><div class="ps-dot">2</div><div class="ps-label">Budget</div></div>
+    <div class="progress-step" id="ps3"><div class="ps-dot">3</div><div class="ps-label">Vibe Tags</div></div>
+    <div class="progress-step" id="ps4"><div class="ps-dot">4</div><div class="ps-label">Lifestyle</div></div>
+    <div class="progress-step" id="ps5"><div class="ps-dot">5</div><div class="ps-label">Preference</div></div>
+    <div class="progress-step" id="ps6"><div class="ps-dot">6</div><div class="ps-label">Contact</div></div>
+  </div>
+</div>
+
+<form method="POST" enctype="multipart/form-data" id="flatmateForm">
+{% csrf_token %}
+
+<div class="two-col-layout">
+
+  <!-- ══ LEFT: FORM ══ -->
+  <div class="form-col">
+
+    <!-- STEP 1 -->
+    <div class="form-card fu d1" id="section1">
+      <div class="form-section-title"><div class="step-badge">1</div> Basic Info & Photo</div>
+      <div style="display:flex;flex-direction:column;gap:18px;">
+
+        <!-- Profile Photo -->
+        <div class="field-group">
+          <label class="field-label">Profile Photo</label>
+          <span class="field-hint">Clear face photo = 3x zyada connect requests</span>
+          {% if post.profile_photo %}
+          <!-- Existing photo preview -->
+          <div class="photo-preview-wrap visible" id="photoPreviewWrap">
+            <img id="photoPreviewImg" class="photo-preview-img" src="{{ post.profile_photo.url }}" alt="Current Photo"/>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:var(--navy);" id="photoFileName">Current Photo</div>
+              <div style="font-size:11px;color:var(--muted);" id="photoFileSize">Uploaded photo</div>
+              <span style="background:#F0FDF4;color:#059669;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;border:1px solid #BBF7D0;display:inline-block;margin-top:6px;">✅ Photo Ready</span>
+            </div>
+            <button type="button" class="photo-remove-btn" onclick="removePhoto()">✕ Change</button>
+          </div>
+          <div class="photo-upload-zone" id="uploadZone" style="display:none;">
+            <input type="file" name="profile_photo" id="profilePhotoInput" accept="image/*" onchange="handlePhotoUpload(this)"/>
+            <div style="font-size:36px;margin-bottom:10px;">📸</div>
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);margin-bottom:4px;">Naya Photo Upload Karo</div>
+            <div style="font-size:12px;color:var(--muted);">Click karo ya drag & drop · JPG, PNG · Max 5MB</div>
+          </div>
+          {% else %}
+          <div class="photo-upload-zone" id="uploadZone">
+            <input type="file" name="profile_photo" id="profilePhotoInput" accept="image/*" onchange="handlePhotoUpload(this)"/>
+            <div style="font-size:36px;margin-bottom:10px;">📸</div>
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);margin-bottom:4px;">Photo Upload Karo</div>
+            <div style="font-size:12px;color:var(--muted);">Click karo ya drag & drop · JPG, PNG · Max 5MB</div>
+          </div>
+          <div class="photo-preview-wrap" id="photoPreviewWrap">
+            <img id="photoPreviewImg" class="photo-preview-img" src="" alt="Preview"/>
+            <div style="flex:1;"><div class="photo-preview-name" id="photoFileName">—</div><div style="font-size:11px;color:var(--muted);" id="photoFileSize">—</div></div>
+            <button type="button" class="photo-remove-btn" onclick="removePhoto()">✕ Remove</button>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Name + Age -->
+        <div class="form-row-2">
+          <div class="field-group">
+            <label class="field-label">Full Name *</label>
+            <input type="text" name="name" class="field-input" placeholder="Tumhara naam"
+                   value="{{ post.name }}" required oninput="updatePreview()"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Age *</label>
+            <input type="number" name="age" class="field-input" placeholder="e.g. 22"
+                   value="{{ post.age }}" min="18" max="45" required/>
+          </div>
+        </div>
+
+        <!-- Gender + Occupation -->
+        <div class="form-row-2">
+          <div class="field-group">
+            <label class="field-label">Gender *</label>
+            <select name="gender" class="field-input" required onchange="updatePreview()">
+              <option value="">Select</option>
+              {% for val, label in post.GENDER_CHOICES %}
+              <option value="{{ val }}" {% if post.gender == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Occupation *</label>
+            <select name="occupation" class="field-input" required onchange="updatePreview()">
+              <option value="">Select</option>
+              {% for val, label in post.OCCUPATION_CHOICES %}
+              <option value="{{ val }}" {% if post.occupation == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <!-- City + Area -->
+        <div class="form-row-2">
+          <div class="field-group">
+            <label class="field-label">City *</label>
+            <select name="city" class="field-input" required onchange="updatePreview()">
+              <option value="">Select city</option>
+              {% for val, label in post.CITY_CHOICES %}
+              <option value="{{ val }}" {% if post.city == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Preferred Area</label>
+            <input type="text" name="preferred_area" class="field-input"
+                   value="{{ post.preferred_area }}" placeholder="e.g. Koramangala"
+                   oninput="updatePreview()"/>
+          </div>
+        </div>
+
+        <!-- Language -->
+        <div class="field-group">
+          <label class="field-label">Language Preference</label>
+          <div class="radio-group" id="langGroup" style="margin-top:6px;">
+            {% for val, label in post.LANGUAGE_CHOICES %}
+            <button type="button" class="radio-btn {% if post.language_pref == val %}active{% endif %}"
+                    onclick="setRadio('langGroup',this)">
+              <div class="radio-dot"></div>{{ label }}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Bio -->
+        <div class="field-group">
+          <label class="field-label">About You</label>
+          <textarea name="bio" class="field-input" style="min-height:90px;" id="bioInput"
+            oninput="updateCharCount(this,'bioCount',300); updateVibeScore();"
+            placeholder="Apne baare mein batao…">{{ post.bio }}</textarea>
+          <div style="display:flex;justify-content:space-between;margin-top:4px;">
+            <span class="field-hint">Bio likhne se Vibe Score badh jaata hai ↑</span>
+            <span class="field-hint" id="bioCount">{{ post.bio|length }} / 300</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- STEP 2: BUDGET -->
+    <div class="form-card fu d2" id="section2">
+      <div class="form-section-title"><div class="step-badge teal">2</div> Budget & Room Preference</div>
+      <div style="display:flex;flex-direction:column;gap:20px;">
+
+        <div class="field-group">
+          <label class="field-label">Maximum Monthly Budget</label>
+          <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:10px;">
+            <span style="font-size:16px;color:var(--muted);font-weight:600;">₹</span>
+            <span class="range-val" id="budgetVal">{{ post.max_budget|default:12000 }}</span>
+            <span class="range-unit">/ month</span>
+          </div>
+          <input type="range" class="range-input" id="budgetSlider"
+                 name="max_budget" min="2000" max="60000" value="{{ post.max_budget|default:12000 }}" step="500"
+                 oninput="updateBudget(this); updateVibeScore();"/>
+          <div class="range-labels"><span class="range-label">₹2,000</span><span class="range-label">₹60,000</span></div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="field-group">
+            <label class="field-label">Room Type Preference</label>
+           <select name="room_type_pref" class="field-input">
+  <option {% if post.room_type_pref == "Any" %}selected{% endif %}>Any</option>
+  <option {% if post.room_type_pref == "Private Room" %}selected{% endif %}>Private Room</option>
+  <option {% if post.room_type_pref == "Shared Room" %}selected{% endif %}>Shared Room</option>
+  <option {% if post.room_type_pref == "Studio / 1BHK" %}selected{% endif %}>Studio / 1BHK</option>
+  <option {% if post.room_type_pref == "PG / Hostel" %}selected{% endif %}>PG / Hostel</option>
+</select><div class="field-group">
+  <label class="field-label">Move-in Timeline</label>
+  <select name="move_in" class="field-input">
+    <option {% if post.move_in == "Immediately" %}selected{% endif %}>Immediately</option>
+    <option {% if post.move_in == "Within 2 weeks" %}selected{% endif %}>Within 2 weeks</option>
+    <option {% if post.move_in == "Within 1 month" %}selected{% endif %}>Within 1 month</option>
+    <option {% if post.move_in == "1–3 months" %}selected{% endif %}>1–3 months</option>
+    <option {% if post.move_in == "Flexible" %}selected{% endif %}>Flexible</option>
+  </select>
+</div>
+
+<div class="field-group">
+  <label class="field-label">Stay Duration</label>
+  <div class="radio-group" id="stayGroup">
+    <button type="button" class="radio-btn {% if post.stay_duration == '3–6 months' %}active{% endif %}"
+            onclick="setRadio('stayGroup',this)"><div class="radio-dot"></div>3–6 months</button>
+    <button type="button" class="radio-btn {% if post.stay_duration == '6–12 months' %}active{% endif %}"
+            onclick="setRadio('stayGroup',this)"><div class="radio-dot"></div>6–12 months</button>
+    <button type="button" class="radio-btn {% if post.stay_duration == '1+ year' %}active{% endif %}"
+            onclick="setRadio('stayGroup',this)"><div class="radio-dot"></div>1+ year</button>
+    <button type="button" class="radio-btn {% if post.stay_duration == 'Flexible' %}active{% endif %}"
+            onclick="setRadio('stayGroup',this)"><div class="radio-dot"></div>Flexible</button>
+  </div>
+</div>
+      </div>
+    </div>
+
+    <!-- STEP 3: TAGS -->
+    <div class="form-card fu d2" id="section3">
+      <div class="form-section-title">
+        <div class="step-badge teal">3</div> Your Vibe — Interest Tags
+        <span class="tags-counter" id="tagsCounter">0 selected</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">
+        Apne interests choose karo — <strong style="color:var(--navy);">Jitne zyada tags, utna better Vibe Score.</strong>
+      </p>
+
+      <!-- TAGS -->
+<div class="tag-category">
+  <div class="tag-cat-label">Hobbies & Passions</div>
+  <div class="tag-options">
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Gaming">🎮 Gaming</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Music">🎵 Music</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Reading">📚 Reading</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Cooking">🍳 Cooking</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Art & Design">🎨 Art & Design</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Travel">✈️ Travel</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Tech & Coding">💻 Tech & Coding</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Movies & OTT">🎬 Movies & OTT</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Photography">📸 Photography</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Writing">✍️ Writing</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Podcasts">🎙️ Podcasts</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Anime">🌸 Anime</span>
+  </div>
+</div>
+
+<div class="tag-category">
+  <div class="tag-cat-label">Sports & Fitness</div>
+  <div class="tag-options">
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Cricket">🏏 Cricket</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Football">⚽ Football</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Badminton">🏸 Badminton</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Gym">🏋️ Gym</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Running">🏃 Running</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Yoga">🧘 Yoga</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Swimming">🏊 Swimming</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Cycling">🚴 Cycling</span>
+  </div>
+</div>
+
+<div class="tag-category">
+  <div class="tag-cat-label">Food & Diet</div>
+  <div class="tag-options">
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Pure Veg">🥗 Pure Veg</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Non-Veg">🍗 Non-Veg</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Vegan">🌿 Vegan</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Foodie">😋 Foodie</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Home Cook">🥘 Home Cook</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Café Hopper">☕ Café Hopper</span>
+  </div>
+</div>
+
+<div class="tag-category">
+  <div class="tag-cat-label">Personality</div>
+  <div class="tag-options">
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Introvert">📚 Introvert</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Extrovert">🎉 Extrovert</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Ambivert">⚖️ Ambivert</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Early Bird">🌅 Early Bird</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Night Owl">🌙 Night Owl</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Hustler">🚀 Hustler</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Zen">🧘 Zen</span>
+    <span class="tag-pill" onclick="toggleTag(this)" data-tag="Creative">🎨 Creative</span>
+  </div>
+</div>
+
+<input type="hidden" name="interest_tags" id="interestTagsInput" value="{{ post.interest_tags }}"/>
+
+<!-- STEP 4: LIFESTYLE -->
+<div class="field-group">
+  <label class="field-label" style="margin-bottom:10px;">Sleep Schedule</label>
+  <div class="radio-group" id="sleepGroup">
+    <button type="button" class="radio-btn {% if '早' in post.sleep_schedule or 'Early' in post.sleep_schedule %}active{% endif %}" onclick="setRadio('sleepGroup',this);updateVibeScore()"><div class="radio-dot"></div>🌅 Early Bird</button>
+    <button type="button" class="radio-btn {% if 'Night' in post.sleep_schedule or 'Owl' in post.sleep_schedule %}active{% endif %}" onclick="setRadio('sleepGroup',this);updateVibeScore()"><div class="radio-dot"></div>🌙 Night Owl</button>
+    <button type="button" class="radio-btn {% if post.sleep_schedule == 'No Preference' %}active{% endif %}" onclick="setRadio('sleepGroup',this);updateVibeScore()"><div class="radio-dot"></div>No Preference</button>
+  </div>
+</div>
+
+<div class="field-group">
+  <label class="field-label" style="margin-bottom:10px;">Noise Tolerance</label>
+  <div class="radio-group" id="noiseGroup">
+    <button type="button" class="radio-btn {% if 'Quiet' in post.noise_tolerance %}active{% endif %}" onclick="setRadio('noiseGroup',this)"><div class="radio-dot"></div>🤫 Prefer Quiet</button>
+    <button type="button" class="radio-btn {% if 'Moderate' in post.noise_tolerance %}active{% endif %}" onclick="setRadio('noiseGroup',this)"><div class="radio-dot"></div>⚖️ Moderate OK</button>
+    <button type="button" class="radio-btn {% if 'Lively' in post.noise_tolerance %}active{% endif %}" onclick="setRadio('noiseGroup',this)"><div class="radio-dot"></div>🎉 Lively Fine</button>
+  </div>
+</div>
+
+<div class="field-group">
+  <label class="field-label" style="margin-bottom:10px;">Guest Policy</label>
+  <div class="radio-group" id="guestGroup">
+    <button type="button" class="radio-btn {% if post.guest_policy == 'Occasional OK' %}active{% endif %}" onclick="setRadio('guestGroup',this)"><div class="radio-dot"></div>Occasional OK</button>
+    <button type="button" class="radio-btn {% if post.guest_policy == 'No Overnight' %}active{% endif %}" onclick="setRadio('guestGroup',this)"><div class="radio-dot"></div>No Overnight</button>
+    <button type="button" class="radio-btn {% if post.guest_policy == 'Very Flexible' %}active{% endif %}" onclick="setRadio('guestGroup',this)"><div class="radio-dot"></div>Very Flexible</button>
+  </div>
+</div>
+
+<div class="field-group">
+  <label class="field-label" style="margin-bottom:10px;">Work Style</label>
+  <div class="radio-group" id="workGroup">
+    <button type="button" class="radio-btn {% if 'Office' in post.work_style %}active{% endif %}" onclick="setRadio('workGroup',this)"><div class="radio-dot"></div>🏢 Office</button>
+    <button type="button" class="radio-btn {% if 'WFH' in post.work_style %}active{% endif %}" onclick="setRadio('workGroup',this)"><div class="radio-dot"></div>🏠 WFH</button>
+    <button type="button" class="radio-btn {% if 'Hybrid' in post.work_style %}active{% endif %}" onclick="setRadio('workGroup',this)"><div class="radio-dot"></div>🔀 Hybrid</button>
+  </div>
+</div>
+          </div>
+        </div>
+
+     <div class="form-row-2">
+  <div class="field-group">
+    <label class="field-label">Smoking</label>
+    <select name="smoking" class="field-input">
+      <option {% if post.smoking == "Non-smoker" %}selected{% endif %}>Non-smoker</option>
+      <option {% if post.smoking == "Smoker (outside only)" %}selected{% endif %}>Smoker (outside only)</option>
+      <option {% if post.smoking == "OK with smokers" %}selected{% endif %}>OK with smokers</option>
+    </select>
+  </div>
+  <div class="field-group">
+    <label class="field-label">Alcohol</label>
+    <select name="alcohol" class="field-input">
+      <option {% if post.alcohol == "Don't drink" %}selected{% endif %}>Don't drink</option>
+      <option {% if post.alcohol == "Occasionally" %}selected{% endif %}>Occasionally</option>
+      <option {% if post.alcohol == "OK with drinkers" %}selected{% endif %}>OK with drinkers</option>
+    </select>
+  </div>
+</div>
+
+<div class="field-group">
+  <label class="field-label">Pet Preference</label>
+  <select name="pets" class="field-input">
+    <option {% if post.pets == "No pets" %}selected{% endif %}>No pets</option>
+    <option {% if post.pets == "Have a pet" %}selected{% endif %}>Have a pet</option>
+    <option {% if post.pets == "OK with pets" %}selected{% endif %}>OK with pets</option>
+    <option {% if post.pets == "Allergic to pets" %}selected{% endif %}>Allergic to pets</option>
+  </select>
+</div>
+
+<!-- STEP 5 -->
+<div class="form-row-2">
+  <div class="field-group">
+    <label class="field-label">Gender Preference</label>
+    <select name="pref_gender" class="field-input">
+      <option {% if post.pref_gender == "Any" %}selected{% endif %}>Any</option>
+      <option {% if post.pref_gender == "Male only" %}selected{% endif %}>Male only</option>
+      <option {% if post.pref_gender == "Female only" %}selected{% endif %}>Female only</option>
+    </select>
+  </div>
+  <div class="field-group">
+    <label class="field-label">Age Range</label>
+    <select name="pref_age_range" class="field-input">
+      <option {% if post.pref_age_range == "Any" %}selected{% endif %}>Any</option>
+      <option {% if post.pref_age_range == "18–23 (Students)" %}selected{% endif %}>18–23 (Students)</option>
+      <option {% if post.pref_age_range == "22–28 (Young Professionals)" %}selected{% endif %}>22–28 (Young Professionals)</option>
+      <option {% if post.pref_age_range == "25–35" %}selected{% endif %}>25–35</option>
+      <option {% if post.pref_age_range == "Flexible" %}selected{% endif %}>Flexible</option>
+    </select>
+  </div>
+</div>
+
+<div class="field-group">
+  <label class="field-label">Occupation Preference</label>
+  <select name="pref_occupation" class="field-input">
+    <option {% if post.pref_occupation == "Any" %}selected{% endif %}>Any</option>
+    <option {% if post.pref_occupation == "Students only" %}selected{% endif %}>Students only</option>
+    <option {% if post.pref_occupation == "Working professionals" %}selected{% endif %}>Working professionals</option>
+    <option {% if post.pref_occupation == "Students & professionals" %}selected{% endif %}>Students & professionals</option>
+  </select>
+</div>
+
+<!-- STEP 6: CONTACT -->
+<div class="field-group">
+  <label class="field-label" style="margin-bottom:10px;">Contact Preference</label>
+  <div class="radio-group" id="contactGroup">
+    <button type="button" class="radio-btn {% if 'WhatsApp' in post.contact_preference %}active{% endif %}"
+            onclick="setRadio('contactGroup',this)"><div class="radio-dot"></div>📱 WhatsApp</button>
+    <button type="button" class="radio-btn {% if 'Email' in post.contact_preference %}active{% endif %}"
+            onclick="setRadio('contactGroup',this)"><div class="radio-dot"></div>📧 Email</button>
+    <button type="button" class="radio-btn {% if 'In-app' in post.contact_preference %}active{% endif %}"
+            onclick="setRadio('contactGroup',this)"><div class="radio-dot"></div>💬 In-app only</button>
+  </div>
+</div>
+
+<div style="background:var(--off);border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
+  <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:10px;">🔒 Contact Visibility</div>
+  <div class="radio-group" id="visibilityGroup">
+    <button type="button" class="radio-btn {% if post.contact_visibility == 'Show after connect only' %}active{% endif %}"
+            onclick="setRadio('visibilityGroup',this)"><div class="radio-dot"></div>Show after connect only</button>
+    <button type="button" class="radio-btn {% if post.contact_visibility == 'Show to everyone' %}active{% endif %}"
+            onclick="setRadio('visibilityGroup',this)"><div class="radio-dot"></div>Show to everyone</button>
+  </div>
+</div>
+
+    <!-- SUBMIT -->
+    <div class="fu d4 form-card">
+      <div style="display:flex;align-items:flex-start;gap:10px;background:var(--teal-lt);border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+        <input type="checkbox" id="agreeCheck" checked style="margin-top:2px;accent-color:var(--teal);width:16px;height:16px;flex-shrink:0;"/>
+        <label for="agreeCheck" style="font-size:13px;color:var(--navy);line-height:1.6;cursor:pointer;">
+          Main confirm karta/karti hoon ki yeh information accurate hai aur StayMatch ki
+          <a href="#" style="color:var(--teal);font-weight:600;">Terms</a> se agree karta/karti hoon.
+        </label>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button type="submit" class="btn-teal" style="flex:1;font-size:16px;padding:16px 40px;" onclick="return submitForm()">
+          💾 Save Changes
+        </button>
+        <a href="{% url 'dashboard' %}?sec=safety" class="btn-outline" style="padding:16px 24px;font-size:14px;text-decoration:none;display:flex;align-items:center;">
+          ← Cancel
+        </a>
+      </div>
+    </div>
+
+  </div><!-- /form-col -->
+
+  <!-- ══ RIGHT: LIVE PREVIEW ══ -->
+  <div class="fu d2">
+    <div class="preview-sticky">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+        <div style="width:3px;height:12px;border-radius:2px;background:var(--teal);display:inline-block;"></div>
+        Live Preview
+      </div>
+
+      <!-- Vibe Score Widget -->
+      <div class="vibe-score-widget">
+        <div class="vs-title">✨ Your Vibe Score</div>
+        <div class="vs-ring-wrap">
+          <div class="vs-ring">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="6"/>
+              <circle cx="40" cy="40" r="32" fill="none" stroke="#0EA5C9" stroke-width="6"
+                      stroke-dasharray="201" stroke-dashoffset="201"
+                      stroke-linecap="round" id="vibeRingCircle"
+                      style="transition:stroke-dashoffset .6s ease;"/>
+            </svg>
+            <div class="vs-ring-num" id="vibeScoreNum">{{ post.vibe_score }}</div>
+          </div>
+          <div class="vs-info">
+            <div class="vs-score-label" id="vibeScoreLabel">Loading…</div>
+            <div class="vs-score-sub" id="vibeScoreSub">Calculating…</div>
+            <div class="vs-breakdown">
+              <div class="vs-bar-row"><div class="vs-bar-label">Tags</div><div class="vs-bar-track"><div class="vs-bar-fill" id="vsBarTags" style="width:0%"></div></div></div>
+              <div class="vs-bar-row"><div class="vs-bar-label">Bio</div><div class="vs-bar-track"><div class="vs-bar-fill" id="vsBarBio" style="width:0%"></div></div></div>
+              <div class="vs-bar-row"><div class="vs-bar-label">Lifestyle</div><div class="vs-bar-track"><div class="vs-bar-fill" id="vsBarLifestyle" style="width:0%"></div></div></div>
+              <div class="vs-bar-row"><div class="vs-bar-label">Photo</div><div class="vs-bar-track"><div class="vs-bar-fill" id="vsBarPhoto" style="width:0%"></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Card Preview -->
+      <div style="background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--card-sh);">
+        <div id="prevHeader" style="height:100px;background:linear-gradient(135deg,#0EA5C9,#0F1F3D);border-radius:20px 20px 0 0;position:relative;">
+          <div id="prevAvatarBox" style="width:68px;height:68px;border-radius:50%;background:var(--teal-lt);border:3px solid #fff;position:absolute;bottom:-34px;left:20px;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;">
+            {% if post.profile_photo %}
+            <img src="{{ post.profile_photo.url }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>
+            {% else %}😊{% endif %}
+          </div>
+          <div style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.15);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;">⚡ Live Preview</div>
+        </div>
+        <div style="padding:44px 20px 20px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+            <div>
+              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--navy);" id="prevName">{{ post.name }}</div>
+              <div style="font-size:13px;color:var(--muted);margin-top:2px;" id="prevSub">{{ post.occupation }} · {{ post.city }}</div>
+            </div>
+            <div id="prevGenderBadge" style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;">{{ post.gender|default:"—" }}</div>
+          </div>
+          <div id="prevVibeBadge" style="display:none;" class="prev-vibe-badge">✨ Vibe Score: <span id="prevVibeNum">0</span></div>
+          <div id="prevTags" style="display:flex;flex-wrap:wrap;gap:5px;margin:14px 0;">
+            <div style="font-size:12px;color:var(--muted);font-style:italic;">Tags load ho rahe hain…</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border);">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--navy);" id="prevBudget">₹{{ post.max_budget|default:12000 }} / mo</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;" id="prevArea">{{ post.preferred_area|default:"Area" }} · {{ post.city }}</div>
+            </div>
+            <button class="btn-primary" style="padding:8px 18px;font-size:13px;cursor:default;">Connect</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /two-col-layout -->
+
+<!-- Hidden fields -->
+<input type="hidden" name="sleep_schedule"     id="sleepVal"/>
+<input type="hidden" name="guest_policy"       id="guestVal"/>
+<input type="hidden" name="work_style"         id="workVal"/>
+<input type="hidden" name="contact_preference" id="contactVal"/>
+<input type="hidden" name="noise_tolerance"    id="noiseVal"/>
+<input type="hidden" name="language_pref"      id="langVal"/>
+<input type="hidden" name="stay_duration"      id="stayVal"/>
+<input type="hidden" name="contact_visibility" id="visibilityVal"/>
+<input type="hidden" name="vibe_score"         id="vibeScoreInput"/>
+
+</form>
+
+<script>
+/* ══ EXISTING TAGS from DB ══ */
+// Django template se existing tags parse karke pre-select karo
+const existingTagsRaw = "{{ post.interest_tags|escapejs }}";
+let selectedTags = [];
+
+try {
+  // JSON format try karo pehle
+  selectedTags = JSON.parse(existingTagsRaw);
+} catch(e) {
+  // fallback: comma separated
+  selectedTags = existingTagsRaw ? existingTagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+}
+
+// Page load pe tags pre-select karo
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.tag-pill').forEach(pill => {
+    if (selectedTags.includes(pill.dataset.tag)) {
+      pill.classList.add('selected');
+    }
+  });
+  document.getElementById('interestTagsInput').value = selectedTags.join(',');
+  updateTagCounter();
+  updatePreviewTags();
+  updateVibeScore();
+  updateBudget(document.getElementById('budgetSlider'));
+  updateClean(document.getElementById('cleanSlider'));
+});
+
+/* ══ PHOTO ══ */
+let hasPhoto = {{ post.profile_photo|yesno:"true,false" }};
+
+function handlePhotoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5*1024*1024) { alert('5MB se bada file nahi!'); return; }
+  if (!file.type.startsWith('image/')) { alert('Sirf image files!'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('photoPreviewImg').src = e.target.result;
+    document.getElementById('photoFileName').textContent = file.name;
+    document.getElementById('photoFileSize').textContent = (file.size/1024).toFixed(0) + ' KB';
+    document.getElementById('prevAvatarBox').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`;
+    document.getElementById('uploadZone').style.display = 'none';
+    document.getElementById('photoPreviewWrap').classList.add('visible');
+    hasPhoto = true;
+    updateVibeScore();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePhoto() {
+  document.getElementById('profilePhotoInput').value = '';
+  document.getElementById('uploadZone').style.display = '';
+  document.getElementById('photoPreviewWrap').classList.remove('visible');
+  document.getElementById('prevAvatarBox').innerHTML = '😊';
+  hasPhoto = false;
+  updateVibeScore();
+}
+
+/* ══ VIBE SCORE ══ */
+function calculateVibeScore() {
+  let tagPts = Math.min(selectedTags.length * 5, 40);
+  let bioPts = Math.min(Math.round((document.getElementById('bioInput').value.trim().length / 300) * 20), 20);
+  let lifePts = 0;
+  if (document.querySelector('#sleepGroup .radio-btn.active')) lifePts += 5;
+  if (document.querySelector('#guestGroup .radio-btn.active')) lifePts += 5;
+  if (document.querySelector('#workGroup .radio-btn.active'))  lifePts += 5;
+  if (document.querySelector('#noiseGroup .radio-btn.active')) lifePts += 5;
+  if (parseInt(document.getElementById('cleanSlider').value) > 1) lifePts += 5;
+  let photoPts = hasPhoto ? 15 : 0;
+  return { score: tagPts + bioPts + lifePts + photoPts, tagPts, bioPts, lifePts, photoPts };
+}
+
+function updateVibeScore() {
+  const { score, tagPts, bioPts, lifePts, photoPts } = calculateVibeScore();
+  const circle = document.getElementById('vibeRingCircle');
+  circle.style.strokeDashoffset = 201 - (score / 100) * 201;
+  document.getElementById('vibeScoreNum').textContent = score;
+  document.getElementById('prevVibeNum').textContent = score;
+  document.getElementById('vibeScoreInput').value = score;
+  let label, sub;
+  if (score < 30) { label='Getting Started 🌱'; sub='Thoda aur fill karo'; document.getElementById('prevVibeBadge').style.display='none'; }
+  else if (score < 55) { label='Good Vibe ✨'; sub='Decent profile!'; document.getElementById('prevVibeBadge').style.display='inline-flex'; }
+  else if (score < 75) { label='Strong Vibe 🔥'; sub='Bahut achha profile!'; document.getElementById('prevVibeBadge').style.display='inline-flex'; }
+  else { label='Top Vibes 🚀'; sub='Top 10% mein hai!'; document.getElementById('prevVibeBadge').style.display='inline-flex'; }
+  document.getElementById('vibeScoreLabel').textContent = label;
+  document.getElementById('vibeScoreSub').textContent = sub;
+  document.getElementById('vsBarTags').style.width     = (tagPts/40*100)+'%';
+  document.getElementById('vsBarBio').style.width      = (bioPts/20*100)+'%';
+  document.getElementById('vsBarLifestyle').style.width = (lifePts/25*100)+'%';
+  document.getElementById('vsBarPhoto').style.width    = (photoPts/15*100)+'%';
+  updateProgressBar();
+}
+
+/* ══ SLIDERS ══ */
+function updateBudget(el) {
+  const v = parseInt(el.value);
+  const pct = ((v-2000)/(60000-2000))*100;
+  el.style.setProperty('--pct', pct+'%');
+  document.getElementById('budgetVal').textContent = v.toLocaleString('en-IN');
+  document.getElementById('prevBudget').textContent = '₹'+v.toLocaleString('en-IN')+' / mo';
+}
+function updateClean(el) {
+  const pct = ((el.value-1)/9)*100;
+  el.style.setProperty('--pct', pct+'%');
+  document.getElementById('cleanVal').textContent = el.value;
+}
+
+/* ══ RADIO ══ */
+function setRadio(groupId, btn) {
+  document.querySelectorAll('#'+groupId+' .radio-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ══ TAGS ══ */
+const tagEmojis = {
+  'Gaming':'🎮','Music':'🎵','Reading':'📚','Cooking':'🍳','Art & Design':'🎨',
+  'Travel':'✈️','Tech & Coding':'💻','Movies & OTT':'🎬','Photography':'📸',
+  'Writing':'✍️','Podcasts':'🎙️','Anime':'🌸','Cricket':'🏏','Football':'⚽',
+  'Badminton':'🏸','Gym':'🏋️','Running':'🏃','Yoga':'🧘','Swimming':'🏊',
+  'Cycling':'🚴','Pure Veg':'🥗','Non-Veg':'🍗','Vegan':'🌿','Foodie':'😋',
+  'Home Cook':'🥘','Café Hopper':'☕','Introvert':'📚','Extrovert':'🎉',
+  'Ambivert':'⚖️','Early Bird':'🌅','Night Owl':'🌙','Hustler':'🚀',
+  'Zen':'🧘','Creative':'🎨'
+};
+const chipColors = [
+  'background:#EBF9FD;color:var(--teal)',
+  'background:#FEF3C7;color:#B45309',
+  'background:#F0FDF4;color:#059669',
+  'background:#F5F3FF;color:#7C3AED',
+  'background:#FFF1F2;color:#E11D48',
+  'background:#EFF6FF;color:#2563EB',
+];
+
+function toggleTag(el) {
+  const tag = el.dataset.tag;
+  if (el.classList.contains('selected')) {
+    el.classList.remove('selected');
+    selectedTags = selectedTags.filter(t => t !== tag);
+  } else {
+    el.classList.add('selected');
+    selectedTags.push(tag);
+  }
+  document.getElementById('interestTagsInput').value = selectedTags.join(',');
+  updateTagCounter();
+  updatePreviewTags();
+  updateVibeScore();
+  const tPts = Math.min(selectedTags.length*5, 40);
+  document.getElementById('tagScoreBar').style.width = (tPts/40*100)+'%';
+  const lbl = selectedTags.length === 0 ? '0 tags — score nahi banega'
+    : selectedTags.length < 3 ? `${selectedTags.length} tags — thoda aur`
+    : selectedTags.length < 5 ? `${selectedTags.length} tags — 5 se better match`
+    : `${selectedTags.length} tags — 🔥 solid vibe!`;
+  document.getElementById('tagScoreLabel').textContent = lbl;
+}
+function updateTagCounter() {
+  document.getElementById('tagsCounter').textContent = selectedTags.length+' selected';
+}
+function updatePreviewTags() {
+  const c = document.getElementById('prevTags');
+  if (!selectedTags.length) {
+    c.innerHTML='<div style="font-size:12px;color:var(--muted);font-style:italic;">Tags select karo…</div>';
+    return;
+  }
+  c.innerHTML = selectedTags.slice(0,4).map((t,i) =>
+    `<div style="display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:99px;font-size:11px;font-weight:600;white-space:nowrap;${chipColors[i%chipColors.length]}">${tagEmojis[t]||''} ${t}</div>`
+  ).join('');
+  if (selectedTags.length>4) c.innerHTML += `<div style="display:inline-flex;align-items:center;padding:4px 11px;border-radius:99px;font-size:11px;font-weight:700;background:var(--off);color:var(--muted);">+${selectedTags.length-4}</div>`;
+}
+
+/* ══ LIVE PREVIEW ══ */
+const gradients = {
+  'Student':'linear-gradient(135deg,#10B981,#0EA5C9)',
+  'Software / IT':'linear-gradient(135deg,#0EA5C9,#0F1F3D)',
+  'Corporate Professional':'linear-gradient(135deg,#0F1F3D,#1a3260)',
+  'Freelancer':'linear-gradient(135deg,#F59E0B,#EF4444)',
+  'Healthcare':'linear-gradient(135deg,#10B981,#059669)',
+  'Startup':'linear-gradient(135deg,#F59E0B,#0EA5C9)',
+  'Research / Academia':'linear-gradient(135deg,#6366F1,#0F1F3D)',
+  'Creative / Media':'linear-gradient(135deg,#F59E0B,#EF4444)',
+};
+const genderColors = {
+  'Male':'background:#EFF6FF;color:#2563EB',
+  'Female':'background:var(--teal-lt);color:var(--teal)',
+  'Non-binary':'background:#F5F3FF;color:#7C3AED',
+  'Prefer not to say':'background:var(--off);color:var(--muted)',
+};
+
+function updatePreview() {
+  const name   = document.querySelector('[name="name"]')?.value;
+  const occ    = document.querySelector('[name="occupation"]')?.value;
+  const city   = document.querySelector('[name="city"]')?.value;
+  const area   = document.querySelector('[name="preferred_area"]')?.value;
+  const gender = document.querySelector('[name="gender"]')?.value;
+  document.getElementById('prevName').textContent = name || 'Tumhara Naam';
+  document.getElementById('prevSub').textContent  = (occ||'Occupation')+' · '+(city||'City');
+  document.getElementById('prevArea').textContent = (area||'Area')+' · '+(city||'City');
+  if (occ && gradients[occ]) document.getElementById('prevHeader').style.background = gradients[occ];
+  if (gender && genderColors[gender]) {
+    const b = document.getElementById('prevGenderBadge');
+    b.style.cssText = genderColors[gender]+';font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;';
+    b.textContent = gender;
+  }
+  updateVibeScore();
+}
+document.addEventListener('input', updatePreview);
+document.addEventListener('change', updatePreview);
+
+/* ══ PROGRESS BAR ══ */
+function updateProgressBar() {
+  ['section1','section2','section3','section4','section5','section6'].forEach((id,i) => {
+    const el = document.getElementById(id);
+    const ps = document.getElementById('ps'+(i+1));
+    if (!el || !ps) return;
+    if (el.getBoundingClientRect().top < window.innerHeight * 0.6) {
+      ps.classList.add('done'); ps.classList.remove('active');
+      const next = document.getElementById('ps'+(i+2));
+      if (next) next.classList.add('active');
+    }
+  });
+}
+window.addEventListener('scroll', updateProgressBar, { passive: true });
+
+/* ══ CHAR COUNT ══ */
+function updateCharCount(el, countId, max) {
+  const len = el.value.length;
+  document.getElementById(countId).textContent = len+' / '+max;
+  document.getElementById(countId).style.color = len > max*.9 ? 'var(--amber)' : 'var(--muted)';
+}
+
+/* ══ SUBMIT ══ */
+function submitForm() {
+  if (!document.getElementById('agreeCheck').checked) { alert('Terms agree karo!'); return false; }
+  if (selectedTags.length < 3) { alert('Kam se kam 3 tags select karo!'); return false; }
+  [['sleepGroup','sleepVal'],['guestGroup','guestVal'],['workGroup','workVal'],
+   ['contactGroup','contactVal'],['noiseGroup','noiseVal'],['langGroup','langVal'],
+   ['stayGroup','stayVal'],['visibilityGroup','visibilityVal']
+  ].forEach(([group, hidden]) => {
+    const btn = document.querySelector('#'+group+' .radio-btn.active');
+    if (btn) document.getElementById(hidden).value = btn.textContent.trim();
+  });
+  document.getElementById('vibeScoreInput').value = calculateVibeScore().score;
+  return true;
+}
+</script>
+
+{% endblock %}

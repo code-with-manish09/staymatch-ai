@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from rooms.models import Listing,Saved_Rooms,Review
+from httpx import request
+from rooms.models import FlatmateProfile, Listing,Saved_Rooms,Review
 from inbox.views import get_conversations  
 from django.contrib.auth.models import User
 
@@ -51,6 +52,9 @@ def dashboard(request):
     recent_reviews = Review.objects.select_related('user', 'listing').order_by('-created_at')[:3]
     my_listings = Listing.objects.filter(owner=request.user).prefetch_related('images')
 
+    my_flatmate_profile = FlatmateProfile.objects.filter(user=request.user).first()
+    
+
 
     
     context = {
@@ -70,6 +74,9 @@ def dashboard(request):
         'my_listings': my_listings,
         'my_listings_available': my_listings.filter(is_published=True).count(),
         'my_total_inquiries': 0, 
+        'my_flatmate_posts': [my_flatmate_profile] if my_flatmate_profile else [],
+        'my_flatmate_active': my_flatmate_profile.is_active if my_flatmate_profile else 0,
+        'my_flatmate_responses': 0,
 
     }
 

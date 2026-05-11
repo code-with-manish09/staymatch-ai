@@ -527,3 +527,64 @@ def post_flatmate(request):
             messages.error(request, f'Kuch galat hua: {str(e)}')
 
     return render(request, 'rooms/post_flatmate.html')
+
+#===============edit flatmate====================
+@login_required
+def edit_flatmate(request, pk):
+    from .models import FlatmateProfile
+    post = get_object_or_404(FlatmateProfile, pk=pk, user=request.user)
+    
+    if request.method == 'POST':
+        try:
+            tags_str = request.POST.get('interest_tags', '')
+            tags_json = json.dumps([t.strip() for t in tags_str.split(',') if t.strip()])
+            
+            post.name = request.POST.get('name', '')
+            post.age = to_int(request.POST.get('age'), 22)
+            post.gender = request.POST.get('gender', '')
+            post.occupation = request.POST.get('occupation', '')
+            post.city = request.POST.get('city', '')
+            post.preferred_area = request.POST.get('preferred_area', '')
+            post.language_pref = request.POST.get('language_pref', '')
+            post.bio = request.POST.get('bio', '')
+            if request.FILES.get('profile_photo'):
+                post.profile_photo = request.FILES.get('profile_photo')
+            post.max_budget = to_int(request.POST.get('max_budget'), 12000)
+            post.room_type_pref = request.POST.get('room_type_pref', 'Any')
+            post.move_in = request.POST.get('move_in', 'Flexible')
+            post.stay_duration = request.POST.get('stay_duration', 'Flexible')
+            post.interest_tags = tags_json
+            post.sleep_schedule = request.POST.get('sleep_schedule', 'No Preference')
+            post.cleanliness_level = to_int(request.POST.get('cleanliness_level'), 7)
+            post.noise_tolerance = request.POST.get('noise_tolerance', 'Moderate OK')
+            post.guest_policy = request.POST.get('guest_policy', 'Occasional OK')
+            post.work_style = request.POST.get('work_style', 'Hybrid')
+            post.smoking = request.POST.get('smoking', 'Non-smoker')
+            post.alcohol = request.POST.get('alcohol', "Don't drink")
+            post.pets = request.POST.get('pets', 'No pets')
+            post.pref_gender = request.POST.get('pref_gender', 'Any')
+            post.pref_age_range = request.POST.get('pref_age_range', 'Any')
+            post.pref_occupation = request.POST.get('pref_occupation', 'Any')
+            post.flatmate_expectation = request.POST.get('flatmate_expectation', '')
+            post.contact_phone = request.POST.get('contact_phone', '')
+            post.contact_email = request.POST.get('contact_email', '')
+            post.contact_preference = request.POST.get('contact_preference', 'WhatsApp')
+            post.contact_visibility = request.POST.get('contact_visibility', 'Show after connect only')
+            post.vibe_score = to_int(request.POST.get('vibe_score'), 0)
+            post.save()
+            messages.success(request, 'Profile update ho gayi! 🎉')
+            return redirect('dashboard')
+        except Exception as e:
+            messages.error(request, f'Kuch galat hua: {str(e)}')
+    
+    return render(request, 'rooms/edit_flatmate.html', {'post': post})
+
+#===============delete flatmate====================
+# views.py
+@login_required
+def delete_flatmate(request, pk):
+    from .models import FlatmateProfile
+    post = get_object_or_404(FlatmateProfile, pk=pk, user=request.user)
+    post.delete()
+    messages.success(request, 'Flatmate post delete ho gayi! 🗑️')
+    return redirect('dashboard')
