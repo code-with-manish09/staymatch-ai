@@ -2,7 +2,7 @@ from datetime import date
 import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Listing, Amenity, ListingImage, Review
+from .models import FlatmateProfile, Listing, Amenity, ListingImage, Review
 from django.http import JsonResponse  
 from rooms.services.services import get_room_faqs, get_vibe_score
 from django.shortcuts import render, get_object_or_404, redirect
@@ -578,6 +578,15 @@ def edit_flatmate(request, pk):
             messages.error(request, f'Kuch galat hua: {str(e)}')
     
     return render(request, 'rooms/edit_flatmate.html', {'post': post})
+
+#===============flatmate details====================
+from django.shortcuts import render, get_object_or_404
+from .models import FlatmateProfile
+
+
+def flatmate_detail(request, pk):
+    profile = get_object_or_404(FlatmateProfile, pk=pk)
+    return render(request, 'rooms/flatmate_details.html', {'post': profile})
 
 #===============delete flatmate====================
 # views.py

@@ -1,0 +1,1109 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+/* ══════════════════════════════════════════
+   FLATMATE DETAIL PAGE
+   Same design system as post_flatmate form
+   Read-only display of all fields
+════════════════════════════════════════════ */
+
+/* ── Reused from form ── */
+.form-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: var(--card-sh);
+  margin-bottom: 24px;
+}
+.form-section-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--navy);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.step-badge {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.step-badge.teal  { background: var(--teal); }
+.step-badge.amber { background: var(--amber); }
+.step-badge.coral { background: var(--coral); }
+
+.tag-pill-static {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 99px; font-size: 12px; font-weight: 600;
+  border: 1.5px solid rgba(14,165,201,.3);
+  color: var(--teal); background: var(--teal-lt);
+}
+.radio-display {
+  display: inline-flex; align-items: center; gap: 7px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: var(--teal-lt);
+  border-color: var(--teal);
+  font-size: 13px; font-weight: 600;
+  color: var(--teal);
+}
+.radio-dot-active {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--teal); flex-shrink: 0;
+}
+
+.field-display-label {
+  font-size: 11px; font-weight: 700;
+  color: var(--muted); letter-spacing: .07em;
+  text-transform: uppercase; margin-bottom: 5px;
+}
+.field-display-value {
+  font-size: 14px; font-weight: 600; color: var(--navy);
+  padding: 11px 14px;
+  background: var(--off);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  min-height: 44px;
+  display: flex; align-items: center;
+  line-height: 1.5;
+}
+.field-display-value.multiline {
+  align-items: flex-start;
+  padding: 12px 14px;
+  line-height: 1.65;
+  min-height: 80px;
+}
+.field-display-value.empty {
+  color: var(--muted);
+  font-weight: 400;
+  font-style: italic;
+}
+
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+
+/* ── Range display ── */
+.range-display-wrap {
+  background: var(--off);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+.range-val {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800; font-size: 26px; color: var(--navy);
+}
+.range-unit { font-size: 13px; color: var(--muted); margin-left: 4px; }
+.range-track {
+  height: 6px; border-radius: 99px;
+  background: #EEF0F6; margin-top: 10px; overflow: hidden;
+}
+.range-fill {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, var(--teal), #0891b2);
+}
+
+/* ── Two col layout ── */
+.two-col-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  align-items: start;
+}
+.form-col { display: flex; flex-direction: column; gap: 0; }
+
+/* ── Hero ── */
+.post-hero {
+  background: linear-gradient(135deg, var(--navy), #1a3260);
+  border-radius: 20px;
+  padding: 0;
+  margin-bottom: 28px;
+  position: relative; overflow: hidden;
+}
+.post-hero::before {
+  content: ''; position: absolute; top: -60px; right: -40px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(14,165,201,.2), transparent);
+  pointer-events: none;
+}
+.post-hero::after {
+  content: ''; position: absolute; bottom: -50px; left: 100px;
+  width: 160px; height: 160px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(245,158,11,.1), transparent);
+  pointer-events: none;
+}
+
+/* ── Hero header with cover + avatar ── */
+.hero-cover {
+  height: 160px;
+  background: linear-gradient(135deg, #0EA5C9, #0F1F3D);
+  position: relative;
+}
+.hero-cover-actions {
+  position: absolute; top: 14px; right: 16px;
+  display: flex; gap: 8px;
+}
+.hero-action-btn {
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.2);
+  color: #fff; border-radius: 9px;
+  padding: 7px 14px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700; font-size: 12px;
+  cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 5px;
+  transition: background .2s;
+}
+.hero-action-btn:hover { background: rgba(255,255,255,.25); }
+.hero-action-btn.primary {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+.hero-action-btn.primary:hover { background: #0993b3; }
+
+.hero-body {
+  padding: 0 28px 28px;
+  position: relative; z-index: 1;
+}
+.hero-avatar {
+  width: 88px; height: 88px; border-radius: 50%;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  object-fit: cover;
+  margin-top: -44px; margin-bottom: 14px;
+  display: block; background: var(--teal-lt);
+  font-size: 36px; text-align: center;
+  line-height: 80px;
+}
+.hero-avatar-emoji {
+  width: 88px; height: 88px; border-radius: 50%;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  margin-top: -44px; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  background: var(--teal-lt);
+}
+.hero-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800; font-size: 26px; color: #fff;
+  margin-bottom: 4px;
+}
+.hero-sub { font-size: 14px; color: rgba(255,255,255,.55); margin-bottom: 14px; }
+.hero-chips {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+}
+.hero-chip {
+  background: rgba(255,255,255,.1); color: rgba(255,255,255,.85);
+  font-size: 12px; font-weight: 600;
+  padding: 5px 13px; border-radius: 99px;
+  border: 1px solid rgba(255,255,255,.15);
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.hero-chip.teal { background: rgba(14,165,201,.25); border-color: rgba(14,165,201,.4); color: #6EE7F7; }
+.hero-stats-row {
+  display: flex; gap: 20px; flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+.hero-stat { text-align: center; }
+.hero-stat-val {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800; font-size: 20px; color: #fff;
+}
+.hero-stat-lbl { font-size: 10px; color: rgba(255,255,255,.35); margin-top: 1px; }
+
+/* ── Vibe score widget ── */
+.vibe-score-widget {
+  background: linear-gradient(135deg, var(--navy), #1a3260);
+  border-radius: 20px;
+  padding: 22px;
+  margin-bottom: 16px;
+  position: relative; overflow: hidden;
+}
+.vibe-score-widget::before {
+  content: ''; position: absolute; top: -40px; right: -20px;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(14,165,201,.25), transparent);
+  pointer-events: none;
+}
+.vs-title {
+  font-size: 10px; font-weight: 700; color: rgba(255,255,255,.45);
+  letter-spacing: .08em; text-transform: uppercase; margin-bottom: 14px;
+}
+.vs-ring-wrap { display: flex; align-items: center; gap: 16px; }
+.vs-ring { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+.vs-ring svg { width: 80px; height: 80px; transform: rotate(-90deg); }
+.vs-ring-num {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800; font-size: 22px; color: #fff;
+}
+.vs-info { flex: 1; }
+.vs-score-label {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800; font-size: 13px; color: #fff; margin-bottom: 4px;
+}
+.vs-score-sub { font-size: 11px; color: rgba(255,255,255,.45); margin-bottom: 10px; line-height: 1.5; }
+.vs-breakdown { display: flex; flex-direction: column; gap: 5px; }
+.vs-bar-row { display: flex; align-items: center; gap: 8px; }
+.vs-bar-label { font-size: 10px; color: rgba(255,255,255,.4); width: 64px; flex-shrink: 0; }
+.vs-bar-track { flex: 1; height: 4px; border-radius: 99px; background: rgba(255,255,255,.1); overflow: hidden; }
+.vs-bar-fill { height: 100%; border-radius: 99px; background: var(--teal); }
+
+/* ── sticky sidebar ── */
+.preview-sticky { position: sticky; top: 86px; }
+
+/* ── Info pill row ── */
+.info-pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.info-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 13px; border-radius: 99px;
+  font-size: 12px; font-weight: 600;
+  border: 1.5px solid var(--border);
+  color: var(--navy); background: var(--off);
+}
+.info-pill.teal  { background: var(--teal-lt); color: var(--teal); border-color: rgba(14,165,201,.25); }
+.info-pill.amber { background: var(--amber-lt); color: #B45309; border-color: #FDE68A; }
+.info-pill.green { background: #F0FDF4; color: #059669; border-color: #BBF7D0; }
+.info-pill.navy  { background: rgba(15,31,61,.06); color: var(--navy); border-color: rgba(15,31,61,.12); }
+.info-pill.coral { background: #FFF1F2; color: var(--coral); border-color: #FECDD3; }
+
+/* ── Tag category display ── */
+.tag-category { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.tag-category:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.tag-cat-label {
+  font-size: 10px; font-weight: 700; color: var(--muted);
+  letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.tag-cat-label::before {
+  content: ''; display: inline-block;
+  width: 3px; height: 12px; border-radius: 2px; background: var(--teal);
+}
+.tag-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag-pill-lit {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 99px; font-size: 12px; font-weight: 600;
+  border: 1.5px solid var(--teal);
+  background: var(--teal); color: #fff;
+}
+
+/* ── Contact box ── */
+.contact-box {
+  background: linear-gradient(135deg, var(--teal-lt), var(--off));
+  border: 1px solid rgba(14,165,201,.2);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.contact-row {
+  display: flex; align-items: center; gap: 10px;
+}
+.contact-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.contact-label { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.contact-value { font-size: 13px; font-weight: 600; color: var(--navy); }
+
+/* ── CTA Card (sidebar) ── */
+.cta-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--card-sh);
+  margin-bottom: 16px;
+}
+.cta-connect-btn {
+  width: 100%;
+  background: var(--navy);
+  color: #fff;
+  border: none; border-radius: 11px;
+  padding: 14px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700; font-size: 15px;
+  cursor: pointer; transition: all .2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-bottom: 10px;
+}
+.cta-connect-btn:hover { background: var(--teal); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(14,165,201,.3); }
+.cta-msg-btn {
+  width: 100%;
+  background: transparent;
+  color: var(--navy);
+  border: 1.5px solid var(--border);
+  border-radius: 11px;
+  padding: 13px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700; font-size: 14px;
+  cursor: pointer; transition: all .2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  text-decoration: none;
+}
+.cta-msg-btn:hover { border-color: var(--navy); background: var(--off); }
+
+/* ── Report / share strip ── */
+.action-strip {
+  display: flex; gap: 8px; margin-top: 10px;
+}
+.action-strip-btn {
+  flex: 1;
+  background: var(--off);
+  border: 1.5px solid var(--border);
+  color: var(--muted); border-radius: 9px;
+  padding: 8px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; text-align: center; transition: all .2s;
+}
+.action-strip-btn:hover { border-color: var(--navy); color: var(--navy); }
+
+/* ── Verified / badges ── */
+.verified-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #EFF6FF; color: #2563EB;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 9px; border-radius: 99px;
+  border: 1px solid #BFDBFE;
+}
+.vibe-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: linear-gradient(135deg, var(--teal), #0891b2);
+  color: #fff; font-size: 11px; font-weight: 700;
+  padding: 4px 12px; border-radius: 99px;
+}
+
+/* ── Match pill (sidebar) ── */
+.match-ring-wrap {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--teal-lt);
+  border: 1px solid rgba(14,165,201,.2);
+  border-radius: 14px; padding: 14px;
+  margin-bottom: 12px;
+}
+.match-pct {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800; font-size: 28px; color: var(--teal);
+}
+.match-lbl { font-size: 12px; font-weight: 700; color: var(--navy); }
+.match-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+/* ── Lifestyle grid ── */
+.lifestyle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+.lifestyle-item {
+  background: var(--off);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.lifestyle-item-label {
+  font-size: 10px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px;
+}
+.lifestyle-item-value {
+  font-size: 13px; font-weight: 700; color: var(--navy);
+  display: flex; align-items: center; gap: 5px;
+}
+
+/* ── Cleanliness / range bar ── */
+.stat-bar-wrap { margin-top: 6px; }
+.stat-bar-track { height: 6px; background: #EEF0F6; border-radius: 99px; overflow: hidden; }
+.stat-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--teal), #6EE7F7); }
+
+/* ── Animations ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
+.fu { animation: fadeUp .55s ease forwards; opacity: 0; }
+.d1{animation-delay:.05s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}
+.d4{animation-delay:.28s}.d5{animation-delay:.36s}
+
+/* ── Responsive ── */
+@media(max-width:1050px) {
+  .two-col-layout { grid-template-columns: 1fr; }
+  .preview-sticky { position: relative; top: 0; }
+}
+@media(max-width:900px) {
+  .form-row-2, .form-row-3 { grid-template-columns: 1fr; }
+  .form-card { padding: 20px; }
+}
+@media(max-width:600px) {
+  .hero-body { padding: 0 16px 20px; }
+  .hero-name { font-size: 20px; }
+  .lifestyle-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ══ HERO PROFILE CARD ══ -->
+<div class="post-hero fu d1" style="margin-bottom:28px;">
+
+  <!-- Cover gradient — changes per occupation -->
+  <div class="hero-cover" id="heroCover"
+       style="background:{% if post.occupation == 'Student' %}linear-gradient(135deg,#10B981,#0EA5C9){% elif post.occupation == 'Software / IT' %}linear-gradient(135deg,#0EA5C9,#0F1F3D){% elif post.occupation == 'Freelancer' %}linear-gradient(135deg,#F59E0B,#EF4444){% elif post.occupation == 'Healthcare' %}linear-gradient(135deg,#10B981,#059669){% elif post.occupation == 'Startup' %}linear-gradient(135deg,#F59E0B,#0EA5C9){% elif post.occupation == 'Research / Academia' %}linear-gradient(135deg,#6366F1,#0F1F3D){% elif post.occupation == 'Creative / Media' %}linear-gradient(135deg,#F59E0B,#EF4444){% else %}linear-gradient(135deg,#0EA5C9,#0F1F3D){% endif %};">
+
+    <!-- Back + edit buttons -->
+    <div class="hero-cover-actions">
+      <a href="{% url 'matches' %}" class="hero-action-btn">← Back</a>
+      {% if request.user == post.user %}
+        <a href="{% url 'edit_flatmate' post.pk %}" class="hero-action-btn primary">✏️ Edit Profile</a>
+      {% endif %}
+    </div>
+
+    <!-- Vibe score badge -->
+    <div style="position:absolute;bottom:14px;right:16px;">
+      {% if post.vibe_score %}
+        <div class="vibe-badge">✨ Vibe Score: {{ post.vibe_score }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Body under cover -->
+  <div class="hero-body">
+    <!-- Avatar -->
+    {% if post.profile_photo %}
+      <img src="{{ post.profile_photo.url }}" class="hero-avatar" alt="{{ post.name }}"/>
+    {% else %}
+      <div class="hero-avatar-emoji">
+        {% if post.occupation == 'Student' %}🎓
+        {% elif post.occupation == 'Software / IT' %}💻
+        {% elif post.occupation == 'Corporate Professional' %}🏢
+        {% elif post.occupation == 'Freelancer' %}🎨
+        {% elif post.occupation == 'Healthcare' %}🏥
+        {% elif post.occupation == 'Startup' %}🚀
+        {% elif post.occupation == 'Research / Academia' %}📚
+        {% elif post.occupation == 'Creative / Media' %}🎭
+        {% else %}😊{% endif %}
+      </div>
+    {% endif %}
+
+    <!-- Name + badges -->
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+      <div class="hero-name">{{ post.name }}</div>
+      {% if post.gender %}
+        <span style="background:{% if post.gender == 'Male' %}#EFF6FF;color:#2563EB{% elif post.gender == 'Female' %}rgba(14,165,201,.15);color:var(--teal){% else %}#F5F3FF;color:#7C3AED{% endif %};font-size:12px;font-weight:700;padding:4px 11px;border-radius:6px;">
+          {% if post.gender == 'Male' %}👨{% elif post.gender == 'Female' %}👩{% else %}🧑{% endif %} {{ post.gender }}
+        </span>
+      {% endif %}
+      {% if post.age %}
+        <span style="background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);font-size:12px;font-weight:600;padding:4px 11px;border-radius:6px;">{{ post.age }} yrs</span>
+      {% endif %}
+    </div>
+
+    <!-- Sub line -->
+    <div class="hero-sub">
+      {{ post.occupation|default:"—" }} · {{ post.city|default:"—" }}{% if post.preferred_area %}, {{ post.preferred_area }}{% endif %}
+    </div>
+
+    <!-- Chips -->
+    <div class="hero-chips">
+      {% if post.max_budget %}
+        <span class="hero-chip teal">💰 ₹{{ post.max_budget|floatformat:0 }} / mo</span>
+      {% endif %}
+      {% if post.room_type_pref %}
+        <span class="hero-chip">🏠 {{ post.room_type_pref }}</span>
+      {% endif %}
+      {% if post.move_in %}
+        <span class="hero-chip">📅 {{ post.move_in }}</span>
+      {% endif %}
+      {% if post.language_pref %}
+        <span class="hero-chip">🗣️ {{ post.language_pref }}</span>
+      {% endif %}
+      {% if post.work_style %}
+        <span class="hero-chip">💼 {{ post.work_style }}</span>
+      {% endif %}
+    </div>
+
+    <!-- Stats row -->
+    <div class="hero-stats-row">
+      <div class="hero-stat">
+        <div class="hero-stat-val">{{ post.vibe_score|default:"—" }}</div>
+        <div class="hero-stat-lbl">Vibe Score</div>
+      </div>
+      {% with tags=post.interest_tags_list %}
+      <div class="hero-stat">
+        <div class="hero-stat-val">{{ tags|length }}</div>
+        <div class="hero-stat-lbl">Interest Tags</div>
+      </div>
+      {% endwith %}
+      <div class="hero-stat">
+        <div class="hero-stat-val">{{ post.cleanliness_level|default:"—" }}/10</div>
+        <div class="hero-stat-lbl">Cleanliness</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val">{{ post.stay_duration|default:"Flex" }}</div>
+        <div class="hero-stat-lbl">Stay Duration</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TWO-COL LAYOUT ══ -->
+<div class="two-col-layout">
+
+  <!-- ══ LEFT: DETAIL SECTIONS ══ -->
+  <div class="form-col">
+
+    <!-- ── 1. BASIC INFO ── -->
+    <div class="form-card fu d1">
+      <div class="form-section-title">
+        <div class="step-badge">1</div> Basic Info
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <div class="form-row-2">
+          <div>
+            <div class="field-display-label">Full Name</div>
+            <div class="field-display-value">{{ post.name|default:"—" }}</div>
+          </div>
+          <div>
+            <div class="field-display-label">Age</div>
+            <div class="field-display-value">{{ post.age|default:"—" }}</div>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div>
+            <div class="field-display-label">Gender</div>
+            <div class="field-display-value">
+              {% if post.gender == 'Male' %}👨 {% elif post.gender == 'Female' %}👩 {% else %}🧑 {% endif %}
+              {{ post.gender|default:"—" }}
+            </div>
+          </div>
+          <div>
+            <div class="field-display-label">Occupation</div>
+            <div class="field-display-value">{{ post.occupation|default:"—" }}</div>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div>
+            <div class="field-display-label">City</div>
+            <div class="field-display-value">📍 {{ post.city|default:"—" }}</div>
+          </div>
+          <div>
+            <div class="field-display-label">Preferred Area</div>
+            <div class="field-display-value {% if not post.preferred_area %}empty{% endif %}">
+              {{ post.preferred_area|default:"Not specified" }}
+            </div>
+          </div>
+        </div>
+
+        {% if post.language_pref %}
+        <div>
+          <div class="field-display-label">Language Preference</div>
+          <div style="margin-top:6px;">
+            <span class="radio-display"><span class="radio-dot-active"></span>🗣️ {{ post.language_pref }}</span>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if post.bio %}
+        <div>
+          <div class="field-display-label">About</div>
+          <div class="field-display-value multiline">{{ post.bio }}</div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <!-- ── 2. BUDGET & ROOM ── -->
+    <div class="form-card fu d2">
+      <div class="form-section-title">
+        <div class="step-badge teal">2</div> Budget & Room Preference
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px;">
+
+        <!-- Budget range display -->
+        <div class="range-display-wrap">
+          <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:4px;">
+            <span style="font-size:14px;color:var(--muted);font-weight:600;">₹</span>
+            <span class="range-val">{{ post.max_budget|floatformat:0 }}</span>
+            <span class="range-unit">/ month max</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Maximum monthly budget</div>
+          <div class="range-track">
+            <div class="range-fill" style="width:{% widthratio post.max_budget 60000 100 %}%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:5px;font-size:10px;color:var(--muted);">
+            <span>₹2,000</span><span>₹60,000</span>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div>
+            <div class="field-display-label">Room Type</div>
+            <div class="field-display-value">🏠 {{ post.room_type_pref|default:"Any" }}</div>
+          </div>
+          <div>
+            <div class="field-display-label">Move-in</div>
+            <div class="field-display-value">📅 {{ post.move_in|default:"Flexible" }}</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="field-display-label">Stay Duration</div>
+          <div style="margin-top:6px;">
+            <span class="radio-display"><span class="radio-dot-active"></span>{{ post.stay_duration|default:"Flexible" }}</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 3. INTEREST TAGS ── -->
+    <div class="form-card fu d2">
+      <div class="form-section-title">
+        <div class="step-badge teal">3</div> Interest Tags
+        {% with tags=post.interest_tags_list %}
+        <span style="margin-left:auto;background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;">
+          {{ tags|length }} tags
+        </span>
+        {% endwith %}
+      </div>
+
+      {% with tags=post.interest_tags_list %}
+      {% if tags %}
+        <!-- Group by category — shown flat since we don't have categories in DB -->
+        <div class="tag-options" style="gap:8px;">
+          {% for tag in tags %}
+            <span class="tag-pill-lit">{{ tag }}</span>
+          {% endfor %}
+        </div>
+
+        <!-- Score bar -->
+        <div style="margin-top:16px;padding:14px 16px;background:var(--off);border-radius:12px;border:1px solid var(--border);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-size:12px;font-weight:600;color:var(--navy);">Tags se Vibe Score contribution</span>
+            <span style="font-size:12px;font-weight:700;color:var(--teal);">{{ tags|length }} tags 🔥</span>
+          </div>
+          <div style="height:6px;background:#EEF0F6;border-radius:99px;overflow:hidden;">
+            <div style="height:100%;width:{% widthratio tags|length 8 100 %}%;background:linear-gradient(90deg,var(--teal),#0891b2);border-radius:99px;"></div>
+          </div>
+        </div>
+      {% else %}
+        <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">
+          Koi interest tags nahi diye hain
+        </div>
+      {% endif %}
+      {% endwith %}
+    </div>
+
+    <!-- ── 4. LIFESTYLE ── -->
+    <div class="form-card fu d3">
+      <div class="form-section-title">
+        <div class="step-badge amber">4</div> Lifestyle Preferences
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px;">
+
+        <!-- Lifestyle grid -->
+        <div class="lifestyle-grid">
+          {% if post.sleep_schedule %}
+          <div class="lifestyle-item">
+            <div class="lifestyle-item-label">Sleep Schedule</div>
+            <div class="lifestyle-item-value">
+              {% if 'Early' in post.sleep_schedule %}🌅{% elif 'Night' in post.sleep_schedule %}🌙{% else %}🔄{% endif %}
+              {{ post.sleep_schedule }}
+            </div>
+          </div>
+          {% endif %}
+
+          {% if post.noise_tolerance %}
+          <div class="lifestyle-item">
+            <div class="lifestyle-item-label">Noise Tolerance</div>
+            <div class="lifestyle-item-value">
+              {% if 'Quiet' in post.noise_tolerance %}🤫{% elif 'Lively' in post.noise_tolerance %}🎉{% else %}⚖️{% endif %}
+              {{ post.noise_tolerance }}
+            </div>
+          </div>
+          {% endif %}
+
+          {% if post.guest_policy %}
+          <div class="lifestyle-item">
+            <div class="lifestyle-item-label">Guest Policy</div>
+            <div class="lifestyle-item-value">👥 {{ post.guest_policy }}</div>
+          </div>
+          {% endif %}
+
+          {% if post.work_style %}
+          <div class="lifestyle-item">
+            <div class="lifestyle-item-label">Work Style</div>
+            <div class="lifestyle-item-value">
+              {% if 'WFH' in post.work_style %}🏠{% elif 'Office' in post.work_style %}🏢{% else %}🔀{% endif %}
+              {{ post.work_style }}
+            </div>
+          </div>
+          {% endif %}
+
+          {% if post.smoking %}
+          <div class="lifestyle-item">
+            <div class="lifestyle-item-label">Smoking</div>
+            <div class="lifestyle-item-value">🚬 {{ post.smoking }}</div>
+          </div>
+          {% endif %}
+
+          {% if post.alcohol %}
+          <div class="lifestyle-item">
+            <div class="lifestyle-item-label">Alcohol</div>
+            <div class="lifestyle-item-value">🍺 {{ post.alcohol }}</div>
+          </div>
+          {% endif %}
+
+          {% if post.pets %}
+          <div class="lifestyle-item">
+            <div class="lifestyle-item-label">Pets</div>
+            <div class="lifestyle-item-value">🐾 {{ post.pets }}</div>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Cleanliness bar -->
+        {% if post.cleanliness_level %}
+        <div>
+          <div class="field-display-label">Cleanliness Level</div>
+          <div style="background:var(--off);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-top:6px;">
+            <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:8px;">
+              <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--navy);">{{ post.cleanliness_level }}</span>
+              <span style="font-size:13px;color:var(--muted);"> / 10</span>
+            </div>
+            <div class="stat-bar-track">
+              <div class="stat-bar-fill" style="width:{% widthratio post.cleanliness_level 10 100 %}%"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:5px;font-size:10px;color:var(--muted);">
+              <span>Relaxed</span><span>Very Tidy</span>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <!-- ── 5. FLATMATE PREFERENCE ── -->
+    <div class="form-card fu d3">
+      <div class="form-section-title">
+        <div class="step-badge coral">5</div> Flatmate ki Preference
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <div class="form-row-2">
+          <div>
+            <div class="field-display-label">Gender Preference</div>
+            <div class="field-display-value">{{ post.pref_gender|default:"Any" }}</div>
+          </div>
+          <div>
+            <div class="field-display-label">Age Range Preference</div>
+            <div class="field-display-value">{{ post.pref_age_range|default:"Any" }}</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="field-display-label">Occupation Preference</div>
+          <div class="field-display-value">{{ post.pref_occupation|default:"Any" }}</div>
+        </div>
+
+        {% if post.flatmate_expectation %}
+        <div>
+          <div class="field-display-label">Flatmate se Expectations</div>
+          <div class="field-display-value multiline">{{ post.flatmate_expectation }}</div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <!-- ── 6. CONTACT ── -->
+    <div class="form-card fu d4">
+      <div class="form-section-title">
+        <div class="step-badge">6</div> Contact Details
+      </div>
+
+      <div class="contact-box">
+        {% if post.contact_preference %}
+        <div class="contact-row">
+          <div class="contact-icon" style="background:var(--teal-lt);">📱</div>
+          <div>
+            <div class="contact-label">Contact Preference</div>
+            <div class="contact-value">{{ post.contact_preference }}</div>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if post.contact_visibility == 'Show to everyone' %}
+          <!-- Show actual contact details -->
+          {% if post.contact_phone %}
+          <div class="contact-row">
+            <div class="contact-icon" style="background:#F0FDF4;">📞</div>
+            <div>
+              <div class="contact-label">Phone</div>
+              <div class="contact-value">
+                <a href="tel:{{ post.contact_phone }}" style="color:var(--navy);text-decoration:none;">{{ post.contact_phone }}</a>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% if post.contact_email %}
+          <div class="contact-row">
+            <div class="contact-icon" style="background:var(--amber-lt);">📧</div>
+            <div>
+              <div class="contact-label">Email</div>
+              <div class="contact-value">
+                <a href="mailto:{{ post.contact_email }}" style="color:var(--navy);text-decoration:none;">{{ post.contact_email }}</a>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        {% else %}
+          <!-- Hidden — show after connect -->
+          <div style="text-align:center;padding:16px 0;">
+            <div style="font-size:24px;margin-bottom:8px;">🔒</div>
+            <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">Contact Connect ke baad milega</div>
+            <div style="font-size:12px;color:var(--muted);">{{ post.contact_visibility|default:"Show after connect only" }}</div>
+          </div>
+        {% endif %}
+      </div>
+
+      {% if post.contact_visibility == 'Show after connect only' %}
+      <div style="margin-top:14px;background:var(--teal-lt);border:1px solid rgba(14,165,201,.2);border-radius:12px;padding:12px 16px;font-size:12px;color:var(--navy);line-height:1.6;">
+        💡 Connect request bhejo — accept hone ke baad phone/email visible ho jaayega.
+      </div>
+      {% endif %}
+
+    </div>
+
+  </div><!-- /form-col -->
+
+  <!-- ══ RIGHT SIDEBAR ══ -->
+  <div class="fu d2">
+    <div class="preview-sticky">
+
+      <!-- ── Vibe Score Widget ── -->
+      <div class="vibe-score-widget">
+        <div class="vs-title">✨ Vibe Score</div>
+        <div class="vs-ring-wrap">
+          <div class="vs-ring">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="6"/>
+              <circle cx="40" cy="40" r="32" fill="none" stroke="#0EA5C9" stroke-width="6"
+                      stroke-dasharray="201"
+                      stroke-dashoffset="{{ post.vibe_score|default:0|floatformat:0 }}"
+                      stroke-linecap="round"
+                      style="transition: stroke-dashoffset .6s ease;"
+                      id="vibeRing"/>
+            </svg>
+            <div class="vs-ring-num">{{ post.vibe_score|default:0 }}</div>
+          </div>
+          <div class="vs-info">
+            <div class="vs-score-label">
+              {% with s=post.vibe_score|default:0 %}
+                {% if s >= 75 %}Top Vibes 🚀
+                {% elif s >= 55 %}Strong Vibe 🔥
+                {% elif s >= 30 %}Good Vibe ✨
+                {% else %}Getting Started 🌱{% endif %}
+              {% endwith %}
+            </div>
+            <div class="vs-score-sub">
+              {% with tags=post.interest_tags_list %}
+                {{ tags|length }} tags · {{ post.cleanliness_level|default:0 }}/10 clean
+              {% endwith %}
+            </div>
+            <div class="vs-breakdown">
+              <div class="vs-bar-row">
+                <div class="vs-bar-label">Tags</div>
+                <div class="vs-bar-track">
+                  {% with tags=post.interest_tags_list %}
+                  <div class="vs-bar-fill" style="width:{% widthratio tags|length 8 100 %}%"></div>
+                  {% endwith %}
+                </div>
+              </div>
+              <div class="vs-bar-row">
+                <div class="vs-bar-label">Bio</div>
+                <div class="vs-bar-track">
+                  <div class="vs-bar-fill" style="width:{% if post.bio %}80{% else %}0{% endif %}%"></div>
+                </div>
+              </div>
+              <div class="vs-bar-row">
+                <div class="vs-bar-label">Lifestyle</div>
+                <div class="vs-bar-track">
+                  <div class="vs-bar-fill" style="width:{% if post.sleep_schedule %}100{% else %}40{% endif %}%"></div>
+                </div>
+              </div>
+              <div class="vs-bar-row">
+                <div class="vs-bar-label">Photo</div>
+                <div class="vs-bar-track">
+                  <div class="vs-bar-fill" style="width:{% if post.profile_photo %}100{% else %}0{% endif %}%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CTA Card ── -->
+      {% if request.user != post.user %}
+      <div class="cta-card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          {% if post.profile_photo %}
+            <img src="{{ post.profile_photo.url }}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--border);"/>
+          {% else %}
+            <div style="width:44px;height:44px;border-radius:50%;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:20px;">😊</div>
+          {% endif %}
+          <div>
+            <div style="font-weight:700;font-size:14px;color:var(--navy);">{{ post.name }}</div>
+            <div style="font-size:12px;color:var(--muted);">{{ post.city }}</div>
+          </div>
+        </div>
+
+        <button class="cta-connect-btn" onclick="sendConnect()">
+          ⚡ Connect Karo
+        </button>
+        <a href="{% url 'inbox' %}?to={{ post.user.username }}" class="cta-msg-btn">
+          💬 Message Bhejo
+        </a>
+        <div class="action-strip">
+          <button class="action-strip-btn" onclick="shareProfile()">📤 Share</button>
+          <button class="action-strip-btn" onclick="saveProfile()">🔖 Save</button>
+          <button class="action-strip-btn" style="color:var(--coral);" onclick="reportProfile()">🚩 Report</button>
+        </div>
+      </div>
+      {% else %}
+      <!-- Own profile — show edit CTA -->
+      <div class="cta-card">
+        <div style="text-align:center;margin-bottom:14px;">
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">Yeh tera profile hai 👋</div>
+          <div style="font-size:12px;color:var(--muted);">Koi bhi update karna ho to edit karo</div>
+        </div>
+        <a href="{% url 'edit_flatmate' post.pk %}" class="cta-connect-btn" style="text-decoration:none;display:flex;">✏️ Profile Edit Karo</a>
+      </div>
+      {% endif %}
+
+      <!-- ── Quick Info Card ── -->
+      <div class="cta-card">
+        <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">Quick Info</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--border);">
+            <span style="font-size:12px;color:var(--muted);">Budget</span>
+            <span style="font-size:13px;font-weight:700;color:var(--navy);">₹{{ post.max_budget|floatformat:0 }}/mo</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--border);">
+            <span style="font-size:12px;color:var(--muted);">Move-in</span>
+            <span style="font-size:13px;font-weight:700;color:var(--navy);">{{ post.move_in|default:"Flexible" }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--border);">
+            <span style="font-size:12px;color:var(--muted);">Stay</span>
+            <span style="font-size:13px;font-weight:700;color:var(--navy);">{{ post.stay_duration|default:"Flexible" }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--border);">
+            <span style="font-size:12px;color:var(--muted);">Room Type</span>
+            <span style="font-size:13px;font-weight:700;color:var(--navy);">{{ post.room_type_pref|default:"Any" }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:var(--muted);">Cleanliness</span>
+            <span style="font-size:13px;font-weight:700;color:var(--navy);">{{ post.cleanliness_level|default:"—" }}/10</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Lifestyle Snapshot ── -->
+      <div class="cta-card">
+        <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">Lifestyle Snapshot</div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          {% if post.sleep_schedule %}<span class="info-pill">{% if 'Early' in post.sleep_schedule %}🌅{% else %}🌙{% endif %} {{ post.sleep_schedule }}</span>{% endif %}
+          {% if post.smoking %}<span class="info-pill {% if 'Non' in post.smoking %}green{% else %}coral{% endif %}">🚬 {{ post.smoking }}</span>{% endif %}
+          {% if post.alcohol %}<span class="info-pill {% if "Don't" in post.alcohol %}green{% else %}amber{% endif %}">🍺 {{ post.alcohol }}</span>{% endif %}
+          {% if post.pets %}<span class="info-pill">🐾 {{ post.pets }}</span>{% endif %}
+          {% if post.work_style %}<span class="info-pill navy">💼 {{ post.work_style }}</span>{% endif %}
+          {% if post.guest_policy %}<span class="info-pill">👥 {{ post.guest_policy }}</span>{% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /two-col-layout -->
+
+<script>
+// Vibe ring correct offset calculation
+document.addEventListener('DOMContentLoaded', function() {
+  const score = {{ post.vibe_score|default:0 }};
+  const circumference = 201;
+  const offset = circumference - (score / 100) * circumference;
+  const ring = document.getElementById('vibeRing');
+  if (ring) ring.style.strokeDashoffset = offset;
+});
+
+function sendConnect() {
+  const btn = document.querySelector('.cta-connect-btn');
+  btn.textContent = '⏳ Request Bheja...';
+  btn.style.background = 'var(--muted)';
+  btn.disabled = true;
+
+  // AJAX connect request
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
+  fetch( {
+    method: 'POST',
+    headers: { 'X-CSRFToken': csrftoken, 'Content-Type': 'application/json' }
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.status === 'success' || data.status === 'sent') {
+      btn.textContent = '✅ Request Sent!';
+      btn.style.background = 'var(--green)';
+    } else {
+      btn.textContent = '⚡ Connect Karo';
+      btn.style.background = 'var(--navy)';
+      btn.disabled = false;
+    }
+  })
+  .catch(() => {
+    btn.textContent = '⚡ Connect Karo';
+    btn.style.background = 'var(--navy)';
+    btn.disabled = false;
+  });
+}
+
+function shareProfile() {
+  if (navigator.share) {
+    navigator.share({
+      title: '{{ post.name }} — StayMatch Flatmate',
+      text: '{{ post.name }} ({{ post.occupation }}, {{ post.city }}) flatmate dhundh raha/rahi hai!',
+      url: window.location.href
+    });
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    alert('Link copy ho gaya! 📋');
+  }
+}
+
+function saveProfile() {
+  alert('Profile bookmark ho gayi! 🔖');
+}
+
+function reportProfile() {
+  if (confirm('Is profile ko report karna chahte ho?')) {
+    alert('Report submit ho gayi. Hum review karenge. 🙏');
+  }
+}
+</script>
+
+{% endblock %}
