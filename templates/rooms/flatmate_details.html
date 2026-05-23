@@ -2,13 +2,6 @@
 
 {% block extra_css %}
 <style>
-/* ══════════════════════════════════════════
-   FLATMATE DETAIL PAGE
-   Same design system as post_flatmate form
-   Read-only display of all fields
-════════════════════════════════════════════ */
-
-/* ── Reused from form ── */
 .form-card {
   background: #fff;
   border: 1px solid var(--border);
@@ -93,7 +86,6 @@
 .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
 
-/* ── Range display ── */
 .range-display-wrap {
   background: var(--off);
   border: 1.5px solid var(--border);
@@ -114,7 +106,6 @@
   background: linear-gradient(90deg, var(--teal), #0891b2);
 }
 
-/* ── Two col layout ── */
 .two-col-layout {
   display: grid;
   grid-template-columns: 1fr 300px;
@@ -123,7 +114,6 @@
 }
 .form-col { display: flex; flex-direction: column; gap: 0; }
 
-/* ── Hero ── */
 .post-hero {
   background: linear-gradient(135deg, var(--navy), #1a3260);
   border-radius: 20px;
@@ -144,9 +134,9 @@
   pointer-events: none;
 }
 
-/* ── Hero header with cover + avatar ── */
+/* ── Hero cover: fixed blue, smaller height ── */
 .hero-cover {
-  height: 160px;
+  height: 110px;
   background: linear-gradient(135deg, #0EA5C9, #0F1F3D);
   position: relative;
 }
@@ -224,7 +214,6 @@
 }
 .hero-stat-lbl { font-size: 10px; color: rgba(255,255,255,.35); margin-top: 1px; }
 
-/* ── Vibe score widget ── */
 .vibe-score-widget {
   background: linear-gradient(135deg, var(--navy), #1a3260);
   border-radius: 20px;
@@ -263,10 +252,8 @@
 .vs-bar-track { flex: 1; height: 4px; border-radius: 99px; background: rgba(255,255,255,.1); overflow: hidden; }
 .vs-bar-fill { height: 100%; border-radius: 99px; background: var(--teal); }
 
-/* ── sticky sidebar ── */
 .preview-sticky { position: sticky; top: 86px; }
 
-/* ── Info pill row ── */
 .info-pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .info-pill {
   display: inline-flex; align-items: center; gap: 6px;
@@ -281,7 +268,6 @@
 .info-pill.navy  { background: rgba(15,31,61,.06); color: var(--navy); border-color: rgba(15,31,61,.12); }
 .info-pill.coral { background: #FFF1F2; color: var(--coral); border-color: #FECDD3; }
 
-/* ── Tag category display ── */
 .tag-category { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
 .tag-category:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 .tag-cat-label {
@@ -302,7 +288,6 @@
   background: var(--teal); color: #fff;
 }
 
-/* ── Contact box ── */
 .contact-box {
   background: linear-gradient(135deg, var(--teal-lt), var(--off));
   border: 1px solid rgba(14,165,201,.2);
@@ -321,7 +306,6 @@
 .contact-label { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
 .contact-value { font-size: 13px; font-weight: 600; color: var(--navy); }
 
-/* ── CTA Card (sidebar) ── */
 .cta-card {
   background: #fff;
   border: 1px solid var(--border);
@@ -358,7 +342,6 @@
 }
 .cta-msg-btn:hover { border-color: var(--navy); background: var(--off); }
 
-/* ── Report / share strip ── */
 .action-strip {
   display: flex; gap: 8px; margin-top: 10px;
 }
@@ -373,7 +356,6 @@
 }
 .action-strip-btn:hover { border-color: var(--navy); color: var(--navy); }
 
-/* ── Verified / badges ── */
 .verified-badge {
   display: inline-flex; align-items: center; gap: 4px;
   background: #EFF6FF; color: #2563EB;
@@ -388,7 +370,6 @@
   padding: 4px 12px; border-radius: 99px;
 }
 
-/* ── Match pill (sidebar) ── */
 .match-ring-wrap {
   display: flex; align-items: center; gap: 14px;
   background: var(--teal-lt);
@@ -403,7 +384,6 @@
 .match-lbl { font-size: 12px; font-weight: 700; color: var(--navy); }
 .match-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
 
-/* ── Lifestyle grid ── */
 .lifestyle-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -424,18 +404,15 @@
   display: flex; align-items: center; gap: 5px;
 }
 
-/* ── Cleanliness / range bar ── */
 .stat-bar-wrap { margin-top: 6px; }
 .stat-bar-track { height: 6px; background: #EEF0F6; border-radius: 99px; overflow: hidden; }
 .stat-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--teal), #6EE7F7); }
 
-/* ── Animations ── */
 @keyframes fadeUp { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
 .fu { animation: fadeUp .55s ease forwards; opacity: 0; }
 .d1{animation-delay:.05s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}
 .d4{animation-delay:.28s}.d5{animation-delay:.36s}
 
-/* ── Responsive ── */
 @media(max-width:1050px) {
   .two-col-layout { grid-template-columns: 1fr; }
   .preview-sticky { position: relative; top: 0; }
@@ -457,9 +434,8 @@
 <!-- ══ HERO PROFILE CARD ══ -->
 <div class="post-hero fu d1" style="margin-bottom:28px;">
 
-  <!-- Cover gradient — changes per occupation -->
-  <div class="hero-cover" id="heroCover"
-       style="background:{% if post.occupation == 'Student' %}linear-gradient(135deg,#10B981,#0EA5C9){% elif post.occupation == 'Software / IT' %}linear-gradient(135deg,#0EA5C9,#0F1F3D){% elif post.occupation == 'Freelancer' %}linear-gradient(135deg,#F59E0B,#EF4444){% elif post.occupation == 'Healthcare' %}linear-gradient(135deg,#10B981,#059669){% elif post.occupation == 'Startup' %}linear-gradient(135deg,#F59E0B,#0EA5C9){% elif post.occupation == 'Research / Academia' %}linear-gradient(135deg,#6366F1,#0F1F3D){% elif post.occupation == 'Creative / Media' %}linear-gradient(135deg,#F59E0B,#EF4444){% else %}linear-gradient(135deg,#0EA5C9,#0F1F3D){% endif %};">
+  <!-- Cover: fixed blue gradient, smaller height -->
+  <div class="hero-cover" id="heroCover">
 
     <!-- Back + edit buttons -->
     <div class="hero-cover-actions">
@@ -634,7 +610,6 @@
       </div>
       <div style="display:flex;flex-direction:column;gap:18px;">
 
-        <!-- Budget range display -->
         <div class="range-display-wrap">
           <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:4px;">
             <span style="font-size:14px;color:var(--muted);font-weight:600;">₹</span>
@@ -684,14 +659,12 @@
 
       {% with tags=post.interest_tags_list %}
       {% if tags %}
-        <!-- Group by category — shown flat since we don't have categories in DB -->
         <div class="tag-options" style="gap:8px;">
           {% for tag in tags %}
             <span class="tag-pill-lit">{{ tag }}</span>
           {% endfor %}
         </div>
 
-        <!-- Score bar -->
         <div style="margin-top:16px;padding:14px 16px;background:var(--off);border-radius:12px;border:1px solid var(--border);">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
             <span style="font-size:12px;font-weight:600;color:var(--navy);">Tags se Vibe Score contribution</span>
@@ -716,7 +689,6 @@
       </div>
       <div style="display:flex;flex-direction:column;gap:18px;">
 
-        <!-- Lifestyle grid -->
         <div class="lifestyle-grid">
           {% if post.sleep_schedule %}
           <div class="lifestyle-item">
@@ -777,7 +749,6 @@
           {% endif %}
         </div>
 
-        <!-- Cleanliness bar -->
         {% if post.cleanliness_level %}
         <div>
           <div class="field-display-label">Cleanliness Level</div>
@@ -849,8 +820,8 @@
         </div>
         {% endif %}
 
-        {% if post.contact_visibility == 'Show to everyone' %}
-          <!-- Show actual contact details -->
+        {# Show actual contact only if visibility is set to show everyone OR if it's the post owner viewing #}
+        {% if post.contact_visibility == 'show_all' or post.contact_visibility == 'Show to everyone' or request.user == post.user %}
           {% if post.contact_phone %}
           <div class="contact-row">
             <div class="contact-icon" style="background:#F0FDF4;">📞</div>
@@ -874,7 +845,7 @@
           </div>
           {% endif %}
         {% else %}
-          <!-- Hidden — show after connect -->
+          {# Hidden — connect karo phir dikhega #}
           <div style="text-align:center;padding:16px 0;">
             <div style="font-size:24px;margin-bottom:8px;">🔒</div>
             <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">Contact Connect ke baad milega</div>
@@ -883,7 +854,7 @@
         {% endif %}
       </div>
 
-      {% if post.contact_visibility == 'Show after connect only' %}
+      {% if post.contact_visibility != 'show_all' and post.contact_visibility != 'Show to everyone' and request.user != post.user %}
       <div style="margin-top:14px;background:var(--teal-lt);border:1px solid rgba(14,165,201,.2);border-radius:12px;padding:12px 16px;font-size:12px;color:var(--navy);line-height:1.6;">
         💡 Connect request bhejo — accept hone ke baad phone/email visible ho jaayega.
       </div>
@@ -1043,7 +1014,6 @@
 </div><!-- /two-col-layout -->
 
 <script>
-// Vibe ring correct offset calculation
 document.addEventListener('DOMContentLoaded', function() {
   const score = {{ post.vibe_score|default:0 }};
   const circumference = 201;
@@ -1058,9 +1028,8 @@ function sendConnect() {
   btn.style.background = 'var(--muted)';
   btn.disabled = true;
 
-  // AJAX connect request
   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
-  fetch( {
+  fetch('', {
     method: 'POST',
     headers: { 'X-CSRFToken': csrftoken, 'Content-Type': 'application/json' }
   })
