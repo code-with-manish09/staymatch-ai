@@ -107,76 +107,65 @@
 
 </div>
 
-  <!-- ══ CITY · PLATFORM STATS · REVIEWS ══ -->
-  <!-- 8 boxes ki jagah ye section — 2 row layout, clean aur premium -->
-  <div class="fu d2" style="margin-bottom:24px;">
-
-    <!-- Row 1: City rooms + Platform numbers -->
-    <div style="display:grid;grid-template-columns:1fr 290px;gap:16px;margin-bottom:16px;">
-
-      <!-- City Rooms Grid -->
-      <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:20px 22px;box-shadow:var(--card-sh);">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);">🏙️ Rooms by City</div>
-          <span style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;">● Live</span>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
-  {% for cd in city_stats %}
-<div style="background:var(--off);border:1px solid var(--border);border-radius:12px;padding:14px 12px;display:flex;align-items:center;gap:10px;">
-  <div style="font-size:13px;width:28px;height:28px;border-radius:8px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">🏙️</div>
-  <div style="flex:1;min-width:0;">
-    <div style="font-size:11px;color:var(--muted);font-weight:600;">{{ cd.city }}</div>
-    <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;color:var(--navy);line-height:1;">{{ cd.count }}</div>
-  </div>
-  <div style="font-size:10px;color:var(--teal);font-weight:700;background:var(--teal-lt);padding:2px 7px;border-radius:6px;">rooms</div>
-</div>
-{% empty %}
-<p style="color:var(--muted);">No rooms available.</p>
-{% endfor %}
-</div>
+{# ══ CITY · PLATFORM STATS — FINAL CLEAN VERSION ══ #}
+{# Paste this block replacing the entire <!-- ══ CITY · PLATFORM STATS ══ --> section in your template #}
+ 
+<div class="fu d2" style="margin-bottom:24px;">
+  <div class="bottom-stats-row">
+ 
+    <!-- LEFT: Rooms by City -->
+    <div class="white-card">
+      <div class="card-hd">
+        <div class="card-title">🏙️ Rooms by City</div>
+        <span class="live-pill">Live</span>
       </div>
-
-      <!-- Platform Numbers (right side) -->
-      <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:20px 22px;box-shadow:var(--card-sh);display:flex;flex-direction:column;gap:0;">
-        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);margin-bottom:16px;">📊 Platform Stats</div>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-
-          <div style="display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--border);">
-            <div style="width:40px;height:40px;border-radius:10px;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">👥</div>
-            <div style="flex:1;">
-              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--navy);line-height:1;">{{ total_users|default:"—" }}</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:2px;font-weight:600;">Users Joined</div>
-            </div>
-            <div style="font-size:11px;font-weight:700;color:var(--green);">↑ Growing</div>
+      <div class="city-list">
+        {% for cd in city_stats %}
+        <div class="city-row">
+          <div class="city-nm">{{ cd.city }}</div>
+          <div class="city-bar-track">
+            <div class="city-bar-fill" style="width:{% widthratio cd.count city_stats.0.count 100 %}%;"></div>
           </div>
-
-          <div style="display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--border);">
-            <div style="width:40px;height:40px;border-radius:10px;background:var(--amber-lt);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏠</div>
-            <div style="flex:1;">
-              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--navy);line-height:1;">{{ total_listings|default:"—" }}</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:2px;font-weight:600;">Total Listings</div>
-            </div>
-            <div style="font-size:11px;font-weight:700;color:var(--teal);">Live ●</div>
-          </div>
-
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:40px;height:40px;border-radius:10px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">⚡</div>
-            <div style="flex:1;">
-              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--navy);line-height:1;">{{ total_matches|default:"—" }}</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:2px;font-weight:600;">AI Matches Made</div>
-            </div>
-            <div style="font-size:11px;font-weight:700;color:var(--green);">↑ Today</div>
-          </div>
-
+          <div class="city-cnt">{{ cd.count }}</div>
+        </div>
+        {% empty %}
+        <p style="color:var(--muted);font-size:13px;padding:12px 0;">No rooms available.</p>
+        {% endfor %}
+      </div>
+    </div>
+ 
+    <!-- RIGHT: Platform Stats -->
+    <div class="white-card">
+      <div class="card-hd">
+        <div class="card-title">📊 Platform Stats</div>
+        <span style="background:var(--amber-lt);color:#B45309;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;">Growing</span>
+      </div>
+      <div class="plat-grid">
+        <div class="plat-block">
+          <div class="plat-icon" style="background:var(--teal-lt);">👥</div>
+          <div class="plat-num">{{ total_users|default:"—" }}</div>
+          <div class="plat-lbl">Users Joined</div>
+          <div class="plat-trend trend-up">↑ Growing</div>
+        </div>
+        <div class="plat-block">
+          <div class="plat-icon" style="background:var(--amber-lt);">🏠</div>
+          <div class="plat-num">{{ total_listings|default:"—" }}</div>
+          <div class="plat-lbl">Total Listings</div>
+          <div class="plat-trend" style="color:var(--teal);">● Live</div>
+        </div>
+        <div class="plat-block">
+          <div class="plat-icon" style="background:#F0FDF4;">⚡</div>
+          <div class="plat-num">{{ total_matches|default:"—" }}</div>
+          <div class="plat-lbl">AI Matches Made</div>
+          <div class="plat-trend trend-up">↑ Today</div>
         </div>
       </div>
     </div>
-
-
-
+ 
   </div>
-  <!-- ══ END CITY · USERS · REVIEWS ══ -->
-
+</div>
+{# ══ END CITY · PLATFORM STATS ══ #}
+ 
   
   <!-- Room Listings -->
   <div class="sec-hd fu d4">
@@ -245,6 +234,91 @@
     </div>
     {% endfor %}
   </div>
+
+  {# ══ FLATMATE PROFILES SECTION ══ #}
+{# Paste this in your discover.html after the stats row, before city/platform section #}
+ 
+<!-- Compatible Flatmate Profiles -->
+<div class="fu d3" style="margin-bottom:24px;">
+  <div class="sec-hd">
+    <div class="sec-title">👥 Compatible Flatmate Profiles</div>
+    <a class="sec-link" style="display:flex;align-items:center;gap:5px;">
+      <span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s ease infinite;"></span>
+      Live Profiles
+    </a>
+  </div>
+ 
+  <div class="fm-grid">
+    {% for profile in compatible_flatmates %}
+    <div class="fm-card">
+ 
+      <!-- Banner + Avatar -->
+      <div class="fm-banner" style="background:{{ profile.banner_gradient|default:'linear-gradient(135deg,#134e4a,#0EA5C9)' }};">
+        <div class="fm-live">Live</div>
+ 
+       
+        <button
+          class="fm-save-btn"
+          id="fm-save-{{ profile.id }}"
+          onclick="handleFlatmateSave('{{ profile.id }}')"
+          aria-label="Save flatmate">
+          {% if profile.id in saved_flatmate_ids %}
+            <svg viewBox="0 0 24 24" fill="#F25C54" stroke="#F25C54" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          {% else %}
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          {% endif %}
+        </button>
+ 
+        <div class="fm-av-wrap">
+          {% if profile.profile_photo %}
+            <img src="{{ profile.profile_photo.url }}" class="fm-av fm-av-img" alt="{{ profile.full_name }}"/>
+          {% else %}
+            <div class="fm-av" style="background:rgba(255,255,255,.2);">
+              {{ profile.name|slice:":2"|upper }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+ 
+      <!-- Body -->
+      <div class="fm-body">
+        <div class="fm-name-row">
+          <div class="fm-name">{{ profile.name|default:profile.user.username }}</div>
+          <span class="fm-gender"
+            style="{% if profile.gender == 'Female' %}background:#FEE7F0;color:#C026D3;{% else %}background:var(--teal-lt);color:var(--teal);{% endif %}">
+            {{ profile.gender|default:"—" }}
+          </span>
+        </div>
+        <div class="fm-sub">{{ profile.occupation|default:"—" }} · {{ profile.city|default:"India" }}</div>
+        <div class="fm-vibe">✨ Vibe Score: {{ profile.vibe_score|default:"—" }}</div>
+        <div class="fm-tags">
+          {% for tag in profile.get_tags_list|slice:":4" %}
+            <span class="fm-tag" style="
+              {% cycle 'background:var(--teal-lt);color:var(--teal);' 'background:var(--amber-lt);color:#B45309;' 'background:#F0FDF4;color:#059669;' 'background:#F5F3FF;color:#7C3AED;' %}
+            ">{{ tag }}</span>
+          {% empty %}
+            <span class="fm-tag" style="background:var(--off);color:var(--muted);">No tags yet</span>
+          {% endfor %}
+        </div>
+        <div class="fm-footer">
+          <div class="fm-budget">₹{{ profile.max_budget|default:"—" }} <small>/mo</small></div>
+          <a href="{% url 'flatmate_detail' profile.id %}" class="btn-sm btn-sm-teal" style="text-decoration:none;font-size:11px;padding:6px 13px;">view details</a>
+        </div>
+      </div>
+ 
+    </div>
+    {% empty %}
+    <div style="grid-column:1/-1;background:#fff;border:1px solid var(--border);border-radius:18px;padding:48px 20px;text-align:center;box-shadow:var(--card-sh);">
+      <div style="font-size:40px;margin-bottom:12px;">👥</div>
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px;">No Flatmates Found</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">upload your flatmate profile to get better matches.</p>
+<button type="button" class="btn-teal" style="font-size:13px;padding:10px 24px;" onclick="window.location.href='{% url 'post_flatmate' %}'">
+    Upload Profile
+</button>    </div>
+    {% endfor %}
+  </div>
+</div>
+{# ══ END FLATMATE PROFILES ══ #}
    <!-- Row 2: Recent Reviews -->
     <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:20px 22px;box-shadow:var(--card-sh);">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
@@ -282,93 +356,6 @@
 
   <div class="bottom-grid fu d5">
 
-    <!-- Trending Section -->
-    <div class="trending-wrap">
-      <div class="trend-header">
-        <div class="sec-title">🔥 Trending Now</div>
-        <a class="sec-link">See all →</a>
-      </div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Most viewed in last 24 hours</p>
-      <div class="trend-fire-badge">🔥 Hot Market</div>
-
-      {% for room in trending_rooms %}
-      <a href="{% url 'room_details_by_id' room.id %}" class="trend-item" style="text-decoration:none;">
-        <div class="trend-rank {% if forloop.counter == 1 %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">
-          {{ forloop.counter }}
-        </div>
-        {% if room.images.first %}
-        <img src="{{ room.images.first.image.url }}" class="trend-img" alt="{{ room.title }}"/>
-        {% else %}
-        <div class="trend-img" style="background:var(--teal-lt);display:flex;align-items:center;justify-content:center;font-size:20px;">🏠</div>
-        {% endif %}
-        <div class="trend-info">
-          <div class="trend-name">{{ room.title }}</div>
-          <div class="trend-sub">📍 {{ room.area }} · {{ room.city }}</div>
-          <div style="display:flex;gap:5px;margin-top:4px;">
-            {% if room.avg_rating %}
-            <span class="chip" style="background:var(--amber-lt);color:#B45309;padding:2px 8px;">⭐ {{ room.avg_rating|floatformat:1 }}</span>
-            {% endif %}
-            <span class="chip" style="background:#F0FDF4;color:#059669;padding:2px 8px;">{{ room.review_count }} reviews</span>
-          </div>
-        </div>
-        <div class="trend-right">
-          <div class="trend-price">₹{{ room.rent }}</div>
-          <div class="trend-pct {% if forloop.counter == 1 %}hot{% elif forloop.counter <= 3 %}warm{% endif %}">
-            {% if room.avg_rating %}
-              {% if room.avg_rating >= 4.5 %}🔥{% else %}📈{% endif %}
-              {{ room.avg_rating|floatformat:1 }}/5
-            {% else %}
-              🆕 New
-            {% endif %}
-          </div>
-        </div>
-      </a>
-      {% empty %}
-      <p style="text-align:center;color:var(--muted);padding:20px;">Koi trending room nahi mila.</p>
-      {% endfor %}
-    </div>
-
-    <!-- Messages Panel -->
-    <div class="real-msg-panel">
-      <div class="rmp-header">
-        <div class="sec-title" style="font-size:16px;">💬 Recent Messages</div>
-        <a href="{% url 'inbox' %}" class="btn-sm btn-sm-teal" style="font-size:12px;text-decoration:none;padding:6px 14px;border-radius:8px;">View All →</a>
-      </div>
-      <div class="rmp-scroll">
-        {% if recent_messages %}
-          {% for conv in recent_messages %}
-            {% if conv.listing.owner == request.user %}
-              <a class="rmp-item {% if conv.unread %}unread{% endif %}" href="{% url 'chat_view' conv.listing.id %}?user={{ conv.other_user.id }}">
-            {% else %}
-              <a class="rmp-item {% if conv.unread %}unread{% endif %}" href="{% url 'chat_view' conv.listing.id %}">
-            {% endif %}
-              <div class="rmp-av">
-                {{ conv.other_user.username|slice:":1"|upper }}
-                {% if conv.unread %}<div class="unread-dot"></div>{% endif %}
-              </div>
-              <div class="rmp-info">
-                <div class="rmp-top">
-                  <span class="rmp-name">{{ conv.other_user.username }}</span>
-                  <span class="rmp-time">{{ conv.last_msg.created_at|timesince|slice:":5" }}</span>
-                </div>
-                <div class="rmp-preview {% if conv.unread %}bold{% endif %}">{{ conv.last_msg.body|truncatechars:40 }}</div>
-                <div class="rmp-listing">🏠 {{ conv.listing.title|truncatechars:30 }}</div>
-              </div>
-              {% if conv.unread %}<div class="rmp-unread-badge">{{ conv.unread }}</div>{% endif %}
-            </a>
-          {% endfor %}
-        {% else %}
-          <div class="rmp-empty">
-            <span>💬</span>
-            <p>Koi message nahi abhi tak</p>
-            <a href="{% url 'inbox' %}" style="font-size:12px;color:var(--teal);font-weight:600;text-decoration:none;">Inbox open karo →</a>
-          </div>
-        {% endif %}
-      </div>
-      <div class="rmp-footer">
-        <a href="{% url 'inbox' %}" class="rmp-footer-btn">💬 Open Full Inbox</a>
-      </div>
-    </div>
 
   </div>
 

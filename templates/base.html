@@ -612,6 +612,232 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   .quiz-hero-visual{display:none;}
   .tags-preview{padding:16px;}
 }
+
+/* ── CITY + PLATFORM ROW ── */
+.bottom-stats-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.white-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px 24px;box-shadow:var(--card-sh);}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.card-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;color:var(--navy);}
+.live-pill{display:inline-flex;align-items:center;gap:5px;background:var(--teal-lt);color:var(--teal);font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;}
+.live-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;}
+
+.city-list{display:flex;flex-direction:column;gap:11px;}
+.city-row{display:flex;align-items:center;gap:12px;}
+.city-nm{font-size:12px;font-weight:700;color:var(--navy);width:84px;flex-shrink:0;}
+.city-bar-track{flex:1;height:7px;border-radius:99px;background:var(--off);overflow:hidden;border:1px solid var(--border);}
+.city-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),#0891b2);}
+.city-cnt{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;color:var(--teal);width:34px;text-align:right;flex-shrink:0;}
+
+.plat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.plat-block{background:var(--off);border:1px solid var(--border);border-radius:12px;padding:16px 14px;}
+.plat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px;}
+.plat-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:24px;color:var(--navy);line-height:1;}
+.plat-lbl{font-size:10px;color:var(--muted);font-weight:600;margin-top:4px;}
+.plat-trend{font-size:10px;font-weight:700;margin-top:6px;}
+
+@media(max-width:860px){.bottom-stats-row{grid-template-columns:1fr;}}
+@media(max-width:480px){.plat-grid{grid-template-columns:1fr 1fr;}.city-nm{width:68px;font-size:11px;}}
+
+{# ══ CSS — Add inside base.html <style> block, before </style> ══ #}
+<style>
+/* ── FLATMATE GRID ── */
+.fm-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+ 
+/* ── FLATMATE CARD ── */
+.fm-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--card-sh);
+  transition: transform .3s cubic-bezier(.22,.68,0,1.2), box-shadow .25s;
+}
+.fm-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--card-sh2);
+}
+ 
+/* ── BANNER ── */
+.fm-banner {
+  height: 80px;
+  position: relative;
+  flex-shrink: 0;
+}
+.fm-live {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  background: rgba(255,255,255,.18);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 99px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  backdrop-filter: blur(4px);
+}
+.fm-live::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #22C55E;
+  display: inline-block;
+  animation: pulse 2s ease infinite;
+}
+ 
+/* ── HEART SAVE BTN ── */
+.fm-save-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  border: 1px solid rgba(255,255,255,.25);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform .2s, background .2s;
+  padding: 0;
+}
+.fm-save-btn:hover {
+  transform: scale(1.15);
+  background: rgba(255,255,255,.35);
+}
+.fm-save-btn svg {
+  width: 14px;
+  height: 14px;
+  transition: all .2s;
+}
+.fm-save-btn.saved svg {
+  fill: #F25C54;
+  stroke: #F25C54;
+}
+ 
+/* ── AVATAR ── */
+.fm-av-wrap {
+  position: absolute;
+  bottom: -22px;
+  left: 14px;
+}
+.fm-av {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+}
+.fm-av-img {
+  object-fit: cover;
+}
+ 
+/* ── BODY ── */
+.fm-body {
+  padding: 30px 14px 14px;
+}
+.fm-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+.fm-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+}
+.fm-gender {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.fm-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fm-vibe {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--teal-lt);
+  color: var(--teal);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 99px;
+  margin-bottom: 8px;
+}
+.fm-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 12px;
+  min-height: 26px;
+}
+.fm-tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 99px;
+}
+.fm-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.fm-budget {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--navy);
+}
+.fm-budget small {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+}
+ 
+/* ── RESPONSIVE ── */
+@media (max-width: 1200px) {
+  .fm-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .fm-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .fm-grid { grid-template-columns: 1fr; }
+}
+
 </style>
 {% block extra_css %}{% endblock %}
 </head>
@@ -1085,6 +1311,49 @@ function filterListings(status) {
 function confirmDelete(url) {
   if (confirm('Pakka delete karna hai?')) window.location.href = url;
 }
+
+
+function handleFlatmateSave(profileId) {
+  const btn = document.getElementById('fm-save-' + profileId);
+  const svg = btn.querySelector('svg');
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+ 
+  // Optimistic UI update
+  const isSaved = svg.getAttribute('fill') !== 'none';
+  if (isSaved) {
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', '#fff');
+    btn.classList.remove('saved');
+  } else {
+    svg.setAttribute('fill', '#F25C54');
+    svg.setAttribute('stroke', '#F25C54');
+    btn.classList.add('saved');
+    showToast('Saved!', 'Flatmate profile bookmarked ❤️');
+  }
+ 
+  // API call (wire up your URL)
+  fetch('/flatmates/save/' + profileId + '/', {
+    method: 'POST',
+    headers: { 'X-CSRFToken': csrftoken, 'Content-Type': 'application/json' }
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.status !== 'success') {
+      // Revert on failure
+      if (isSaved) {
+        svg.setAttribute('fill', '#F25C54');
+        svg.setAttribute('stroke', '#F25C54');
+        btn.classList.add('saved');
+      } else {
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', '#fff');
+        btn.classList.remove('saved');
+      }
+    }
+  })
+  .catch(() => {});
+}
+
 
 </script>
 </body>

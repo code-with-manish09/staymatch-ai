@@ -53,7 +53,12 @@ def dashboard(request):
     my_listings = Listing.objects.filter(owner=request.user).prefetch_related('images')
 
     my_flatmate_profile = FlatmateProfile.objects.filter(user=request.user).first()
-    
+
+    compatible_flatmates = FlatmateProfile.objects.exclude(
+    user=request.user
+        ).select_related('user').order_by('-created_at')[:6]
+
+    saved_flatmate_ids = []
 
 
     
@@ -74,9 +79,14 @@ def dashboard(request):
         'my_listings': my_listings,
         'my_listings_available': my_listings.filter(is_published=True).count(),
         'my_total_inquiries': 0, 
-        'my_flatmate_posts': [my_flatmate_profile] if my_flatmate_profile else [],
-        'my_flatmate_active': my_flatmate_profile.is_active if my_flatmate_profile else 0,
+        'my_flatmate_posts':  FlatmateProfile.objects.filter(user=request.user),
+        'my_flatmate_active':FlatmateProfile.objects.filter(
+         user=request.user, is_active=True
+        ).count(),
         'my_flatmate_responses': 0,
+        'compatible_flatmates': compatible_flatmates,
+        'saved_flatmate_ids': saved_flatmate_ids,
+
 
     }
 
