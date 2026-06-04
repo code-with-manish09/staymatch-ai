@@ -1341,7 +1341,8 @@ function handleFlatmateSave(profileId) {
   }
  
   // API call (wire up your URL)
-  fetch('/flatmates/save/' + profileId + '/', {
+ fetch(FLATMATE_SAVE_URL + profileId + '/', {
+
     method: 'POST',
     headers: { 'X-CSRFToken': csrftoken, 'Content-Type': 'application/json' }
   })
@@ -1388,6 +1389,19 @@ function handleFlatmateSave(profileId) {
   setInterval(()=>chRv(1), 4000);
 })();
 
+const FLATMATE_SAVE_URL = "{% url 'toggle_save_flatmate' 0 %}".replace('/0/', '/');
+
+function switchSavedTab(tab) {
+  const isRooms = tab === 'rooms';
+  document.getElementById('saved-tab-rooms').style.display = isRooms ? '' : 'none';
+  document.getElementById('saved-tab-flatmates').style.display = isRooms ? 'none' : '';
+  document.getElementById('saved-tab-rooms-btn').style.cssText = isRooms
+    ? 'padding:10px 24px;border-radius:10px;border:none;cursor:pointer;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:700;font-size:14px;background:var(--navy);color:#fff;transition:all .2s;'
+    : 'padding:10px 24px;border-radius:10px;border:none;cursor:pointer;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:700;font-size:14px;background:transparent;color:var(--muted);transition:all .2s;';
+  document.getElementById('saved-tab-flatmates-btn').style.cssText = isRooms
+    ? 'padding:10px 24px;border-radius:10px;border:none;cursor:pointer;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:700;font-size:14px;background:transparent;color:var(--muted);transition:all .2s;'
+    : 'padding:10px 24px;border-radius:10px;border:none;cursor:pointer;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:700;font-size:14px;background:var(--navy);color:#fff;transition:all .2s;';
+}
 </script>
 </body>
 </html>

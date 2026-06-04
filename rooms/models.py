@@ -213,3 +213,13 @@ class FlatmateProfile(models.Model):
 
     class Meta:
         ordering = ['-vibe_score', '-created_at']
+
+
+#================saved flatmates====================
+class SavedFlatmate(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='saved_flatmates')
+    profile = models.ForeignKey(FlatmateProfile, on_delete=models.CASCADE, related_name='saved_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'profile')

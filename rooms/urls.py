@@ -17,4 +17,5 @@ urlpatterns = [
     path('flatmate/edit/<int:pk>/', views.edit_flatmate, name='edit_flatmate'),
     path('flatmate/delete/<int:pk>/', views.delete_flatmate, name='delete_flatmate'),
     path('flatmate/<int:pk>/', views.flatmate_detail, name='flatmate_detail'),
+    path('flatmates/save/<int:profile_id>/', views.toggle_save_flatmate, name='toggle_save_flatmate'),
     ]

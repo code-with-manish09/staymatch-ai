@@ -2,7 +2,7 @@ from datetime import date
 import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import FlatmateProfile, Listing, Amenity, ListingImage, Review
+from .models import FlatmateProfile, Listing, Amenity, ListingImage, Review, SavedFlatmate
 from django.http import JsonResponse  
 from rooms.services.services import get_room_faqs, get_vibe_score
 from django.shortcuts import render, get_object_or_404, redirect
@@ -597,3 +597,17 @@ def delete_flatmate(request, pk):
     post.delete()
     messages.success(request, 'Flatmate post delete ho gayi! 🗑️')
     return redirect('dashboard')
+
+#===============saved flatmates====================
+
+
+@login_required
+def toggle_save_flatmate(request, profile_id):
+    if request.method == 'POST':
+        profile = get_object_or_404(FlatmateProfile, id=profile_id)
+        saved, created = SavedFlatmate.objects.get_or_create(user=request.user, profile=profile)
+        if not created:
+            saved.delete()
+            return JsonResponse({'status': 'success', 'action': 'removed'})
+        return JsonResponse({'status': 'success', 'action': 'saved'})
+    return JsonResponse({'status': 'error'}, status=400)

@@ -378,37 +378,102 @@
 
 <!-- ══ SAVED ══ -->
 <div id="sec-saved" style="display:none;">
-  <div class="sec-hd"><div class="sec-title">🔖 Saved Rooms</div></div>
-  <div class="rooms-grid">
-    {% for item in user_saved_rooms %}
-    <div class="room-card" id="saved-card-{{ item.room.id }}">
-      <div class="room-img">
-        {% with first_img=item.room.images.first %}
-          {% if first_img %}
-          <img src="{{ first_img.image.url }}" style="width:100%;height:160px;object-fit:cover;" alt="{{ item.room.title }}"/>
-          {% else %}
-          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" style="width:100%;height:160px;object-fit:cover;" alt="Room"/>
-          {% endif %}
-        {% endwith %}
-        <div class="room-save" id="save-icon-{{ item.room.id }}" onclick="handleRoomSave('{{ item.room.id }}')">❤️</div>
-      </div>
-      <div class="room-body">
-        <div class="room-title">{{ item.room.title }}</div>
-        <div class="room-loc">📍 {{ item.room.area }} · {{ item.room.city }}</div>
-        <div class="room-footer">
-          <div class="room-price">₹{{ item.room.rent }} <small>/mo</small></div>
-          <a href="{% url 'room_details_by_id' item.room.id %}" class="btn-sm btn-sm-teal" style="text-decoration:none;">View</a>
+  <div class="sec-hd"><div class="sec-title">🔖 Saved Items</div></div>
+
+  <!-- Tabs -->
+  <div style="display:flex;gap:8px;margin-bottom:22px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:6px;box-shadow:var(--card-sh);width:fit-content;">
+    <button id="saved-tab-rooms-btn" onclick="switchSavedTab('rooms')"
+      style="padding:10px 24px;border-radius:10px;border:none;cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;background:var(--navy);color:#fff;transition:all .2s;">
+      🏠 Saved Rooms
+    </button>
+    <button id="saved-tab-flatmates-btn" onclick="switchSavedTab('flatmates')"
+      style="padding:10px 24px;border-radius:10px;border:none;cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;background:transparent;color:var(--muted);transition:all .2s;">
+      👥 Saved Flatmates
+    </button>
+  </div>
+
+  <!-- ── TAB: SAVED ROOMS ── -->
+  <div id="saved-tab-rooms">
+    <div class="rooms-grid">
+      {% for item in user_saved_rooms %}
+      <div class="room-card" id="saved-card-{{ item.room.id }}">
+        <div class="room-img">
+          {% with first_img=item.room.images.first %}
+            {% if first_img %}
+            <img src="{{ first_img.image.url }}" style="width:100%;height:160px;object-fit:cover;" alt="{{ item.room.title }}"/>
+            {% else %}
+            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" style="width:100%;height:160px;object-fit:cover;" alt="Room"/>
+            {% endif %}
+          {% endwith %}
+          <div class="room-save" id="save-icon-{{ item.room.id }}" onclick="handleRoomSave('{{ item.room.id }}')">❤️</div>
+        </div>
+        <div class="room-body">
+          <div class="room-title">{{ item.room.title }}</div>
+          <div class="room-loc">📍 {{ item.room.area }} · {{ item.room.city }}</div>
+          <div class="room-footer">
+            <div class="room-price">₹{{ item.room.rent }} <small>/mo</small></div>
+            <a href="{% url 'room_details_by_id' item.room.id %}" class="btn-sm btn-sm-teal" style="text-decoration:none;">View</a>
+          </div>
         </div>
       </div>
+      {% empty %}
+      <div id="empty-saved-msg" class="feat-card" style="grid-column:1/-1;text-align:center;padding:40px;">
+        <div style="font-size:40px;margin-bottom:10px;">🏠</div>
+        <p style="color:var(--muted);">Aapne abhi tak koi room save nahi kiya hai.</p>
+        <button class="btn-teal" style="margin-top:16px;padding:10px 24px;font-size:14px;" onclick="showSec('discover')">Rooms Dhundho →</button>
+      </div>
+      {% endfor %}
     </div>
-    {% empty %}
-    <div class="feat-card" style="grid-column:1/-1;text-align:center;padding:40px;">
-      <div style="font-size:40px;margin-bottom:10px;">🔖</div>
-      <p style="color:var(--muted);">Aapne abhi tak koi room save nahi kiya hai.</p>
-      <button class="btn-teal" style="margin-top:16px;padding:10px 24px;font-size:14px;" onclick="showSec('discover')">Rooms Dhundho →</button>
-    </div>
-    {% endfor %}
   </div>
+
+  <!-- ── TAB: SAVED FLATMATES ── -->
+  <div id="saved-tab-flatmates" style="display:none;">
+    <div class="fm-grid">
+      {% for item in user_saved_flatmates %}
+      <div class="fm-card">
+        <div class="fm-banner" style="background:linear-gradient(135deg,#134e4a,#0EA5C9);">
+          <div class="fm-live">Live</div>
+          <div class="fm-av-wrap">
+            {% if item.profile.profile_photo %}
+              <img src="{{ item.profile.profile_photo.url }}" class="fm-av fm-av-img" alt="{{ item.profile.name }}"/>
+            {% else %}
+              <div class="fm-av" style="background:rgba(255,255,255,.2);">
+                {{ item.profile.name|slice:":2"|upper }}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="fm-body">
+          <div class="fm-name-row">
+            <div class="fm-name">{{ item.profile.name }}</div>
+            <span class="fm-gender" style="{% if item.profile.gender == 'Female' %}background:#FEE7F0;color:#C026D3;{% else %}background:var(--teal-lt);color:var(--teal);{% endif %}">
+              {{ item.profile.gender|default:"—" }}
+            </span>
+          </div>
+          <div class="fm-sub">{{ item.profile.occupation|default:"—" }} · {{ item.profile.city|default:"—" }}</div>
+          <div class="fm-vibe">✨ Vibe Score: {{ item.profile.vibe_score|default:"—" }}</div>
+          <div class="fm-tags">
+            {% for tag in item.profile.get_tags_list|slice:":3" %}
+              <span class="fm-tag" style="background:var(--teal-lt);color:var(--teal);">{{ tag }}</span>
+            {% endfor %}
+          </div>
+          <div class="fm-footer">
+            <div class="fm-budget">₹{{ item.profile.max_budget|default:"—" }} <small>/mo</small></div>
+            <a href="{% url 'flatmate_detail' item.profile.id %}" class="btn-sm btn-sm-teal" style="text-decoration:none;font-size:11px;padding:6px 13px;">View</a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div style="grid-column:1/-1;background:#fff;border:1px solid var(--border);border-radius:18px;padding:48px 20px;text-align:center;box-shadow:var(--card-sh);">
+        <div style="font-size:40px;margin-bottom:12px;">👥</div>
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px;">Koi saved flatmate nahi</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Discover mein jaao aur flatmates save karo.</p>
+        <button class="btn-teal" style="font-size:13px;padding:10px 24px;" onclick="showSec('discover')">Flatmates Dhundho →</button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
   <button class="btn-outline" style="margin-top:20px;" onclick="showSec('discover')">← Back to Discover</button>
 </div>
 
