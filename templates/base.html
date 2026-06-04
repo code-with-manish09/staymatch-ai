@@ -831,19 +831,19 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   <a href="{% url 'dashboard' %}" class="nav-item">
     <span class="nav-icon">🏠</span> Discover Rooms
   </a>
-  <a href="{% url 'matches' %}" class="nav-item">
+  <a href="{% url 'match_gateway' %}" class="nav-item">
     <span class="nav-icon">⚡</span> My Matches
-    <span class="nav-badge teal">4</span>
+    <span class="nav-badge teal"></span>
   </a>
   <a href="{% url 'dashboard' %}?sec=saved" class="nav-item">
     <span class="nav-icon">🔖</span> Saved Rooms
-    <span class="nav-badge amber">7</span>
+    <span class="nav-badge amber"></span>
   </a>
 
   <div class="sb-section">Connect</div>
   <a href="{% url 'inbox' %}" class="nav-item">
     <span class="nav-icon">💬</span> Messages
-    <span class="nav-badge">3</span>
+    <span class="nav-badge"></span>
   </a>
   <a href="{% url 'dashboard' %}?sec=notifications" class="nav-item">
     <span class="nav-icon">🔔</span> Notifications

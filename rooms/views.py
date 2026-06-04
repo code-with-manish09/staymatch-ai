@@ -258,9 +258,18 @@ def submit_review(request, room_id):
 
 
 #==========match view============
+def match_gateway(request):
+    return render(request, 'rooms/match_gateway.html')
+
+
 @login_required(login_url='/login/')
-def matches(request):
-    return render(request, 'rooms/matches.html')
+def room_matches(request):
+    return render(request, 'rooms/room_matches.html')
+
+@login_required(login_url='/login/')
+def flatmate_match(request):
+    return render(request, 'rooms/flatmate_match.html')
+
 
 #=======match details view===========
 
@@ -611,3 +620,57 @@ def toggle_save_flatmate(request, profile_id):
             return JsonResponse({'status': 'success', 'action': 'removed'})
         return JsonResponse({'status': 'success', 'action': 'saved'})
     return JsonResponse({'status': 'error'}, status=400)
+
+#===============flatmate match====================
+@login_required
+def ai_flatmate_match_view(request):
+    user_prefs = (
+        f"Gender: {request.GET.get('gender', 'Any')}, "
+        f"Occupation: {request.GET.get('occupation', 'Any')}, "
+        f"City: {request.GET.get('city', 'Any')}, "
+        f"Budget: {request.GET.get('budget', 'Any')}, "
+        f"Room type needed: {request.GET.get('room_type', 'Any')}, "
+        f"Move-in: {request.GET.get('move_in', 'Any')}, "
+        f"Sleep schedule: {request.GET.get('sleep', 'Any')}, "
+        f"Cleanliness: {request.GET.get('cleanliness', 'Any')}, "
+        f"Guest policy: {request.GET.get('guest_policy', 'Any')}, "
+        f"Work style: {request.GET.get('work_style', 'Any')}, "
+        f"Noise tolerance: {request.GET.get('noise', 'Any')}, "
+        f"Smoking: {request.GET.get('smoking', 'Any')}, "
+        f"Alcohol: {request.GET.get('alcohol', 'Any')}, "
+        f"Pets: {request.GET.get('pets', 'Any')}, "
+        f"Language: {request.GET.get('language', 'Any')}, "
+        f"Preferred flatmate gender: {request.GET.get('pref_gender', 'Any')}, "
+        f"Preferred flatmate occupation: {request.GET.get('pref_occupation', 'Any')}, "
+        f"Preferred age range: {request.GET.get('pref_age', 'Any')}"
+    )
+
+    profiles = FlatmateProfile.objects.all()
+
+    results = []
+    for profile in profiles:
+        profile_text = profile.get_preference_text()  # same pattern as room
+        response = get_vibe_score(user_prefs, profile_text)
+        clean = response.strip().removeprefix('```json').removeprefix('```').removesuffix('```').strip()
+        if not clean:
+            continue
+        try:
+            data = json.loads(clean)
+        except json.JSONDecodeError:
+            continue
+
+        results.append({
+            "profile_id": profile.id,
+            "name": profile.name,
+            "age": profile.age,
+            "occupation": profile.occupation,
+            "city": profile.city,
+            "budget": profile.max_budget,
+            "room_type": profile.room_type_pref,
+            "sleep": profile.sleep_schedule,
+            "vibe_score": data["score"],
+            "reason": data["reason"],
+        })
+
+    results.sort(key=lambda x: x["vibe_score"], reverse=True)
+    return JsonResponse({"matches": results})

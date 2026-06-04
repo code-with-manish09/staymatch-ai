@@ -210,6 +210,23 @@ class FlatmateProfile(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.city}) — Score: {self.vibe_score}"
+    
+    def get_preference_text(self):
+      return (
+        f"Name: {self.name}, Age: {self.age}, Gender: {self.gender}, "
+        f"Occupation: {self.occupation}, City: {self.city}, "
+        f"Max budget: {self.max_budget}, Room type: {self.room_type_pref}, "
+        f"Move-in: {self.move_in}, Sleep schedule: {self.sleep_schedule}, "
+        f"Cleanliness: {self.cleanliness_level}/10, "
+        f"Noise tolerance: {self.noise_tolerance}, "
+        f"Guest policy: {self.guest_policy}, Work style: {self.work_style}, "
+        f"Smoking: {self.smoking}, Alcohol: {self.alcohol}, Pets: {self.pets}, "
+        f"Language: {self.language_pref}, "
+        f"Prefers flatmate gender: {self.pref_gender}, "
+        f"Prefers flatmate occupation: {self.pref_occupation}, "
+        f"Preferred age range: {self.pref_age_range}, "
+        f"Bio: {self.bio}"
+    )
 
     class Meta:
         ordering = ['-vibe_score', '-created_at']

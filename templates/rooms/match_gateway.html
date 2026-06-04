@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+.gateway-wrap{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 0;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--teal-lt);border:1px solid rgba(14,165,201,.25);border-radius:99px;padding:8px 18px;font-size:12px;font-weight:700;color:var(--teal);letter-spacing:.05em;text-transform:uppercase;margin-bottom:24px;}
+.hero-badge-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.gateway-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(32px,5vw,52px);letter-spacing:-.03em;line-height:1.1;text-align:center;margin-bottom:14px;color:var(--navy);}
+.gateway-sub{font-size:16px;color:var(--muted);text-align:center;max-width:480px;line-height:1.7;margin-bottom:48px;}
+
+.gateway-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;max-width:760px;}
+
+.g-card{background:#fff;border:1.5px solid var(--border);border-radius:24px;padding:40px 36px;box-shadow:var(--card-sh);cursor:pointer;transition:all .25s;text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;position:relative;overflow:hidden;}
+.g-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .25s;}
+.g-card:hover{transform:translateY(-6px);box-shadow:var(--card-sh2);}
+.g-card:hover::before{opacity:1;}
+
+.g-card.room::before{background:linear-gradient(135deg,rgba(14,165,201,.04),rgba(9,147,179,.08));}
+.g-card.room:hover{border-color:var(--teal);}
+.g-card.flatmate::before{background:linear-gradient(135deg,rgba(99,102,241,.04),rgba(79,70,229,.08));}
+.g-card.flatmate:hover{border-color:#6366f1;}
+
+.g-icon{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:24px;position:relative;z-index:1;}
+.g-icon.room{background:var(--teal-lt);}
+.g-icon.flatmate{background:#f5f3ff;}
+
+.g-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;position:relative;z-index:1;}
+.g-label.room{color:var(--teal);}
+.g-label.flatmate{color:#6366f1;}
+
+.g-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--navy);margin-bottom:10px;line-height:1.2;position:relative;z-index:1;}
+.g-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:28px;position:relative;z-index:1;}
+
+.g-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:32px;position:relative;z-index:1;}
+.g-pill{font-size:11px;font-weight:600;padding:4px 11px;border-radius:99px;}
+.g-pill.room{background:var(--teal-lt);color:var(--teal);}
+.g-pill.flatmate{background:#f5f3ff;color:#6366f1;}
+
+.g-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:11px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:all .2s;position:relative;z-index:1;}
+.g-btn.room{background:linear-gradient(135deg,var(--teal),#0993b3);color:#fff;}
+.g-btn.flatmate{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;}
+.g-card:hover .g-btn{transform:translateX(4px);}
+
+.g-badge{position:absolute;top:20px;right:20px;background:var(--navy);color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;letter-spacing:.04em;z-index:1;}
+
+.divider-or{display:flex;align-items:center;gap:16px;color:var(--muted);font-size:13px;font-weight:600;width:100%;max-width:760px;margin:32px 0 0;}
+.divider-or::before,.divider-or::after{content:'';flex:1;height:1px;background:var(--border);}
+
+@media(max-width:640px){
+  .gateway-cards{grid-template-columns:1fr;}
+  .gateway-wrap{padding:40px 0;}
+  .g-card{padding:28px 24px;}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="gateway-wrap">
+
+  <div class="hero-badge fu d1"><div class="hero-badge-dot"></div> Powered by Gemini AI</div>
+
+  <h1 class="gateway-title fu d2">What are you<br><span class="grad">looking for?</span></h1>
+  <p class="gateway-sub fu d2">Choose what you want to match — AI will find the best options based on your vibe.</p>
+
+  <div class="gateway-cards fu d3">
+
+    <!-- ROOM CARD -->
+    <a href="{% url 'room_matches' %}" class="g-card room">
+      <div class="g-badge">🏠 Rooms</div>
+      <div class="g-icon room">🏠</div>
+      <div class="g-label room">Room Match</div>
+      <div class="g-title">Find a Room<br>to Rent</div>
+      <div class="g-desc">Tell us your lifestyle and budget — AI will score and rank the best rooms for you from all listings.</div>
+      <div class="g-pills">
+        <span class="g-pill room">Budget Filter</span>
+        <span class="g-pill room">City Match</span>
+        <span class="g-pill room">Vibe Score</span>
+        <span class="g-pill room">AI Ranked</span>
+      </div>
+      <div class="g-btn room">Find Rooms &nbsp;→</div>
+    </a>
+
+    <!-- FLATMATE CARD -->
+    <a href="{% url 'flatmate_match' %}" class="g-card flatmate">
+      <div class="g-badge" style="background:#6366f1;">🤝 Flatmates</div>
+      <div class="g-icon flatmate">🤝</div>
+      <div class="g-label flatmate">Flatmate Match</div>
+      <div class="g-title">Find Your<br>Ideal Flatmate</div>
+      <div class="g-desc">Share your habits and preferences — AI will find flatmates whose lifestyle matches yours perfectly.</div>
+      <div class="g-pills">
+        <span class="g-pill flatmate">Lifestyle Match</span>
+        <span class="g-pill flatmate">Sleep Schedule</span>
+        <span class="g-pill flatmate">Vibe Score</span>
+        <span class="g-pill flatmate">AI Ranked</span>
+      </div>
+      <div class="g-btn flatmate">Find Flatmates &nbsp;→</div>
+    </a>
+
+  </div>
+
+</div>
+{% endblock %}
