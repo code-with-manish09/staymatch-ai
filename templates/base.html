@@ -838,6 +838,15 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   .fm-grid { grid-template-columns: 1fr; }
 }
 
+
+.review-slide{display:none;}
+.review-slide.active{display:block;}
+.rev-nav-dot{width:7px;height:7px;border-radius:99px;background:var(--border);cursor:pointer;transition:all .3s;border:none;}
+.rev-nav-dot.active{width:22px;background:var(--teal);}
+.rev-nav-arr{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--navy);font-size:15px;transition:all .15s;line-height:1;}
+.rev-nav-arr:hover{border-color:var(--teal);color:var(--teal);}
+
+
 </style>
 {% block extra_css %}{% endblock %}
 </head>
@@ -1354,6 +1363,30 @@ function handleFlatmateSave(profileId) {
   .catch(() => {});
 }
 
+(function(){
+  const slides = document.querySelectorAll('.review-slide');
+  const nav = document.getElementById('reviewNav');
+  if(!slides.length || !nav) return;
+  let cur = 0;
+
+  // Build nav
+  nav.innerHTML = `<button class="rev-nav-arr" onclick="(function(){chRv(-1)})()">‹</button>`;
+  slides.forEach((_,i) => {
+    nav.innerHTML += `<button class="rev-nav-dot${i===0?' active':''}" id="nd${i}" onclick="goRv(${i})"></button>`;
+  });
+  nav.innerHTML += `<button class="rev-nav-arr" onclick="(function(){chRv(1)})()">›</button>`;
+
+  window.goRv = function(n){
+    slides[cur].classList.remove('active');
+    document.getElementById('nd'+cur).classList.remove('active');
+    cur = n;
+    slides[cur].classList.add('active');
+    document.getElementById('nd'+cur).classList.add('active');
+  };
+  window.chRv = function(d){ goRv((cur+d+slides.length)%slides.length); };
+
+  setInterval(()=>chRv(1), 4000);
+})();
 
 </script>
 </body>

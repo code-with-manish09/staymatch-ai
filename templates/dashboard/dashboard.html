@@ -107,65 +107,6 @@
 
 </div>
 
-{# ══ CITY · PLATFORM STATS — FINAL CLEAN VERSION ══ #}
-{# Paste this block replacing the entire <!-- ══ CITY · PLATFORM STATS ══ --> section in your template #}
- 
-<div class="fu d2" style="margin-bottom:24px;">
-  <div class="bottom-stats-row">
- 
-    <!-- LEFT: Rooms by City -->
-    <div class="white-card">
-      <div class="card-hd">
-        <div class="card-title">🏙️ Rooms by City</div>
-        <span class="live-pill">Live</span>
-      </div>
-      <div class="city-list">
-        {% for cd in city_stats %}
-        <div class="city-row">
-          <div class="city-nm">{{ cd.city }}</div>
-          <div class="city-bar-track">
-            <div class="city-bar-fill" style="width:{% widthratio cd.count city_stats.0.count 100 %}%;"></div>
-          </div>
-          <div class="city-cnt">{{ cd.count }}</div>
-        </div>
-        {% empty %}
-        <p style="color:var(--muted);font-size:13px;padding:12px 0;">No rooms available.</p>
-        {% endfor %}
-      </div>
-    </div>
- 
-    <!-- RIGHT: Platform Stats -->
-    <div class="white-card">
-      <div class="card-hd">
-        <div class="card-title">📊 Platform Stats</div>
-        <span style="background:var(--amber-lt);color:#B45309;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;">Growing</span>
-      </div>
-      <div class="plat-grid">
-        <div class="plat-block">
-          <div class="plat-icon" style="background:var(--teal-lt);">👥</div>
-          <div class="plat-num">{{ total_users|default:"—" }}</div>
-          <div class="plat-lbl">Users Joined</div>
-          <div class="plat-trend trend-up">↑ Growing</div>
-        </div>
-        <div class="plat-block">
-          <div class="plat-icon" style="background:var(--amber-lt);">🏠</div>
-          <div class="plat-num">{{ total_listings|default:"—" }}</div>
-          <div class="plat-lbl">Total Listings</div>
-          <div class="plat-trend" style="color:var(--teal);">● Live</div>
-        </div>
-        <div class="plat-block">
-          <div class="plat-icon" style="background:#F0FDF4;">⚡</div>
-          <div class="plat-num">{{ total_matches|default:"—" }}</div>
-          <div class="plat-lbl">AI Matches Made</div>
-          <div class="plat-trend trend-up">↑ Today</div>
-        </div>
-      </div>
-    </div>
- 
-  </div>
-</div>
-{# ══ END CITY · PLATFORM STATS ══ #}
- 
   
   <!-- Room Listings -->
   <div class="sec-hd fu d4">
@@ -319,40 +260,114 @@
   </div>
 </div>
 {# ══ END FLATMATE PROFILES ══ #}
-   <!-- Row 2: Recent Reviews -->
-    <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:20px 22px;box-shadow:var(--card-sh);">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);">💬 What People Are Saying</div>
-        <span style="background:var(--amber-lt);color:#B45309;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;">⭐ Recent Reviews</span>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
 
-        {% for review in recent_reviews %}
-        <div style="background:var(--off);border:1px solid var(--border);border-radius:12px;padding:14px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <div style="width:32px;height:32px;border-radius:50%;background:var(--teal-lt);color:var(--teal);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              {{ review.user.username|slice:":1"|upper }}
-            </div>
-            <div style="flex:1;min-width:0;">
-              <div style="font-size:12px;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ review.user.username }}</div>
-              <div style="font-size:10px;color:var(--muted);">
-                {% for i in "12345"|make_list %}
-                  {% if forloop.counter <= review.rating %}⭐{% endif %}
-                {% endfor %}
-              </div>
-            </div>
-            <div style="font-size:10px;color:var(--muted);flex-shrink:0;">{{ review.created_at|timesince|slice:":8" }} ago</div>
+
+{# ══ CITY · PLATFORM STATS — FINAL CLEAN VERSION ══ #}
+{# Paste this block replacing the entire <!-- ══ CITY · PLATFORM STATS ══ --> section in your template #}
+ 
+<div class="fu d2" style="margin-bottom:24px;">
+  <div class="bottom-stats-row">
+ 
+    <!-- LEFT: Rooms by City -->
+    <div class="white-card">
+      <div class="card-hd">
+        <div class="card-title">🏙️ Rooms by City</div>
+        <span class="live-pill">Live</span>
+      </div>
+      <div class="city-list">
+        {% for cd in city_stats %}
+        <div class="city-row">
+          <div class="city-nm">{{ cd.city }}</div>
+          <div class="city-bar-track">
+            <div class="city-bar-fill" style="width:{% widthratio cd.count city_stats.0.count 100 %}%;"></div>
           </div>
-          <p style="font-size:12px;color:var(--navy);line-height:1.55;margin:0;">{{ review.comment|truncatechars:80 }}</p>
-          <div style="font-size:10px;color:var(--teal);font-weight:600;margin-top:6px;">🏠 {{ review.listing.title|truncatechars:25 }}</div>
+          <div class="city-cnt">{{ cd.count }}</div>
         </div>
         {% empty %}
-        <p style="color:var(--muted);">Koi review nahi abhi.</p>   
-    
+        <p style="color:var(--muted);font-size:13px;padding:12px 0;">No rooms available.</p>
         {% endfor %}
-
       </div>
     </div>
+ 
+    <!-- RIGHT: Platform Stats -->
+    <div class="white-card">
+      <div class="card-hd">
+        <div class="card-title">📊 Platform Stats</div>
+        <span style="background:var(--amber-lt);color:#B45309;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;">Growing</span>
+      </div>
+      <div class="plat-grid">
+        <div class="plat-block">
+          <div class="plat-icon" style="background:var(--teal-lt);">👥</div>
+          <div class="plat-num">{{ total_users|default:"—" }}</div>
+          <div class="plat-lbl">Users Joined</div>
+          <div class="plat-trend trend-up">↑ Growing</div>
+        </div>
+        <div class="plat-block">
+          <div class="plat-icon" style="background:var(--amber-lt);">🏠</div>
+          <div class="plat-num">{{ total_listings|default:"—" }}</div>
+          <div class="plat-lbl">Total Listings</div>
+          <div class="plat-trend" style="color:var(--teal);">● Live</div>
+        </div>
+        <div class="plat-block">
+          <div class="plat-icon" style="background:#F0FDF4;">⚡</div>
+          <div class="plat-num">{{ total_matches|default:"—" }}</div>
+          <div class="plat-lbl">AI Matches Made</div>
+          <div class="plat-trend trend-up">↑ Today</div>
+        </div>
+      </div>
+    </div>
+ 
+  </div>
+</div>
+{# ══ END CITY · PLATFORM STATS ══ #}
+ 
+   <!-- Row 2: Recent Reviews -->
+<!-- Row 2: Recent Reviews Carousel -->
+<div class="reviews-card" style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:24px;box-shadow:var(--card-sh);">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);">💬 What People Are Saying</div>
+    <span style="background:var(--amber-lt);color:#B45309;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;">⭐ Recent Reviews</span>
+  </div>
+
+  <!-- Carousel Wrapper -->
+  <div id="reviewCarousel" style="position:relative;min-height:160px;">
+    {% for review in recent_reviews %}
+    <div class="review-slide {% if forloop.first %}active{% endif %}" id="rs{{ forloop.counter0 }}">
+      <div style="font-size:52px;line-height:1;color:var(--teal);font-family:Georgia,serif;margin-bottom:2px;opacity:.7;">"</div>
+      <div style="font-size:14px;font-style:italic;color:var(--navy);line-height:1.75;margin-bottom:18px;">{{ review.comment }}</div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--teal-lt);color:var(--teal);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Bricolage Grotesque',sans-serif;">
+          {{ review.user.username|slice:":2"|upper }}
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);">{{ review.user.username }}</div>
+          <div style="color:var(--amber);font-size:12px;margin-top:2px;">
+            {% for i in "12345"|make_list %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}
+          </div>
+          <div style="font-size:10px;font-weight:700;color:var(--teal);margin-top:3px;">🏠 {{ review.listing.title|truncatechars:30 }}</div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="review-slide active" id="rs0">
+      <div style="font-size:52px;line-height:1;color:var(--teal);font-family:Georgia,serif;opacity:.7;">"</div>
+      <div style="font-size:14px;font-style:italic;color:var(--navy);line-height:1.75;margin-bottom:18px;">StayMatch ne mujhe perfect flatmate dhundha — same interests, same schedule. Best decision tha!</div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--teal-lt);color:var(--teal);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;">AK</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);">Aditya Kumar</div>
+          <div style="color:var(--amber);font-size:12px;margin-top:2px;">★★★★★</div>
+          <div style="font-size:10px;font-weight:700;color:var(--teal);margin-top:3px;">🏠 2BHK Koramangala</div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Nav Dots + Arrows -->
+  <div id="reviewNav" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;"></div>
+</div>
+
 
   <div class="bottom-grid fu d5">
 
