@@ -22,6 +22,7 @@ class Profile(models.Model):
 
     #tags field jsonf
     personality_tags = models.JSONField(default=list,blank=True)
+    goal = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username}'s Profile" if self.user else self.full_name

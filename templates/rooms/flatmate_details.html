@@ -439,7 +439,7 @@
 
     <!-- Back + edit buttons -->
     <div class="hero-cover-actions">
-      <a href="{% url 'matches' %}" class="hero-action-btn">← Back</a>
+      <a href="{% url 'dashboard' %}" class="hero-action-btn">← Back</a>
       {% if request.user == post.user %}
         <a href="{% url 'edit_flatmate' post.pk %}" class="hero-action-btn primary">✏️ Edit Profile</a>
       {% endif %}

@@ -5,7 +5,7 @@ from django.dispatch import receiver
 @receiver(post_save, sender=User)
 def manage_user_profile(sender, instance, created, **kwargs):
     # 1. Circular Import se bachne ke liye import yahan andar rakho
-    from dashboard.models import Profile 
+    from accounts.models import Profile 
     
     if created:
         # Naya user hai toh profile banao

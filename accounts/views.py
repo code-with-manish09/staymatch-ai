@@ -12,10 +12,8 @@ from django.http import JsonResponse
 
 # 1. Logger setup (Professional error tracking ke liye)
 logger = logging.getLogger(__name__)
-
 def register(request):
     if request.method == 'POST':
-        # Data Capture
         username = request.POST.get('username')
         email    = request.POST.get('email', '')
         password = request.POST.get('password')
@@ -26,65 +24,55 @@ def register(request):
         contact   = request.POST.get('contact', '')
         profile_picture = request.FILES.get('profile_picture')
 
-        # 2. Input Validation (Security check)
         if not username or not password:
             return render(request, 'accounts/register.html', {
                 'error': 'Username and password are required.'
             })
 
-        # 3. Check existing user
         if User.objects.filter(username=username).exists():
             return render(request, 'accounts/register.html', {
                 'error': 'Username already exists!'
             })
 
         try:
-            # 4. User Create
             new_user = User.objects.create_user(
-                username=username, 
-                email=email, 
+                username=username,
+                email=email,
                 password=password
             )
-            
-            # 5. Profile Handle (Signal-safe 'get_or_create')
+
+            if full_name:
+                names = full_name.split(' ')
+                new_user.first_name = names[0]
+                new_user.last_name = " ".join(names[1:]) if len(names) > 1 else ''
+                new_user.save()
+
             user_profile, created = Profile.objects.get_or_create(user=new_user)
-            
-            # Data Fill
             user_profile.full_name = full_name
             if age and str(age).isdigit():
                 user_profile.age = int(age)
-            
             user_profile.gender = gender
             user_profile.location = location
             user_profile.contacts = contact
-            
             if profile_picture:
                 user_profile.profile_picture = profile_picture
-                
             user_profile.save()
-            
-            # 6. Success Logic
+
             messages.success(request, f"Account created for {username}!")
-            return redirect('login') 
+            return redirect('login')
 
         except Exception as e:
-            # 7. Logging (Terminal mein poora traceback dikhega, par user ko nahi)
             logger.exception("Registration failed for user: %s", username)
-            
-            # User ko sirf generic message dikhao (Cybersecurity safety)
             return render(request, 'accounts/register.html', {
-                'error': "Registration failed due to a system error. Please try again."
+                'error': "Registration failed. Please try again."
             })
 
-    # GET Request
     return render(request, 'accounts/register.html')
 
 
-
 #-------------------------- LOGIN VIEW -----------------------------------
- 
-def login(request):
 
+def login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -95,14 +83,11 @@ def login(request):
             auth.login(request, user)
             messages.success(request, "Login successful 🚀")
             return redirect('dashboard')
-
         else:
             messages.error(request, "Invalid username or password ❌")
-            return redirect('login')   # 🔥 IMPORTANT CHANGE
+            return redirect('login')
 
     return render(request, 'accounts/login.html')
-
-
 
 #-------------------------- UPDATE PROFILE VIEW -----------------------------------
 @login_required
