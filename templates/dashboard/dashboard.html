@@ -491,34 +491,84 @@
 <div id="sec-notifications" style="display:none;">
   <div class="feat-card" style="padding:28px;">
     <div style="font-size:20px;font-weight:800;color:var(--navy);margin-bottom:20px;">🔔 Notifications</div>
-    {% if recent_messages %}
+
+    {% if flatmate_inquiries or recent_messages %}
+
+      {% for msg in flatmate_inquiries %}
+        <a href="{% url 'flatmate_chat' msg.flatmate_profile.id %}"
+           style="display:flex;align-items:center;gap:12px;padding:14px;
+                  border-radius:12px;background:#fdf4ff;
+                  border:1px solid #e9d5ff;margin-bottom:10px;
+                  text-decoration:none;">
+          <div style="width:42px;height:42px;border-radius:50%;
+                      background:#7c3aed;color:white;display:flex;
+                      align-items:center;justify-content:center;
+                      font-weight:700;font-size:16px;flex-shrink:0;">
+            {{ msg.sender.username|slice:":1"|upper }}
+          </div>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:14px;color:#4c1d95;">
+              {{ msg.sender.username }}
+            </div>
+            <div style="font-size:12px;color:#6d28d9;margin-top:2px;">
+              {{ msg.body|truncatechars:45 }}
+            </div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:3px;">
+              👥 {{ msg.flatmate_profile.name|truncatechars:28 }}
+              · {{ msg.created_at|timesince }} ago
+            </div>
+          </div>
+          <div style="width:10px;height:10px;background:#7c3aed;
+                      border-radius:50%;flex-shrink:0;"></div>
+        </a>
+      {% endfor %}
+
       {% for conv in recent_messages %}
-        {% if conv.unread %}
+        {% if conv.unread and conv.listing %}
           <a href="{% url 'chat_view' conv.listing.id %}"
-             style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:12px;background:#f0fdfa;border:1px solid #99f6e4;margin-bottom:10px;text-decoration:none;">
-            <div style="width:42px;height:42px;border-radius:50%;background:#0d9488;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">
+             style="display:flex;align-items:center;gap:12px;padding:14px;
+                    border-radius:12px;background:#f0fdfa;
+                    border:1px solid #99f6e4;margin-bottom:10px;
+                    text-decoration:none;">
+            <div style="width:42px;height:42px;border-radius:50%;
+                        background:#0d9488;color:white;display:flex;
+                        align-items:center;justify-content:center;
+                        font-weight:700;font-size:16px;flex-shrink:0;">
               {{ conv.other_user.username|slice:":1"|upper }}
             </div>
             <div>
-              <div style="font-weight:700;font-size:14px;color:#134e4a;">{{ conv.other_user.username }}</div>
-              <div style="font-size:12px;color:#0f766e;">{{ conv.other_user.username }} messaged you: "{{ conv.last_msg.body|truncatechars:40 }}"</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:2px;">🏠 {{ conv.listing.title|truncatechars:25 }}</div>
+              <div style="font-weight:700;font-size:14px;color:#134e4a;">
+                {{ conv.other_user.username }}
+              </div>
+              <div style="font-size:12px;color:#0f766e;">
+                {{ conv.last_msg.body|truncatechars:40 }}
+              </div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px;">
+                🏠 {{ conv.listing.title|truncatechars:25 }}
+              </div>
             </div>
-            <div style="margin-left:auto;background:#0d9488;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">
+            <div style="margin-left:auto;background:#0d9488;color:white;
+                        border-radius:50%;width:22px;height:22px;display:flex;
+                        align-items:center;justify-content:center;
+                        font-size:11px;font-weight:700;">
               {{ conv.unread }}
             </div>
           </a>
         {% endif %}
       {% endfor %}
+
     {% else %}
       <div style="text-align:center;padding:40px 20px;color:#94a3b8;">
         <div style="font-size:40px;margin-bottom:10px;">🔔</div>
         <p>No new notifications.</p>
       </div>
     {% endif %}
-    <button class="btn-teal" style="font-size:14px;padding:11px 28px;margin-top:16px;width:100%;" onclick="showSec('discover')">← Back</button>
+
+    <button class="btn-teal"
+            style="font-size:14px;padding:11px 28px;margin-top:16px;width:100%;"
+            onclick="showSec('discover')">← Back</button>
   </div>
-</div>
+</div>>
 
 <!-- ══ PROFILE ══ -->
 <div id="sec-profile" style="display:none;">

@@ -488,6 +488,7 @@ def post_flatmate(request):
     from .models import FlatmateProfile
 
     if request.method == 'POST':
+        
         try:
             tags_str = request.POST.get('interest_tags', '')
             tags_json = json.dumps([t.strip() for t in tags_str.split(',') if t.strip()])
@@ -534,6 +535,7 @@ def post_flatmate(request):
             print("ERROR:", e)
 
             messages.error(request, f'Kuch galat hua: {str(e)}')
+            return redirect('post_flatmate')
 
     return render(request, 'rooms/post_flatmate.html')
 
@@ -592,11 +594,22 @@ def edit_flatmate(request, pk):
 from django.shortcuts import render, get_object_or_404
 from .models import FlatmateProfile
 
+from inbox.models import FlatmateInquiry
 
 def flatmate_detail(request, pk):
-    profile = get_object_or_404(FlatmateProfile, pk=pk)
-    return render(request, 'rooms/flatmate_details.html', {'post': profile})
+    profile = get_object_or_404(FlatmateProfile, id=pk)
+    
+    user_already_inquired = False
+    if request.user.is_authenticated:
+        user_already_inquired = FlatmateInquiry.objects.filter(
+            sender=request.user,
+            flatmate_profile=profile
+        ).exists()
 
+    return render(request, 'rooms/flatmate_details.html', {
+        'post': profile,
+        'user_already_inquired': user_already_inquired,
+    })
 #===============delete flatmate====================
 # views.py
 @login_required

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from httpx import request
 from rooms.models import FlatmateProfile, Listing,Saved_Rooms,Review, SavedFlatmate
-
+from inbox.models import Message
 from inbox.views import get_conversations  
 from django.contrib.auth.models import User
 
@@ -63,6 +63,11 @@ def dashboard(request):
     saved_flatmate_ids = list(
     SavedFlatmate.objects.filter(user=request.user).values_list('profile_id', flat=True)
 )
+    flatmate_inquiries = Message.objects.filter(
+    recipient=request.user,
+    flatmate_profile__isnull=False,
+    is_read=False
+).select_related('sender', 'flatmate_profile').order_by('-created_at')[:10]
 
     
     context = {
@@ -90,6 +95,7 @@ def dashboard(request):
         'compatible_flatmates': compatible_flatmates,
         'saved_flatmate_ids': saved_flatmate_ids,
         'user_saved_flatmates': SavedFlatmate.objects.filter(user=request.user).select_related('profile'),
+        'flatmate_inquiries': flatmate_inquiries,
 
 
     }

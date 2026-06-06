@@ -10,7 +10,6 @@
     border-left:1px solid #e2e8f0;
     border-right:1px solid #e2e8f0;
 }
-
 .sb{width:300px;min-width:300px;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;background:#fff;}
 .sb-head{padding:18px 16px 12px;border-bottom:1px solid #e2e8f0;}
 .sb-head h2{font-size:16px;font-weight:700;color:#0f172a;}
@@ -22,6 +21,8 @@
 .ci.active{background:#eff6ff;border-left-color:#3b82f6;}
 
 .av{width:42px;height:42px;border-radius:50%;background:#dbeafe;color:#1d4ed8;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.av.fm{background:#f3e8ff;color:#7c3aed;}  /* flatmate ke liye purple */
+
 .ci-info{flex:1;min-width:0;}
 .ci-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;}
 .ci-name{font-size:13px;font-weight:600;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -29,6 +30,10 @@
 .ci-prev{font-size:12px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .ci-prev.unread{color:#0f172a;font-weight:600;}
 .u-dot{width:9px;height:9px;background:#3b82f6;border-radius:50%;flex-shrink:0;}
+
+.type-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;flex-shrink:0;}
+.type-badge.room{background:#dbeafe;color:#1d4ed8;}
+.type-badge.fm{background:#f3e8ff;color:#7c3aed;}
 
 .chat{flex:1;display:flex;flex-direction:column;min-width:0;}
 .chat-hd{padding:14px 18px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:12px;background:#fff;}
@@ -70,10 +75,9 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="wrap">
 
-  <!-- SIDEBAR -->
+  <!-- ══ SIDEBAR ══ -->
   <div class="sb">
     <div class="sb-head">
       <h2>💬 Messages</h2>
@@ -81,41 +85,65 @@
     </div>
     <div class="conv-list">
       {% for conv in conversations %}
-        {% if conv.listing.owner == request.user %}
-          <a class="ci {% if active_listing.id == conv.listing.id and other_user.id == conv.other_user.id %}active{% endif %}"
-             href="{% url 'chat_view' conv.listing.id %}?user={{ conv.other_user.id }}">
+
+        {% if conv.type == 'room' %}
+          {# ── Room conversation ── #}
+          {% if conv.listing.owner == request.user %}
+            <a class="ci {% if active_listing.id == conv.listing.id and other_user.id == conv.other_user.id %}active{% endif %}"
+               href="{% url 'chat_view' conv.listing.id %}?user={{ conv.other_user.id }}">
+          {% else %}
+            <a class="ci {% if active_listing.id == conv.listing.id %}active{% endif %}"
+               href="{% url 'chat_view' conv.listing.id %}">
+          {% endif %}
+            <div class="av">{{ conv.other_user.username|slice:":1"|upper }}</div>
+            <div class="ci-info">
+              <div class="ci-top">
+                <span class="ci-name">{{ conv.other_user.username }}</span>
+                <span class="ci-time">{{ conv.last_msg.created_at|timesince|slice:":5" }}</span>
+              </div>
+              <div class="ci-prev {% if conv.unread %}unread{% endif %}">
+                🏠 {{ conv.listing.title|truncatechars:30 }}
+              </div>
+            </div>
+            {% if conv.unread %}<div class="u-dot"></div>{% endif %}
+          </a>
+
         {% else %}
-          <a class="ci {% if active_listing.id == conv.listing.id %}active{% endif %}"
-             href="{% url 'chat_view' conv.listing.id %}">
+          {# ── Flatmate conversation ── #}
+          <a class="ci {% if active_flatmate_profile.id == conv.flatmate_profile.id and other_user.id == conv.other_user.id %}active{% endif %}"
+             href="{% url 'flatmate_chat' conv.flatmate_profile.id %}">
+            <div class="av fm">{{ conv.other_user.username|slice:":1"|upper }}</div>
+            <div class="ci-info">
+              <div class="ci-top">
+                <span class="ci-name">{{ conv.other_user.username }}</span>
+                <span class="ci-time">{{ conv.last_msg.created_at|timesince|slice:":5" }}</span>
+              </div>
+              <div class="ci-prev {% if conv.unread %}unread{% endif %}">
+                👥 {{ conv.flatmate_profile.name|truncatechars:30 }}
+              </div>
+            </div>
+            {% if conv.unread %}<div class="u-dot"></div>{% endif %}
+          </a>
         {% endif %}
-          <div class="av">{{ conv.other_user.username|slice:":1"|upper }}</div>
-          <div class="ci-info">
-            <div class="ci-top">
-              <span class="ci-name">{{ conv.other_user.username }}</span>
-              <span class="ci-time">{{ conv.last_msg.created_at|timesince|slice:":5" }}</span>
-            </div>
-            <div class="ci-prev {% if conv.unread %}unread{% endif %}">
-              {{ conv.listing.title|truncatechars:35 }}
-            </div>
-          </div>
-          {% if conv.unread %}<div class="u-dot"></div>{% endif %}
-        </a>
+
       {% empty %}
         <div style="text-align:center;padding:50px 20px;">
-          <p style="font-size:13px;color:#94a3b8;">Koi message nahi abhi tak.</p>
+          <p style="font-size:13px;color:#94a3b8;">No messages yet.</p>
         </div>
       {% endfor %}
     </div>
   </div>
 
-  <!-- CHAT PANEL -->
+  <!-- ══ CHAT PANEL ══ -->
   <div class="chat">
+
     {% if active_listing %}
+      {# ── Room chat header ── #}
       <div class="chat-hd">
         <div class="av">{{ other_user.username|slice:":1"|upper }}</div>
         <div>
           <div class="ch-name">{{ other_user.username }}</div>
-          <div class="ch-sub">{{ active_listing.title }}</div>
+          <div class="ch-sub">🏠 {{ active_listing.title }}</div>
         </div>
       </div>
 
@@ -135,7 +163,7 @@
           </div>
         {% empty %}
           <div style="text-align:center;margin-top:60px;color:#94a3b8;">
-            <p>Pehla message bhejo! 👋</p>
+            <p>Send the first message! 👋</p>
           </div>
         {% endfor %}
       </div>
@@ -152,36 +180,86 @@
         </button>
       </form>
 
+    {% elif active_flatmate_profile %}
+      {# ── Flatmate chat header ── #}
+      <div class="chat-hd">
+        <div class="av fm">{{ other_user.username|slice:":1"|upper }}</div>
+        <div>
+          <div class="ch-name">{{ other_user.username }}</div>
+          <div class="ch-sub">👥 {{ active_flatmate_profile.name }}</div>
+        </div>
+      </div>
+
+      <div class="msgs" id="msgs">
+        <div class="date-div">Today</div>
+        {% for msg in chat_messages %}
+          <div class="mrow {% if msg.sender == request.user %}out{% else %}inc{% endif %}">
+            <div class="mrow-inner">
+              <div class="mav {% if msg.sender == request.user %}me{% else %}them{% endif %}">
+                {{ msg.sender.username|slice:":1"|upper }}
+              </div>
+              <div class="bub {% if msg.sender == request.user %}out{% else %}inc{% endif %}">
+                {{ msg.body }}
+              </div>
+            </div>
+            <div class="mts">{{ msg.created_at|date:"H:i" }}</div>
+          </div>
+        {% empty %}
+          <div style="text-align:center;margin-top:60px;color:#94a3b8;">
+            <p>Send the first message! 👋</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <form method="POST"
+            action="{% url 'flatmate_chat' active_flatmate_profile.id %}"
+            class="inp-bar">
+        {% csrf_token %}
+        <input name="body" id="inp" placeholder="Message likho…" autocomplete="off" required />
+        <button type="submit" class="snd">
+          <svg viewBox="0 0 24 24">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </form>
+
     {% else %}
+      {# ── Koi chat select nahi ── #}
       <div class="empty-chat">
         <span>💬</span>
-        <p>Baayein se koi conversation select karo</p>
+        <p>Select a conversation to start chatting</p>
       </div>
     {% endif %}
-  </div>
 
+  </div>
 </div>
 
 <script>
   var msgs = document.getElementById('msgs');
   if(msgs) msgs.scrollTop = msgs.scrollHeight;
 
-  var activeListing = "{{ active_listing.id }}";
-  if(activeListing){
+  // Auto-refresh — room aur flatmate dono ke liye
+  var activeListing  = "{{ active_listing.id|default:'' }}";
+  var activeFlatmate = "{{ active_flatmate_profile.id|default:'' }}";
+
+  if(activeListing || activeFlatmate){
     setInterval(function(){
       fetch(window.location.href)
-        .then(function(r){return r.text();})
+        .then(function(r){ return r.text(); })
         .then(function(html){
-          var parser = new DOMParser();
-          var doc = parser.parseFromString(html,'text/html');
+          var parser  = new DOMParser();
+          var doc     = parser.parseFromString(html, 'text/html');
           var newMsgs = doc.getElementById('msgs');
           var curMsgs = document.getElementById('msgs');
           if(newMsgs && curMsgs){
+            var atBottom = curMsgs.scrollHeight - curMsgs.scrollTop
+                           === curMsgs.clientHeight;
             curMsgs.innerHTML = newMsgs.innerHTML;
-            curMsgs.scrollTop = curMsgs.scrollHeight;
+            if(atBottom) curMsgs.scrollTop = curMsgs.scrollHeight;
           }
         });
-    },4000);
+    }, 4000);
   }
 </script>
 
