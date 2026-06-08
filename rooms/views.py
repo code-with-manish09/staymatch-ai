@@ -258,6 +258,7 @@ def submit_review(request, room_id):
 
 
 #==========match view============
+@login_required(login_url='/login/')
 def match_gateway(request):
     return render(request, 'rooms/match_gateway.html')
 

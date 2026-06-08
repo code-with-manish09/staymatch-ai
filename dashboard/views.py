@@ -20,10 +20,13 @@ def get_user_profile_or_none(user):
 #==========dashboard view============
 
 from django.db.models import Avg, Count
+from django.db.models.functions import Round
 
 @login_required(login_url='/login/')
 def dashboard(request):
-    all_rooms = Listing.objects.filter(is_published=True).order_by('-created_at')
+    all_rooms = Listing.objects.filter(is_published=True).annotate(
+        avg_rating=Round(Avg('reviews__rating'))
+    ).order_by('-created_at')
 
     saved_room_ids = list(
         Saved_Rooms.objects.filter(user=request.user).values_list('room_id', flat=True)
@@ -69,7 +72,19 @@ def dashboard(request):
     is_read=False
 ).select_related('sender', 'flatmate_profile').order_by('-created_at')[:10]
 
-    
+    # Profile completion score
+    profile = get_user_profile_or_none(request.user)
+    completion_score = 0
+    if profile:
+        if profile.full_name:          completion_score += 15
+        if profile.age:                completion_score += 10
+        if profile.gender:             completion_score += 10
+        if profile.location:           completion_score += 10
+        if profile.contacts:           completion_score += 15
+        if profile.profile_picture:    completion_score += 15
+        if profile.profession:         completion_score += 10
+        if profile.personality_tags:   completion_score += 15  # quiz complete
+        
     context = {
         'listings': all_rooms,
         'saved_room_ids': saved_room_ids,
@@ -96,9 +111,29 @@ def dashboard(request):
         'saved_flatmate_ids': saved_flatmate_ids,
         'user_saved_flatmates': SavedFlatmate.objects.filter(user=request.user).select_related('profile'),
         'flatmate_inquiries': flatmate_inquiries,
+        'completion_score': completion_score,
+        'profile': profile,
 
 
     }
 
     return render(request, 'dashboard/dashboard.html', context)
+
+#==========profile completion score============
+from django.http import JsonResponse
+import json
+
+@login_required
+def save_quiz_tags(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        tags = data.get('tags', [])
+        vibe_score = data.get('vibe_score', 0)
+        profile = get_user_profile_or_none(request.user)
+        if profile:
+            profile.personality_tags = tags
+            profile.vibe_score = vibe_score
+            profile.save()
+            return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': 'error'}, status=400)
 

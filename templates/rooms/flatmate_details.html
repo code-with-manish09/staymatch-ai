@@ -968,11 +968,11 @@
     <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">
       Yeh tera profile hai 👋
     </div>
-    <div style="font-size:12px;color:var(--muted);">Koi bhi update karna ho to edit karo</div>
+    <div style="font-size:12px;color:var(--muted);">Edit your profile at any time</div>
   </div>
   <a href="{% url 'edit_flatmate' post.pk %}"
      class="cta-connect-btn" style="text-decoration:none;display:flex;">
-    ✏️ Profile Edit Karo
+    ✏️ Edit your profile
   </a>
 </div>
 {% endif %}
@@ -1078,8 +1078,8 @@ function saveProfile() {
 }
 
 function reportProfile() {
-  if (confirm('Is profile ko report karna chahte ho?')) {
-    alert('Report submit ho gayi. Hum review karenge. 🙏');
+  if (confirm('do you want to report this profile?')) {
+    alert('Report submitted. 🙏');
   }
 }
 </script>

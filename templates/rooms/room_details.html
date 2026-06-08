@@ -471,7 +471,7 @@
       <div class="sec-title"><div class="step-badge-sm green">★</div> Reviews from Previous Tenants</div>
 
       {% if messages %}{% for message in messages %}
-        {% if message.tags == 'error' %}<div class="msg-error">⚠️ Aapne pehle hi review submit kar di hai!</div>
+        {% if message.tags == 'error' %}<div class="msg-error">⚠️ your review already submitted!</div>
         {% elif message.tags == 'success' %}<div class="msg-success-r">✅ {{ message }}</div>{% endif %}
       {% endfor %}{% endif %}
 

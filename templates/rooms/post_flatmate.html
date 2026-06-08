@@ -476,14 +476,14 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
         <!-- ══ PROFILE PHOTO — NEW ══ -->
         <div class="field-group">
           <label class="field-label">Profile Photo <span style="color:var(--muted);font-weight:400;">(recommended)</span></label>
-          <span class="field-hint">Clear face photo = 3x zyada connect requests milte hain</span>
+          <span class="field-hint">Clear face photo = 3x more request chances</span>
 
           <!-- Upload zone (shown when no photo) -->
           <div class="photo-upload-zone" id="uploadZone">
             <input type="file" name="profile_photo" id="profilePhotoInput" accept="image/*" onchange="handlePhotoUpload(this)"/>
             <div style="font-size:36px;margin-bottom:10px;">📸</div>
-            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);margin-bottom:4px;">Photo Upload Karo</div>
-            <div style="font-size:12px;color:var(--muted);">Click karo ya drag & drop · JPG, PNG · Max 5MB</div>
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--navy);margin-bottom:4px;">upload your photo</div>
+            <div style="font-size:12px;color:var(--muted);">Click or ya drag & drop · JPG, PNG · Max 5MB</div>
           </div>
 
           <!-- Preview (shown after upload) -->
@@ -503,8 +503,7 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
           <div class="photo-tip-banner">
             <div class="photo-tip-icon">💡</div>
             <div class="photo-tip-text">
-              <strong>Tip:</strong> Profile photo aur 5+ tags wale profiles ko <strong>4x zyada responses</strong> milte hain. Face clearly dikhna chahiye — group photos use mat karo.
-            </div>
+              <strong>Tip:</strong> Profiles with a profile photo and 5+ tags <strong>get 4x more responses</strong> Your face should be clearly visible — do not use group photos.
           </div>
         </div>
 
@@ -512,7 +511,7 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
         <div class="form-row-2">
           <div class="field-group">
             <label class="field-label">Full Name *</label>
-            <input type="text" name="name" class="field-input" placeholder="Tumhara naam" required
+            <input type="text" name="name" class="field-input" placeholder="your name" required
                    oninput="updatePreview()"/>
           </div>
           <div class="field-group">
@@ -572,7 +571,7 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
         <!-- Language preference — NEW -->
         <div class="field-group">
           <label class="field-label">Preferred Language(s)</label>
-          <span class="field-hint">Flatmate se konsi language mein comfortable ho? (optional)</span>
+          <span class="field-hint">Which languages are you comfortable communicating in? (optional)</span>
           <div class="radio-group" id="langGroup" style="margin-top:6px;">
             <button type="button" class="radio-btn" onclick="setRadio('langGroup',this)"><div class="radio-dot"></div>Hindi</button>
             <button type="button" class="radio-btn" onclick="setRadio('langGroup',this)"><div class="radio-dot"></div>English</button>
@@ -585,11 +584,11 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
         <div class="field-group">
           <label class="field-label">About You</label>
           <textarea name="bio" class="field-input"
-            placeholder="Apne baare mein thoda batao — kya karte ho, kaisi life hai, kya dhundh rahe ho flatmate mein…"
+            placeholder="Tell us a bit about yourself — what do you do, what's your lifestyle, what are you looking for in a flatmate…"
             style="min-height:90px;" id="bioInput"
             oninput="updateCharCount(this,'bioCount',300); updateVibeScore();"></textarea>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
-            <span class="field-hint">Bio likhne se Vibe Score badh jaata hai ↑</span>
+            <span class="field-hint">Writing your bio can increase your Vibe Score ↑</span>
             <span class="field-hint" id="bioCount">0 / 300</span>
           </div>
         </div>
@@ -654,7 +653,7 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
             <button type="button" class="radio-btn" onclick="setRadio('stayGroup',this)"><div class="radio-dot"></div>1+ year</button>
             <button type="button" class="radio-btn" onclick="setRadio('stayGroup',this)"><div class="radio-dot"></div>Flexible</button>
           </div>
-          <span class="field-hint">Landlords aur flatmates ko stability pasand aati hai</span>
+          <span class="field-hint">Landlords and flatmates prefer stable living arrangements</span>
         </div>
 
       </div>
@@ -669,8 +668,8 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
         <span class="tags-counter" id="tagsCounter">0 selected</span>
       </div>
       <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">
-        Apne interests choose karo — inhi se tumhara match hoga.<br/>
-        <strong style="color:var(--navy);">Jitne zyada tags, utna better Vibe Score.</strong>
+        Choose your interests — this is how you'll match with others.<br/>
+        <strong style="color:var(--navy);">The more tags you have, the better your Vibe Score.</strong>
       </p>
 
       <!-- Tags: Hobbies -->
@@ -741,7 +740,7 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
       <div style="margin-top:16px;padding:14px 16px;background:var(--off);border-radius:12px;border:1px solid var(--border);">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <span style="font-size:12px;font-weight:600;color:var(--navy);">Tags se Vibe Score</span>
-          <span id="tagScoreLabel" style="font-size:12px;font-weight:700;color:var(--muted);">0 tags — score nahi banega</span>
+          <span id="tagScoreLabel" style="font-size:12px;font-weight:700;color:var(--muted);">0 tags — no score</span>
         </div>
         <div style="height:6px;background:#EEF0F6;border-radius:99px;overflow:hidden;">
           <div id="tagScoreBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--teal),#0891b2);border-radius:99px;transition:width .4s ease;"></div>
@@ -897,9 +896,9 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
         </div>
 
         <div class="field-group">
-          <label class="field-label">Flatmate se kya expect karte ho?</label>
+          <label class="field-label">what do you expect from your flatmate?</label>
           <textarea name="flatmate_expectation" class="field-input"
-            placeholder="e.g. Ek aisa insaan chahiye jo respectful ho, ghar saaf rakhe, aur thoda social bhi ho…"
+            placeholder="e.g.a flatmate who is respectful,clean, and shares similar interests"
             style="min-height:80px;"></textarea>
         </div>
 
@@ -941,7 +940,7 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
             <button type="button" class="radio-btn active" onclick="setRadio('visibilityGroup',this)"><div class="radio-dot"></div>Show after connect only</button>
             <button type="button" class="radio-btn" onclick="setRadio('visibilityGroup',this)"><div class="radio-dot"></div>Show to everyone</button>
           </div>
-          <span class="field-hint" style="display:block;margin-top:8px;">Recommended: Connect ke baad hi number share karo — spam avoid hoga</span>
+          <span class="field-hint" style="display:block;margin-top:8px;">Recommended: Show your contact information only after connecting with a potential flatmate</span>
         </div>
 
       </div>
@@ -957,13 +956,13 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
         <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">✅ Before you submit:</div>
         <div style="display:flex;flex-direction:column;gap:6px;" id="checklistItems">
           <div class="checklist-item" id="cl-photo" style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);">
-            <span id="cl-photo-icon">⭕</span> Profile photo upload karo <span style="color:var(--amber);font-size:10px;">(recommended)</span>
+            <span id="cl-photo-icon">⭕</span>upload Profile photo <span style="color:var(--amber);font-size:10px;">(recommended)</span>
           </div>
           <div class="checklist-item" id="cl-tags" style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);">
-            <span id="cl-tags-icon">⭕</span> Kam se kam 5 interest tags select karo
+            <span id="cl-tags-icon">⭕</span> select at least 5 interest tags
           </div>
           <div class="checklist-item" id="cl-bio" style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);">
-            <span id="cl-bio-icon">⭕</span> About you section fill karo
+            <span id="cl-bio-icon">⭕</span> fill your about you section
           </div>
         </div>
       </div>
@@ -1010,7 +1009,7 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
           </div>
           <div class="vs-info">
             <div class="vs-score-label" id="vibeScoreLabel">Profile Incomplete</div>
-            <div class="vs-score-sub" id="vibeScoreSub">Tags aur bio fill karo score badhane ke liye</div>
+            <div class="vs-score-sub" id="vibeScoreSub">fill your Tags and bio to increase score</div>
             <div class="vs-breakdown">
               <div class="vs-bar-row">
                 <div class="vs-bar-label">Tags</div>
@@ -1048,7 +1047,7 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
         <div style="padding:44px 20px 20px;">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
             <div>
-              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--navy);" id="prevName">Tumhara Naam</div>
+              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--navy);" id="prevName">your Name</div>
               <div style="font-size:13px;color:var(--muted);margin-top:2px;" id="prevSub">Occupation · City</div>
             </div>
             <div id="prevGenderBadge" style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;">—</div>
@@ -1061,7 +1060,7 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
 
           <!-- interest chips -->
           <div id="prevTags" style="display:flex;flex-wrap:wrap;gap:5px;margin:14px 0;">
-            <div style="font-size:12px;color:var(--muted);font-style:italic;">Tags select karo…</div>
+            <div style="font-size:12px;color:var(--muted);font-style:italic;">select your Tags…</div>
           </div>
 
           <!-- footer -->
@@ -1081,19 +1080,19 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div class="tip-item">
             <div class="tip-dot"></div>
-            <span style="font-size:12px;color:var(--muted);line-height:1.6;"><strong style="color:var(--navy);">Photo upload karo</strong> — responses 3x badh jaate hain</span>
+            <span style="font-size:12px;color:var(--muted);line-height:1.6;"><strong style="color:var(--navy);"> upload your photo</strong> — Increses responses 3x times</span>
           </div>
           <div class="tip-item">
             <div class="tip-dot"></div>
-            <span style="font-size:12px;color:var(--muted);line-height:1.6;">Kam se kam <strong style="color:var(--navy);">5 tags</strong> select karo match quality ke liye</span>
+            <span style="font-size:12px;color:var(--muted);line-height:1.6;">Atleast <strong style="color:var(--navy);">5 tags</strong> select for quality matches</span>
           </div>
           <div class="tip-item">
             <div class="tip-dot"></div>
-            <span style="font-size:12px;color:var(--muted);line-height:1.6;">Bio mein <strong style="color:var(--navy);">daily routine</strong> mention karo</span>
+            <span style="font-size:12px;color:var(--muted);line-height:1.6;">mention your <strong style="color:var(--navy);">daily routine</strong> in bio</span>
           </div>
           <div class="tip-item">
             <div class="tip-dot"></div>
-            <span style="font-size:12px;color:var(--muted);line-height:1.6;">Realistic <strong style="color:var(--navy);">budget</strong> set karo — sahi matches milenge</span>
+            <span style="font-size:12px;color:var(--muted);line-height:1.6;">set <strong style="color:var(--navy);"> Realistic budget</strong> for True match</span>
           </div>
         </div>
       </div>

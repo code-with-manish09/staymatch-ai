@@ -833,18 +833,15 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   </a>
   <a href="{% url 'match_gateway' %}" class="nav-item">
     <span class="nav-icon">⚡</span> My Matches
-    <span class="nav-badge teal"></span>
   </a>
   <a href="{% url 'dashboard' %}?sec=saved" class="nav-item">
     <span class="nav-icon">🔖</span> Saved Rooms
-    <span class="nav-badge amber"></span>
-  </a>
+{% if saved_count %}<span class="nav-badge amber">{{ saved_count }}</span>{% endif %}  </a>
 
   <div class="sb-section">Connect</div>
   <a href="{% url 'inbox' %}" class="nav-item">
     <span class="nav-icon">💬</span> Messages
-    <span class="nav-badge"></span>
-  </a>
+{% if active_chats %}<span class="nav-badge">{{ active_chats }}</span>{% endif %}  </a>
   <a href="{% url 'dashboard' %}?sec=notifications" class="nav-item">
     <span class="nav-icon">🔔</span> Notifications
     {% if unread_count %}
@@ -887,34 +884,38 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   {% endif %}
 
   <!-- TOPBAR -->
-  <div class="topbar">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <button class="hamburger" id="hamburger" onclick="toggleSidebar()">☰</button>
-      <div class="search-wrap">
-        <span style="font-size:15px;color:var(--muted);">🔍</span>
-        <input type="text" placeholder="Search rooms, areas, flatmates…"/>
-      </div>
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="hamburger" id="hamburger" onclick="toggleSidebar()">☰</button>
+    <div class="search-wrap">
+      <span style="font-size:15px;color:var(--muted);">🔍</span>
+      <input type="text" placeholder="Search rooms, areas, flatmates…"/>
     </div>
-    <div class="topbar-right">
-      <div class="icon-btn" onclick="showSec('notifications')">
+  </div>
+  <div class="topbar-right">
+    <a href=" {% url 'dashboard' %}?sec=notifications" style="text-decoration:none;display:contents;">
+      <div class="icon-btn">
         🔔
         {% if unread_count %}
         <div class="badge" style="background:var(--coral);"></div>
         {% endif %}
       </div>
-      <div class="icon-btn" onclick="showSec('messages')">
+    </a>
+    <a href="{% url 'inbox' %}" style="text-decoration:none;display:contents;">
+      <div class="icon-btn">
         💬<div class="badge"></div>
       </div>
-      <div class="user-pill" onclick="showSec('profile')">
-        {% if request.user.profile.profile_picture %}
-          <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:30px;height:30px;border-radius:50%;object-fit:cover;" alt="{{ user.username }}"/>
-        {% else %}
-          <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px;height:30px;border-radius:50%;" alt="{{ user.username }}"/>
-        {% endif %}
-        <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ user.username }}</span>
-      </div>
+    </a>
+    <div class="user-pill" onclick="showSec('profile')">
+      {% if request.user.profile.profile_picture %}
+        <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:30px;height:30px;border-radius:50%;object-fit:cover;" alt="{{ user.username }}"/>
+      {% else %}
+        <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px;height:30px;border-radius:50%;" alt="{{ user.username }}"/>
+      {% endif %}
+      <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ user.username }}</span>
     </div>
   </div>
+</div>
 
   <!-- CONTENT BLOCK -->
   <div class="content">
@@ -933,9 +934,9 @@ input[type=range]{width:100%;accent-color:var(--teal);}
           <div>
             <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">PRODUCT</div>
             <div style="display:flex;flex-direction:column;gap:10px;">
-              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">How It Works</a>
-              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Browse Listings</a>
-              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Post a Room</a>
+              <a href="/#how-it-works" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">How It Works</a>
+              <a href="{% url 'dashboard' %}" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Browse Listings</a>
+              <a href="{% url 'post_room' %}" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Post a Room</a>
               <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Pricing</a>
             </div>
           </div>
@@ -951,7 +952,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
           <div>
             <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:14px;">COMPANY</div>
             <div style="display:flex;flex-direction:column;gap:10px;">
-              <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">About Us</a>
+              <a href="/#about-section" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">About Us</a>
               <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Blog</a>
               <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Privacy Policy</a>
               <a href="#" style="color:rgba(255,255,255,.55);font-size:14px;text-decoration:none;">Terms of Use</a>
@@ -964,14 +965,14 @@ input[type=range]{width:100%;accent-color:var(--teal);}
                 <div style="width:28px;height:28px;border-radius:8px;background:rgba(14,165,201,.15);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">📧</div>
                 <div>
                   <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:1px;">Email</div>
-                  <a href="mailto:hello@nestmate.in" style="color:rgba(255,255,255,.7);font-size:13px;text-decoration:none;">hello@nestmate.in</a>
+                  <a href="mailto:mynameisrudraa@gmail.com" style="color:rgba(255,255,255,.7);font-size:13px;text-decoration:none;">mynameisrudraa@gmail.com</a>
                 </div>
               </div>
               <div style="display:flex;align-items:flex-start;gap:10px;">
                 <div style="width:28px;height:28px;border-radius:8px;background:rgba(245,158,11,.15);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">📱</div>
                 <div>
                   <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:1px;">WhatsApp Support</div>
-                  <a href="#" style="color:rgba(255,255,255,.7);font-size:13px;text-decoration:none;">+91 98765 43210</a>
+                  <a href="https://wa.me/918102132262" style="color:rgba(255,255,255,.7);font-size:13px;text-decoration:none;">+91 8102132262</a>
                 </div>
               </div>
               <div style="display:flex;align-items:flex-start;gap:10px;">
@@ -991,7 +992,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
         </div>
       </div>
       <div style="padding:24px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-        <div style="font-size:13px;color:rgba(255,255,255,.25);">© 2026 NestMate Technologies Pvt. Ltd. · Made in India 🇮🇳</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.25);">© 2026 staymatch Technologies Pvt. Ltd. · Made in India 🇮🇳</div>
         <div style="font-size:13px;color:rgba(255,255,255,.25);">Bangalore · Mumbai · Delhi · Hyderabad · Pune · Chennai · Kolkata · Patna</div>
       </div>
     </div>
@@ -1064,43 +1065,58 @@ function multiPick(el){el.classList.toggle('picked');}
 function setNoise(v){const l=['','Dead Quiet','Very Quiet','Quiet','Mostly Quiet','Moderate','Lively','Active','Loud','Very Loud','Party Mode'];document.getElementById('noiseV').textContent=v+' — '+l[v];}
 function setBudget(v){document.getElementById('budgetV').textContent='₹'+Number(v).toLocaleString('en-IN');}
 
-function runAI(){
-  for(let i=1;i<=8;i++){const el=document.getElementById('sv'+i);if(el)el.style.display='none';}
-  document.getElementById('sv-loading').style.display='';
-  document.getElementById('stepN').textContent='…';
+async function runAI() {
+  // existing loading logic...
+  document.getElementById('sv8').style.display = 'none';
+  document.getElementById('sv-loading').style.display = 'block';
 
-  const tags=[];
-  const s1=document.querySelector('#sv1 .opt.picked');if(s1){const m={'Early Bird':'🌅 Early Bird','Night Owl':'🌙 Night Owl','Flexible':'🔄 Flexible','Shift Worker':'🌀 Shift Worker'};const v=m[s1.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);}
-  const s2=document.querySelector('#sv2 .opt.picked');if(s2){const m={'Pure Veg':'🥗 Pure Veg','Non-Veg':'🍗 Non-Veg','Vegan':'🌿 Vegan','No Preference':'😋 Flexible Eater'};const v=m[s2.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);}
-  const s3=document.querySelector('#sv3 .opt.picked');if(s3){const m={'Introvert':'📚 Introvert','Ambivert':'⚖️ Ambivert','Extrovert':'🎉 Extrovert'};const v=m[s3.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);}
-  const s5=document.querySelector('#sv5 .opt.picked');if(s5){const m={'The Zen One':'🧘 The Zen One','The Planner':'🎯 The Planner','The Creative':'🎨 The Creative','The Hustler':'🚀 The Hustler'};const v=m[s5.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);}
-  document.querySelectorAll('#sv6 .opt.picked').forEach(opt=>{const m={'Gaming':'🎮 Gamer','Music':'🎵 Music Lover','Reading':'📚 Reader','Cooking':'🍳 Cook','Art & Design':'🎨 Creative','Travelling':'✈️ Traveller','Tech & Coding':'💻 Tech Geek','Movies & OTT':'🎬 Movie Buff'};const v=m[opt.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);});
-  document.querySelectorAll('#sv7 .opt.picked').forEach(opt=>{const m={'Football':'⚽ Football Fan','Cricket':'🏏 Cricket Fan','Badminton':'🏸 Badminton','Gym / Fitness':'🏋️ Fitness Freak','Running':'🏃 Runner','Yoga':'🧘 Yoga','Swimming':'🏊 Swimmer','Cycling':'🚴 Cyclist'};const v=m[opt.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);});
-  const s8=document.querySelector('#sv8 .opt.picked');if(s8){const m={'Software / IT':'💻 Software Pro','Student':'🎓 Student','Corporate':'🏢 Corporate','Freelancer':'🎨 Freelancer','Healthcare':'🏥 Healthcare','Startup':'🚀 Startup','Research':'📚 Researcher','Creative / Media':'🎭 Creative Pro'};const v=m[s8.querySelector('.opt-label').textContent.trim()];if(v)tags.push(v);}
+  // collect answers (jo already ho raha hai)
+  const tags = collectTags(); // neeche define kiya hai
+  const vibeScore = Math.floor(60 + Math.random() * 35);
 
-  const score=Math.min(70+tags.length*3,99);
+  // Backend pe save karo
+  await fetch('/save-quiz-tags/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token }}'
+    },
+    body: JSON.stringify({ tags: tags, vibe_score: vibeScore })
+  });
 
-  setTimeout(()=>{
-    document.getElementById('sv-loading').style.display='none';
-    document.getElementById('sv-result').style.display='';
-    document.getElementById('result-score').textContent=score;
-    const c=document.getElementById('result-tags');
-    c.innerHTML=tags.length>0
-      ? tags.map(t=>`<span class="chip" style="background:#fff;border:1.5px solid rgba(14,165,201,.3);color:var(--navy);padding:6px 14px;font-size:12px;font-weight:700;">${t}</span>`).join('')
-      : '<span style="font-size:13px;color:var(--muted);">Koi tag nahi mila — wapas quiz lo!</span>';
+  // result dikhao
+  document.getElementById('sv-loading').style.display = 'none';
+  document.getElementById('sv-result').style.display = 'block';
+  document.getElementById('result-score').textContent = vibeScore;
 
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    fetch("{% url 'save_quiz' %}", {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json','X-CSRFToken': csrftoken},
-      body: JSON.stringify({tags: tags, score: score})
-    })
-    .then(response => { if (!response.ok) throw new Error('Network response was not ok'); return response.json(); })
-    .then(data => { if(data.status === 'success') { setTimeout(() => { window.location.reload(); }, 1500); } })
-    .catch(error => { console.error('Error saving data:', error); });
+  const tagContainer = document.getElementById('result-tags');
+  tagContainer.innerHTML = tags.map(t =>
+    `<span style="background:var(--teal-lt);color:var(--teal);padding:6px 14px;border-radius:99px;font-size:13px;font-weight:600;">${t}</span>`
+  ).join('');
+}
 
-    fireConfetti();
-  },2000);
+function collectTags() {
+  const tags = [];
+  // Step 1 - sleep
+  const sleep = document.querySelector('#sv1 .opt.picked .opt-label');
+  if(sleep) tags.push(sleep.textContent.trim());
+  // Step 2 - food
+  const food = document.querySelector('#sv2 .opt.picked .opt-label');
+  if(food) tags.push(food.textContent.trim());
+  // Step 3 - social
+  const social = document.querySelector('#sv3 .opt.picked .opt-label');
+  if(social) tags.push(social.textContent.trim());
+  // Step 5 - personality
+  const pers = document.querySelector('#sv5 .opt.picked .opt-label');
+  if(pers) tags.push(pers.textContent.trim());
+  // Step 6 - hobbies (multi)
+  document.querySelectorAll('#sv6 .opt.picked .opt-label').forEach(el => tags.push(el.textContent.trim()));
+  // Step 7 - sports (multi)
+  document.querySelectorAll('#sv7 .opt.picked .opt-label').forEach(el => tags.push(el.textContent.trim()));
+  // Step 8 - occupation
+  const occ = document.querySelector('#sv8 .opt.picked .opt-label');
+  if(occ) tags.push(occ.textContent.trim());
+  return tags;
 }
 
 function fireConfetti(){
@@ -1369,6 +1385,43 @@ function switchSavedTab(tab) {
     ? 'padding:10px 24px;border-radius:10px;border:none;cursor:pointer;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:700;font-size:14px;background:transparent;color:var(--muted);transition:all .2s;'
     : 'padding:10px 24px;border-radius:10px;border:none;cursor:pointer;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:700;font-size:14px;background:var(--navy);color:#fff;transition:all .2s;';
 }
+
+
+(function(){
+  const score = parseInt("{{ completion_score }}") || 0;
+  const circle = document.getElementById('completion-ring');
+  if(circle){
+    const circumference = 207.3;
+    const offset = circumference - (score / 100) * circumference;
+    circle.setAttribute('stroke-dashoffset', offset.toFixed(1));
+  }
+})();
+(function(){
+  const score = parseInt("{{ completion_score }}") || 0;
+  const ring = document.getElementById('quiz-hero-ring');
+  if(ring){
+    const circumference = 251.3;
+    const offset = circumference - (score / 100) * circumference;
+    ring.style.transition = 'stroke-dashoffset 1s ease';
+    setTimeout(() => {
+      ring.setAttribute('stroke-dashoffset', offset.toFixed(1));
+    }, 400);
+  }
+})();
+(function(){
+  const score = parseInt("{{ completion_score }}") || 0;
+  const ring = document.getElementById('banner-ring');
+  if(ring){
+    const circumference = 213.6; // r=28, 2*pi*28
+    const offset = circumference - (score / 100) * circumference;
+    ring.style.transition = 'stroke-dashoffset 1s ease';
+    setTimeout(() => {
+      ring.setAttribute('stroke-dashoffset', offset.toFixed(1));
+    }, 300);
+  }
+})();
+
+
 </script>
 </body>
 </html>

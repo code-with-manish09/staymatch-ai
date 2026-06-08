@@ -19,19 +19,32 @@
             <span class="wb-chip">{{ tag }}</span>
           {% endfor %}
         {% else %}
-          <span class="wb-chip">🏷️ Quiz lo aur tags pao</span>
+          <span class="wb-chip">🏷️ Attempt for quiz tags</span>
         {% endif %}
       </div>
       <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
-        <span class="verified-badge">🎓 Student Verified</span>
+        <span class="verified-badge">🎓 User Verified</span>
         <span class="quiz-done">🧠 Personality Quiz Done</span>
         <span class="phase-badge p1">Phase 1 Active</span>
       </div>
     </div>
     <div class="vibe-score">
-      <div class="vibe-num">87</div>
-      <div class="vibe-lbl">Vibe Score</div>
+  <div style="position:relative;width:86px;height:86px;">
+    <svg viewBox="0 0 86 86" style="width:86px;height:86px;transform:rotate(-90deg);">
+      <circle cx="43" cy="43" r="34" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="5"/>
+      <circle cx="43" cy="43" r="34" fill="none" stroke="var(--teal)" stroke-width="5"
+        stroke-dasharray="213.6"
+        stroke-dashoffset="213.6"
+        stroke-linecap="round"
+        id="banner-ring"/>
+    </svg>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:var(--teal);line-height:1;">{{ completion_score }}</span>
+      <span style="font-size:9px;color:rgba(255,255,255,.4);font-weight:600;">%</span>
     </div>
+  </div>
+  <div class="vibe-lbl">Profile Completion</div>
+</div>
   </div>
 
   <!-- Filter Bar -->
@@ -86,24 +99,25 @@
       <div class="stat-trend trend-up">{{ unread_count }} unread</div>
     </div>
   </div>
-
-  <div class="stat-card">
-    <div class="stat-icon" style="background:#FFF1F2;">🔖</div>
-    <div>
-      <div class="stat-val">{{ saved_count }}</div>
-      <div class="stat-lbl">Saved Rooms</div>
-      <div class="stat-trend trend-dn">your bookmarks</div>
-    </div>
-  </div>
-
-  <!-- Find Your Vibe card -->
-  <div class="stat-card" onclick="openVibe()" style="cursor:pointer;background:var(--navy);border:1px solid var(--navy);">
-  <div class="stat-icon" style="background:rgba(255,255,255,.1);">✨</div>
+<div class="stat-card">
+  <div class="stat-icon" style="background:#FFF1F2;">🔖</div>
   <div>
-    <div class="stat-lbl" style="color:#fff;font-weight:700;">Find Your Vibe</div>
-    <div class="stat-trend" style="color:var(--teal);">AI Match →</div>
+    <div class="stat-val">{{ saved_count }}</div>
+    <div class="stat-lbl">Saved Rooms</div>
+    <div class="stat-trend trend-dn">your bookmarks</div>
   </div>
 </div>
+
+<!-- Find Your Vibe card -->
+<a href="{% url 'match_gateway' %}" style="text-decoration:none;display:contents;">
+  <div class="stat-card" style="cursor:pointer;background:var(--navy);border:1px solid var(--navy);">
+    <div class="stat-icon" style="background:rgba(255,255,255,.1);">✨</div>
+    <div>
+      <div class="stat-lbl" style="color:#fff;font-weight:700;">Find Your Vibe</div>
+      <div class="stat-trend" style="color:var(--teal);">AI Match →</div>
+    </div>
+  </div>
+</a>
 
 </div>
 
@@ -111,8 +125,10 @@
   <!-- Room Listings -->
   <div class="sec-hd fu d4">
     <div class="sec-title">🏠 Recommended for You</div>
-    <a class="sec-link">View all 48 listings →</a>
-  </div>
+<a class="sec-link" style="display:flex;align-items:center;gap:5px;">
+      <span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s ease infinite;"></span>
+      Live Profiles
+    </a>  </div>
   <div class="rooms-grid fu d4">
     {% for room in listings %}
     <div class="room-card">
@@ -145,10 +161,22 @@
         </div>
         <div class="room-loc">📍 {{ room.area }} · {{ room.city }}</div>
         <div class="safety-row">
-          <div class="safety-stars">★★★★★</div>
-          <span class="safety-lbl">Safety 4.7</span>
-          <span class="clean-pill">🧹 Clean</span>
-        </div>
+  <div class="safety-stars" style="color:var(--amber);">
+    {% with r=room.avg_rating|default:0 %}
+      {% for i in "12345"|make_list %}
+        {% if forloop.counter <= r %}★{% else %}☆{% endif %}
+      {% endfor %}
+    {% endwith %}
+  </div>
+  <span class="safety-lbl">
+    {% if room.avg_rating %}
+      {{ room.avg_rating }}/5
+    {% else %}
+      No reviews
+    {% endif %}
+  </span>
+  <span class="clean-pill">ratings</span>
+</div>
         <div class="room-chips">
           <div class="chip mutual-chip match">🏠 {{ room.room_type }}</div>
           <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🪑 {{ room.get_furnishing_status_display }}</div>
@@ -171,14 +199,13 @@
     {% empty %}
     <div class="feat-card" style="grid-column:1/-1;text-align:center;padding:40px;">
       <div style="font-size:40px;margin-bottom:10px;">🏠</div>
-      <p style="color:var(--muted);">Abhi koi listing nahi mili. Filters change karo!</p>
+      <p style="color:var(--muted);">No listings available at the moment.</p>
     </div>
     {% endfor %}
   </div>
 
   {# ══ FLATMATE PROFILES SECTION ══ #}
-{# Paste this in your discover.html after the stats row, before city/platform section #}
- 
+
 <!-- Compatible Flatmate Profiles -->
 <div class="fu d3" style="margin-bottom:24px;">
   <div class="sec-hd">
@@ -263,7 +290,7 @@
 
 
 {# ══ CITY · PLATFORM STATS — FINAL CLEAN VERSION ══ #}
-{# Paste this block replacing the entire <!-- ══ CITY · PLATFORM STATS ══ --> section in your template #}
+
  
 <div class="fu d2" style="margin-bottom:24px;">
   <div class="bottom-stats-row">
@@ -351,7 +378,7 @@
     {% empty %}
     <div class="review-slide active" id="rs0">
       <div style="font-size:52px;line-height:1;color:var(--teal);font-family:Georgia,serif;opacity:.7;">"</div>
-      <div style="font-size:14px;font-style:italic;color:var(--navy);line-height:1.75;margin-bottom:18px;">StayMatch ne mujhe perfect flatmate dhundha — same interests, same schedule. Best decision tha!</div>
+      <div style="font-size:14px;font-style:italic;color:var(--navy);line-height:1.75;margin-bottom:18px;">Staymatch found perfect match -perfect for my lifestyle and preferences.</div>
       <div style="display:flex;align-items:center;gap:12px;">
         <div style="width:40px;height:40px;border-radius:50%;background:var(--teal-lt);color:var(--teal);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;">AK</div>
         <div>
@@ -419,8 +446,8 @@
       {% empty %}
       <div id="empty-saved-msg" class="feat-card" style="grid-column:1/-1;text-align:center;padding:40px;">
         <div style="font-size:40px;margin-bottom:10px;">🏠</div>
-        <p style="color:var(--muted);">Aapne abhi tak koi room save nahi kiya hai.</p>
-        <button class="btn-teal" style="margin-top:16px;padding:10px 24px;font-size:14px;" onclick="showSec('discover')">Rooms Dhundho →</button>
+        <p style="color:var(--muted);">No saved rooms yet.</p>
+        <button class="btn-teal" style="margin-top:16px;padding:10px 24px;font-size:14px;" onclick="showSec('discover')">Find Rooms →</button>
       </div>
       {% endfor %}
     </div>
@@ -466,9 +493,9 @@
       {% empty %}
       <div style="grid-column:1/-1;background:#fff;border:1px solid var(--border);border-radius:18px;padding:48px 20px;text-align:center;box-shadow:var(--card-sh);">
         <div style="font-size:40px;margin-bottom:12px;">👥</div>
-        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px;">Koi saved flatmate nahi</div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Discover mein jaao aur flatmates save karo.</p>
-        <button class="btn-teal" style="font-size:13px;padding:10px 24px;" onclick="showSec('discover')">Flatmates Dhundho →</button>
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px;">No saved flatmates yet</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Discover new flatmates and save them.</p>
+        <button class="btn-teal" style="font-size:13px;padding:10px 24px;" onclick="showSec('discover')">Find Flatmates →</button>
       </div>
       {% endfor %}
     </div>
@@ -593,18 +620,22 @@
           <span class="phase-badge p1">Phase 1</span>
         </div>
       </div>
-      <div style="text-align:center;flex-shrink:0;">
-        <div style="position:relative;width:80px;height:80px;margin:0 auto 4px;">
-          <svg viewBox="0 0 80 80" style="width:80px;height:80px;transform:rotate(-90deg);">
-            <circle cx="40" cy="40" r="33" fill="none" stroke="var(--border)" stroke-width="6"/>
-            <circle cx="40" cy="40" r="33" fill="none" stroke="var(--teal)" stroke-width="6" stroke-dasharray="207.3" stroke-dashoffset="26.9" stroke-linecap="round"/>
-          </svg>
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:var(--teal);">87</span>
-          </div>
-        </div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;">Vibe Score</div>
-      </div>
+     <div style="text-align:center;flex-shrink:0;">
+  <div style="position:relative;width:80px;height:80px;margin:0 auto 4px;">
+    <svg viewBox="0 0 80 80" style="width:80px;height:80px;transform:rotate(-90deg);">
+      <circle cx="40" cy="40" r="33" fill="none" stroke="var(--border)" stroke-width="6"/>
+      <circle cx="40" cy="40" r="33" fill="none" stroke="var(--teal)" stroke-width="6"
+        stroke-dasharray="207.3"
+        stroke-dashoffset="{{ 207.3|add:0|floatformat:0 }}"
+        id="completion-ring"
+        stroke-linecap="round"/>
+    </svg>
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+      <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:var(--teal);" id="completion-num">{{ completion_score }}</span>
+    </div>
+  </div>
+  <div style="font-size:11px;color:var(--muted);font-weight:600;">profile completion</div>
+</div>
     </div>
     <div class="profile-grid">
       <div>
@@ -653,44 +684,11 @@
             {% endif %}
           </div>
         </div>
-        <div class="profile-field">
-          <div class="profile-field-label">Profile Ratings</div>
-          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span style="font-size:11px;color:var(--muted);width:76px;flex-shrink:0;">Cleanliness</span>
-              <div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:90%;"></div></div>
-              <span style="font-size:11px;font-weight:700;color:var(--teal);width:28px;text-align:right;">9/10</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span style="font-size:11px;color:var(--muted);width:76px;flex-shrink:0;">Noise Level</span>
-              <div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:40%;background:linear-gradient(90deg,var(--amber),#FCD34D);"></div></div>
-              <span style="font-size:11px;font-weight:700;color:var(--amber);width:28px;text-align:right;">Mid</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span style="font-size:11px;color:var(--muted);width:76px;flex-shrink:0;">Reliability</span>
-              <div class="bar-track" style="flex:1;"><div class="bar-fill" style="width:95%;"></div></div>
-              <span style="font-size:11px;font-weight:700;color:var(--teal);width:28px;text-align:right;">9.5</span>
-            </div>
-          </div>
-        </div>
-        <div class="profile-field" style="border-bottom:none;">
-          <div class="profile-field-label">Mutual Interests</div>
-          <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;">
-            <span class="chip mutual-chip match">🎮 Gaming</span>
-            <span class="chip mutual-chip match">🌙 Night Owl</span>
-            <span class="chip mutual-chip">💻 Tech</span>
-            <span class="chip mutual-chip">📚 Books</span>
-          </div>
-        </div>
+      
+        
       </div>
     </div>
-    <div class="emergency-bar" style="margin-bottom:18px;">
-      <div class="emergency-icon">🆘</div>
-      <div class="emergency-text">
-        Emergency Contact: Priya Singh (Sister) · +91 98765 XXXXX<br/>
-        <span style="font-weight:400;color:#BE185D;">Auto-notified if no check-in after property visit</span>
-      </div>
-    </div>
+    
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <a href="{% url 'update_profile' %}" style="background:#0EA5C9;color:white;padding:11px 22px;border-radius:12px;font-weight:600;font-size:14px;text-decoration:none;display:inline-block;">Update Profile</a>
       <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="showSec('discover')">← Back to Discover</button>
@@ -702,7 +700,7 @@
 <div id="sec-settings" style="display:none;">
   <div class="feat-card" style="text-align:center;padding:56px 28px;">
     <div style="font-size:48px;margin-bottom:14px;">⚙️</div>
-    <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;">Settings</div>
+    <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;">Settings(coming soon)</div>
     <button class="btn-teal" style="font-size:14px;padding:11px 28px;margin-top:12px;" onclick="showSec('discover')">← Back</button>
   </div>
 </div>
@@ -716,7 +714,7 @@
   <div class="quiz-hero">
     <div class="quiz-hero-text">
       <div class="quiz-hero-title">Discover Your<br/>Flatmate Personality</div>
-      <div class="quiz-hero-sub">8 quick questions about lifestyle, hobbies aur occupation. AI tumhara personality profile banata hai aur profile pe tags add karta hai.</div>
+      <div class="quiz-hero-sub">8 quick questions about lifestyle, hobbies aur occupation. AI made your personality profile and add tags.</div>
       <div class="quiz-hero-chips">
         <span class="quiz-hero-chip">⏱ 3 minutes</span>
         <span class="quiz-hero-chip">🎯 8 questions</span>
@@ -726,16 +724,22 @@
       <button class="quiz-cta-btn" onclick="openVibe()">✨ Start Quiz Now</button>
     </div>
     <div class="quiz-hero-visual">
-      <div class="quiz-score-ring">
-        <svg viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="7"/>
-          <circle cx="50" cy="50" r="40" fill="none" stroke="#0EA5C9" stroke-width="7" stroke-dasharray="251.3" stroke-dashoffset="32.7" stroke-linecap="round"/>
-        </svg>
-        <div class="quiz-score-num">87</div>
-      </div>
-      <div class="quiz-score-lbl">Vibe Score</div>
-      <div style="margin-top:8px;"><span style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;">Top 12% in Bangalore</span></div>
-    </div>
+  <div class="quiz-score-ring">
+    <svg viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="7"/>
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#0EA5C9" stroke-width="7"
+        stroke-dasharray="251.3"
+        stroke-dashoffset="251.3"
+        stroke-linecap="round"
+        id="quiz-hero-ring"/>
+    </svg>
+    <div class="quiz-score-num" id="quiz-hero-score">{{ completion_score }}</div>
+  </div>
+  <div class="quiz-score-lbl">profile completion</div>
+  <div style="margin-top:8px;">
+    
+  </div>
+</div>
   </div>
   <div class="sec-title" style="font-size:15px;margin-bottom:14px;">📋 What We Ask You</div>
   <div class="quiz-steps-row">
@@ -754,15 +758,15 @@
       <span style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:4px 12px;border-radius:99px;">🤖 AI Powered</span>
     </div>
     <div class="hiw-grid">
-      <div class="hiw-item"><div class="hiw-num">1</div><div><div class="hiw-text">8-step quiz lo</div><div class="hiw-sub">Honestly answer karo — 3 min</div></div></div>
-      <div class="hiw-item"><div class="hiw-num">2</div><div><div class="hiw-text">AI tags calculate karta hai</div><div class="hiw-sub">Night Owl, Gamer, Introvert etc.</div></div></div>
-      <div class="hiw-item"><div class="hiw-num">3</div><div><div class="hiw-text">Tags profile pe dikhhte hain</div><div class="hiw-sub">Sahi roommates tumhe dhundhhte hain</div></div></div>
+      <div class="hiw-item"><div class="hiw-num">1</div><div><div class="hiw-text">8-step quiz</div><div class="hiw-sub">Honestly answer — 3 min</div></div></div>
+      <div class="hiw-item"><div class="hiw-num">2</div><div><div class="hiw-text">AI calculate your tags</div><div class="hiw-sub">Night Owl, Gamer, Introvert etc.</div></div></div>
+      <div class="hiw-item"><div class="hiw-num">3</div><div><div class="hiw-text">Tags shown on profile</div><div class="hiw-sub">perfect matches finds you</div></div></div>
     </div>
   </div>
   <div class="tags-preview">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
       <div class="display" style="font-weight:700;font-size:15px;color:var(--navy);">🏷️ Tags You Can Get</div>
-      <span style="font-size:12px;color:var(--muted);">Quiz ke baad profile pe add ho jaate hain</span>
+      <span style="font-size:12px;color:var(--muted);">Add on profile after completing the quiz</span>
     </div>
     <div class="tag-category">
       <div class="tag-cat-label">Sleep Pattern</div>
@@ -828,24 +832,24 @@
         <div class="sdot" id="sd4"></div><div class="sdot" id="sd5"></div><div class="sdot" id="sd6"></div><div class="sdot" id="sd7"></div>
       </div>
       <div id="sv1">
-        <div class="q-title">🌙 Sleep cycle kya hai?</div>
-        <div class="q-sub">Flatmate conflict ki sabse badi wajah — honest raho!</div>
+        <div class="q-title">🌙 Sleep cycle ?</div>
+        <div class="q-sub">Reason for flatmate conflict  — Be honest!</div>
         <div class="opt-grid">
-          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🌅</div><div class="opt-label">Early Bird</div><div class="opt-sub">10 baje so jaate ho</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🌙</div><div class="opt-label">Night Owl</div><div class="opt-sub">2 baje tak jagte ho</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🔄</div><div class="opt-label">Flexible</div><div class="opt-sub">Din ke hisaab se</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🌀</div><div class="opt-label">Shift Worker</div><div class="opt-sub">Irregular schedule</div></div>
+          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🌅</div><div class="opt-label">Early Bird</div><div class="opt-sub">go to bed early</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🌙</div><div class="opt-label">Night Owl</div><div class="opt-sub">stay up late</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🔄</div><div class="opt-label">Flexible</div><div class="opt-sub">follow daily routine</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🌀</div><div class="opt-label">Shift Worker</div><div class="opt-sub">irregular schedule</div></div>
         </div>
         <button class="btn-teal" style="width:100%;padding:13px;font-size:14px;" onclick="goStep(2)">Next →</button>
       </div>
       <div id="sv2" style="display:none;">
         <div class="q-title">🍽️ Food preferences?</div>
-        <div class="q-sub">Shared kitchen mein sab ko samajhna padta hai!</div>
+        <div class="q-sub">What kind of food do you like?</div>
         <div class="opt-grid">
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">🥗</div><div class="opt-label">Pure Veg</div><div class="opt-sub">Ghar mein meat nahi</div></div>
-          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🍗</div><div class="opt-label">Non-Veg</div><div class="opt-sub">Kuch bhi chalega</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">🥗</div><div class="opt-label">Pure Veg</div><div class="opt-sub">No meat</div></div>
+          <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🍗</div><div class="opt-label">Non-Veg</div><div class="opt-sub">Anything goes</div></div>
           <div class="opt" onclick="pick(this)"><div class="opt-icon">🌿</div><div class="opt-label">Vegan</div><div class="opt-sub">No animal products</div></div>
-          <div class="opt" onclick="pick(this)"><div class="opt-icon">😋</div><div class="opt-label">No Preference</div><div class="opt-sub">Bilkul flexible</div></div>
+          <div class="opt" onclick="pick(this)"><div class="opt-icon">😋</div><div class="opt-label">No Preference</div><div class="opt-sub">Totally flexible</div></div>
         </div>
         <div style="display:flex;gap:10px;">
           <button class="btn-outline" style="padding:12px 20px;font-size:14px;" onclick="goStep(1)">← Back</button>
@@ -854,7 +858,7 @@
       </div>
       <div id="sv3" style="display:none;">
         <div class="q-title">🔊 Noise & social vibe?</div>
-        <div class="q-sub">Ghar kitna quiet ya lively chahiye?</div>
+        <div class="q-sub">How much noise and social interaction do you prefer?</div>
         <div style="margin-bottom:18px;">
           <div class="range-val" id="noiseV">5 — Moderate</div>
           <input type="range" min="1" max="10" value="5" oninput="setNoise(this.value)"/>
@@ -885,7 +889,7 @@
       </div>
       <div id="sv5" style="display:none;">
         <div class="q-title">🧬 Personality type?</div>
-        <div class="q-sub">Ghar mein tum kaisa feel karte ho?</div>
+        <div class="q-sub">How do you feel at home?</div>
         <div class="opt-grid">
           <div class="opt" onclick="pick(this)"><div class="opt-icon">🧘</div><div class="opt-label">The Zen One</div><div class="opt-sub">Calm, minimalist</div></div>
           <div class="opt picked" onclick="pick(this)"><div class="opt-icon">🎯</div><div class="opt-label">The Planner</div><div class="opt-sub">Structured, reliable</div></div>
@@ -899,7 +903,7 @@
       </div>
       <div id="sv6" style="display:none;">
         <div class="q-title">🎮 Hobbies & Interests?</div>
-        <div class="q-sub">Multiple select kar sakte ho!</div>
+        <div class="q-sub">you can select multiple options</div>
         <div class="opt-grid">
           <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🎮</div><div class="opt-label">Gaming</div><div class="opt-sub">Video games, esports</div></div>
           <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🎵</div><div class="opt-label">Music</div><div class="opt-sub">Listening or playing</div></div>
@@ -917,7 +921,7 @@
       </div>
       <div id="sv7" style="display:none;">
         <div class="q-title">⚽ Favourite Sports?</div>
-        <div class="q-sub">Play karte ho ya dekhte ho — dono count hota hai!</div>
+        <div class="q-sub">which sport do you like to play and watch !</div>
         <div class="opt-grid">
           <div class="opt" onclick="multiPick(this)"><div class="opt-icon">⚽</div><div class="opt-label">Football</div></div>
           <div class="opt" onclick="multiPick(this)"><div class="opt-icon">🏏</div><div class="opt-label">Cricket</div></div>
@@ -935,7 +939,7 @@
       </div>
       <div id="sv8" style="display:none;">
         <div class="q-title">💼 Job / Occupation?</div>
-        <div class="q-sub">Isse schedule aur lifestyle match hoti hai!</div>
+        <div class="q-sub">what is your job or occupation?</div>
         <div class="opt-grid">
           <div class="opt" onclick="pick(this)"><div class="opt-icon">💻</div><div class="opt-label">Software / IT</div><div class="opt-sub">Dev, design, data</div></div>
           <div class="opt" onclick="pick(this)"><div class="opt-icon">🎓</div><div class="opt-label">Student</div><div class="opt-sub">College / university</div></div>
@@ -966,7 +970,7 @@
         <div style="background:var(--teal-lt);border:1px solid rgba(14,165,201,.2);border-radius:16px;padding:20px;margin-bottom:16px;">
           <div style="font-size:12px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">🏷️ Your Personality Tags</div>
           <div id="result-tags" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
-          <div style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.6;">Yeh tags tumhare profile pe add ho gaye — roommates tumhe inhi se dhundhenge.</div>
+          <div style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.6;">these tags will help others understand your personality.</div>
         </div>
         <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:10px;margin-bottom:16px;">
           <div style="font-size:20px;flex-shrink:0;">✅</div>
@@ -980,7 +984,7 @@
           </div>
           <div style="background:rgba(14,165,201,.2);color:var(--teal);font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap;flex-shrink:0;">Soon →</div>
         </div>
-        <button class="btn-teal" style="width:100%;padding:13px;font-size:14px;" onclick="closeVibe();showToast('Tags Added!','Profile pe tags add ho gaye 🏷️')">Done ✓</button>
+        <button class="btn-teal" style="width:100%;padding:13px;font-size:14px;" onclick="closeVibe();showToast('Tags Added!','Tags succesfully added 🏷️')">Done ✓</button>
       </div>
     </div>
   </div>
@@ -1133,8 +1137,8 @@ onclick="confirmDelete(`{% url 'room_delete' room.id %}`)">🗑</button>        
       {% empty %}
       <div style="text-align:center;padding:52px 20px;">
         <div style="font-size:44px;margin-bottom:12px;">🏠</div>
-        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px;">Koi room post nahi kiya abhi tak</div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Apna pehla room post karo — seekers tak pahuncho.</p>
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px;">No Rooms Posted Yet</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Post your first room listing to reach potential tenants.</p>
         <a href="{% url 'post_gate' %}" class="btn-teal" style="display:inline-block;text-decoration:none;padding:12px 28px;border-radius:10px;font-size:14px;">➕ Post Your First Room</a>
       </div>
       {% endfor %}
@@ -1240,8 +1244,8 @@ onclick="confirmDelete(`{% url 'room_delete' room.id %}`)">🗑</button>        
       {% empty %}
       <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:52px 20px;text-align:center;box-shadow:var(--card-sh);">
         <div style="font-size:44px;margin-bottom:12px;">👥</div>
-        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px;">Koi flatmate post nahi hai abhi</div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Post karo aur compatible flatmates dhundho.</p>
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px;">No Flatmates Posted Yet</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Post and find compatible flatmates.</p>
         <a href="{% url 'post_flatmate' %}" class="btn-teal" style="display:inline-block;text-decoration:none;padding:12px 28px;border-radius:10px;font-size:14px;">👥 Post Flatmate Listing</a>
       </div>
       {% endfor %}
