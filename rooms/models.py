@@ -227,6 +227,20 @@ class FlatmateProfile(models.Model):
         f"Preferred age range: {self.pref_age_range}, "
         f"Bio: {self.bio}"
     )
+    # models.py mein
+    @property
+    def banner_gradient(self):
+        gradients = {
+            'Student': 'linear-gradient(135deg,#10B981,#0EA5C9)',
+            'Software / IT': 'linear-gradient(135deg,#0EA5C9,#0F1F3D)',
+            'Corporate Professional': 'linear-gradient(135deg,#0F1F3D,#1a3260)',
+            'Freelancer': 'linear-gradient(135deg,#F59E0B,#EF4444)',
+            'Healthcare': 'linear-gradient(135deg,#10B981,#059669)',
+            'Startup': 'linear-gradient(135deg,#F59E0B,#0EA5C9)',
+            'Research / Academia': 'linear-gradient(135deg,#6366F1,#0F1F3D)',
+            'Creative / Media': 'linear-gradient(135deg,#F59E0B,#EF4444)',
+        }
+        return gradients.get(self.occupation, 'linear-gradient(135deg,#0EA5C9,#0F1F3D)')
 
     class Meta:
         ordering = ['-vibe_score', '-created_at']

@@ -595,7 +595,7 @@
             style="font-size:14px;padding:11px 28px;margin-top:16px;width:100%;"
             onclick="showSec('discover')">← Back</button>
   </div>
-</div>>
+</div>
 
 <!-- ══ PROFILE ══ -->
 <div id="sec-profile" style="display:none;">
@@ -626,7 +626,7 @@
       <circle cx="40" cy="40" r="33" fill="none" stroke="var(--border)" stroke-width="6"/>
       <circle cx="40" cy="40" r="33" fill="none" stroke="var(--teal)" stroke-width="6"
         stroke-dasharray="207.3"
-        stroke-dashoffset="{{ 207.3|add:0|floatformat:0 }}"
+       stroke-dashoffset="{% widthratio completion_score 100 207 %}"
         id="completion-ring"
         stroke-linecap="round"/>
     </svg>

@@ -146,3 +146,5 @@ MESSAGE_TAGS = {
     messages.ERROR: 'red-500',   # Tailwind red color
     messages.SUCCESS: 'emerald-500', # Tailwind green (emerald) color
 }
+
+LOGIN_URL = '/login/'

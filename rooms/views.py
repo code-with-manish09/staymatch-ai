@@ -109,7 +109,7 @@ def post_room(request):
 #==============room details====================
 from django.db.models import Avg
 from django.shortcuts import render
-
+@login_required
 def room_details(request, room_id=None):
     qs = Listing.objects.prefetch_related('amenities', 'images')
 
@@ -258,16 +258,16 @@ def submit_review(request, room_id):
 
 
 #==========match view============
-@login_required(login_url='/login/')
+@login_required
 def match_gateway(request):
     return render(request, 'rooms/match_gateway.html')
 
 
-@login_required(login_url='/login/')
+@login_required
 def room_matches(request):
     return render(request, 'rooms/room_matches.html')
 
-@login_required(login_url='/login/')
+@login_required
 def flatmate_match(request):
     return render(request, 'rooms/flatmate_match.html')
 
