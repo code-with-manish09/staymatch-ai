@@ -7,9 +7,9 @@
   <!-- Welcome Banner -->
   <div class="welcome-banner fu d1">
     {% if request.user.profile.profile_picture %}
-    <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:30px; height:30px; border-radius: 50%; object-fit: cover;" alt="{{ user.username }}"/>
+    <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:64px; height:64px; border-radius: 50%; object-fit: cover; flex-shrink:0;" alt="{{ user.username }}"/>
     {% else %}
-    <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px; height:30px; border-radius: 50%;" alt="{{ user.username }}"/>
+    <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:64px; height:64px; border-radius: 50%; object-fit: cover; flex-shrink:0;" alt="{{ user.username }}"/>
     {% endif %}
     <div style="flex:1;position:relative;z-index:1;">
       <div class="wb-name">Hey {{ request.user.profile.full_name }}, welcome back ! 👋</div>
@@ -605,12 +605,12 @@
   </div>
   <div class="feat-card" style="max-width:820px;margin:0 auto;padding:28px;">
     <div style="display:flex;align-items:center;gap:18px;margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid var(--border);flex-wrap:wrap;">
-      {% if request.user.profile.profile_picture %}
-      <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:30px; height:30px; border-radius: 50%; object-fit: cover;" alt="{{ user.username }}"/>
-      {% else %}
-      <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:30px; height:30px; border-radius: 50%;" alt="{{ user.username }}"/>
-      {% endif %}
-      <div style="flex:1;min-width:180px;">
+          {% if request.user.profile.profile_picture %}
+    <img src="{{ request.user.profile.profile_picture.url }}" class="avatar" style="width:96px; height:96px; border-radius: 50%; object-fit: cover; border:3px solid var(--border); flex-shrink:0;" alt="{{ user.username }}"/>
+    {% else %}
+    <img src="https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=0D8ABC&color=fff" class="avatar" style="width:96px; height:96px; border-radius: 50%; object-fit: cover; border:3px solid var(--border); flex-shrink:0;" alt="{{ user.username }}"/>
+    {% endif %}
+          <div style="flex:1;min-width:180px;">
         <div class="display" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:2px;">{{ request.user.profile.full_name }}</div>
         <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">@{{ request.user.username }}</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">

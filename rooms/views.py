@@ -2,6 +2,7 @@ from datetime import date
 import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from httpx import request
 from .models import FlatmateProfile, Listing, Amenity, ListingImage, Review, SavedFlatmate
 from django.http import JsonResponse  
 from rooms.services.services import get_room_faqs, get_vibe_score
@@ -274,7 +275,6 @@ def flatmate_match(request):
 
 #=======match details view===========
 
-
 @login_required
 def ai_match_view(request):
     user_prefs = (
@@ -289,26 +289,58 @@ def ai_match_view(request):
 
     rooms = Listing.objects.filter(is_published=True)
 
+    city = request.GET.get('city')
+    if city:
+        rooms = rooms.filter(city__iexact=city)
+
+    budget = request.GET.get('budget')
+    if budget:
+        try:
+            rooms = rooms.filter(rent__lte=int(budget))
+        except ValueError:
+            pass
+
+    room_type = request.GET.get('room_type')
+    if room_type:
+        rooms = rooms.filter(room_type=room_type)
+
+    furnishing = request.GET.get('furnishing')
+    if furnishing:
+        if 'Fully' in furnishing:
+            rooms = rooms.filter(furnishing_status='Fully')
+        elif 'Semi' in furnishing:
+            rooms = rooms.filter(furnishing_status='Semi')
+        elif 'Unfurnished' in furnishing:
+            rooms = rooms.filter(furnishing_status='Unfurnished')
+
     results = []
     for room in rooms:
-        response = get_vibe_score(user_prefs, room.get_preference_text())
-        clean = response.strip().removeprefix('```json').removeprefix('```').removesuffix('```').strip()
-        if not clean:
+        try:
+            response = get_vibe_score(user_prefs, room.get_preference_text())
+            clean = response.strip().removeprefix('```json').removeprefix('```').removesuffix('```').strip()
+            if not clean:
+                continue
+            data = json.loads(clean)
+            score = data.get("score")
+            reason = data.get("reason", "")
+            if score is None:
+                continue
+        except Exception as e:
+            print("AI match skip, room", room.id, ":", e)
             continue
-        data = json.loads(clean)
+        print("SCORE:", room.title, "→", score)   # room view mein
+
         results.append({
             "room_id": room.id,
             "title": room.title,
             "city": room.city,
             "rent": room.rent,
-            "vibe_score": data["score"],
-            "reason": data["reason"]
+            "vibe_score": score,
+            "reason": reason
         })
-
     results.sort(key=lambda x: x["vibe_score"], reverse=True)
-
     return JsonResponse({"matches": results})
-
+     
 #===============room faqs====================
 @login_required
 def room_faqs(request, room_id):
@@ -484,7 +516,7 @@ def to_int(val, default=0):
     except:
         return default
 
-@login_required
+
 def post_flatmate(request):
     from .models import FlatmateProfile
 
@@ -596,7 +628,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import FlatmateProfile
 
 from inbox.models import FlatmateInquiry
-
+@login_required
 def flatmate_detail(request, pk):
     profile = get_object_or_404(FlatmateProfile, id=pk)
     
@@ -659,32 +691,43 @@ def ai_flatmate_match_view(request):
         f"Preferred age range: {request.GET.get('pref_age', 'Any')}"
     )
 
-    profiles = FlatmateProfile.objects.all()
+    profiles = FlatmateProfile.objects.filter(is_active=True)
+
+    city = request.GET.get('city')
+    if city:
+        profiles = profiles.filter(city__iexact=city)
 
     results = []
     for profile in profiles:
-        profile_text = profile.get_preference_text()  # same pattern as room
-        response = get_vibe_score(user_prefs, profile_text)
-        clean = response.strip().removeprefix('```json').removeprefix('```').removesuffix('```').strip()
-        if not clean:
-            continue
         try:
+            profile_text = profile.get_preference_text()
+            response = get_vibe_score(user_prefs, profile_text)
+            clean = response.strip().removeprefix('```json').removeprefix('```').removesuffix('```').strip()
+            if not clean:
+                continue
             data = json.loads(clean)
-        except json.JSONDecodeError:
+            score = data.get("score")
+            reason = data.get("reason", "")
+            if score is None:
+                continue
+        except Exception as e:
+            print("AI flatmate match skip, profile", profile.id, ":", e)
             continue
+        print("SCORE:", profile.name, "→", score)   # flatmate view mein
 
-        results.append({
-            "profile_id": profile.id,
-            "name": profile.name,
-            "age": profile.age,
-            "occupation": profile.occupation,
-            "city": profile.city,
-            "budget": profile.max_budget,
-            "room_type": profile.room_type_pref,
-            "sleep": profile.sleep_schedule,
-            "vibe_score": data["score"],
-            "reason": data["reason"],
-        })
+        if score >= 50:
+            results.append({
+                "profile_id": profile.id,
+                "name": profile.name,
+                "age": profile.age,
+                "occupation": profile.occupation,
+                "city": profile.city,
+                "budget": profile.max_budget,
+                "room_type": profile.room_type_pref,
+                "sleep": profile.sleep_schedule,
+                "vibe_score": score,
+                "reason": reason,
+            })
 
     results.sort(key=lambda x: x["vibe_score"], reverse=True)
     return JsonResponse({"matches": results})
