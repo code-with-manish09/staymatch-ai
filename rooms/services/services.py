@@ -5,17 +5,21 @@ client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
 def get_vibe_score(user_prefs, room_prefs):
     prompt = f"""
-    User preferences: {user_prefs}
-    Room preferences: {room_prefs}
-    Dono ko dhyan se compare kar aur ek SAHI compatibility score de 0 se 100 ke beech.
-    - Agar city match nahi karti toh score kam hona chahiye
-    - Agar budget match nahi karta toh score kam hona chahiye  
-    - Agar sleep schedule alag hai toh score kam hona chahiye
-    - Sirf tab zyada score de jab genuinely zyada match ho
-    -ranking us hisab se do jo jyada match ho vibe score mein wo top pe rahe and so on.
+You are a room/flatmate compatibility scoring AI.
 
-    Sirf yeh JSON return kar, koi backticks nahi, koi extra text nahi:
-    {{"score": 45, "reason": "yahan reason likho"}}
+User preferences: {user_prefs}
+Room/Profile preferences: {room_prefs}
+
+Compare carefully and give a compatibility score from 0 to 100.
+- City mismatch = low score
+- Budget mismatch = low score  
+- Sleep schedule mismatch = lower score
+- Only give high score when genuinely highly compatible
+
+IMPORTANT: Write the reason in English only. No Hindi, no Hinglish.
+
+Return ONLY this JSON, no backticks, no extra text:
+{{"score": 72, "reason": "write reason here in English"}}
 """
     response = client.models.generate_content(
         model='gemini-2.5-flash',

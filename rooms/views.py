@@ -274,7 +274,6 @@ def flatmate_match(request):
 
 
 #=======match details view===========
-
 @login_required
 def ai_match_view(request):
     user_prefs = (
@@ -328,16 +327,18 @@ def ai_match_view(request):
         except Exception as e:
             print("AI match skip, room", room.id, ":", e)
             continue
-        print("SCORE:", room.title, "→", score)   # room view mein
 
-        results.append({
-            "room_id": room.id,
-            "title": room.title,
-            "city": room.city,
-            "rent": room.rent,
-            "vibe_score": score,
-            "reason": reason
-        })
+        # ✅ Sirf 60+ score wale show karo
+        if score >= 60:
+            results.append({
+                "room_id": room.id,
+                "title": room.title,
+                "city": room.city,
+                "rent": room.rent,
+                "vibe_score": score,
+                "reason": reason
+            })
+
     results.sort(key=lambda x: x["vibe_score"], reverse=True)
     return JsonResponse({"matches": results})
      

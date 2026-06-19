@@ -71,6 +71,54 @@
 .snd{width:40px;height:40px;border-radius:50%;background:#1d4ed8;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .snd:hover{background:#1e40af;}
 .snd svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+@media (max-width: 768px) {
+  .wrap {
+    position: relative;
+    height: calc(100vh - 66px);
+    overflow: hidden;
+  }
+
+  /* Sidebar — full screen by default on mobile */
+  .sb {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    border-right: none !important;
+    z-index: 10;
+    transition: transform 0.3s ease;
+    transform: translateX(0);
+  }
+
+  /* Chat — full screen, hidden right side */
+  .chat {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 20;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    background: #fff;
+  }
+
+  /* Jab chat active ho */
+  .chat.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Back button — sirf mobile pe dikhega */
+  .mobile-back {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-back {
+    display: none !important;
+  }
+}
 </style>
 {% endblock %}
 
@@ -139,13 +187,22 @@
 
     {% if active_listing %}
       {# ── Room chat header ── #}
-      <div class="chat-hd">
-        <div class="av">{{ other_user.username|slice:":1"|upper }}</div>
-        <div>
-          <div class="ch-name">{{ other_user.username }}</div>
-          <div class="ch-sub">🏠 {{ active_listing.title }}</div>
-        </div>
-      </div>
+      <!-- Room chat header -->
+<div class="chat-hd">
+  <button class="mobile-back" onclick="goBack()"
+    style="display:none;background:none;border:none;cursor:pointer;
+           padding:4px 8px 4px 0;margin-right:4px;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+         stroke="#0f172a" stroke-width="2.5" stroke-linecap="round">
+      <path d="M19 12H5M12 5l-7 7 7 7"/>
+    </svg>
+  </button>
+  <div class="av">{{ other_user.username|slice:":1"|upper }}</div>
+  <div>
+    <div class="ch-name">{{ other_user.username }}</div>
+    <div class="ch-sub">🏠 {{ active_listing.title }}</div>
+  </div>
+</div>
 
       <div class="msgs" id="msgs">
         <div class="date-div">Today</div>
@@ -183,6 +240,14 @@
     {% elif active_flatmate_profile %}
       {# ── Flatmate chat header ── #}
       <div class="chat-hd">
+        <button class="mobile-back" onclick="goBack()"
+    style="display:none;background:none;border:none;cursor:pointer;
+           padding:4px 8px 4px 0;margin-right:4px;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+         stroke="#0f172a" stroke-width="2.5" stroke-linecap="round">
+      <path d="M19 12H5M12 5l-7 7 7 7"/>
+    </svg>
+  </button>
         <div class="av fm">{{ other_user.username|slice:":1"|upper }}</div>
         <div>
           <div class="ch-name">{{ other_user.username }}</div>
@@ -236,6 +301,38 @@
 </div>
 
 <script>
+  // Mobile WhatsApp-style navigation
+function isMobile() {
+  return window.innerWidth <= 768;
+}
+
+function openChat() {
+  if (isMobile()) {
+    document.querySelector('.chat').classList.add('mobile-open');
+  }
+}
+
+function goBack() {
+  document.querySelector('.chat').classList.remove('mobile-open');
+}
+
+// Agar active chat hai toh automatically open karo
+document.addEventListener('DOMContentLoaded', function() {
+  var activeListing  = "{{ active_listing.id|default:'' }}";
+  var activeFlatmate = "{{ active_flatmate_profile.id|default:'' }}";
+  if ((activeListing || activeFlatmate) && isMobile()) {
+    openChat();
+  }
+});
+
+// Conversation pe click karne pe chat open ho
+document.querySelectorAll('.ci').forEach(function(el) {
+  el.addEventListener('click', function() {
+    if (isMobile()) {
+      setTimeout(openChat, 100);
+    }
+  });
+});
   var msgs = document.getElementById('msgs');
   if(msgs) msgs.scrollTop = msgs.scrollHeight;
 

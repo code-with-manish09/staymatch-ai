@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>staymatch — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{% static 'css/responsive_patch.css' %}">
+
 <style>
 /* ══════════ ROOT ══════════ */
 :root {
@@ -815,6 +819,477 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 .room-loc{font-size:11px;margin-bottom:7px;}
 .room-chips{gap:4px;margin-bottom:8px;}
 .room-price{font-size:14px;}
+/* ════════════════════════════════════════
+   STAYMATCH DASHBOARD — RESPONSIVE PATCH
+   Only CSS — no backend/template changes
+   ════════════════════════════════════════ */
+
+/* ── Base resets for mobile ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+#sec-discover,
+#sec-saved,
+#sec-messages,
+#sec-notifications,
+#sec-profile,
+#sec-settings,
+#sec-quiz,
+#sec-safety,
+#sec-addroom {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* ══ WELCOME BANNER ══ */
+.welcome-banner {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .welcome-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 16px !important;
+  }
+  .welcome-banner .avatar {
+    width: 52px !important;
+    height: 52px !important;
+  }
+  .wb-name {
+    font-size: 16px !important;
+  }
+  .wb-chips {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .vibe-score {
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+  .vibe-score svg,
+  .vibe-score > div > svg {
+    width: 64px !important;
+    height: 64px !important;
+  }
+}
+
+/* ══ FILTER BAR ══ */
+.filter-bar {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .filter-bar {
+    padding: 12px !important;
+    gap: 6px;
+  }
+  .filter-select {
+    width: 100% !important;
+    flex: 1 1 calc(50% - 4px) !important;
+    min-width: 120px !important;
+  }
+  .filter-chip {
+    font-size: 11px !important;
+    padding: 5px 10px !important;
+  }
+}
+
+/* ══ STATS ROW ══ */
+.stats-row {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+  gap: 10px !important;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .stats-row {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .stat-card {
+    padding: 12px !important;
+  }
+  .stat-val {
+    font-size: 22px !important;
+  }
+}
+
+/* ══ SECTION HEADERS ══ */
+@media (max-width: 640px) {
+  .sec-hd {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .sec-title {
+    font-size: 15px !important;
+  }
+}
+
+/* ══ ROOMS GRID ══ */
+.rooms-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+@media (max-width: 640px) {
+  .rooms-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+  .room-card {
+    border-radius: 14px !important;
+  }
+  .room-img img {
+    height: 180px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+  }
+  .room-body {
+    padding: 14px !important;
+  }
+  .room-chips {
+    flex-wrap: wrap !important;
+    gap: 5px !important;
+  }
+  .ai-price-pill,
+  .env-score {
+    font-size: 11px !important;
+  }
+  .room-footer {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .room-price {
+    font-size: 18px !important;
+  }
+}
+
+/* ══ FLATMATE GRID ══ */
+.fm-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+@media (max-width: 640px) {
+  .fm-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  .fm-card {
+    border-radius: 14px !important;
+  }
+  .fm-banner {
+    height: 80px !important;
+  }
+  .fm-av-wrap {
+    bottom: -24px !important;
+  }
+  .fm-av, .fm-av-img {
+    width: 48px !important;
+    height: 48px !important;
+  }
+  .fm-body {
+    padding: 30px 10px 14px !important;
+  }
+  .fm-name {
+    font-size: 13px !important;
+  }
+  .fm-sub, .fm-vibe {
+    font-size: 11px !important;
+  }
+  .fm-tags {
+    gap: 4px !important;
+  }
+  .fm-tag {
+    font-size: 10px !important;
+    padding: 3px 7px !important;
+  }
+  .fm-footer {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .fm-budget {
+    font-size: 13px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .fm-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ══ BOTTOM STATS ROW (City + Platform) ══ */
+.bottom-stats-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 16px !important;
+}
+
+@media (max-width: 768px) {
+  .bottom-stats-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.plat-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 10px !important;
+}
+
+@media (max-width: 480px) {
+  .plat-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+  }
+  .plat-num {
+    font-size: 18px !important;
+  }
+  .plat-lbl, .plat-trend {
+    font-size: 10px !important;
+  }
+}
+
+/* ══ REVIEWS CAROUSEL ══ */
+@media (max-width: 640px) {
+  .reviews-card {
+    padding: 16px !important;
+    border-radius: 14px !important;
+  }
+  .review-slide {
+    font-size: 13px !important;
+  }
+}
+
+/* ══ PROFILE SECTION ══ */
+.profile-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 20px !important;
+}
+
+@media (max-width: 640px) {
+  .profile-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ══ ACTIVITY TABLE (My Listings) ══ */
+@media (max-width: 768px) {
+  /* Convert grid table to card-style on mobile */
+  .activity-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 14px !important;
+    position: relative;
+  }
+  /* Hide the header row on mobile */
+  .activity-row:first-of-type {
+    display: none !important;
+  }
+  [style*="grid-template-columns:2fr 100px 80px 80px 100px 130px"] {
+    display: none !important;
+  }
+  .activity-row > div:nth-child(1) {
+    width: 100%;
+  }
+  .activity-row > div:nth-child(2),
+  .activity-row > div:nth-child(3),
+  .activity-row > div:nth-child(4),
+  .activity-row > div:nth-child(5) {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+  }
+  .activity-row > div:last-child {
+    display: flex !important;
+    gap: 6px !important;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+}
+
+/* ══ ADD ROOM SECTION ══ */
+@media (max-width: 768px) {
+  #sec-addroom > div[style*="grid-template-columns:1fr 1fr"] {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+}
+
+/* ══ QUIZ SECTION ══ */
+.quiz-hero {
+  display: flex !important;
+  gap: 20px !important;
+  flex-wrap: wrap !important;
+}
+
+@media (max-width: 640px) {
+  .quiz-hero {
+    flex-direction: column !important;
+  }
+  .quiz-hero-visual {
+    display: none !important;
+  }
+  .quiz-steps-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .hiw-grid {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .tag-options {
+    flex-wrap: wrap !important;
+  }
+  .quiz-cta-btn {
+    width: 100% !important;
+  }
+}
+
+/* ══ VIBE MODAL ══ */
+@media (max-width: 640px) {
+  .modal {
+    width: 95vw !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    padding: 16px !important;
+    border-radius: 16px !important;
+  }
+  .opt-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+  .opt {
+    padding: 10px 8px !important;
+  }
+  .opt-icon {
+    font-size: 22px !important;
+  }
+  .opt-label {
+    font-size: 12px !important;
+  }
+  .opt-sub {
+    font-size: 10px !important;
+  }
+}
+
+/* ══ SAVED SECTION — Tab buttons ══ */
+@media (max-width: 480px) {
+  #sec-saved > div[style*="width:fit-content"],
+  #sec-safety > div[style*="width:fit-content"] {
+    width: 100% !important;
+  }
+  #sec-saved > div > button,
+  #sec-safety > div > button {
+    flex: 1 !important;
+    text-align: center !important;
+    font-size: 12px !important;
+    padding: 8px 12px !important;
+  }
+}
+
+/* ══ NOTIFICATIONS ══ */
+@media (max-width: 640px) {
+  #sec-notifications .feat-card {
+    padding: 16px !important;
+  }
+  #sec-notifications a[style*="display:flex"] {
+    align-items: flex-start !important;
+  }
+}
+
+/* ══ CITY BAR ══ */
+@media (max-width: 480px) {
+  .city-row {
+    gap: 6px !important;
+  }
+  .city-nm {
+    min-width: 60px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* ══ WHITE CARD (general) ══ */
+@media (max-width: 640px) {
+  .white-card {
+    padding: 16px !important;
+    border-radius: 14px !important;
+  }
+}
+
+/* ══ GENERAL UTILITY ══ */
+@media (max-width: 640px) {
+  .feat-card {
+    padding: 20px 16px !important;
+  }
+  .btn-teal,
+  .btn-outline {
+    width: 100% !important;
+    text-align: center !important;
+  }
+  /* Prevent horizontal overflow globally */
+  [style*="display:grid"] {
+    min-width: 0;
+  }
+  [style*="white-space:nowrap"] {
+    white-space: normal !important;
+  }
+}
+
+/* ══ PROFILE PAGE — top flex row ══ */
+@media (max-width: 640px) {
+  #sec-profile .feat-card > div[style*="display:flex;align-items:center"] {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  #sec-profile img.avatar {
+    width: 72px !important;
+    height: 72px !important;
+  }
+}
+
+/* ══ FLATMATE POSTS LIST ══ */
+@media (max-width: 640px) {
+  #tab-flatmate > div > div[style*="display:flex;align-items:center;gap:16px"] {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+}
+@media (max-width: 640px) {
+  .welcome-banner {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+  }
+  .welcome-banner > div[style*="flex:1"] {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+  .vibe-score {
+    flex-shrink: 0 !important;
+    width: 70px !important;
+  }
+  .vibe-score svg {
+    width: 64px !important;
+    height: 64px !important;
+  }
+  .vibe-lbl {
+    font-size: 9px !important;
+    text-align: center !important;
+  }
+  .wb-chips {
+    flex-wrap: wrap !important;
+  }
+}
 </style>
 {% block extra_css %}{% endblock %}
 </head>
