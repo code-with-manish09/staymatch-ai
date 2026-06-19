@@ -1,8 +1,11 @@
+import profile
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.urls import reverse
 from django.http import JsonResponse
+from httpx import request
 from .models import Message
 from rooms.models import Listing, FlatmateProfile
 
@@ -22,7 +25,7 @@ def get_conversations(user):
         if msg.listing_id:
             key = ('room', msg.listing_id, other.id)
         elif msg.flatmate_profile_id:
-            key = ('flatmate', msg.flatmate_profile_id, other.id)
+            key = ('flatmate',  other.id)
         else:
             continue
 
@@ -37,7 +40,7 @@ def get_conversations(user):
             else:
                 unread = Message.objects.filter(
                     recipient=user, sender=other,
-                    flatmate_profile=msg.flatmate_profile, is_read=False
+                  flatmate_profile__isnull=False, is_read=False
                 ).count()
 
             conversations.append({
@@ -155,56 +158,66 @@ def send_flatmate_message(request, profile_id):
     if profile.user == request.user:
         return redirect('flatmate_detail', pk=profile_id)
 
-    # Sirf ek baar auto-message create karo
-    already_exists = Message.objects.filter(
-        sender=request.user,
-        recipient=profile.user,
-        flatmate_profile=profile
-    ).exists()
+    body = request.POST.get('body', '').strip()
 
-    if not already_exists:
+    # Agar body nahi hai (pehli baar CTA button se aaya)
+    # toh auto-message bhejo sirf ek baar
+    if not body:
+        already_exists = Message.objects.filter(
+            sender=request.user,
+            recipient=profile.user,
+            flatmate_profile=profile
+        ).exists()
+
+        if not already_exists:
+            Message.objects.create(
+                sender           = request.user,
+                recipient        = profile.user,
+                flatmate_profile = profile,
+                listing          = None,
+                body             = "Hi, I am interested in connecting with you as a flatmate!",
+            )
+    else:
+        # Normal typed message
         Message.objects.create(
             sender           = request.user,
             recipient        = profile.user,
             flatmate_profile = profile,
             listing          = None,
-            body             = "Hi, I am interested in connecting with you as a flatmate!",
+            body             = body,
         )
 
-    return redirect(reverse('flatmate_chat', args=[profile_id]))
-
-
+    return redirect(
+        reverse('flatmate_chat', args=[profile_id]) + f'?user={profile.user.id}'
+    )
 # ─── flatmate chat view ───────────────────────────────────────────────────────
+from django.contrib.auth.models import User
 @login_required
 def flatmate_chat_view(request, profile_id):
     profile = get_object_or_404(FlatmateProfile, id=profile_id)
 
-    # determine recipient and sender based on who owns the profile
-    if request.user == profile.user:
-        # profile owner is viewing, find the other user from messages
-        other_msg = Message.objects.filter(
-            flatmate_profile=profile
-        ).exclude(sender=request.user).first()
-        if not other_msg:
-            return redirect('inbox')
-        other_user = other_msg.sender
+    other_user_id = request.GET.get('user') or request.POST.get('other_user_id')
+
+    if other_user_id:
+        other_user = get_object_or_404(User, id=other_user_id)
+    elif request.user == profile.user:
+        return redirect('inbox')
     else:
         other_user = profile.user
 
     # Dono ke beech messages
     chat_messages = Message.objects.filter(
-        flatmate_profile=profile
+        flatmate_profile__isnull=False
     ).filter(
         Q(sender=request.user, recipient=other_user) |
         Q(sender=other_user,   recipient=request.user)
     ).order_by('created_at')
-
-    # Read mark karo
+    # Read mark 
     chat_messages.filter(
         recipient=request.user, is_read=False
     ).update(is_read=True)
 
-    # POST — naya message
+   # POST — naya message
     if request.method == 'POST':
         body = request.POST.get('body', '').strip()
         if body:
@@ -215,7 +228,7 @@ def flatmate_chat_view(request, profile_id):
                 listing          = None,
                 body             = body,
             )
-        return redirect(reverse('flatmate_chat', args=[profile_id]))
+        return redirect(reverse('flatmate_chat', args=[profile_id]) + f'?user={other_user.id}')
 
     conversations = get_conversations(request.user)
 

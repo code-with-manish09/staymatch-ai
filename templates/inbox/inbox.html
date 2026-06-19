@@ -110,8 +110,8 @@
 
         {% else %}
           {# ── Flatmate conversation ── #}
-          <a class="ci {% if active_flatmate_profile.id == conv.flatmate_profile.id and other_user.id == conv.other_user.id %}active{% endif %}"
-             href="{% url 'flatmate_chat' conv.flatmate_profile.id %}">
+         <a class="ci {% if active_flatmate_profile and other_user.id == conv.other_user.id %}active{% endif %}"
+      href="{% url 'flatmate_chat' conv.flatmate_profile.id %}?user={{ conv.other_user.id }}">
             <div class="av fm">{{ conv.other_user.username|slice:":1"|upper }}</div>
             <div class="ci-info">
               <div class="ci-top">
@@ -209,14 +209,14 @@
             <p>Send the first message! 👋</p>
           </div>
         {% endfor %}
-      </div>
-
-      <form method="POST"
-            action="{% url 'flatmate_chat' active_flatmate_profile.id %}"
-            class="inp-bar">
-        {% csrf_token %}
-        <input name="body" id="inp" placeholder="Message likho…" autocomplete="off" required />
-        <button type="submit" class="snd">
+        </div>
+  <form method="POST"
+        action="{% url 'flatmate_chat' active_flatmate_profile.id %}"
+        class="inp-bar">
+    {% csrf_token %}
+    <input type="hidden" name="other_user_id" value="{{ other_user.id }}" />
+    <input name="body" id="inp" placeholder="Message likho…" autocomplete="off" required />
+          <button type="submit" class="snd">
           <svg viewBox="0 0 24 24">
             <line x1="22" y1="2" x2="11" y2="13"/>
             <polygon points="22 2 15 22 11 13 2 9 22 2"/>
