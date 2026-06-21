@@ -250,6 +250,192 @@ footer{
   background:var(--navy);color:rgba(255,255,255,.55);
   padding:48px 0 32px;
 }
+
+/* Mini match badge — mobile only */
+.hero-mobile-badge {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .hero-mobile-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 10px 14px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(15,31,61,.25);
+  }
+  .hero-mobile-badge .badge-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: rgba(255,255,255,.5);
+    letter-spacing: .06em;
+  }
+  .hero-mobile-badge .badge-score {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--amber);
+    line-height: 1;
+  }
+  .hero-mobile-badge .badge-sub {
+    font-size: 9px;
+    color: rgba(255,255,255,.5);
+    margin-top: 2px;
+  }
+}
+/* ══════════ RESPONSIVE ══════════ */
+@media (max-width: 900px) {
+
+  /* Badge */
+  .hero-mobile-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 10px 14px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(15,31,61,.25);
+    z-index: 10;
+  }
+  .hero-mobile-badge .badge-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: rgba(255,255,255,.5);
+    letter-spacing: .06em;
+  }
+  .hero-mobile-badge .badge-score {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--amber);
+    line-height: 1;
+  }
+  .hero-mobile-badge .badge-sub {
+    font-size: 9px;
+    color: rgba(255,255,255,.5);
+    margin-top: 2px;
+  }
+
+  /* Nav */
+  nav {
+    padding: 0 16px !important;
+    height: 60px;
+    gap: 8px;
+  }
+  .nav-links { display: none !important; }
+  nav > div:last-child { gap: 6px !important; }
+  nav .btn-outline { padding: 7px 12px !important; font-size: 12px !important; }
+  nav .btn-primary { padding: 8px 14px !important; font-size: 12px !important; }
+
+  /* Hero blobs hide */
+  section > div[style*="radial-gradient(circle,rgba(14,165,201"] { display: none !important; }
+  section > div[style*="radial-gradient(circle,rgba(245,158,11"] { display: none !important; }
+
+  /* Hero grid → single col */
+  section[style*="min-height:calc(100vh"] .container,
+  section[style*="min-height: calc(100vh"] .container {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+    padding-top: 32px !important;
+    padding-bottom: 40px !important;
+    position: relative !important;
+  }
+
+  /* Hero right side floating cards — hide */
+  div[style*="position:relative;height:520px"] {
+    display: none !important;
+  }
+
+  /* Hero heading */
+  h1.display { font-size: 42px !important; }
+
+  /* Buttons */
+  div[style*="display:flex;gap:12px;margin-bottom:40px"] {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .btn-teal, .btn-outline { width: auto !important; }
+
+  /* Section padding */
+  .section { padding: 56px 0; }
+  .container { padding: 0 20px; }
+
+  /* 3-col grids → 1-col */
+  div[style*="grid-template-columns:repeat(3,1fr)"],
+  div[style*="grid-template-columns: repeat(3, 1fr)"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 4-col stats → 2-col */
+  div[style*="grid-template-columns:repeat(4,1fr)"],
+  div[style*="grid-template-columns: repeat(4, 1fr)"] {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* Chat + Map → stack */
+  section[style*="gap:80px"] > .container {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  div[style*="max-width:400px"] { max-width: 100% !important; }
+  div[style*="gap:80px;align-items:center"] {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  .map-wrap { height: 280px !important; }
+
+  /* How it works line hide */
+  div[style*="repeating-linear-gradient"] { display: none !important; }
+
+  /* Headings */
+  h2.display { font-size: 34px !important; }
+
+  /* CTA */
+  div[style*="padding:72px 60px"] { padding: 40px 24px !important; }
+  div[style*="padding:72px 60px"] h2 { font-size: 32px !important; }
+  div[style*="display:flex;gap:14px;justify-content:center"] {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  /* Footer */
+  footer > .container > div:first-child {
+    flex-direction: column !important;
+    gap: 40px !important;
+  }
+  footer div[style*="display:flex;gap:64px"] {
+    gap: 32px !important;
+    flex-direction: column !important;
+  }
+
+  /* Map stats grid */
+  div[style*="grid-template-columns:1fr 1fr;gap:14px"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 480px) {
+  h1.display { font-size: 34px !important; }
+  h2.display { font-size: 28px !important; }
+  nav { padding: 0 16px !important; }
+  .container { padding: 0 16px; }
+
+  div[style*="grid-template-columns:repeat(4,1fr)"],
+  div[style*="grid-template-columns: repeat(4, 1fr)"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -280,7 +466,8 @@ footer{
   <div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(15,31,61,.07) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;"></div>
 
   <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;width:100%;padding-top:48px;padding-bottom:64px;">
-
+    
+  
     <!-- LEFT COPY -->
     <div>
       <div class="fu d1 section-label">⚡ AI-Powered Flatmate Matching</div>
