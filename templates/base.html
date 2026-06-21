@@ -874,14 +874,6 @@ input[type=range]{width:100%;accent-color:var(--teal);}
     height: 64px !important;
   }
 
-  /* YE ADD KARO — Profile pic + percentage fix */
-  #sec-profile .feat-card > div[style*="display:flex;align-items:center;gap:18px"] {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-  }
-  #sec-profile .feat-card > div[style*="display:flex;align-items:center;gap:18px"] > div:last-child {
-    align-self: flex-start !important;
-  }
 }
 /* ══ FILTER BAR ══ */
 .filter-bar {
@@ -1254,12 +1246,35 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 /* ══ PROFILE PAGE — top flex row ══ */
 @media (max-width: 640px) {
   #sec-profile .feat-card > div[style*="display:flex;align-items:center"] {
-    flex-direction: column !important;
-    align-items: flex-start !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 12px !important;
   }
   #sec-profile img.avatar {
-    width: 72px !important;
-    height: 72px !important;
+    width: 56px !important;
+    height: 56px !important;
+  }
+  #sec-profile .feat-card > div[style*="display:flex;align-items:center"] > div[style*="flex:1"] {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+  #sec-profile .feat-card .display {
+    font-size: 16px !important;
+  }
+  #sec-profile .feat-card > div[style*="display:flex;align-items:center"] > div[style*="text-align:center"] {
+    flex-shrink: 0 !important;
+  }
+  #sec-profile .feat-card > div[style*="text-align:center"] div[style*="position:relative"] {
+    width: 56px !important;
+    height: 56px !important;
+  }
+  #sec-profile .feat-card > div[style*="text-align:center"] svg {
+    width: 56px !important;
+    height: 56px !important;
+  }
+  #completion-num {
+    font-size: 14px !important;
   }
 }
 
