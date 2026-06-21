@@ -113,6 +113,8 @@ def dashboard(request):
         'flatmate_inquiries': flatmate_inquiries,
         'completion_score': completion_score,
         'profile': profile,
+        'total_flatmate_posts': FlatmateProfile.objects.filter(is_active=True).count(),
+
 
 
     }

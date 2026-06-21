@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>staymatch — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="{% static 'css/responsive_patch.css' %}">
 
 <style>
 /* ══════════ ROOT ══════════ */
@@ -572,8 +571,10 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   .tags-preview{padding:16px;}
 }
 
+
 /* ── CITY + PLATFORM ROW ── */
 .bottom-stats-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+
 .white-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px 24px;box-shadow:var(--card-sh);}
 .card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .card-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;color:var(--navy);}
@@ -872,8 +873,16 @@ input[type=range]{width:100%;accent-color:var(--teal);}
     width: 64px !important;
     height: 64px !important;
   }
-}
 
+  /* YE ADD KARO — Profile pic + percentage fix */
+  #sec-profile .feat-card > div[style*="display:flex;align-items:center;gap:18px"] {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  #sec-profile .feat-card > div[style*="display:flex;align-items:center;gap:18px"] > div:last-child {
+    align-self: flex-start !important;
+  }
+}
 /* ══ FILTER BAR ══ */
 .filter-bar {
   flex-wrap: wrap;
@@ -1024,15 +1033,14 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 }
 
 /* ══ BOTTOM STATS ROW (City + Platform) ══ */
-.bottom-stats-row {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 16px !important;
-}
 
 @media (max-width: 768px) {
-  .bottom-stats-row {
-    grid-template-columns: 1fr !important;
+  .activity-header { display: none !important; }
+  .activity-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 14px !important;
   }
 }
 
