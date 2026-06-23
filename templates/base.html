@@ -1026,15 +1026,6 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 
 /* ══ BOTTOM STATS ROW (City + Platform) ══ */
 
-@media (max-width: 768px) {
-  .activity-header { display: none !important; }
-  .activity-row {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 8px !important;
-    padding: 14px !important;
-  }
-}
 
 .plat-grid {
   display: grid !important;
@@ -1079,39 +1070,52 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   }
 }
 
-/* ══ ACTIVITY TABLE (My Listings) ══ */
+/* ══ ROOM ACTIVITY TABLE — RESPONSIVE (FINAL) ══ */
+.ar-meta{ display:contents; } /* desktop pe grid columns intact rakhta hai */
+
 @media (max-width: 768px) {
-  /* Convert grid table to card-style on mobile */
+  .activity-table-header { display: none !important; }
+
   .activity-row {
     display: flex !important;
     flex-direction: column !important;
-    gap: 8px !important;
-    padding: 14px !important;
-    position: relative;
+    gap: 12px !important;
+    padding: 16px !important;
+    border-radius: 14px !important;
+    margin-bottom: 12px !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--card-sh);
   }
-  /* Hide the header row on mobile */
-  .activity-row:first-of-type {
-    display: none !important;
+  .activity-row:last-child{ margin-bottom:0 !important; }
+
+  .ar-room{ width:100%; }
+
+  .ar-meta{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    gap:14px !important;
+    align-items:center !important;
+    width:100%;
+    padding:10px 0;
+    border-top:1px dashed var(--border);
+    border-bottom:1px dashed var(--border);
   }
-  [style*="grid-template-columns:2fr 100px 80px 80px 100px 130px"] {
-    display: none !important;
+  .ar-meta > div{ flex:1 1 auto; min-width:60px; text-align:center !important; }
+
+  .ar-actions{
+    display:flex !important;
+    gap:8px !important;
+    width:100%;
   }
-  .activity-row > div:nth-child(1) {
-    width: 100%;
-  }
-  .activity-row > div:nth-child(2),
-  .activity-row > div:nth-child(3),
-  .activity-row > div:nth-child(4),
-  .activity-row > div:nth-child(5) {
-    display: inline-flex !important;
-    align-items: center;
-    gap: 6px;
-  }
-  .activity-row > div:last-child {
-    display: flex !important;
-    gap: 6px !important;
-    flex-wrap: wrap;
-    margin-top: 4px;
+  .ar-actions a, .ar-actions button{ flex:1; text-align:center; }
+}
+
+@media (max-width: 420px) {
+  .ar-room > div:first-child{ gap:8px !important; }
+  .ar-room img,
+  .ar-room > div:first-child > div:first-child{
+    width:40px !important;
+    height:40px !important;
   }
 }
 

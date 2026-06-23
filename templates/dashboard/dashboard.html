@@ -1062,27 +1062,24 @@
     <div style="background:#fff;border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--card-sh);">
 
       <!-- Header -->
-      <div style="display:grid;grid-template-columns:2fr 100px 80px 80px 100px 130px;gap:10px;padding:13px 20px;background:var(--off);border-bottom:1px solid var(--border);">
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Room</div>
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Status</div>
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Views</div>
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Leads</div>
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Rent</div>
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Actions</div>
-        <div class="activity-header" style="display:grid;..."></div>
-      </div>
-
+      <div class="activity-table-header" style="display:grid;grid-template-columns:2fr 100px 80px 80px 100px 130px;gap:10px;padding:13px 20px;background:var(--off);border-bottom:1px solid var(--border);">
+  <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Room</div>
+  <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Status</div>
+  <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Views</div>
+  <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Leads</div>
+  <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Rent</div>
+  <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Actions</div>
+</div>
       <!-- Rows -->
       {% for room in my_listings %}
       <div class="activity-row"
-        data-status="{% if room.is_published %}available{% else %}draft{% endif %}"           
-        style="display:grid;grid-template-columns:2fr 100px 80px 80px 100px 130px;gap:10px;padding:15px 20px;border-bottom:1px solid var(--border);align-items:center;transition:background .15s;"
-             onmouseover="this.style.background='var(--off)'"
-           onmouseout="this.style.background='#fff'">
+  data-status="{% if room.is_published %}available{% else %}draft{% endif %}"           
+  style="display:grid;grid-template-columns:2fr 100px 80px 80px 100px 130px;gap:10px;padding:15px 20px;border-bottom:1px solid var(--border);align-items:center;transition:background .15s;"
+     onmouseover="this.style.background='var(--off)'"
+   onmouseout="this.style.background='#fff'">
 
-        <!-- Room Info -->
-        <div style="display:flex;align-items:center;gap:12px;min-width:0;">
-          {% if room.images.first %}
+  <!-- Room Info -->
+  <div class="ar-room" style="display:flex;align-items:center;gap:12px;min-width:0;">   {% if room.images.first %}
             <img src="{{ room.images.first.image.url }}"
                  style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0;"/>
           {% else %}
