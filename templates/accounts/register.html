@@ -1,302 +1,538 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NestMate Register</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Register — StayMatch</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-:root{
-  --navy:#0F1F3D;
-  --teal:#0EA5C9;
-  --teal2:#6EE7F7;
-  --white:#fff;
+:root {
+  --navy:   #0F1F3D;
+  --teal:   #0EA5C9;
+  --teal-lt:#E0F4FB;
+  --teal2:  #6EE7F7;
+  --amber:  #F59E0B;
+  --green:  #10B981;
+  --coral:  #F25C54;
+  --off:    #F6F7FB;
+  --border: #E4E8F0;
+  --muted:  #6B7A99;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body{
-  font-family:'Instrument Sans',sans-serif;
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(135deg,#0F1F3D,#0EA5C9);
-  overflow:hidden;
-  padding:20px;
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background:
+    radial-gradient(ellipse at 0% 0%,   rgba(14,165,201,.22) 0%, transparent 55%),
+    radial-gradient(ellipse at 100% 20%, rgba(15,31,61,.18)  0%, transparent 50%),
+    radial-gradient(ellipse at 30% 80%,  rgba(110,231,247,.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(14,165,201,.12) 0%, transparent 45%),
+    linear-gradient(160deg, #EBF8FD 0%, #F0F7FF 40%, #E8F4FB 70%, #EDF6FC 100%);
 }
 
-/* blobs */
-.blob{
-  position:absolute;
-  width:400px;
-  height:400px;
-  background:radial-gradient(circle,var(--teal2),transparent);
-  filter:blur(80px);
-  opacity:.5;
-  animation:float 10s infinite ease-in-out;
-  z-index:1;
-}
-.blob:nth-child(1){top:-120px;left:-120px;}
-.blob:nth-child(2){bottom:-120px;right:-80px;animation-delay:2s;}
-
-@keyframes float{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-40px);}
+/* noise */
+.noise {
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9998; opacity: .4;
 }
 
-/* card */
-.card{
-  width:100%;
-  max-width:420px;
-  max-height:90vh;
-  overflow-y:auto;
-  padding:30px;
-  border-radius:20px;
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,0.15);
-  box-shadow:0 20px 60px rgba(0,0,0,0.25);
-  color:#fff;
-  z-index:2;
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
+@keyframes fadeIn { from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);} }
+@keyframes gradPan{ 0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;} }
+
+.fu { animation: fadeUp .55s ease forwards; opacity: 0; }
+.d1 { animation-delay: .06s; }
+.d2 { animation-delay: .14s; }
+.d3 { animation-delay: .22s; }
+.d4 { animation-delay: .30s; }
+.d5 { animation-delay: .40s; }
+
+/* ── CARD ── */
+.card {
+  width: 100%;
+  max-width: 460px;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(15,31,61,.12), 0 4px 16px rgba(15,31,61,.06);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
 }
 
-/* scrollbar card */
-.card::-webkit-scrollbar{ width:6px; }
-.card::-webkit-scrollbar-thumb{
-  background:linear-gradient(var(--teal), var(--teal2));
-  border-radius:10px;
+/* top strip */
+.card-strip {
+  background: linear-gradient(135deg, var(--navy), #1a3260);
+  padding: 14px 32px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.card-strip::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -40px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(14,165,201,.2), transparent);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.strip-logo {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: #fff;
+  letter-spacing: -.02em;
+  position: relative;
+  z-index: 1;
+}
+.strip-logo span { color: var(--teal2); }
+
+/* card body */
+.card-body { padding: 26px 32px 32px; }
+
+.panel-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--teal-lt);
+  color: var(--teal);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 13px;
+  border-radius: 99px;
+  letter-spacing: .04em;
+  margin-bottom: 12px;
+}
+
+.panel-h2 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -.02em;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+.panel-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 22px;
+  line-height: 1.6;
+}
+
+/* two col grid */
+.fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.field-full { grid-column: 1 / -1; }
+
+/* field */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: .04em;
+  text-transform: uppercase;
 }
 
 /* inputs */
-.input-box{
-  position:relative;
-  margin-bottom:16px;
+.field input,
+.field select {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--off);
+  font-size: 13px;
+  font-family: 'Instrument Sans', sans-serif;
+  color: var(--navy);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.field input::placeholder { color: var(--muted); }
+.field input:focus,
+.field select:focus {
+  border-color: var(--teal);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(14,165,201,.12);
 }
 
-.input-box input,
-.input-box select{
-  width:100%;
-  padding:13px 12px;
-  border:none;
-  outline:none;
-  border-radius:10px;
-  background:rgba(255,255,255,0.12);
-  color:#fff;
-  font-size:14px;
-  appearance:none;
-  transition:background 0.2s ease;
+/* validation states */
+.field input:valid:not(:placeholder-shown) {
+  border-color: var(--green);
+}
+.field input:invalid:not(:placeholder-shown) {
+  border-color: var(--coral);
 }
 
-/* 🔥 FIX WHITE FLASH */
-.input-box input:focus,
-.input-box select:focus{
-  background:rgba(255,255,255,0.12) !important;
-  color:#fff;
+/* input with icon */
+.input-wrap { position: relative; }
+.input-wrap input { padding-right: 38px; }
+.input-icon {
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  pointer-events: none;
+  color: var(--muted);
 }
 
-/* 🔥 FIX AUTOFILL */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus{
-  -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,0.12) inset !important;
-  -webkit-text-fill-color:#fff !important;
-  transition: background-color 9999s ease-in-out 0s;
+/* pw toggle */
+.pw-toggle {
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none;
+  cursor: pointer; font-size: 14px;
+  color: var(--muted); padding: 0; line-height: 1;
 }
 
-/* label */
-.input-box label{
-  position:absolute;
-  left:12px;
-  top:14px;
-  font-size:13px;
-  color:rgba(255,255,255,.6);
-  pointer-events:none;
-  transition:.25s;
+/* select arrow */
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '▾';
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: var(--muted);
+  pointer-events: none;
 }
-
-/* floating */
-.input-box input:not(:placeholder-shown) + label,
-.input-box input:focus + label,
-.input-box input:valid + label{
-  top:-8px;
-  left:10px;
-  font-size:11px;
-  background:rgba(15,31,61,.8);
-  padding:2px 6px;
-  border-radius:6px;
-}
-
-.input-box select:focus + label,
-.input-box select:valid + label{
-  top:-8px;
-  left:10px;
-  font-size:11px;
-  background:rgba(15,31,61,.8);
-  padding:2px 6px;
-  border-radius:6px;
-}
-
-/* dropdown arrow */
-.input-box.select-box::after{
-  content:"⌄";
-  position:absolute;
-  right:12px;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:18px;
-  color:rgba(255,255,255,0.7);
-  pointer-events:none;
-}
-
-/* select same look */
-.input-box select{
-  background:rgba(255,255,255,0.12);
-  color:#fff;
-}
-
-/* options */
-.input-box select option{
-  background:#ffffff;
-  color:#0F1F3D;
-}
-
-/* remove number arrows */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button{
-  -webkit-appearance:none;
-  margin:0;
-}
+.select-wrap select { padding-right: 32px; cursor: pointer; }
+.select-wrap select option { background: #fff; color: var(--navy); }
 
 /* file upload */
-.file-upload-wrapper{margin-bottom:20px;}
-.custom-file-upload{
-  display:block;
-  width:100%;
-  padding:12px;
-  background:rgba(255,255,255,0.1);
-  border:1px dashed rgba(255,255,255,0.3);
-  border-radius:10px;
-  text-align:center;
-  cursor:pointer;
+.file-upload-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1.5px dashed var(--border);
+  background: var(--off);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
 }
-#file-input{display:none;}
-
-/* button */
-.btn{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:12px;
-  background:linear-gradient(135deg,var(--teal),var(--teal2));
-  color:#0F1F3D;
-  font-weight:700;
-  cursor:pointer;
+.file-upload-label:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+  background: var(--teal-lt);
+}
+.file-upload-label.has-file {
+  border-color: var(--green);
+  color: var(--green);
+  background: #F0FDF4;
+}
+#file-input { display: none; }
+#file-name {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.logo{font-family:'Bricolage Grotesque';font-weight:800;font-size:24px;}
-.logo span{color:var(--teal2);}
-h2{font-family:'Bricolage Grotesque';font-size:26px;}
-.sub{font-size:13px;color:rgba(255,255,255,.7);margin-bottom:20px;}
-.footer{text-align:center;margin-top:15px;}
-.footer a{color:var(--teal2);}
+/* hint text */
+.hint {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 3px;
+}
 
-.input-box select.selected + label{
-  top:-8px;
-  left:10px;
-  font-size:11px;
-  background:rgba(15,31,61,.8);
-  padding:2px 6px;
-  border-radius:6px;
+/* divider */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 16px;
+}
+.section-divider-line { flex: 1; height: 1px; background: var(--border); }
+.section-divider-txt {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* submit btn */
+.btn-register {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: var(--navy);
+  color: #fff;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all .25s;
+  letter-spacing: -.01em;
+  margin-top: 20px;
+}
+.btn-register:hover {
+  background: #1a3260;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15,31,61,.22);
+}
+
+/* login link */
+.login-row {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.login-row a { color: var(--teal); font-weight: 700; text-decoration: none; }
+.login-row a:hover { text-decoration: underline; }
+
+/* messages */
+.msg {
+  border-radius: 10px;
+  padding: 11px 14px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  animation: fadeIn .4s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.msg-error   { background: rgba(242,92,84,.08); border: 1px solid rgba(242,92,84,.25); color: #C0392B; }
+.msg-success { background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.25); color: #0d7b56; }
+
+/* autofill fix */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--off) inset !important;
+  -webkit-text-fill-color: var(--navy) !important;
+}
+
+/* remove number spinners */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
+
+/* responsive */
+@media (max-width: 520px) {
+  .card { border-radius: 20px; }
+  .card-strip { padding: 14px 22px; }
+  .card-body  { padding: 22px 20px 26px; }
+  .fields-grid { grid-template-columns: 1fr; }
+  .field-full  { grid-column: 1; }
 }
 </style>
 </head>
-
 <body>
+<div class="noise"></div>
 
-<div class="blob"></div>
-<div class="blob"></div>
+<div class="card fu d1">
 
-<div class="card">
-  <div class="logo">Stay<span>Match</span></div>
-  <h2>Create account 🚀</h2>
-  <div class="sub">Find your perfect flatmate faster.</div>
+  <!-- Top strip -->
+  <div class="card-strip">
+    <div class="strip-logo">Stay<span>Match</span></div>
+  </div>
 
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
+  <div class="card-body">
 
-    <div class="input-box">
-      <input type="text" name="username" placeholder=" " required>
-      <label>Username</label>
+    <div class="panel-eyebrow fu d2">🚀 New Account</div>
+    <h2 class="panel-h2 fu d2">Create your account</h2>
+    <p class="panel-sub fu d2">Find your perfect flatmate in minutes.</p>
+
+    {% if messages %}
+      {% for message in messages %}
+        {% if message.tags == 'error' %}
+          <div class="msg msg-error">❌ {{ message }}</div>
+        {% elif message.tags == 'success' %}
+          <div class="msg msg-success">✅ {{ message }}</div>
+        {% else %}
+          <div class="msg">{{ message }}</div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" autocomplete="off">
+      {% csrf_token %}
+
+      <!-- Section: Basic Info -->
+      <div class="section-divider fu d3">
+        <div class="section-divider-line"></div>
+        <span class="section-divider-txt">Basic Info</span>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div class="fields-grid fu d3">
+
+        <div class="field">
+          <label>Username</label>
+          <div class="input-wrap">
+            <input type="text" name="username" placeholder="e.g. rahul_21" required minlength="3"/>
+            <span class="input-icon">🪪</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Full Name</label>
+          <div class="input-wrap">
+            <input type="text" name="full_name" placeholder="Your full name" required/>
+            <span class="input-icon">👤</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Age</label>
+          <input type="number" name="age" placeholder="e.g. 22" min="18" max="60" required/>
+        </div>
+
+        <div class="field">
+          <label>Gender</label>
+          <div class="select-wrap">
+            <select name="gender" required>
+              <option value="" disabled selected hidden>Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field field-full">
+          <label>Location</label>
+          <div class="input-wrap">
+            <input type="text" name="location" placeholder="e.g. Koramangala, Bangalore" required/>
+            <span class="input-icon">📍</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Section: Contact -->
+      <div class="section-divider fu d4">
+        <div class="section-divider-line"></div>
+        <span class="section-divider-txt">Contact & Security</span>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div class="fields-grid fu d4">
+
+        <div class="field field-full">
+          <label>Email</label>
+          <div class="input-wrap">
+            <input type="email" name="email" placeholder="you@example.com" required/>
+            <span class="input-icon">✉️</span>
+          </div>
+        </div>
+
+        <div class="field field-full">
+          <label>Mobile Number</label>
+          <div class="input-wrap">
+            <input type="tel" name="contact" placeholder="10-digit mobile number"
+                   pattern="[6-9][0-9]{9}" maxlength="10" required/>
+            <span class="input-icon">📱</span>
+          </div>
+          <span class="hint">Indian number only · starts with 6, 7, 8 or 9</span>
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">
+            <input type="password" name="password" id="pw1" placeholder="Min 8 characters" required minlength="8"/>
+            <button type="button" class="pw-toggle" onclick="togglePw('pw1','pt1')" id="pt1">👁</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Confirm Password</label>
+          <div class="input-wrap">
+            <input type="password" name="password2" id="pw2" placeholder="Repeat password" required minlength="8"/>
+            <button type="button" class="pw-toggle" onclick="togglePw('pw2','pt2')" id="pt2">👁</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Section: Profile Photo -->
+      <div class="section-divider fu d4">
+        <div class="section-divider-line"></div>
+        <span class="section-divider-txt">Profile Photo</span>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div class="fu d4">
+        <label for="file-input" class="file-upload-label" id="file-label">
+          📁 Choose profile photo <span style="font-size:11px;font-weight:400;">(optional)</span>
+        </label>
+        <input id="file-input" type="file" name="profile_picture" accept="image/*" onchange="updateFile(this)"/>
+        <div id="file-name"></div>
+      </div>
+
+      <button type="submit" class="btn-register fu d5">Create Account →</button>
+    </form>
+
+    <div class="login-row fu d5">
+      Already have an account? <a href="{% url 'login' %}">Log in</a>
     </div>
 
-    <div class="input-box">
-      <input type="text" name="full_name" placeholder=" " required>
-      <label>Full Name</label>
-    </div>
-
-    <div class="input-box">
-      <input type="number" name="age" placeholder=" " required>
-      <label>Age</label>
-    </div>
-
-    <div class="input-box select-box">
-      <select name="gender" required>
-        <option value="" disabled selected hidden></option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-        <option value="Other">Other</option>
-      </select>
-      <label>Gender</label>
-    </div>
-
-    <div class="input-box">
-      <input type="text" name="location" placeholder=" " required>
-      <label>Location</label>
-    </div>
-
-    <div class="input-box">
-      <input type="tel" name="contact" placeholder=" " required>
-      <label>Contact Number</label>
-    </div>
-
-    <div class="file-upload-wrapper">
-      <label for="file-input" class="custom-file-upload">📁 Choose Image/Video</label>
-      <input id="file-input" type="file" name="profile_picture" onchange="updateFileName(this)">
-      <p id="file-name"></p>
-    </div>
-
-    <div class="input-box">
-      <input type="email" name="email" placeholder=" " required>
-      <label>Email</label>
-    </div>
-
-    <div class="input-box">
-      <input type="password" name="password" placeholder=" " required>
-      <label>Password</label>
-    </div>
-
-    <button type="submit" class="btn">Register →</button>  </form>
-
-  <div class="footer">
-    Already have an account? <a href="{% url 'login' %}">Log in</a>
   </div>
 </div>
 
 <script>
-function updateFileName(input){
-  document.getElementById('file-name').innerText = input.files[0]?.name || "";
+function togglePw(inputId, btnId) {
+  const inp = document.getElementById(inputId);
+  const btn = document.getElementById(btnId);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? '👁' : '🙈';
 }
 
-/* 🔥 FIXED JS (outside function) */
-document.querySelector("select[name='gender']").addEventListener("change", function(){
-  if(this.value !== ""){
-    this.classList.add("selected");
+function updateFile(input) {
+  const label = document.getElementById('file-label');
+  const name  = document.getElementById('file-name');
+  if (input.files && input.files[0]) {
+    label.classList.add('has-file');
+    label.innerHTML = '✅ ' + input.files[0].name;
+    name.textContent = '';
+  } else {
+    label.classList.remove('has-file');
+    label.innerHTML = '📁 Choose profile photo <span style="font-size:11px;font-weight:400;">(optional)</span>';
   }
-});
-</script>
+}
 
+setTimeout(() => {
+  document.querySelectorAll('.msg').forEach(m => {
+    m.style.transition = 'opacity .4s';
+    m.style.opacity = '0';
+    setTimeout(() => m.remove(), 400);
+  });
+}, 3000);
+</script>
 </body>
 </html>
