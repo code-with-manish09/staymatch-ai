@@ -1351,10 +1351,10 @@ input[type=range]{width:100%;accent-color:var(--teal);}
     padding: 18px 16px !important;
   }
 
-  .welcome-banner > img.avatar {
-    width: 48px !important;
-    height: 48px !important;
-  }
+ .welcome-banner > img.avatar {
+    width: 56px !important;
+    height: 56px !important;
+}
 
   .welcome-banner > div[style*="flex:1"] {
     flex: 1 1 auto !important;
@@ -1378,26 +1378,49 @@ input[type=range]{width:100%;accent-color:var(--teal);}
     font-size: 10px !important;
     padding: 4px 10px !important;
   }
-
-  .vibe-score {
+.vibe-score {
     position: absolute !important;
-    top: 16px !important;
-    right: 16px !important;
+    top: 14px !important;
+    right: 14px !important;
     width: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
   }
 
-  .vibe-score > div {
-    width: 52px !important;
-    height: 52px !important;
+ .vibe-score > div {
+    width: 68px !important;
+    height: 68px !important;
+    position: relative !important;
+}
+
+.vibe-score > div > svg {
+    width: 68px !important;
+    height: 68px !important;
+    display: block !important;
+}
+
+  .vibe-score > div > div {
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
-  .vibe-score svg {
-    width: 52px !important;
-    height: 52px !important;
+  .vibe-score > div > div > span:first-child {
+    font-family: 'Bricolage Grotesque', sans-serif !important;
+    font-weight: 800 !important;
+    font-size: 22px !important;
+    color: var(--teal) !important;
+    line-height: 1 !important;
   }
 
-  .vibe-score span:first-child {
-    font-size: 15px !important;
+  .vibe-score > div > div > span:last-child {
+    font-size: 9px !important;
+    color: rgba(255,255,255,.4) !important;
+    font-weight: 600 !important;
   }
 
   .vibe-lbl {
