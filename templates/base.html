@@ -1072,42 +1072,51 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 
 /* ══ ROOM ACTIVITY TABLE — RESPONSIVE (FINAL) ══ */
 .ar-meta{ display:contents; } /* desktop pe grid columns intact rakhta hai */
-
+.ar-status{ display:contents; } /* desktop pe grid columns intact rakhta hai */
+.activity-row.ar-hidden{ display:none !important; }
 @media (max-width: 768px) {
   .activity-table-header { display: none !important; }
 
   .activity-row {
     display: flex !important;
     flex-direction: column !important;
-    gap: 12px !important;
-    padding: 16px !important;
+    gap: 10px !important;
+    padding: 14px !important;
     border-radius: 14px !important;
     margin-bottom: 12px !important;
     border: 1px solid var(--border) !important;
     box-shadow: var(--card-sh);
+    position: relative !important;
   }
   .activity-row:last-child{ margin-bottom:0 !important; }
 
-  .ar-room{ width:100%; }
+  .ar-room{ width:100%; padding-right:64px; }
+
+  .ar-status{
+    display:block !important;
+    position:absolute !important;
+    top:14px !important;
+    right:14px !important;
+  }
 
   .ar-meta{
     display:flex !important;
-    flex-wrap:wrap !important;
-    gap:14px !important;
     align-items:center !important;
-    width:100%;
-    padding:10px 0;
+    justify-content:space-between !important;
+    gap:8px !important;
+    width:100% !important;
+    padding-top:10px !important;
     border-top:1px dashed var(--border);
-    border-bottom:1px dashed var(--border);
   }
-  .ar-meta > div{ flex:1 1 auto; min-width:60px; text-align:center !important; }
+  .ar-meta > div{ min-width:0; text-align:center !important; flex-shrink:0; }
 
   .ar-actions{
     display:flex !important;
-    gap:8px !important;
-    width:100%;
+    align-items:center !important;
+    gap:5px !important;
+    flex-shrink:0 !important;
+    margin-left:auto !important;
   }
-  .ar-actions a, .ar-actions button{ flex:1; text-align:center; }
 }
 
 @media (max-width: 420px) {
@@ -1117,6 +1126,9 @@ input[type=range]{width:100%;accent-color:var(--teal);}
     width:40px !important;
     height:40px !important;
   }
+  .ar-meta{ gap:6px !important; }
+  .ar-actions{ gap:4px !important; }
+  .ar-actions a, .ar-actions button{ padding:5px 7px !important; font-size:10px !important; }
 }
 
 /* ══ ADD ROOM SECTION ══ */
@@ -1793,10 +1805,10 @@ function switchTab(tab) {
   document.getElementById('tab-rooms-btn').style.cssText += isRooms ? 'background:var(--navy);color:#fff;' : 'background:transparent;color:var(--muted);';
   document.getElementById('tab-flatmate-btn').style.cssText += isRooms ? 'background:transparent;color:var(--muted);' : 'background:var(--navy);color:#fff;';
 }
-
 function filterListings(status) {
   document.querySelectorAll('.activity-row').forEach(row => {
-    row.style.display = (status === 'all' || row.dataset.status === status) ? 'grid' : 'none';
+    const show = (status === 'all' || row.dataset.status === status);
+    row.classList.toggle('ar-hidden', !show);
   });
   document.querySelectorAll('[id^="filter-"]').forEach(btn => btn.classList.remove('on'));
   document.getElementById('filter-' + status).classList.add('on');
