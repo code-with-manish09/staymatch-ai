@@ -1345,30 +1345,66 @@ input[type=range]{width:100%;accent-color:var(--teal);}
 @media (max-width: 640px) {
   .welcome-banner {
     display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: flex-start !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    position: relative !important;
+    padding: 18px 16px !important;
   }
+
+  .welcome-banner > img.avatar {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
   .welcome-banner > div[style*="flex:1"] {
     flex: 1 1 auto !important;
     min-width: 0 !important;
+    width: 100% !important;
   }
-  .vibe-score {
-    flex-shrink: 0 !important;
-    width: 70px !important;
+
+  .wb-name {
+    font-size: 15px !important;
+    padding-right: 70px;
   }
-  .vibe-score svg {
-    width: 64px !important;
-    height: 64px !important;
-  }
-  .vibe-lbl {
-    font-size: 9px !important;
-    text-align: center !important;
-  }
+
   .wb-chips {
+    display: flex !important;
     flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin-top: 8px !important;
+  }
+
+  .wb-chip {
+    font-size: 10px !important;
+    padding: 4px 10px !important;
+  }
+
+  .vibe-score {
+    position: absolute !important;
+    top: 16px !important;
+    right: 16px !important;
+    width: auto !important;
+  }
+
+  .vibe-score > div {
+    width: 52px !important;
+    height: 52px !important;
+  }
+
+  .vibe-score svg {
+    width: 52px !important;
+    height: 52px !important;
+  }
+
+  .vibe-score span:first-child {
+    font-size: 15px !important;
+  }
+
+  .vibe-lbl {
+    display: none !important;
   }
 }
+
 </style>
 {% block extra_css %}{% endblock %}
 </head>
