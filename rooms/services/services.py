@@ -3,6 +3,8 @@ from django.conf import settings
 
 client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
+from google.genai import types
+
 def get_vibe_score(user_prefs, room_prefs):
     prompt = f"""
 You are a room/flatmate compatibility scoring AI.
@@ -12,21 +14,33 @@ Room/Profile preferences: {room_prefs}
 
 Compare carefully and give a compatibility score from 0 to 100.
 - City mismatch = low score
-- Budget mismatch = low score  
+- Budget mismatch = low score
 - Sleep schedule mismatch = lower score
 - Only give high score when genuinely highly compatible
 
-IMPORTANT: Write the reason in English only. No Hindi, no Hinglish.
+STRICT LANGUAGE RULE: "reason" must be written ONLY in plain English —
+no Hindi, no Hinglish, no transliterated words — even if the input
+text above contains Hindi/Hinglish. Translate the meaning into English yourself.
 
-Return ONLY this JSON, no backticks, no extra text:
-{{"score": 72, "reason": "write reason here in English"}}
+Example: {{"score": 78, "reason": "Good match on budget and city, but sleep schedules differ slightly."}}
 """
     response = client.models.generate_content(
         model='gemini-2.5-flash',
-        contents=prompt
+        contents=prompt,
+        config={
+            'temperature': 0.3,
+            'response_mime_type': 'application/json',
+            'response_schema': {
+                "type": "OBJECT",
+                "properties": {
+                    "score": {"type": "INTEGER"},
+                    "reason": {"type": "STRING"}
+                },
+                "required": ["score", "reason"]
+            }
+        }
     )
-    return response.candidates[0].content.parts[0].text
-
+    return response.text
     #========faqs==========
 
 def get_room_faqs(room_details, user_question):

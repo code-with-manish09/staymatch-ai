@@ -56,9 +56,9 @@
 .score-bar-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden;}
 .score-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),#0993b3);transition:width 1s ease;}
 
-.reason-box{background:linear-gradient(135deg,#f0fdfa,var(--teal-lt));border:1px solid rgba(14,165,201,.2);border-radius:12px;padding:16px 18px;margin-top:16px;}
-.reason-label{font-size:10px;font-weight:800;color:var(--teal);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;}
-.reason-text{font-size:13px;color:var(--navy);line-height:1.7;}
+.reason-box{background:#fafbfc;border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-top:16px;}
+.reason-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
+.reason-text{font-size:13.5px;color:var(--navy);line-height:1.65;}
 
 .view-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;background:var(--navy);color:#fff;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;border:none;cursor:pointer;transition:all .2s;text-decoration:none;margin-top:16px;}
 .view-btn:hover{background:#1a3260;transform:translateY(-1px);}
@@ -218,7 +218,12 @@
 
 <script>
 function getVibeClass(score){if(score>=75)return'high';if(score>=50)return'mid';return'low';}
-function getVibeEmoji(score){if(score>=85)return'🔥 Perfect Vibe';if(score>=70)return'✨ Great Match';if(score>=55)return'👍 Good Match';return'🤔 Possible Match';}
+function getVibeLabel(score){
+  if(score>=85)return'Excellent Match';
+  if(score>=70)return'Great Match';
+  if(score>=55)return'Good Match';
+  return'Possible Match';
+}
 function getRankClass(idx){if(idx===0)return'gold';if(idx===1)return'silver';if(idx===2)return'bronze';return'';}
 
 function renderCard(match,index){

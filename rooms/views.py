@@ -288,10 +288,7 @@ def ai_match_view(request):
 
     rooms = Listing.objects.filter(is_published=True)
 
-    city = request.GET.get('city')
-    if city:
-        rooms = rooms.filter(city__iexact=city)
-
+    # Sirf budget real hard constraint hai — city/type/furnishing AI khud judge karega
     budget = request.GET.get('budget')
     if budget:
         try:
@@ -299,27 +296,11 @@ def ai_match_view(request):
         except ValueError:
             pass
 
-    room_type = request.GET.get('room_type')
-    if room_type:
-        rooms = rooms.filter(room_type=room_type)
-
-    furnishing = request.GET.get('furnishing')
-    if furnishing:
-        if 'Fully' in furnishing:
-            rooms = rooms.filter(furnishing_status='Fully')
-        elif 'Semi' in furnishing:
-            rooms = rooms.filter(furnishing_status='Semi')
-        elif 'Unfurnished' in furnishing:
-            rooms = rooms.filter(furnishing_status='Unfurnished')
-
     results = []
     for room in rooms:
         try:
             response = get_vibe_score(user_prefs, room.get_preference_text())
-            clean = response.strip().removeprefix('```json').removeprefix('```').removesuffix('```').strip()
-            if not clean:
-                continue
-            data = json.loads(clean)
+            data = json.loads(response)
             score = data.get("score")
             reason = data.get("reason", "")
             if score is None:
@@ -328,19 +309,19 @@ def ai_match_view(request):
             print("AI match skip, room", room.id, ":", e)
             continue
 
-        # ✅ Sirf 60+ score wale show karo
-        if score >= 60:
-            results.append({
-                "room_id": room.id,
-                "title": room.title,
-                "city": room.city,
-                "rent": room.rent,
-                "vibe_score": score,
-                "reason": reason
-            })
+        results.append({
+            "room_id": room.id,
+            "title": room.title,
+            "city": room.city,
+            "rent": room.rent,
+            "vibe_score": score,
+            "reason": reason
+        })
 
     results.sort(key=lambda x: x["vibe_score"], reverse=True)
-    return JsonResponse({"matches": results})
+    top_results = results[:10]
+
+    return JsonResponse({"matches": top_results})
      
 #===============room faqs====================
 @login_required
@@ -693,20 +674,14 @@ def ai_flatmate_match_view(request):
     )
 
     profiles = FlatmateProfile.objects.filter(is_active=True)
-
-    city = request.GET.get('city')
-    if city:
-        profiles = profiles.filter(city__iexact=city)
+    # city hard filter hata diya — AI khud judge karega
 
     results = []
     for profile in profiles:
         try:
             profile_text = profile.get_preference_text()
             response = get_vibe_score(user_prefs, profile_text)
-            clean = response.strip().removeprefix('```json').removeprefix('```').removesuffix('```').strip()
-            if not clean:
-                continue
-            data = json.loads(clean)
+            data = json.loads(response)
             score = data.get("score")
             reason = data.get("reason", "")
             if score is None:
@@ -714,21 +689,21 @@ def ai_flatmate_match_view(request):
         except Exception as e:
             print("AI flatmate match skip, profile", profile.id, ":", e)
             continue
-        print("SCORE:", profile.name, "→", score)   # flatmate view mein
 
-        if score >= 50:
-            results.append({
-                "profile_id": profile.id,
-                "name": profile.name,
-                "age": profile.age,
-                "occupation": profile.occupation,
-                "city": profile.city,
-                "budget": profile.max_budget,
-                "room_type": profile.room_type_pref,
-                "sleep": profile.sleep_schedule,
-                "vibe_score": score,
-                "reason": reason,
-            })
+        results.append({
+            "profile_id": profile.id,
+            "name": profile.name,
+            "age": profile.age,
+            "occupation": profile.occupation,
+            "city": profile.city,
+            "budget": profile.max_budget,
+            "room_type": profile.room_type_pref,
+            "sleep": profile.sleep_schedule,
+            "vibe_score": score,
+            "reason": reason,
+        })
 
     results.sort(key=lambda x: x["vibe_score"], reverse=True)
-    return JsonResponse({"matches": results})
+    top_results = results[:10]
+
+    return JsonResponse({"matches": top_results})
