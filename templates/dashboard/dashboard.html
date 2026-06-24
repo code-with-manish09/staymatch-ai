@@ -1188,60 +1188,61 @@ onclick="confirmDelete(`{% url 'room_delete' room.id %}`)">🗑</button>
 
     <!-- Flatmate Posts List -->
     <div style="display:flex;flex-direction:column;gap:12px;">
-      {% for post in my_flatmate_posts %}
-      <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--card-sh);display:flex;align-items:center;gap:16px;flex-wrap:wrap;transition:box-shadow .2s;"
-           onmouseover="this.style.boxShadow='var(--card-sh2)'"
-           onmouseout="this.style.boxShadow='var(--card-sh)'">
+   {% for post in my_flatmate_posts %}
+<div class="fp-card" style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--card-sh);display:flex;align-items:center;gap:16px;flex-wrap:wrap;transition:box-shadow .2s;position:relative;"
+     onmouseover="this.style.boxShadow='var(--card-sh2)'"
+     onmouseout="this.style.boxShadow='var(--card-sh)'">
 
-        <!-- Avatar -->
-        <div style="width:48px;height:48px;border-radius:50%;background:var(--teal-lt);color:var(--teal);font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          {{ request.user.username|slice:":1"|upper }}
-        </div>
+  <!-- Status -->
+  <div class="fp-status" style="display:flex;align-items:center;">
+    {% if post.is_active %}
+      <span style="background:#F0FDF4;color:#059669;font-size:10px;font-weight:700;padding:4px 12px;border-radius:99px;border:1px solid #BBF7D0;white-space:nowrap;">● Active</span>
+    {% else %}
+      <span style="background:var(--off);color:var(--muted);font-size:10px;font-weight:700;padding:4px 12px;border-radius:99px;border:1px solid var(--border);white-space:nowrap;">◌ Closed</span>
+    {% endif %}
+  </div>
 
-        <!-- Info -->
-        <div style="flex:1;min-width:160px;">
-          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;color:var(--navy);margin-bottom:3px;">
-            {{ post.name }}
-          </div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">
-            📍 {{ post.preferred_area|default:"—" }} &nbsp;·&nbsp; 💰 ₹{{ post.max_budget|default:"—" }}/mo &nbsp;·&nbsp; 🕒 {{ post.created_at|timesince }} ago
-          </div>
-          <div style="display:flex;flex-wrap:wrap;gap:5px;">
+  <!-- Avatar -->
+  <div style="width:48px;height:48px;border-radius:50%;background:var(--teal-lt);color:var(--teal);font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+    {{ request.user.username|slice:":1"|upper }}
+  </div>
+
+  <!-- Info -->
+  <div style="flex:1;min-width:160px;">
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;color:var(--navy);margin-bottom:3px;">
+      {{ post.name }}
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">
+      📍 {{ post.preferred_area|default:"—" }} &nbsp;·&nbsp; 💰 ₹{{ post.max_budget|default:"—" }}/mo &nbsp;·&nbsp; 🕒 {{ post.created_at|timesince }} ago
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;">
 {% for tag in post.get_tags_list|slice:":4" %}
-              <span style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">{{ tag }}</span>
-            {% empty %}
-              <span style="font-size:11px;color:var(--muted);">No tags</span>
-            {% endfor %}
-          </div>
-        </div>
-
-        <!-- Responses count -->
-        <div style="text-align:center;flex-shrink:0;">
-          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--teal);">{{ post.response_count|default:"0" }}</div>
-          <div style="font-size:11px;color:var(--muted);">responses</div>
-        </div>
-
-        <!-- Status -->
-        <div style="flex-shrink:0;">
-          {% if post.is_active %}
-            <span style="background:#F0FDF4;color:#059669;font-size:10px;font-weight:700;padding:4px 12px;border-radius:99px;border:1px solid #BBF7D0;display:block;margin-bottom:8px;text-align:center;">● Active</span>
-          {% else %}
-            <span style="background:var(--off);color:var(--muted);font-size:10px;font-weight:700;padding:4px 12px;border-radius:99px;border:1px solid var(--border);display:block;margin-bottom:8px;text-align:center;">◌ Closed</span>
-          {% endif %}
-        </div>
-       
-        <!-- Actions -->
-        <div style="display:flex;gap:6px;flex-shrink:0;">
-           <a href="{% url 'flatmate_detail' post.id %}"
-        class="btn-sm btn-sm-out"
-        style="font-size:11px;padding:7px 12px;text-decoration:none;">👁</a>
-
-          <a href="{% url 'edit_flatmate' post.id %}" class="btn-sm btn-sm-navy" style="font-size:11px;padding:7px 12px;text-decoration:none;">✏️ Edit</a>
-          <button class="btn-sm" style="font-size:11px;padding:7px 12px;background:#FFF1F2;color:var(--coral);border:1px solid #FECDD3;border-radius:8px;cursor:pointer;"
-          onclick="confirmDelete(`{% url 'delete_flatmate' post.id %}`)">🗑</button>        </div>
-
-      </div>
+        <span style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">{{ tag }}</span>
       {% empty %}
+        <span style="font-size:11px;color:var(--muted);">No tags</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Responses + Actions -->
+  <div class="fp-meta">
+    <div style="text-align:center;flex-shrink:0;">
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--teal);">{{ post.response_count|default:"0" }}</div>
+      <div style="font-size:11px;color:var(--muted);">responses</div>
+    </div>
+
+    <div class="fp-actions">
+      <a href="{% url 'flatmate_detail' post.id %}"
+         class="btn-sm btn-sm-out"
+         style="font-size:11px;padding:7px 12px;text-decoration:none;">👁</a>
+      <a href="{% url 'edit_flatmate' post.id %}" class="btn-sm btn-sm-navy" style="font-size:11px;padding:7px 12px;text-decoration:none;">✏️ Edit</a>
+      <button class="btn-sm" style="font-size:11px;padding:7px 12px;background:#FFF1F2;color:var(--coral);border:1px solid #FECDD3;border-radius:8px;cursor:pointer;"
+      onclick="confirmDelete(`{% url 'delete_flatmate' post.id %}`)">🗑</button>
+    </div>
+  </div>
+
+</div>
+{% empty %}
       <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:52px 20px;text-align:center;box-shadow:var(--card-sh);">
         <div style="font-size:44px;margin-bottom:12px;">👥</div>
         <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px;">No Flatmates Posted Yet</div>
