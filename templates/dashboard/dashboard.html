@@ -258,13 +258,18 @@
         <div class="fm-sub">{{ profile.occupation|default:"—" }} · {{ profile.city|default:"India" }}</div>
         <div class="fm-vibe">✨ Vibe Score: {{ profile.vibe_score|default:"—" }}</div>
         <div class="fm-tags">
-          {% for tag in profile.get_tags_list|slice:":4" %}
-            <span class="fm-tag" style="
+          {% with all_tags=profile.get_tags_list %}
+          {% for tag in all_tags|slice:":4" %}           
+          <span class="fm-tag" style="
               {% cycle 'background:var(--teal-lt);color:var(--teal);' 'background:var(--amber-lt);color:#B45309;' 'background:#F0FDF4;color:#059669;' 'background:#F5F3FF;color:#7C3AED;' %}
             ">{{ tag }}</span>
           {% empty %}
             <span class="fm-tag" style="background:var(--off);color:var(--muted);">No tags yet</span>
           {% endfor %}
+          {% if all_tags|length > 4 %}
+          <span class="fm-tag" style="background:var(--off);color:var(--muted);">+{{ all_tags|length|add:"-4" }} more</span>
+        {% endif %}
+        {% endwith %}
         </div>
         <div class="fm-footer">
           <div class="fm-budget">₹{{ profile.max_budget|default:"—" }} <small>/mo</small></div>

@@ -206,8 +206,21 @@ class FlatmateProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def get_tags_list(self):
-        return [t.strip() for t in self.interest_tags.split(',') if t.strip()]
-
+        import json
+        tags = self.interest_tags.strip()
+        if not tags:
+            return []
+        if tags.startswith('['):
+            try:
+                parsed = json.loads(tags)
+                return [str(t).strip().strip('"') for t in parsed if str(t).strip()]
+            except Exception:
+                pass
+        return [t.strip().strip('"') for t in tags.split(',') if t.strip()]
+    @property
+    def interest_tags_list(self):
+        return self.get_tags_list()
+            
     def __str__(self):
         return f"{self.name} ({self.city}) — Score: {self.vibe_score}"
     
