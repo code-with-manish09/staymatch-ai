@@ -108,6 +108,10 @@
     transform: translateX(0);
   }
 
+  .chat.chat-empty-state {
+    display: none !important;
+  }
+  
   /* Back button — sirf mobile pe dikhega */
   .mobile-back {
     display: flex !important;
@@ -182,9 +186,8 @@
     </div>
   </div>
 
-  <!-- ══ CHAT PANEL ══ -->
-  <div class="chat">
-
+<!-- ══ CHAT PANEL ══ -->
+<div class="chat {% if not active_listing and not active_flatmate_profile %}chat-empty-state{% endif %}">
     {% if active_listing %}
       {# ── Room chat header ── #}
       <!-- Room chat header -->
