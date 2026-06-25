@@ -222,7 +222,13 @@
       Live Profiles
     </a>
   </div>
- 
+ <p style="font-size:11px;color:var(--muted);margin-bottom:8px;display:none;" id="fm-scroll-hint">
+  ← swipe cards →
+</p>
+<script>
+  if(window.innerWidth <= 900) 
+    document.getElementById('fm-scroll-hint').style.display = 'block';
+</script>
   <div class="fm-grid">
     {% for profile in compatible_flatmates %}
     <div class="fm-card">

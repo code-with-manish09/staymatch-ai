@@ -1427,6 +1427,61 @@ input[type=range]{width:100%;accent-color:var(--teal);}
     display: none !important;
   }
 }
+/* ══ FLATMATE  RESPONSIVE DASHBOARD LIST ══ */
+
+/* ══ FLATMATE — Mobile Horizontal Scroll ══ */
+@media (max-width: 900px) {
+  .fm-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    gap: 12px !important;
+    padding-bottom: 12px !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    scroll-snap-type: x mandatory !important;
+  }
+  .fm-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+  .fm-card {
+    flex: 0 0 200px !important;
+    min-width: 200px !important;
+    scroll-snap-align: start !important;
+    border-radius: 14px !important;
+  }
+  .fm-banner {
+    height: 72px !important;
+  }
+  .fm-av-wrap {
+    bottom: -20px !important;
+  }
+  .fm-av, .fm-av-img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  .fm-body {
+    padding: 26px 10px 12px !important;
+  }
+  .fm-name {
+    font-size: 12px !important;
+    max-width: 90px !important;
+  }
+  .fm-sub {
+    font-size: 10px !important;
+  }
+  .fm-tag {
+    font-size: 9px !important;
+    padding: 2px 7px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .fm-card {
+    flex: 0 0 175px !important;
+    min-width: 175px !important;
+  }
+}
 
 </style>
 {% block extra_css %}{% endblock %}
