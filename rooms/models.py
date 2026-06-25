@@ -17,13 +17,22 @@ class Listing(models.Model):
     
     # Choices for Dropdowns
     CITY_CHOICES = [
-        ('Bangalore', 'Bangalore'), ('Mumbai', 'Mumbai'), 
-        ('Delhi', 'Delhi'), ('Patna', 'Patna') # Add more
+        ('Bangalore', 'Bangalore'),
+        ('Mumbai', 'Mumbai'),
+        ('Delhi', 'Delhi'),
+        ('Hyderabad', 'Hyderabad'),
+        ('Pune', 'Pune'),
+        ('Chennai', 'Chennai'),
+        ('Kolkata', 'Kolkata'),
+        ('Noida', 'Noida'),
+        ('Gurgaon', 'Gurgaon'),
     ]
     ROOM_TYPES = [
-        ('Private Room', 'Private Room'), ('Shared Room', 'Shared Room'),
-        ('Studio', 'Studio / 1BHK'), ('Master Bedroom', 'Master Bedroom')
-    ]
+    ('Private Room', 'Private Room'),
+    ('Shared Room', 'Shared Room'), 
+    ('Studio', 'Studio / 1BHK'),
+    ('PG', 'PG / Hostel'),
+   ] 
     
     city = models.CharField(max_length=50, choices=CITY_CHOICES)
     area = models.CharField(max_length=100)
@@ -65,6 +74,9 @@ class Listing(models.Model):
     sleep_schedule = models.CharField(max_length=50, default='No preference')
     cleanliness_level = models.IntegerField(default=7, validators=[MinValueValidator(1), MaxValueValidator(10)])
     guest_policy = models.CharField(max_length=100, default='Occasional guests OK')
+
+    #interest count
+    inquiry_count = models.IntegerField(default=0)
 
     # Metadata
     is_published = models.BooleanField(default=False)
@@ -145,11 +157,16 @@ class FlatmateProfile(models.Model):
         ('Creative / Media', 'Creative / Media'), ('Other', 'Other'),
     ]
     CITY_CHOICES = [
-        ('Bangalore', 'Bangalore'), ('Mumbai', 'Mumbai'),
-        ('Delhi', 'Delhi'), ('Hyderabad', 'Hyderabad'),
-        ('Pune', 'Pune'), ('Chennai', 'Chennai'),
-        ('Kolkata', 'Kolkata'), ('Patna', 'Patna'),
-    ]
+    ('Bangalore', 'Bangalore'),
+    ('Mumbai', 'Mumbai'),
+    ('Delhi', 'Delhi'),
+    ('Hyderabad', 'Hyderabad'),
+    ('Pune', 'Pune'),
+    ('Chennai', 'Chennai'),
+    ('Kolkata', 'Kolkata'),
+    ('Noida', 'Noida'),
+    ('Gurgaon', 'Gurgaon'),
+   ]
     LANGUAGE_CHOICES = [
         ('Hindi', 'Hindi'), ('English', 'English'),
         ('Hindi+English', 'Hindi + English'), ('Any', 'Any'),

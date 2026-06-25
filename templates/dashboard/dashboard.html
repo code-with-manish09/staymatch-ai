@@ -138,13 +138,13 @@
           <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" alt="Room"/>
           {% endif %}
         {% endwith %}
-        <div class="match-badge teal">
+        <!-- <div class="match-badge teal">
           🎯
           {% if room.cleanliness_level >= 9 %}96% Match
           {% elif room.cleanliness_level >= 7 %}92% Match
           {% elif room.cleanliness_level >= 5 %}88% Match
           {% else %}82% Match{% endif %}
-        </div>
+        </div> -->
         <div class="room-save"
              id="save-icon-{{ room.id }}"
              onclick="handleRoomSave('{{ room.id }}')">
@@ -175,17 +175,26 @@
   </span>
   <span class="clean-pill">ratings</span>
 </div>
-        <div class="room-chips">
-          <div class="chip mutual-chip match">🏠 {{ room.room_type }}</div>
-          <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🪑 {{ room.get_furnishing_status_display }}</div>
-          {% if room.nearest_metro %}
-          <div class="chip" style="background:#F0FDF4;color:#059669;">🚇 Near Metro</div>
-          {% endif %}
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-          <div class="ai-price-pill">🤖 AI Fair: ₹{{ room.rent }}</div>
-          <div class="env-score">🌿 Env <span>8.2/10</span></div>
-        </div>
+       <div class="room-chips" style="flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+  <div class="chip mutual-chip match">🏠 {{ room.room_type }}</div>
+  <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🪑 {{ room.get_furnishing_status_display }}</div>
+  <div class="chip" style="background:#F0FDF4;color:#059669;">📅 {{ room.available_from|date:"M d" }}</div>
+  
+  <!-- Interested -->
+  {% with inq=room.inquiry_count|default:0 %}
+  <div class="chip" style="background:#FFF1F2;color:#F25C54;">
+    💬 {% if inq > 10 %}10+{% else %}{{ inq }}{% endif %} interested
+  </div>
+  {% endwith %}
+
+  <!-- Saves -->
+  {% with sv=room.saved_by_users.count %}
+  <div class="chip" style="background:var(--amber-lt);color:#B45309;">
+    ❤️ {% if sv > 99 %}99+{% else %}{{ sv }}{% endif %} saves
+  </div>
+  {% endwith %}
+
+</div>
         <div class="room-footer">
           <div class="room-price">₹{{ room.rent }} <small>/mo</small></div>
           <a href="{% url 'room_details_by_id' room.id %}" class="btn-sm btn-sm-teal" style="text-decoration:none;text-align:center;display:inline-block;">

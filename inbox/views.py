@@ -140,6 +140,18 @@ def send_message(request, listing_id):
             reverse('chat_view', args=[listing_id]) + f'?user={other_user_id}'
         )
     else:
+        # ✅ Sirf pehli baar inquiry_count badhao
+        already_messaged = Message.objects.filter(
+            sender=request.user,
+            listing=listing
+        ).exists()
+
+        if not already_messaged:
+            from django.db.models import F
+            Listing.objects.filter(id=listing_id).update(
+                inquiry_count=F('inquiry_count') + 1
+            )
+
         Message.objects.create(
             sender=request.user, recipient=listing.owner,
             listing=listing, body=body,

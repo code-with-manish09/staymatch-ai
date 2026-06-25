@@ -140,7 +140,8 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
             <option {% if room.city == 'Pune' %}selected{% endif %}>Pune</option>
             <option {% if room.city == 'Chennai' %}selected{% endif %}>Chennai</option>
             <option {% if room.city == 'Kolkata' %}selected{% endif %}>Kolkata</option>
-            <option {% if room.city == 'Patna' %}selected{% endif %}>Patna</option>
+            <option {% if room.city == 'Noida' %}selected{% endif %}>Noida</option>
+            <option {% if room.city == 'Gurgaon' %}selected{% endif %}>Gurgaon</option>
           </select>
         </div>
         <div class="field-group">
@@ -161,7 +162,6 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
             <option {% if room.room_type == 'Private Room' %}selected{% endif %}>Private Room</option>
             <option {% if room.room_type == 'Shared Room' %}selected{% endif %}>Shared Room</option>
             <option {% if room.room_type == 'Studio' or room.room_type == 'Studio / 1BHK' %}selected{% endif %}>Studio / 1BHK</option>
-            <option {% if room.room_type == 'Master Bedroom' %}selected{% endif %}>Master Bedroom</option>
             <option {% if room.room_type == 'PG / Hostel' %}selected{% endif %}>PG / Hostel</option>
           </select>
         </div>
