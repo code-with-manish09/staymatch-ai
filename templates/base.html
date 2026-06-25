@@ -1044,6 +1044,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
   .plat-lbl, .plat-trend {
     font-size: 10px !important;
   }
+  
 }
 
 /* ══ REVIEWS CAROUSEL ══ */
@@ -1270,6 +1271,7 @@ input[type=range]{width:100%;accent-color:var(--teal);}
     min-width: 60px !important;
     font-size: 12px !important;
   }
+  
 }
 
 /* ══ WHITE CARD (general) ══ */
@@ -2089,7 +2091,15 @@ function switchSavedTab(tab) {
   }
 })();
 
-
+(function(){
+  document.querySelectorAll('.city-bar-fill').forEach((bar,i)=>{
+    const target = bar.dataset.width;
+    setTimeout(()=>{
+      bar.style.transition = 'width 0.9s cubic-bezier(.22,.68,0,1.2)';
+      bar.style.width = target + '%';
+    }, 200 + i * 90);
+  });
+})();
 </script>
 </body>
 </html>

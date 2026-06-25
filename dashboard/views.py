@@ -47,8 +47,18 @@ def dashboard(request):
 
     saved_count = Saved_Rooms.objects.filter(user=request.user).count()
     total_matches = 0
-
+    
+    SCALE_MAX = 50      
+    MIN_VISIBLE = 4
     city_stats = Listing.objects.filter(is_published=True).values('city').annotate(count=Count('id')).order_by('-count')
+    city_stats = list(city_stats)
+    for c in city_stats:
+        count = c['count']
+        if count <= 0:
+            c['bar_width'] = 0
+        else:
+            pct = min(count, SCALE_MAX) / SCALE_MAX * 100
+            c['bar_width'] = round(max(pct, MIN_VISIBLE), 1)
 
     total_users = User.objects.count()
     total_listings = Listing.objects.filter(is_published=True).count()

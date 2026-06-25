@@ -80,15 +80,16 @@
   <!-- Stats -->
 <div class="stats-row fu d2">
 
-  <div class="stat-card">
-    <div class="stat-icon" style="background:var(--teal-lt);">🤖</div>
-    <div>
-      <div class="stat-val">{{ total_matches }}</div>
-      <div class="stat-lbl">AI Matches Found</div>
-      <div class="stat-trend trend-up">↑ 6 new today</div>
+<div class="stat-card">
+  <div class="stat-icon" style="background:var(--teal-lt);">🤖</div>
+  <div>
+    <div class="stat-val">{{ compatible_flatmates|length }}</div>
+    <div class="stat-lbl">Compatible Profiles</div>
+    <div class="stat-trend trend-up">
+      {% if compatible_flatmates %}based on your tags{% else %}Complete quiz to unlock{% endif %}
     </div>
   </div>
-
+</div>
   <div class="stat-card">
     <div class="stat-icon" style="background:#F0FDF4;">💬</div>
     <div>
@@ -320,18 +321,16 @@
         <span class="live-pill">Live</span>
       </div>
       <div class="city-list">
-        {% for cd in city_stats %}
-        <div class="city-row">
-          <div class="city-nm">{{ cd.city }}</div>
-          <div class="city-bar-track">
-            <div class="city-bar-fill" style="width:{% widthratio cd.count city_stats.0.count 100 %}%;"></div>
+            {% for cd in city_stats %}
+<div class="city-row">
+  <div class="city-nm">{{ cd.city }}</div>
+  <div class="city-bar-track">
+    <div class="city-bar-fill" id="city-bar-{{ forloop.counter }}" data-width="{{ cd.bar_width }}" style="width:0%;"></div>
+  </div>
+  <div class="city-cnt">{{ cd.count }}</div>
+</div>
+{% endfor %}
           </div>
-          <div class="city-cnt">{{ cd.count }}</div>
-        </div>
-        {% empty %}
-        <p style="color:var(--muted);font-size:13px;padding:12px 0;">No rooms available.</p>
-        {% endfor %}
-      </div>
     </div>
  
     <!-- RIGHT: Platform Stats -->
