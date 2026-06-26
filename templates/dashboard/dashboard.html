@@ -124,11 +124,15 @@
   <!-- Room Listings -->
   <div class="sec-hd fu d4">
     <div class="sec-title">🏠 Recommended for You</div>
-<a class="sec-link" style="display:flex;align-items:center;gap:5px;">
+    <a class="sec-link view-all-link" id="rooms-viewall" href="javascript:void(0)" onclick="toggleViewAll('rooms-grid', this)" style="display:flex;align-items:center;gap:5px;">
       <span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s ease infinite;"></span>
-      Live Profiles
-    </a>  </div>
-  <div class="rooms-grid fu d4">
+      <span id="rooms-viewall-text">View All Rooms →</span>
+    </a>
+</div>
+
+<div class="slider-wrap">
+  <button class="slider-arrow prev" id="rooms-prev" onclick="slideGrid('rooms-grid',-1)">‹</button>
+  <div class="rooms-grid fu d4" id="rooms-grid">
     {% for room in listings %}
     <div class="room-card">
       <div class="room-img">
@@ -139,13 +143,6 @@
           <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80" alt="Room"/>
           {% endif %}
         {% endwith %}
-        <!-- <div class="match-badge teal">
-          🎯
-          {% if room.cleanliness_level >= 9 %}96% Match
-          {% elif room.cleanliness_level >= 7 %}92% Match
-          {% elif room.cleanliness_level >= 5 %}88% Match
-          {% else %}82% Match{% endif %}
-        </div> -->
         <div class="room-save"
              id="save-icon-{{ room.id }}"
              onclick="handleRoomSave('{{ room.id }}')">
@@ -160,42 +157,33 @@
         </div>
         <div class="room-loc">📍 {{ room.area }} · {{ room.city }}</div>
         <div class="safety-row">
-  <div class="safety-stars" style="color:var(--amber);">
-    {% with r=room.avg_rating|default:0 %}
-      {% for i in "12345"|make_list %}
-        {% if forloop.counter <= r %}★{% else %}☆{% endif %}
-      {% endfor %}
-    {% endwith %}
-  </div>
-  <span class="safety-lbl">
-    {% if room.avg_rating %}
-      {{ room.avg_rating }}/5
-    {% else %}
-      No reviews
-    {% endif %}
-  </span>
-  <span class="clean-pill">ratings</span>
-</div>
-       <div class="room-chips" style="flex-wrap:wrap;gap:6px;margin-bottom:10px;">
-  <div class="chip mutual-chip match">🏠 {{ room.room_type }}</div>
-  <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🪑 {{ room.get_furnishing_status_display }}</div>
-  <div class="chip" style="background:#F0FDF4;color:#059669;">📅 {{ room.available_from|date:"M d" }}</div>
-  
-  <!-- Interested -->
-  {% with inq=room.inquiry_count|default:0 %}
-  <div class="chip" style="background:#FFF1F2;color:#F25C54;">
-    💬 {% if inq > 10 %}10+{% else %}{{ inq }}{% endif %} interested
-  </div>
-  {% endwith %}
-
-  <!-- Saves -->
-  {% with sv=room.saved_by_users.count %}
-  <div class="chip" style="background:var(--amber-lt);color:#B45309;">
-    ❤️ {% if sv > 99 %}99+{% else %}{{ sv }}{% endif %} saves
-  </div>
-  {% endwith %}
-
-</div>
+          <div class="safety-stars" style="color:var(--amber);">
+            {% with r=room.avg_rating|default:0 %}
+              {% for i in "12345"|make_list %}
+                {% if forloop.counter <= r %}★{% else %}☆{% endif %}
+              {% endfor %}
+            {% endwith %}
+          </div>
+          <span class="safety-lbl">
+            {% if room.avg_rating %}{{ room.avg_rating }}/5{% else %}No reviews{% endif %}
+          </span>
+          <span class="clean-pill">ratings</span>
+        </div>
+        <div class="room-chips" style="flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+          <div class="chip mutual-chip match">🏠 {{ room.room_type }}</div>
+          <div class="chip" style="background:var(--teal-lt);color:var(--teal);">🪑 {{ room.get_furnishing_status_display }}</div>
+          <div class="chip" style="background:#F0FDF4;color:#059669;">📅 {{ room.available_from|date:"M d" }}</div>
+          {% with inq=room.inquiry_count|default:0 %}
+          <div class="chip" style="background:#FFF1F2;color:#F25C54;">
+            💬 {% if inq > 10 %}10+{% else %}{{ inq }}{% endif %} interested
+          </div>
+          {% endwith %}
+          {% with sv=room.saved_by_users.count %}
+          <div class="chip" style="background:var(--amber-lt);color:#B45309;">
+            ❤️ {% if sv > 99 %}99+{% else %}{{ sv }}{% endif %} saves
+          </div>
+          {% endwith %}
+        </div>
         <div class="room-footer">
           <div class="room-price">₹{{ room.rent }} <small>/mo</small></div>
           <a href="{% url 'room_details_by_id' room.id %}" class="btn-sm btn-sm-teal" style="text-decoration:none;text-align:center;display:inline-block;">
@@ -211,6 +199,7 @@
     </div>
     {% endfor %}
   </div>
+<button class="slider-arrow next" id="rooms-next" onclick="slideGrid('rooms-grid',1)">›</button></div>
 
   {# ══ FLATMATE PROFILES SECTION ══ #}
 
@@ -218,9 +207,9 @@
 <div class="fu d3" style="margin-bottom:24px;">
   <div class="sec-hd">
     <div class="sec-title">👥 Compatible Flatmate Profiles</div>
-    <a class="sec-link" style="display:flex;align-items:center;gap:5px;">
+    <a class="sec-link view-all-link" id="fm-viewall" href="javascript:void(0)" onclick="toggleViewAll('fm-grid-main', this)" style="display:flex;align-items:center;gap:5px;">
       <span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s ease infinite;"></span>
-      Live Profiles
+      <span id="fm-viewall-text">View All Profiles →</span>
     </a>
   </div>
  <p style="font-size:11px;color:var(--muted);margin-bottom:8px;display:none;" id="fm-scroll-hint">
@@ -230,15 +219,15 @@
   if(window.innerWidth <= 900) 
     document.getElementById('fm-scroll-hint').style.display = 'block';
 </script>
-  <div class="fm-grid">
+
+<div class="slider-wrap">
+  <button class="slider-arrow prev" id="fm-prev" onclick="slideGrid('fm-grid-main',-1)">‹</button>
+  <div class="fm-grid" id="fm-grid-main">
     {% for profile in compatible_flatmates %}
     <div class="fm-card">
- 
       <!-- Banner + Avatar -->
       <div class="fm-banner" style="background:{{ profile.banner_gradient|default:'linear-gradient(135deg,#134e4a,#0EA5C9)' }};">
         <div class="fm-live">Live</div>
- 
-       
         <button
           class="fm-save-btn"
           id="fm-save-{{ profile.id }}"
@@ -250,7 +239,6 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           {% endif %}
         </button>
- 
         <div class="fm-av-wrap">
           {% if profile.profile_photo %}
             <img src="{{ profile.profile_photo.url }}" class="fm-av fm-av-img" alt="{{ profile.full_name }}"/>
@@ -261,7 +249,6 @@
           {% endif %}
         </div>
       </div>
- 
       <!-- Body -->
       <div class="fm-body">
         <div class="fm-name-row">
@@ -292,21 +279,23 @@
           <a href="{% url 'flatmate_detail' profile.id %}" class="btn-sm btn-sm-teal" style="text-decoration:none;font-size:11px;padding:6px 13px;">view details</a>
         </div>
       </div>
- 
     </div>
     {% empty %}
     <div style="grid-column:1/-1;background:#fff;border:1px solid var(--border);border-radius:18px;padding:48px 20px;text-align:center;box-shadow:var(--card-sh);">
       <div style="font-size:40px;margin-bottom:12px;">👥</div>
       <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px;">No Flatmates Found</div>
       <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">upload your flatmate profile to get better matches.</p>
-<button type="button" class="btn-teal" style="font-size:13px;padding:10px 24px;" onclick="window.location.href='{% url 'post_flatmate' %}'">
-    Upload Profile
-</button>    </div>
+      <button type="button" class="btn-teal" style="font-size:13px;padding:10px 24px;" onclick="window.location.href='{% url 'post_flatmate' %}'">
+        Upload Profile
+      </button>
+    </div>
     {% endfor %}
   </div>
+  <button class="slider-arrow next" id="fm-next" onclick="slideGrid('fm-grid-main',1)">›</button>
+</div> <!-- /slider-wrap -->
+
 </div>
 {# ══ END FLATMATE PROFILES ══ #}
-
 
 {# ══ CITY · PLATFORM STATS — FINAL CLEAN VERSION ══ #}
 
