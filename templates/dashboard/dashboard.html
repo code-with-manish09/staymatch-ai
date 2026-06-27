@@ -45,36 +45,41 @@
 </div>
   </div>
 
-  <!-- Filter Bar -->
   <div class="filter-bar fu d3">
-    <span class="filter-lbl">🔍 Filters:</span>
-    <select class="filter-select">
-      <option>📍 All Cities</option>
-      <option>Bangalore</option>
-      <option>Mumbai</option>
-      <option>Delhi</option>
-      <option>Hyderabad</option>
-      <option>Pune</option>
-    </select>
-    <select class="filter-select">
-      <option>💰 Any Budget</option>
-      <option>Under ₹8,000</option>
-      <option>₹8k – ₹12k</option>
-      <option>₹12k – ₹18k</option>
-      <option>₹18k+</option>
-    </select>
-    <select class="filter-select">
-      <option>👤 Any Gender</option>
-      <option>Male only</option>
-      <option>Female only</option>
-    </select>
-    <div class="filter-chip on" onclick="this.classList.toggle('on')">🌙 Night Owl</div>
-    <div class="filter-chip" onclick="this.classList.toggle('on')">🐶 Pet-friendly</div>
-    <div class="filter-chip" onclick="this.classList.toggle('on')">🚇 Near Metro</div>
-    <div class="filter-chip" onclick="this.classList.toggle('on')">🏋️ Gym</div>
-    <div class="filter-chip" onclick="this.classList.toggle('on')">📚 Study Friendly</div>
-    <div class="filter-chip" onclick="this.classList.toggle('on')">🔇 Low Noise</div>
-  </div>
+  <span class="filter-lbl">🔍 Filters:</span>
+  <select class="filter-select">
+    <option>📍 All Cities</option>
+    <option>🏙️ Bangalore</option>
+    <option>🏙️ Mumbai</option>
+    <option>🏙️ Delhi</option>
+    <option>🏙️ Hyderabad</option>
+    <option>🏙️ Pune</option>
+    <option>🏙️ Chennai</option>
+    <option>🏙️ Kolkata</option>
+  </select>
+  <select class="filter-select">
+    <option>💰 Any Budget</option>
+    <option>Under ₹8,000</option>
+    <option>₹8k – ₹12k</option>
+    <option>₹12k – ₹18k</option>
+    <option>₹18k+</option>
+  </select>
+  <select class="filter-select">
+    <option>🏠 Any Type</option>
+    <option>1BHK</option>
+    <option>2BHK</option>
+    <option>3BHK</option>
+    <option>Studio</option>
+    <option>PG Room</option>
+  </select>
+  <select class="filter-select">
+    <option>🪑 Any Furnishing</option>
+    <option>Fully Furnished</option>
+    <option>Semi Furnished</option>
+    <option>Unfurnished</option>
+  </select>
+  
+</div>
 
 
   <!-- Stats -->
@@ -297,37 +302,51 @@
 
 {# ══ CITY · PLATFORM STATS — FINAL CLEAN VERSION ══ #}
 
- 
-<div class="fu d2" style="margin-bottom:24px;">
+ <div class="fu d2" style="margin-bottom:24px;">
   <div class="bottom-stats-row">
- 
-    <!-- LEFT: Rooms by City -->
-    <div class="white-card">
-      <div class="card-hd">
-        <div class="card-title">🏙️ Rooms by City</div>
-        <span class="live-pill">Live</span>
-      </div>
-      <div class="city-list">
-            {% for cd in city_stats %}
-<div class="city-row">
-  <div class="city-nm">{{ cd.city }}</div>
-  <div class="city-bar-track">
-    <div class="city-bar-fill" id="city-bar-{{ forloop.counter }}" data-width="{{ cd.bar_width }}" style="width:0%;"></div>
+
+<div class="white-card">
+  <div class="card-hd">
+    <div class="card-title">🌐 Live Network by City</div>
+    <span class="live-pill">Live</span>
   </div>
-  <div class="city-cnt">{{ cd.count }}</div>
-</div>
-{% endfor %}
-          </div>
+
+  <!-- Header -->
+  <div style="display:grid;grid-template-columns:1fr 90px 90px;gap:8px;padding:8px 4px;border-bottom:1.5px solid var(--border);margin-bottom:4px;">
+    <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;">City</div>
+    <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;text-align:center;">Rooms</div>
+    <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;text-align:center;">Flatmates</div>
+  </div>
+
+  <div style="height:160px;overflow-y:auto;">
+    {% for cd in city_stats %}
+    <div style="display:grid;grid-template-columns:1fr 90px 90px;gap:8px;padding:10px 4px;border-bottom:1px solid var(--border);align-items:center;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:13px;">📍</span>
+        <span style="font-size:13px;font-weight:700;color:var(--navy);">{{ cd.city }}</span>
+      </div>
+      <div style="text-align:center;">
+        <span style="background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;">{{ cd.count }} Rooms</span>
+      </div>
+      <div style="text-align:center;">
+        <span style="background:#F0FDF4;color:#059669;font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;">{{ cd.flatmates }} Active</span>
+      </div>
     </div>
+    {% empty %}
+    <p style="color:var(--muted);font-size:13px;padding:12px 0;">No data available.</p>
+    {% endfor %}
+  </div>
+
+</div>
  
     <!-- RIGHT: Platform Stats -->
-    <div class="white-card">
-      <div class="card-hd">
+    <div class="white-card" style="display:flex;flex-direction:column;justify-content:center;">
+  <div class="card-hd">
         <div class="card-title">📊 Platform Stats</div>
         <span style="background:var(--amber-lt);color:#B45309;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;">Growing</span>
       </div>
-      <div class="plat-grid">
-        <div class="plat-block">
+<div class="plat-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px 4px;">
+          <div class="plat-block">
           <div class="plat-icon" style="background:var(--teal-lt);">👥</div>
           <div class="plat-num">{{ total_users|default:"—" }}</div>
           <div class="plat-lbl">Users Joined</div>
@@ -339,12 +358,12 @@
           <div class="plat-lbl">Total Listings</div>
           <div class="plat-trend" style="color:var(--teal);">● Live</div>
         </div>
-          <div class="plat-block">
-    <div class="plat-icon" style="background:#F0FDF4;">👥</div>
-    <div class="plat-num">{{ total_flatmate_posts|default:"—" }}</div>
-    <div class="plat-lbl">Flatmate Listings</div>
-    <div class="plat-trend trend-up">↑ Active</div>
-  </div>
+              <div class="plat-block">
+        <div class="plat-icon" style="background:#F0FDF4;">👥</div>
+        <div class="plat-num">{{ total_flatmate_posts|default:"—" }}</div>
+        <div class="plat-lbl">Flatmate Listings</div>
+        <div class="plat-trend trend-up">↑ Active</div>
+      </div>
       </div>
     </div>
  

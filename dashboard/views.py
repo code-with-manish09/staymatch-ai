@@ -48,20 +48,27 @@ def dashboard(request):
     saved_count = Saved_Rooms.objects.filter(user=request.user).count()
     total_matches = 0
     
-    SCALE_MAX = 50      
-    MIN_VISIBLE = 4
     city_stats = Listing.objects.filter(is_published=True).values('city').annotate(count=Count('id')).order_by('-count')
-    city_stats = list(city_stats)
-    for c in city_stats:
-        count = c['count']
-        if count <= 0:
-            c['bar_width'] = 0
-        else:
-            pct = min(count, SCALE_MAX) / SCALE_MAX * 100
-            c['bar_width'] = round(max(pct, MIN_VISIBLE), 1)
 
-    total_users = User.objects.count()
-    total_listings = Listing.objects.filter(is_published=True).count()
+    city_stats = list(city_stats)
+    all_cities = ['Bangalore','Mumbai','Delhi','Hyderabad','Pune','Chennai','Kolkata','Noida','Gurgaon']
+
+    existing_cities = [c['city'] for c in city_stats]
+
+    for city in all_cities:
+        if city not in existing_cities:
+            city_stats.append({'city': city, 'count': 0, 'bar_width': 0})
+
+    flatmate_city_counts = FlatmateProfile.objects.filter(is_active=True)\
+        .values('city')\
+        .annotate(fm_count=Count('id'))
+    
+    flatmate_city_map = {f['city']: f['fm_count'] for f in flatmate_city_counts}
+
+    for c in city_stats:
+        c['flatmates'] = flatmate_city_map.get(c['city'], 0)
+        total_users = User.objects.count()
+        total_listings = Listing.objects.filter(is_published=True).count()
 
     recent_reviews = Review.objects.select_related('user', 'listing').order_by('-created_at')[:3]
     my_listings = Listing.objects.filter(owner=request.user).prefetch_related('images')
