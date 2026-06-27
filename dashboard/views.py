@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from httpx import request
 from rooms.models import FlatmateProfile, Listing,Saved_Rooms,Review, SavedFlatmate
-from inbox.models import Message
+from inbox.models import FlatmateInquiry, Message
 from inbox.views import get_conversations  
 from django.contrib.auth.models import User
 
@@ -70,7 +70,7 @@ def dashboard(request):
 
     compatible_flatmates = FlatmateProfile.objects.exclude(
     user=request.user
-        ).select_related('user').order_by('-created_at')[:6]
+        ).select_related('user').order_by('-created_at')[:24]
 
 
     saved_flatmate_ids = list(
@@ -113,11 +113,10 @@ def dashboard(request):
         'my_listings_available': my_listings.filter(is_published=True).count(),
         'my_total_inquiries': 0, 
         'my_flatmate_posts':  FlatmateProfile.objects.filter(user=request.user),
-        'my_flatmate_active':FlatmateProfile.objects.filter(
-         user=request.user, is_active=True
-        ).count(),
-        'my_flatmate_responses': 0,
-        'compatible_flatmates': compatible_flatmates,
+        'my_flatmate_active':FlatmateProfile.objects.filter( user=request.user, is_active=True).count(),
+
+       'my_flatmate_responses': Message.objects.filter(recipient=request.user, flatmate_profile__isnull=False).values('sender').distinct().count(), 
+       'compatible_flatmates': compatible_flatmates,
         'saved_flatmate_ids': saved_flatmate_ids,
         'user_saved_flatmates': SavedFlatmate.objects.filter(user=request.user).select_related('profile'),
         'flatmate_inquiries': flatmate_inquiries,

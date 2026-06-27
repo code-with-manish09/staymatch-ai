@@ -81,13 +81,11 @@
 <div class="stats-row fu d2">
 
 <div class="stat-card">
-  <div class="stat-icon" style="background:var(--teal-lt);">🤖</div>
+  <div class="stat-icon" style="background:#F5F3FF;">💬</div>
   <div>
-    <div class="stat-val">{{ compatible_flatmates|length }}</div>
-    <div class="stat-lbl">Compatible Profiles</div>
-    <div class="stat-trend trend-up">
-      {% if compatible_flatmates %}based on your tags{% else %}Complete quiz to unlock{% endif %}
-    </div>
+    <div class="stat-val">{{ my_flatmate_responses|default:"0" }}</div>
+    <div class="stat-lbl">Flatmate Responses</div>
+    <div class="stat-trend trend-up">people interested</div>
   </div>
 </div>
   <div class="stat-card">

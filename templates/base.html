@@ -1533,6 +1533,11 @@ input[type=range]{width:100%;accent-color:var(--teal);}
     overflow:visible !important;
   }
 }
+@media (max-width: 640px) {
+  .view-all-link {
+    margin-left: auto;   /* jis line pe bhi ho, force right rahega */
+  }
+}
 </style>
 {% block extra_css %}{% endblock %}
 </head>
