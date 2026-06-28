@@ -9,7 +9,6 @@ urlpatterns = [
     path('review/<int:room_id>/', views.submit_review, name='submit_review'),
     path('room_matches/', views.room_matches, name='room_matches'),
     path('ai-match/', views.ai_match_view, name='ai_match'),
-    path('room/<int:room_id>/faqs/', views.room_faqs, name='room_faqs'),
     path('room/<int:pk>/edit/', views.edit_room, name='room_edit'),
     path('room/<int:pk>/delete/', views.delete_room, name = 'room_delete'),
     path('post/', views.post_gate, name='post_gate'),

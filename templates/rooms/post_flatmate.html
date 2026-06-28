@@ -396,8 +396,12 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
 
 /* ── Responsive ── */
 @media(max-width:1050px) {
+  .two-col-layout { grid-template-columns: 1fr 280px; }
+}
+
+@media(max-width:860px) {
   .two-col-layout { grid-template-columns: 1fr; }
-  .preview-sticky { position: relative; top: 0; }
+  .preview-sticky { position: relative; top: 0; order: -1; }
   .form-progress-bar { position: relative; top: 0; }
 }
 @media(max-width:900px) {

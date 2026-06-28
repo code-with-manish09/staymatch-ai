@@ -89,20 +89,54 @@ class Listing(models.Model):
         return f"{self.title} - {self.city}"
     
     def get_preference_text(self):
-        return (
-            f"Room type : {self.room_type},"
-            f"city: {self.city},"
-            f"furnishing : {self.furnishing_status},"
-            f"preferred gender : {self.pref_gender},"
-            f"preferred occupation: {self.pref_occupation},"
-            f"sleep schedule: {self.sleep_schedule},"
-            f"cleanliness level : {self.cleanliness_level},"
-            f"guest policy : {self.guest_policy},"
-            f"wifi included : {self.included_wifi},"
-            f"Cooking allowed: {self.included_cooking}, "
-            f"House rules: {self.house_rules}, "
-            f"Rent: {self.rent}"
+        """
+        Returns a natural-language description of the room listing for AI matching.
+        Written as prose so Gemini can reason on it, not just pattern-match keys.
+        """
+        # Cleanliness as human label
+        cl = self.cleanliness_level
+        if cl >= 9:
+            clean_label = f"extremely clean and tidy ({cl}/10) — strict about cleanliness"
+        elif cl >= 7:
+            clean_label = f"moderately clean ({cl}/10) — expects reasonable tidiness"
+        elif cl >= 5:
+            clean_label = f"fairly relaxed about cleanliness ({cl}/10)"
+        else:
+            clean_label = f"very relaxed about cleanliness ({cl}/10)"
+    
+        # Inclusions
+        included = []
+        if self.included_wifi:         included.append("WiFi")
+        if self.included_electricity:  included.append("electricity")
+        if self.included_water:        included.append("water")
+        if self.included_gas:          included.append("gas")
+        if self.included_cooking:      included.append("cooking access")
+        if self.included_housekeeping: included.append("housekeeping")
+        included_str = ", ".join(included) if included else "none specified"
+    
+        # Build natural prose
+        text = (
+            f"This is a {self.room_type} located in {self.city}"
+            f"{', ' + self.area if self.area else ''}. "
+            f"The monthly rent is ₹{self.rent:,}, which includes: {included_str}. "
+            f"The room is {self.furnishing_status.lower()} furnished. "
+            f"The owner prefers a {self.pref_gender.lower()} tenant "
+            f"({'any occupation' if self.pref_occupation == 'Any' else self.pref_occupation + ' preferred'}). "
+            f"Sleep schedule preference: {self.sleep_schedule}. "
+            f"Cleanliness expectation: {clean_label}. "
+            f"Guest policy: {self.guest_policy}. "
         )
+    
+        if self.house_rules and self.house_rules.strip():
+            text += f"House rules: {self.house_rules.strip()}. "
+    
+        if self.nearest_metro and self.nearest_metro.strip():
+            text += f"Nearest metro/hub: {self.nearest_metro}. "
+    
+        if self.description and self.description.strip():
+            text += f"Additional info: {self.description.strip()}"
+    
+        return text
 
 class ListingImage(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='images')
@@ -242,21 +276,57 @@ class FlatmateProfile(models.Model):
         return f"{self.name} ({self.city}) — Score: {self.vibe_score}"
     
     def get_preference_text(self):
-      return (
-        f"Name: {self.name}, Age: {self.age}, Gender: {self.gender}, "
-        f"Occupation: {self.occupation}, City: {self.city}, "
-        f"Max budget: {self.max_budget}, Room type: {self.room_type_pref}, "
-        f"Move-in: {self.move_in}, Sleep schedule: {self.sleep_schedule}, "
-        f"Cleanliness: {self.cleanliness_level}/10, "
-        f"Noise tolerance: {self.noise_tolerance}, "
-        f"Guest policy: {self.guest_policy}, Work style: {self.work_style}, "
-        f"Smoking: {self.smoking}, Alcohol: {self.alcohol}, Pets: {self.pets}, "
-        f"Language: {self.language_pref}, "
-        f"Prefers flatmate gender: {self.pref_gender}, "
-        f"Prefers flatmate occupation: {self.pref_occupation}, "
-        f"Preferred age range: {self.pref_age_range}, "
-        f"Bio: {self.bio}"
-    )
+        """
+        Returns a natural-language description of a flatmate profile for AI matching.
+        Written as prose so Gemini can reason on it, not just pattern-match keys.
+        """
+        import json
+    
+        # Cleanliness as human label
+        cl = self.cleanliness_level
+        if cl >= 9:
+            clean_label = f"very particular about cleanliness ({cl}/10)"
+        elif cl >= 7:
+            clean_label = f"moderately clean ({cl}/10)"
+        elif cl >= 5:
+            clean_label = f"fairly relaxed ({cl}/10)"
+        else:
+            clean_label = f"very relaxed about cleanliness ({cl}/10)"
+    
+        # Interest tags
+        tags = self.get_tags_list()
+        tags_str = ", ".join(tags) if tags else "not specified"
+    
+        # Budget-friendly label
+        budget_str = f"₹{self.max_budget:,}/month"
+    
+        text = (
+            f"{self.name} is a {self.age}-year-old {self.gender.lower()} {self.occupation} "
+            f"based in {self.city}"
+            f"{', ' + self.preferred_area if self.preferred_area else ''}. "
+            f"Looking for a {self.room_type_pref} room with a max budget of {budget_str}. "
+            f"Move-in timeline: {self.move_in}. "
+            f"Sleep schedule: {self.sleep_schedule}. "
+            f"Cleanliness: {clean_label}. "
+            f"Noise tolerance: {self.noise_tolerance}. "
+            f"Guest policy: {self.guest_policy}. "
+            f"Smoking: {self.smoking}. "
+            f"Alcohol: {self.alcohol}. "
+            f"Pets: {self.pets}. "
+            f"Language preference: {self.language_pref if self.language_pref else 'any'}. "
+            f"Interests: {tags_str}. "
+            f"Looking for a flatmate who is: {self.pref_gender} gender, "
+            f"{self.pref_occupation} occupation, age range {self.pref_age_range}. "
+        )
+    
+        if self.flatmate_expectation and self.flatmate_expectation.strip():
+            text += f"What they expect from a flatmate: {self.flatmate_expectation.strip()}. "
+    
+        if self.bio and self.bio.strip():
+            text += f"About them: {self.bio.strip()}"
+    
+        return text
+    
     # models.py mein
     @property
     def banner_gradient(self):

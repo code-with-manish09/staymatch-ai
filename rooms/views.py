@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from httpx import request
 from .models import FlatmateProfile, Listing, Amenity, ListingImage, Review, SavedFlatmate
 from django.http import JsonResponse  
-from rooms.services.services import get_room_faqs, get_vibe_score
+from rooms.services.services import  get_vibe_score, get_flatmate_vibe_score
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 
@@ -273,70 +273,7 @@ def flatmate_match(request):
     return render(request, 'rooms/flatmate_match.html')
 
 
-#=======match details view===========
-@login_required
-def ai_match_view(request):
-    user_prefs = (
-        f"Gender: {request.GET.get('gender', 'Any')}, "
-        f"Occupation: {request.GET.get('occupation', 'Any')}, "
-        f"Sleep schedule: {request.GET.get('sleep', 'Any')}, "
-        f"Cleanliness: {request.GET.get('cleanliness', 'Any')}, "
-        f"Guest policy: {request.GET.get('guest_policy', 'Any')}, "
-        f"City: {request.GET.get('city', 'Any')}, "
-        f"Budget: {request.GET.get('budget', 'Any')}"
-    )
-
-    rooms = Listing.objects.filter(is_published=True)
-
-    # Sirf budget real hard constraint hai — city/type/furnishing AI khud judge karega
-    budget = request.GET.get('budget')
-    if budget:
-        try:
-            rooms = rooms.filter(rent__lte=int(budget))
-        except ValueError:
-            pass
-
-    results = []
-    for room in rooms:
-        try:
-            response = get_vibe_score(user_prefs, room.get_preference_text())
-            data = json.loads(response)
-            score = data.get("score")
-            reason = data.get("reason", "")
-            if score is None:
-                continue
-        except Exception as e:
-            print("AI match skip, room", room.id, ":", e)
-            continue
-
-        results.append({
-            "room_id": room.id,
-            "title": room.title,
-            "city": room.city,
-            "rent": room.rent,
-            "vibe_score": score,
-            "reason": reason
-        })
-
-    results.sort(key=lambda x: x["vibe_score"], reverse=True)
-    top_results = results[:10]
-
-    return JsonResponse({"matches": top_results})
      
-#===============room faqs====================
-@login_required
-def room_faqs(request, room_id):
-    if request.method == 'POST':
-        room = get_object_or_404(Listing, id=room_id)
-        question = request.POST.get('question', '').strip()
-        
-        if not question:
-            return JsonResponse({'error': 'Question empty hai'}, status=400)
-        
-        answer = get_room_faqs(room.get_preference_text(), question)
-        return JsonResponse({'answer': answer})
-    
-    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 #===============edit room====================
 
@@ -652,58 +589,177 @@ def toggle_save_flatmate(request, profile_id):
 #===============flatmate match====================
 @login_required
 def ai_flatmate_match_view(request):
-    user_prefs = (
-        f"Gender: {request.GET.get('gender', 'Any')}, "
-        f"Occupation: {request.GET.get('occupation', 'Any')}, "
-        f"City: {request.GET.get('city', 'Any')}, "
-        f"Budget: {request.GET.get('budget', 'Any')}, "
-        f"Room type needed: {request.GET.get('room_type', 'Any')}, "
-        f"Move-in: {request.GET.get('move_in', 'Any')}, "
-        f"Sleep schedule: {request.GET.get('sleep', 'Any')}, "
-        f"Cleanliness: {request.GET.get('cleanliness', 'Any')}, "
-        f"Guest policy: {request.GET.get('guest_policy', 'Any')}, "
-        f"Work style: {request.GET.get('work_style', 'Any')}, "
-        f"Noise tolerance: {request.GET.get('noise', 'Any')}, "
-        f"Smoking: {request.GET.get('smoking', 'Any')}, "
-        f"Alcohol: {request.GET.get('alcohol', 'Any')}, "
-        f"Pets: {request.GET.get('pets', 'Any')}, "
-        f"Language: {request.GET.get('language', 'Any')}, "
-        f"Preferred flatmate gender: {request.GET.get('pref_gender', 'Any')}, "
-        f"Preferred flatmate occupation: {request.GET.get('pref_occupation', 'Any')}, "
-        f"Preferred age range: {request.GET.get('pref_age', 'Any')}"
-    )
+    g = request.GET
+
+    gender      = g.get('gender', '').strip()
+    occupation  = g.get('occupation', '').strip()
+    city        = g.get('city', '').strip()
+    budget_raw  = g.get('budget', '').strip()
+    room_type   = g.get('room_type', '').strip()
+    sleep       = g.get('sleep', '').strip()
+    cleanliness = g.get('cleanliness', '').strip()
+    guest       = g.get('guest_policy', '').strip()
+    noise       = g.get('noise', '').strip()
+    smoking     = g.get('smoking', '').strip()
+    alcohol     = g.get('alcohol', '').strip()
+    pets        = g.get('pets', '').strip()
+    language    = g.get('language', '').strip()
+    pref_gender = g.get('pref_gender', '').strip()
+    pref_occ    = g.get('pref_occupation', '').strip()
 
     profiles = FlatmateProfile.objects.filter(is_active=True)
-    # city hard filter hata diya — AI khud judge karega
+
+    if city:
+        CITY_GROUPS = {
+            'Delhi':     ['Delhi', 'Noida', 'Gurgaon', 'Faridabad'],
+            'Noida':     ['Delhi', 'Noida', 'Gurgaon'],
+            'Gurgaon':   ['Delhi', 'Noida', 'Gurgaon'],
+            'Bangalore': ['Bangalore'],
+            'Mumbai':    ['Mumbai', 'Navi Mumbai', 'Thane'],
+            'Bihar':     ['Patna'],
+            'Patna':     ['Patna'],
+            'Hyderabad': ['Hyderabad'],
+            'Pune':      ['Pune'],
+            'Chennai':   ['Chennai'],
+            'Kolkata':   ['Kolkata'],
+        }
+        profiles = profiles.filter(city__in=CITY_GROUPS.get(city, [city]))
+
+    parts = []
+    if gender:      parts.append(f"Person A is {gender}.")
+    if occupation:  parts.append(f"Occupation: {occupation}.")
+    if city:        parts.append(f"Located in / looking in {city}.")
+    if budget_raw:  parts.append(f"Max budget: ₹{int(budget_raw):,}/month.")
+    if room_type:   parts.append(f"Needs a {room_type}.")
+    if sleep:       parts.append(f"Sleep schedule: {sleep}.")
+    if cleanliness: parts.append(f"Cleanliness level: {cleanliness}.")
+    if guest:       parts.append(f"Guest policy: {guest}.")
+    if noise:       parts.append(f"Noise tolerance: {noise}.")
+    if smoking:     parts.append(f"Smoking: {smoking}.")
+    if alcohol:     parts.append(f"Alcohol: {alcohol}.")
+    if pets:        parts.append(f"Pets: {pets}.")
+    if language:    parts.append(f"Language preference: {language}.")
+    if pref_gender: parts.append(f"Wants a flatmate who is: {pref_gender}.")
+    if pref_occ:    parts.append(f"Prefers flatmate occupation: {pref_occ}.")
+
+    user_prefs = " ".join(parts) if parts else "Open to any compatible flatmate."
 
     results = []
-    for profile in profiles:
+    for profile in profiles[:50]:
         try:
-            profile_text = profile.get_preference_text()
-            response = get_vibe_score(user_prefs, profile_text)
-            data = json.loads(response)
-            score = data.get("score")
-            reason = data.get("reason", "")
+            response = get_flatmate_vibe_score(user_prefs, profile.get_preference_text())
+            data     = json.loads(response)
+            score    = data.get("score")
+            reason   = data.get("reason", "")
             if score is None:
                 continue
         except Exception as e:
-            print("AI flatmate match skip, profile", profile.id, ":", e)
+            print(f"[ai_flatmate_match_view] skip profile {profile.id}: {e}")
             continue
 
         results.append({
             "profile_id": profile.id,
-            "name": profile.name,
-            "age": profile.age,
+            "name":       profile.name,
+            "age":        profile.age,
             "occupation": profile.occupation,
-            "city": profile.city,
-            "budget": profile.max_budget,
-            "room_type": profile.room_type_pref,
-            "sleep": profile.sleep_schedule,
+            "city":       profile.city,
+            "budget":     profile.max_budget,
+            "room_type":  profile.room_type_pref,
+            "sleep":      profile.sleep_schedule,
             "vibe_score": score,
-            "reason": reason,
+            "reason":     reason,
         })
 
     results.sort(key=lambda x: x["vibe_score"], reverse=True)
-    top_results = results[:10]
+    return JsonResponse({"matches": results[:10], "low_confidence": False})
+    #====================Ai match view for rooms======================
+@login_required
+def ai_match_view(request):
+    g = request.GET
 
-    return JsonResponse({"matches": top_results})
+    gender      = g.get('gender', '').strip()
+    city        = g.get('city', '').strip()
+    budget_raw  = g.get('budget', '').strip()
+    sleep       = g.get('sleep', '').strip()
+    cleanliness = g.get('cleanliness', '').strip()
+    guest       = g.get('guest_policy', '').strip()
+    room_type   = g.get('room_type', '').strip()
+    furnishing  = g.get('furnishing', '').strip()
+
+    rooms = Listing.objects.filter(is_published=True)
+
+    if budget_raw:
+        try:
+            rooms = rooms.filter(rent__lte=int(int(budget_raw) * 1.1))
+        except ValueError:
+            pass
+
+    if city:
+        CITY_GROUPS = {
+            'Delhi':     ['Delhi', 'Noida', 'Gurgaon', 'Faridabad', 'Ghaziabad'],
+            'Noida':     ['Delhi', 'Noida', 'Gurgaon'],
+            'Gurgaon':   ['Delhi', 'Noida', 'Gurgaon'],
+            'Bangalore': ['Bangalore'],
+            'Mumbai':    ['Mumbai', 'Navi Mumbai', 'Thane'],
+            'Bihar':     ['Patna'],
+            'Patna':     ['Patna'],
+            'Hyderabad': ['Hyderabad'],
+            'Pune':      ['Pune'],
+            'Chennai':   ['Chennai'],
+            'Kolkata':   ['Kolkata'],
+        }
+        rooms = rooms.filter(city__in=CITY_GROUPS.get(city, [city]))
+
+    if gender:
+        rooms = rooms.filter(pref_gender__in=[gender, 'Any'])
+
+    if room_type:
+        rooms = rooms.filter(room_type=room_type)
+
+    if furnishing:
+        FURNISH_MAP = {
+            'Fully Furnished': 'Fully',
+            'Semi Furnished':  'Semi',
+            'Unfurnished':     'Unfurnished',
+        }
+        rooms = rooms.filter(furnishing_status=FURNISH_MAP.get(furnishing, furnishing))
+
+    parts = []
+    if gender:      parts.append(f"The person is {gender}.")
+    if city:        parts.append(f"Looking for a room in {city}.")
+    if budget_raw:  parts.append(f"Maximum budget: ₹{int(budget_raw):,}/month.")
+    if room_type:   parts.append(f"Preferred room type: {room_type}.")
+    if furnishing:  parts.append(f"Furnishing preference: {furnishing}.")
+    if sleep:       parts.append(f"Sleep schedule: {sleep}.")
+    if cleanliness: parts.append(f"Cleanliness preference: {cleanliness}.")
+    if guest:       parts.append(f"Guest policy preference: {guest}.")
+
+    user_prefs = " ".join(parts) if parts else "This person is flexible on all preferences and open to any compatible room."
+
+    results = []
+    for room in rooms[:50]:
+        try:
+            response = get_vibe_score(user_prefs, room.get_preference_text())
+            data     = json.loads(response)
+            score    = data.get("score")
+            reason   = data.get("reason", "")
+            if score is None:
+                continue
+        except Exception as e:
+            print(f"[ai_match_view] skip room {room.id}: {e}")
+            continue
+
+        results.append({
+            "room_id":    room.id,
+            "title":      room.title,
+            "city":       room.city,
+            "rent":       room.rent,
+            "room_type":  room.room_type,
+            "vibe_score": score,
+            "reason":     reason,
+        })
+
+    results.sort(key=lambda x: x["vibe_score"], reverse=True)
+    return JsonResponse({"matches": results[:10], "low_confidence": False})
+
+

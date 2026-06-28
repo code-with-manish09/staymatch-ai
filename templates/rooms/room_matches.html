@@ -2,313 +2,602 @@
 
 {% block extra_css %}
 <style>
-.hero{padding:60px 0 40px;text-align:center;}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--teal-lt);border:1px solid rgba(14,165,201,.25);border-radius:99px;padding:8px 18px;font-size:12px;font-weight:700;color:var(--teal);letter-spacing:.05em;text-transform:uppercase;margin-bottom:20px;}
-.hero-badge-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite;}
-.hero h1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(32px,5vw,52px);letter-spacing:-.03em;line-height:1.1;margin-bottom:14px;}
-.hero p{font-size:16px;color:var(--muted);max-width:520px;margin:0 auto 32px;line-height:1.7;}
+/* ── Tokens ───────────────────────────────────────────────── */
+:root{
+  --ink:     #0D1117;
+  --ink2:    #3D4A5C;
+  --border:  #E8ECF2;
+  --surface: #F7F9FC;
+  --white:   #FFFFFF;
+  --teal:    #0EA5C9;
+  --teal-d:  #0882A0;
+  --teal-lt: #EFF9FC;
+  --green:   #10B981;
+  --amber:   #F59E0B;
+  --red:     #EF4444;
+  --card-sh: 0 1px 3px rgba(13,17,23,.06), 0 4px 16px rgba(13,17,23,.04);
+  --card-sh2:0 4px 24px rgba(13,17,23,.10), 0 1px 4px rgba(13,17,23,.06);
+  --radius:  16px;
+}
 
-.form-card{background:#fff;border:1px solid var(--border);border-radius:24px;padding:36px 40px;box-shadow:var(--card-sh2);margin-bottom:48px;}
-.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-.form-group{display:flex;flex-direction:column;gap:8px;}
-.form-group label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;}
-.form-group select,.form-group input{border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:14px;font-family:'Instrument Sans',sans-serif;color:var(--navy);outline:none;background:#fff;transition:border-color .2s;}
-.form-group select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7A99' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
-.form-group select:focus,.form-group input:focus{border-color:var(--teal);}
-.form-note{font-size:12px;color:var(--muted);}
-.find-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--teal),#0993b3);color:#fff;border:none;border-radius:12px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;cursor:pointer;transition:all .2s;margin-top:8px;letter-spacing:-.01em;display:flex;align-items:center;justify-content:center;gap:10px;}
-.find-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(14,165,201,.35);}
-.find-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;transform:none;box-shadow:none;}
+*{box-sizing:border-box;margin:0;padding:0;}
 
-.loading-state{display:none;text-align:center;padding:60px 20px;}
-.loading-state.show{display:block;}
-.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;}
-.loading-text{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:18px;color:var(--navy);margin-bottom:6px;}
-.loading-sub{font-size:13px;color:var(--muted);}
+/* ── Page shell ───────────────────────────────────────────── */
+.rm-page{
+  max-width:900px;
+  margin:0 auto;
+  padding:0 20px 80px;
+  font-family:'Instrument Sans',sans-serif;
+  color:var(--ink);
+}
 
-.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
-.results-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:24px;color:var(--navy);}
-.results-count{font-size:13px;color:var(--muted);background:var(--off);border:1px solid var(--border);border-radius:99px;padding:5px 14px;font-weight:600;}
+/* ── Hero ─────────────────────────────────────────────────── */
+.rm-hero{
+  padding:56px 0 40px;
+  text-align:center;
+}
+.rm-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--teal-lt);border:1px solid rgba(14,165,201,.22);
+  border-radius:99px;padding:6px 16px;
+  font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:22px;
+}
+.rm-badge-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--teal);animation:blink 2s infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
-.match-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:28px 32px;box-shadow:var(--card-sh);margin-bottom:16px;transition:all .25s;opacity:0;animation:cardIn .5s ease forwards;}
-.match-card:hover{box-shadow:var(--card-sh2);transform:translateY(-2px);}
-@keyframes cardIn{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
-.match-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;}
-.match-info{flex:1;}
-.match-rank{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:10px;}
-.match-rank.gold{background:linear-gradient(135deg,#F59E0B,#d97706);}
-.match-rank.silver{background:linear-gradient(135deg,#94a3b8,#64748b);}
-.match-rank.bronze{background:linear-gradient(135deg,#cd7c2f,#a16207);}
-.match-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:var(--navy);margin-bottom:10px;line-height:1.2;}
-.match-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:99px;font-size:12px;font-weight:600;margin-right:6px;margin-bottom:6px;}
+.rm-hero h1{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:800;font-size:clamp(28px,5vw,48px);
+  letter-spacing:-.03em;line-height:1.1;margin-bottom:12px;color:var(--ink);
+}
+.rm-hero h1 span{
+  background:linear-gradient(135deg,var(--teal),#06b6d4);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.rm-hero p{
+  font-size:15px;color:var(--ink2);
+  max-width:480px;margin:0 auto;line-height:1.7;
+}
 
-.vibe-section{flex-shrink:0;text-align:center;min-width:130px;}
-.vibe-score-circle{width:96px;height:96px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 10px;border:3px solid var(--border);}
-.vibe-score-circle.high{border-color:var(--green);background:#F0FDF4;}
-.vibe-score-circle.mid{border-color:var(--teal);background:var(--teal-lt);}
-.vibe-score-circle.low{border-color:var(--amber);background:var(--amber-lt);}
-.vibe-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;line-height:1;color:var(--navy);}
-.vibe-pct{font-size:13px;font-weight:600;color:var(--muted);}
-.vibe-emoji{font-size:12px;font-weight:700;color:var(--teal);margin-top:4px;}
+/* ── Form card ────────────────────────────────────────────── */
+.rm-card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:20px;
+  box-shadow:var(--card-sh2);
+  padding:32px 36px;
+  margin-bottom:32px;
+}
+.rm-card-head{
+  display:flex;align-items:center;gap:10px;
+  padding-bottom:20px;margin-bottom:24px;
+  border-bottom:1px solid var(--border);
+}
+.rm-card-icon{
+  width:34px;height:34px;border-radius:10px;
+  background:var(--teal-lt);border:1px solid rgba(14,165,201,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.rm-card-title{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:700;font-size:15px;color:var(--ink);
+}
+.rm-card-sub{font-size:12px;color:var(--ink2);margin-top:2px;}
 
-.score-bar-wrap{margin-top:16px;}
-.score-bar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:600;margin-bottom:6px;}
-.score-bar-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden;}
-.score-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),#0993b3);transition:width 1s ease;}
+/* ── Form grid ────────────────────────────────────────────── */
+.rm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.rm-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
 
-.reason-box{background:#fafbfc;border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-top:16px;}
-.reason-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
-.reason-text{font-size:13.5px;color:var(--navy);line-height:1.65;}
+.rm-field{display:flex;flex-direction:column;gap:7px;}
+.rm-label{
+  font-size:11px;font-weight:700;
+  color:var(--ink2);letter-spacing:.06em;text-transform:uppercase;
+}
+.rm-select,.rm-input{
+  border:1.5px solid var(--border);
+  border-radius:10px;padding:11px 14px;
+  font-size:14px;font-family:'Instrument Sans',sans-serif;
+  color:var(--ink);background:var(--white);outline:none;
+  transition:border-color .18s,box-shadow .18s;
+  appearance:none;-webkit-appearance:none;
+}
+.rm-select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%233D4A5C' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;
+  padding-right:36px;
+}
+.rm-select:focus,.rm-input:focus{
+  border-color:var(--teal);
+  box-shadow:0 0 0 3px rgba(14,165,201,.10);
+}
+.rm-note{font-size:11px;color:var(--ink2);}
 
-.view-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;background:var(--navy);color:#fff;border-radius:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;border:none;cursor:pointer;transition:all .2s;text-decoration:none;margin-top:16px;}
-.view-btn:hover{background:#1a3260;transform:translateY(-1px);}
+/* ── Submit btn ───────────────────────────────────────────── */
+.rm-submit{
+  width:100%;padding:15px 24px;
+  background:linear-gradient(135deg,var(--teal),var(--teal-d));
+  color:#fff;border:none;border-radius:12px;
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:700;font-size:16px;letter-spacing:-.01em;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.rm-submit:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(14,165,201,.30);}
+.rm-submit:disabled{
+  background:var(--border);color:var(--ink2);
+  cursor:not-allowed;transform:none;box-shadow:none;
+}
 
-.empty-state{text-align:center;padding:80px 20px;}
-.empty-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--navy);margin-bottom:8px;margin-top:16px;}
-.empty-sub{font-size:14px;color:var(--muted);}
+/* ── Loading ──────────────────────────────────────────────── */
+.rm-loading{display:none;text-align:center;padding:64px 20px;}
+.rm-loading.show{display:block;}
+.rm-spinner{
+  width:44px;height:44px;
+  border:3px solid var(--border);
+  border-top-color:var(--teal);
+  border-radius:50%;
+  animation:spin .75s linear infinite;
+  margin:0 auto 18px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.rm-loading-title{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:700;font-size:18px;color:var(--ink);margin-bottom:6px;
+}
+.rm-loading-sub{font-size:13px;color:var(--ink2);}
 
-.error-box{background:#fff7ed;border:1px solid #fcd34d;border-radius:14px;padding:20px 24px;margin:24px 0;display:flex;align-items:flex-start;gap:14px;}
-.error-title{font-weight:700;font-size:15px;color:#92400e;margin-bottom:4px;}
-.error-sub{font-size:13px;color:#92400e;opacity:.8;}
+/* ── Results header ───────────────────────────────────────── */
+.rm-results-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;flex-wrap:wrap;gap:10px;
+}
+.rm-results-title{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:800;font-size:22px;color:var(--ink);
+}
+.rm-count{
+  font-size:12px;font-weight:600;color:var(--ink2);
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:99px;padding:5px 14px;
+}
 
+/* ── Match card ───────────────────────────────────────────── */
+.rm-match{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);padding:24px 28px;
+  box-shadow:var(--card-sh);margin-bottom:14px;
+  transition:box-shadow .2s,transform .2s;
+  opacity:0;animation:slideUp .45s ease forwards;
+}
+.rm-match:hover{box-shadow:var(--card-sh2);transform:translateY(-2px);}
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.rm-match-inner{display:flex;gap:24px;align-items:flex-start;}
+.rm-match-body{flex:1;min-width:0;}
+.rm-match-score-col{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:8px;}
+
+/* rank pill */
+.rm-rank{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  padding:3px 10px;border-radius:99px;margin-bottom:8px;
+}
+.rm-rank.gold  {background:#FEF3C7;color:#92400e;}
+.rm-rank.silver{background:#F1F5F9;color:#475569;}
+.rm-rank.bronze{background:#FFF7ED;color:#c2410c;}
+.rm-rank.rest  {background:var(--surface);color:var(--ink2);}
+
+.rm-match-title{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:800;font-size:18px;color:var(--ink);
+  margin-bottom:10px;line-height:1.25;
+}
+.rm-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.rm-chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 11px;border-radius:99px;
+  font-size:12px;font-weight:600;
+}
+.chip-city  {background:var(--teal-lt);color:var(--teal-d);}
+.chip-price {background:#FEF3C7;color:#92400e;}
+.chip-type  {background:var(--surface);color:var(--ink2);}
+
+/* progress bar */
+.rm-bar-wrap{margin-bottom:14px;}
+.rm-bar-top{
+  display:flex;justify-content:space-between;
+  font-size:11px;font-weight:700;color:var(--ink2);margin-bottom:6px;
+}
+.rm-bar-top span:last-child{color:var(--ink);}
+.rm-bar-track{height:7px;background:var(--border);border-radius:99px;overflow:hidden;}
+.rm-bar-fill{
+  height:100%;border-radius:99px;
+  background:linear-gradient(90deg,var(--teal),#06b6d4);
+  transition:width 1.1s cubic-bezier(.25,.8,.25,1);
+}
+
+/* reason box */
+.rm-reason{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;
+}
+.rm-reason-label{
+  font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:6px;
+}
+.rm-reason-text{font-size:13px;color:var(--ink);line-height:1.7;}
+
+/* view btn */
+.rm-view-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:10px 20px;background:var(--ink);color:#fff;
+  border-radius:9px;font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:700;font-size:13px;text-decoration:none;
+  transition:all .18s;margin-top:14px;border:none;cursor:pointer;
+}
+.rm-view-btn:hover{background:#1a2636;transform:translateY(-1px);}
+
+/* score circle */
+.rm-score-circle{
+  width:88px;height:88px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:3px solid var(--border);
+}
+.rm-score-circle.high {border-color:var(--green);background:#ECFDF5;}
+.rm-score-circle.mid  {border-color:var(--teal); background:var(--teal-lt);}
+.rm-score-circle.low  {border-color:var(--amber);background:#FFFBEB;}
+.rm-score-num{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:800;font-size:24px;line-height:1;color:var(--ink);
+}
+.rm-score-pct{font-size:12px;font-weight:600;color:var(--ink2);}
+.rm-score-label{
+  font-size:11px;font-weight:700;color:var(--ink2);
+  text-align:center;max-width:90px;line-height:1.3;
+}
+
+/* ── Low confidence banner ────────────────────────────────── */
+.rm-low-banner{
+  background:#FFFBEB;border:1px solid #FDE68A;
+  border-radius:12px;padding:14px 18px;
+  display:flex;align-items:flex-start;gap:12px;
+  margin-bottom:20px;
+}
+.rm-low-banner-text{font-size:13px;color:#92400e;line-height:1.6;}
+.rm-low-banner-text strong{font-weight:700;}
+
+/* ── Error ────────────────────────────────────────────────── */
+.rm-error{
+  background:#FFF7ED;border:1px solid #FDE68A;
+  border-radius:14px;padding:20px 24px;
+  display:none;align-items:flex-start;gap:14px;margin:24px 0;
+}
+.rm-error.show{display:flex;}
+.rm-error-title{font-weight:700;font-size:14px;color:#92400e;margin-bottom:3px;}
+.rm-error-sub{font-size:13px;color:#92400e;opacity:.8;}
+
+/* ── Empty ────────────────────────────────────────────────── */
+.rm-empty{text-align:center;padding:80px 20px;display:none;}
+.rm-empty.show{display:block;}
+.rm-empty-icon{font-size:52px;margin-bottom:14px;}
+.rm-empty-title{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:800;font-size:20px;color:var(--ink);margin-bottom:8px;
+}
+.rm-empty-sub{font-size:14px;color:var(--ink2);}
+
+/* ── Responsive ───────────────────────────────────────────── */
 @media(max-width:768px){
-  .form-card{padding:24px 20px;}
-  .form-grid{grid-template-columns:1fr;}
-  .match-card{padding:20px;}
-  .match-top{flex-direction:column-reverse;}
-  .vibe-section{width:100%;display:flex;align-items:center;gap:16px;text-align:left;}
-  .vibe-score-circle{width:64px;height:64px;margin:0;}
-  .vibe-num{font-size:20px;}
-  .hero{padding:40px 0 24px;}
-
-
+  .rm-card{padding:22px 18px;}
+  .rm-grid{grid-template-columns:1fr 1fr;}
+  .rm-grid-2{grid-template-columns:1fr;}
+  .rm-match{padding:18px;}
+  .rm-match-inner{flex-direction:column-reverse;gap:14px;}
+  .rm-match-score-col{flex-direction:row;width:100%;align-items:center;gap:14px;}
+  .rm-score-circle{width:60px;height:60px;}
+  .rm-score-num{font-size:18px;}
+  .rm-hero{padding:36px 0 28px;}
+}
+@media(max-width:520px){
+  .rm-grid{grid-template-columns:1fr;}
 }
 </style>
 {% endblock %}
 
 {% block content %}
+<div class="rm-page">
 
-<div class="hero fu d1">
-  <div class="hero-badge"><div class="hero-badge-dot"></div> Powered by Gemini AI</div>
-  <h1 class="display">Find Your Perfect<br><span class="grad">Vibe Match</span></h1>
-  <p>Tell us your lifestyle — our AI scores and ranks the most compatible rooms for you in seconds.</p>
-</div>
-
-<div class="form-card fu d2">
-  <div style="margin-bottom:24px;">
-    <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:18px;color:var(--navy);margin-bottom:4px;">Your Lifestyle Preferences</div>
-    <div style="font-size:13px;color:var(--muted);">Fill what applies — skip anything you're flexible about.</div>
+  <!-- ── Hero ── -->
+  <div class="rm-hero">
+    <div class="rm-badge"><div class="rm-badge-dot"></div>AI-Powered Matching</div>
+    <h1>Find Your Perfect<br><span>Room Match</span></h1>
+    <p>Tell us your lifestyle — our AI scores every listing and surfaces the ones that actually fit you.</p>
   </div>
 
-  <div class="form-grid">
-    <div class="form-group">
-      <label>Your Gender</label>
-      <select id="gender">
-        <option value="">Any / Flexible</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-      </select>
+  <!-- ── Form Card 1: Location & Budget ── -->
+  <div class="rm-card">
+    <div class="rm-card-head">
+      <div class="rm-card-icon">📍</div>
+      <div>
+        <div class="rm-card-title">Location & Budget</div>
+        <div class="rm-card-sub">Hard filters — applied before AI scoring</div>
+      </div>
     </div>
-    <div class="form-group">
-      <label>Your Occupation</label>
-      <select id="occupation">
-        <option value="">Any</option>
-        <option value="Student">Student</option>
-        <option value="Working Professional">Working Professional</option>
-        <option value="Freelancer">Freelancer</option>
-        <option value="Entrepreneur">Entrepreneur</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Preferred City</label>
-      <select id="city">
-        <option value="">Any City</option>
-        <option value="Bangalore">Bangalore</option>
-        <option value="Mumbai">Mumbai</option>
-        <option value="Delhi">Delhi</option>
-        <option value="Patna">Patna</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Sleep Schedule</label>
-      <select id="sleep">
-        <option value="">Flexible</option>
-        <option value="Early Riser (before 7am)">Early Riser</option>
-        <option value="Night Owl (after midnight)">Night Owl</option>
-        <option value="Moderate (10pm-7am)">Moderate</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Cleanliness Level</label>
-      <select id="cleanliness">
-        <option value="">Flexible</option>
-        <option value="Very Clean (9-10)">Very Clean</option>
-        <option value="Moderately Clean (6-8)">Moderately Clean</option>
-        <option value="Relaxed (1-5)">Relaxed</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Guest Policy</label>
-      <select id="guest_policy">
-        <option value="">Flexible</option>
-        <option value="No guests preferred">No Guests</option>
-        <option value="Occasional guests OK">Occasional OK</option>
-        <option value="Guests welcome anytime">Open House</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Max Budget (₹/month)</label>
-      <input type="number" id="budget" placeholder="e.g. 15000" min="2000" max="80000" step="500"/>
-      <div class="form-note">Leave blank if flexible</div>
-    </div>
-    <div class="form-group">
-      <label>Room Type</label>
-      <select id="room_type">
-        <option value="">Any Type</option>
-        <option value="Private Room">Private Room</option>
-        <option value="Shared Room">Shared Room</option>
-        <option value="Studio">Studio / 1BHK</option>
-        <option value="Master Bedroom">Master Bedroom</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Furnishing</label>
-      <select id="furnishing">
-        <option value="">Any</option>
-        <option value="Fully Furnished">Fully Furnished</option>
-        <option value="Semi Furnished">Semi Furnished</option>
-        <option value="Unfurnished">Unfurnished</option>
-      </select>
+    <div class="rm-grid">
+      <div class="rm-field">
+        <label class="rm-label">Your Gender</label>
+        <select class="rm-select" id="gender">
+          <option value="">Any / Flexible</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+      <div class="rm-field">
+        <label class="rm-label">Preferred City</label>
+        <select class="rm-select" id="city">
+          <option value="">Any City</option>
+          <option value="Bangalore">Bangalore</option>
+          <option value="Mumbai">Mumbai</option>
+          <option value="Delhi">Delhi</option>
+          <option value="Hyderabad">Hyderabad</option>
+          <option value="Pune">Pune</option>
+          <option value="Chennai">Chennai</option>
+          <option value="Kolkata">Kolkata</option>
+          <option value="Noida">Noida</option>
+          <option value="Gurgaon">Gurgaon</option>
+        </select>
+      </div>
+      <div class="rm-field">
+        <label class="rm-label">Max Budget (₹/month)</label>
+        <input type="number" class="rm-input" id="budget" placeholder="e.g. 15000" min="2000" max="80000" step="500"/>
+        <div class="rm-note">Leave blank if flexible</div>
+      </div>
     </div>
   </div>
 
-  <div style="height:1px;background:var(--border);margin:24px 0;"></div>
-  <button class="find-btn" id="findBtn" onclick="findMatches()">
-    ✦ &nbsp; Find My Vibe Match
+  <!-- ── Form Card 2: Room Preference ── -->
+  <div class="rm-card">
+    <div class="rm-card-head">
+      <div class="rm-card-icon">🏠</div>
+      <div>
+        <div class="rm-card-title">Room Preference</div>
+        <div class="rm-card-sub">What kind of room are you looking for?</div>
+      </div>
+    </div>
+    <div class="rm-grid-2">
+      <div class="rm-field">
+        <label class="rm-label">Room Type</label>
+        <select class="rm-select" id="room_type">
+          <option value="">Any Type</option>
+          <option value="Private Room">Private Room</option>
+          <option value="Shared Room">Shared Room</option>
+          <option value="Studio">Studio / 1BHK</option>
+          <option value="PG">PG / Hostel</option>
+        </select>
+      </div>
+      <div class="rm-field">
+        <label class="rm-label">Furnishing</label>
+        <select class="rm-select" id="furnishing">
+          <option value="">Any</option>
+          <option value="Fully Furnished">Fully Furnished</option>
+          <option value="Semi Furnished">Semi Furnished</option>
+          <option value="Unfurnished">Unfurnished</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Form Card 3: Lifestyle ── -->
+  <div class="rm-card">
+    <div class="rm-card-head">
+      <div class="rm-card-icon">🌙</div>
+      <div>
+        <div class="rm-card-title">Your Lifestyle</div>
+        <div class="rm-card-sub">AI uses these to score compatibility with the room's environment</div>
+      </div>
+    </div>
+    <div class="rm-grid">
+      <div class="rm-field">
+        <label class="rm-label">Sleep Schedule</label>
+        <select class="rm-select" id="sleep">
+          <option value="">Flexible</option>
+          <option value="Early Riser (before 7am)">Early Riser</option>
+          <option value="Night Owl (after midnight)">Night Owl</option>
+          <option value="Moderate (10pm–7am)">Moderate</option>
+        </select>
+      </div>
+      <div class="rm-field">
+        <label class="rm-label">Cleanliness Level</label>
+        <select class="rm-select" id="cleanliness">
+          <option value="">Flexible</option>
+          <option value="Very Clean (9-10)">Very Clean</option>
+          <option value="Moderately Clean (6-8)">Moderately Clean</option>
+          <option value="Relaxed (1-5)">Relaxed</option>
+        </select>
+      </div>
+      <div class="rm-field">
+        <label class="rm-label">Guest Policy</label>
+        <select class="rm-select" id="guest_policy">
+          <option value="">Flexible</option>
+          <option value="No guests preferred">No Guests</option>
+          <option value="Occasional guests OK">Occasional OK</option>
+          <option value="Guests welcome anytime">Open House</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Submit ── -->
+  <button class="rm-submit" id="findBtn" onclick="findRoomMatches()">
+    ✦ &nbsp; Find My Room Match
   </button>
-</div>
 
-<div class="loading-state" id="loadingState">
-  <div class="spinner"></div>
-  <div class="loading-text">AI is analysing your vibe...</div>
-  <div class="loading-sub">Comparing your preferences with all listings using Gemini</div>
-</div>
-
-<div class="error-box" id="errorBox" style="display:none;">
-  <div style="font-size:24px;">⚠️</div>
-  <div>
-    <div class="error-title">Something went wrong</div>
-    <div class="error-sub" id="errorMsg">Could not fetch matches. Please try again.</div>
+  <!-- ── Loading ── -->
+  <div class="rm-loading" id="loadingState">
+    <div class="rm-spinner"></div>
+    <div class="rm-loading-title">AI is scanning listings…</div>
+    <div class="rm-loading-sub">Scoring every room against your lifestyle with Gemini</div>
   </div>
-</div>
 
-<div id="resultsSection" style="display:none;">
-  <div class="results-header">
-    <div class="results-title display">Your Top Matches</div>
-    <div class="results-count" id="resultsCount">0 rooms found</div>
+  <!-- ── Error ── -->
+  <div class="rm-error" id="errorBox">
+    <div style="font-size:22px;">⚠️</div>
+    <div>
+      <div class="rm-error-title">Something went wrong</div>
+      <div class="rm-error-sub" id="errorMsg">Could not fetch matches. Please try again.</div>
+    </div>
   </div>
-  <div id="resultsList"></div>
-</div>
 
-<div class="empty-state" id="emptyState" style="display:none;">
-  <div style="font-size:56px;">🏠</div>
-  <div class="empty-title display">No strong matches found</div>
-  <div class="empty-sub">No rooms match your criteria closely enough. Try adjusting your city, budget, or other preferences.</div>
+  <!-- ── Results ── -->
+  <div id="resultsSection" style="display:none;">
+    <div class="rm-results-head">
+      <div class="rm-results-title">Your Top Matches</div>
+      <div class="rm-count" id="resultsCount">0 rooms</div>
+    </div>
+    <div class="rm-low-banner" id="lowBanner" style="display:none;">
+      <div style="font-size:20px;">💡</div>
+      <div class="rm-low-banner-text">
+        <strong>No strong matches found.</strong> Showing the closest available rooms — try relaxing your city, budget, or lifestyle preferences for better results.
+      </div>
+    </div>
+    <div id="resultsList"></div>
+  </div>
+
+  <!-- ── Empty ── -->
+  <div class="rm-empty" id="emptyState">
+    <div class="rm-empty-icon">🏠</div>
+    <div class="rm-empty-title">No rooms found</div>
+    <div class="rm-empty-sub">Try adjusting your city, budget, or remove some filters.</div>
+  </div>
+
 </div>
 
 <script>
-function getVibeClass(score){if(score>=75)return'high';if(score>=50)return'mid';return'low';}
-function getVibeLabel(score){
-  if(score>=85)return'Excellent Match';
-  if(score>=70)return'Great Match';
-  if(score>=55)return'Good Match';
-  return'Possible Match';
+function scoreClass(s){ return s>=75?'high':s>=50?'mid':'low'; }
+function scoreLabel(s){
+  if(s>=85) return 'Excellent Match';
+  if(s>=70) return 'Great Match';
+  if(s>=55) return 'Good Match';
+  return 'Possible Match';
 }
-function getRankClass(idx){if(idx===0)return'gold';if(idx===1)return'silver';if(idx===2)return'bronze';return'';}
+function rankClass(i){ return ['gold','silver','bronze'][i]||'rest'; }
+function rankLabel(i){ return ['🥇 Top Pick','🥈 Runner Up','🥉 Third'][i]||`#${i+1}`; }
 
-function renderCard(match,index){
-  const vibeClass=getVibeClass(match.vibe_score);
-  const delay=(index*0.1).toFixed(1);
-  const rankClass=getRankClass(index);
+function renderRoomCard(m, i){
+  const delay = (i * 0.08).toFixed(2);
   return `
-  <div class="match-card" style="animation-delay:${delay}s;">
-    <div class="match-top">
-      <div class="match-info">
-        <div class="match-rank ${rankClass}">#${index+1}</div>
-        <div class="match-title">${match.title}</div>
-        <div style="margin-bottom:12px;">
-          <span class="match-chip" style="background:var(--teal-lt);color:var(--teal);">📍 ${match.city}</span>
-          <span class="match-chip" style="background:var(--amber-lt);color:#92400e;">₹${match.rent.toLocaleString()}/mo</span>
-          ${match.room_type?`<span class="match-chip" style="background:var(--off);color:var(--navy);">🏠 ${match.room_type}</span>`:''}
+  <div class="rm-match" style="animation-delay:${delay}s;">
+    <div class="rm-match-inner">
+      <div class="rm-match-body">
+        <div class="rm-rank ${rankClass(i)}">${rankLabel(i)}</div>
+        <div class="rm-match-title">${m.title}</div>
+        <div class="rm-chips">
+          <span class="rm-chip chip-city">📍 ${m.city}</span>
+          <span class="rm-chip chip-price">₹${Number(m.rent).toLocaleString('en-IN')}/mo</span>
+          ${m.room_type ? `<span class="rm-chip chip-type">🏠 ${m.room_type}</span>` : ''}
         </div>
-        <div class="score-bar-wrap">
-          <div class="score-bar-label"><span>Vibe Compatibility</span><span style="color:var(--navy);font-weight:700;">${match.vibe_score}%</span></div>
-          <div class="score-bar-track"><div class="score-bar-fill" style="width:${match.vibe_score}%;"></div></div>
+        <div class="rm-bar-wrap">
+          <div class="rm-bar-top">
+            <span>Vibe Compatibility</span>
+            <span>${m.vibe_score}%</span>
+          </div>
+          <div class="rm-bar-track">
+            <div class="rm-bar-fill" style="width:0%" data-width="${m.vibe_score}%"></div>
+          </div>
         </div>
-        ${match.reason?`<div class="reason-box"><div class="reason-label">AI Analysis</div><div class="reason-text">${match.reason}</div></div>`:''}
-        <a href="/rooms/room_details/${match.room_id}/" class="view-btn">View Room →</a>
+        ${m.reason ? `
+        <div class="rm-reason">
+          <div class="rm-reason-label">AI Analysis</div>
+          <div class="rm-reason-text">${m.reason}</div>
+        </div>` : ''}
+        <a href="/rooms/room_details/${m.room_id}/" class="rm-view-btn">View Room →</a>
       </div>
-      <div class="vibe-section">
-        <div class="vibe-score-circle ${vibeClass}">
-          <div class="vibe-num">${match.vibe_score}</div>
-          <div class="vibe-pct">%</div>
+      <div class="rm-match-score-col">
+        <div class="rm-score-circle ${scoreClass(m.vibe_score)}">
+          <div class="rm-score-num">${m.vibe_score}</div>
+          <div class="rm-score-pct">%</div>
         </div>
-        <div class="vibe-emoji">${getVibeEmoji(match.vibe_score)}</div>
+        <div class="rm-score-label">${scoreLabel(m.vibe_score)}</div>
       </div>
     </div>
   </div>`;
 }
 
-async function findMatches(){
-  const btn=document.getElementById('findBtn');
-  const loading=document.getElementById('loadingState');
-  const results=document.getElementById('resultsSection');
-  const empty=document.getElementById('emptyState');
-  const errorBox=document.getElementById('errorBox');
-  const list=document.getElementById('resultsList');
+async function findRoomMatches(){
+  const btn      = document.getElementById('findBtn');
+  const loading  = document.getElementById('loadingState');
+  const results  = document.getElementById('resultsSection');
+  const empty    = document.getElementById('emptyState');
+  const errorBox = document.getElementById('errorBox');
+  const list     = document.getElementById('resultsList');
+  const lowBanner= document.getElementById('lowBanner');
 
-  btn.disabled=true;
-  btn.textContent='Analysing...';
+  btn.disabled = true;
+  btn.textContent = 'Analysing…';
   loading.classList.add('show');
-  results.style.display='none';
-  empty.style.display='none';
-  errorBox.style.display='none';
-  list.innerHTML='';
+  results.style.display = 'none';
+  empty.classList.remove('show');
+  errorBox.classList.remove('show');
+  list.innerHTML = '';
+  lowBanner.style.display = 'none';
 
-  const params=new URLSearchParams({
-    gender:document.getElementById('gender').value,
-    occupation:document.getElementById('occupation').value,
-    sleep:document.getElementById('sleep').value,
-    cleanliness:document.getElementById('cleanliness').value,
+  const params = new URLSearchParams({
+    gender:      document.getElementById('gender').value,
+    city:        document.getElementById('city').value,
+    budget:      document.getElementById('budget').value,
+    room_type:   document.getElementById('room_type').value,
+    furnishing:  document.getElementById('furnishing').value,
+    sleep:       document.getElementById('sleep').value,
+    cleanliness: document.getElementById('cleanliness').value,
     guest_policy:document.getElementById('guest_policy').value,
-    city:document.getElementById('city').value,
-    budget:document.getElementById('budget').value,
-    room_type:document.getElementById('room_type').value,
-    furnishing:document.getElementById('furnishing').value,
   });
 
   try{
-    const res=await fetch(`/rooms/ai-match/?${params}`);
-    const data=await res.json();
-    loading.classList.remove('show');
-    btn.disabled=false;
-    btn.innerHTML='✦ &nbsp; Find My Vibe Match';
+    const res  = await fetch(`/rooms/ai-match/?${params}`);
+    const data = await res.json();
 
-    if(!data.matches||data.matches.length===0){empty.style.display='block';return;}
-
-    document.getElementById('resultsCount').textContent=`${data.matches.length} rooms found`;
-    data.matches.forEach((match,i)=>{list.innerHTML+=renderCard(match,i);});
-    results.style.display='block';
-    results.scrollIntoView({behavior:'smooth',block:'start'});
-a
-  }catch(err){
     loading.classList.remove('show');
-    btn.disabled=false;
-    btn.innerHTML='✦ &nbsp; Find My Vibe Match';
-    document.getElementById('errorMsg').textContent='Server error. Please try again.';
-    errorBox.style.display='flex';
+    btn.disabled = false;
+    btn.innerHTML = '✦ &nbsp; Find My Room Match';
+
+    if(!data.matches || data.matches.length === 0){
+      empty.classList.add('show');
+      return;
+    }
+
+    if(data.low_confidence){
+      lowBanner.style.display = 'flex';
+    }
+
+    document.getElementById('resultsCount').textContent = `${data.matches.length} room${data.matches.length>1?'s':''}`;
+    data.matches.forEach((m, i) => { list.innerHTML += renderRoomCard(m, i); });
+    results.style.display = 'block';
+
+    // Animate bars after render
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.rm-bar-fill').forEach(el => {
+        el.style.width = el.dataset.width;
+      });
+    });
+
+    results.scrollIntoView({ behavior:'smooth', block:'start' });
+
+  } catch(err){
+    loading.classList.remove('show');
+    btn.disabled = false;
+    btn.innerHTML = '✦ &nbsp; Find My Room Match';
+    document.getElementById('errorMsg').textContent = 'Server error — please try again.';
+    errorBox.classList.add('show');
   }
 }
 </script>
-
 {% endblock %}
