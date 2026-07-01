@@ -1,3 +1,4 @@
+
 """
 URL configuration for core project.
 
@@ -25,7 +26,8 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('rooms/', include('rooms.urls')),
-    path('inbox/', include('inbox.urls'))
+    path('inbox/', include('inbox.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:
