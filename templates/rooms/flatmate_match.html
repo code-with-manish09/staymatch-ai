@@ -351,6 +351,15 @@
         <div class="fm-card-sub">Basic info used for hard filtering before AI scoring</div>
       </div>
     </div>
+
+    <div class="fm-field">
+      <label class="fm-label">I am looking for</label>
+      <select class="fm-select" id="my_role">
+        <option value="">Skip / Any</option>
+        <option value="has_room">A flatmate — I have a room</option>
+        <option value="needs_room">A room — I need one with flatmates</option>
+      </select>
+    </div>
     <div class="fm-grid">
       <div class="fm-field">
         <label class="fm-label">Your Gender</label>
@@ -686,6 +695,7 @@ async function findFlatmates(){
     language:      document.getElementById('language').value,
     pref_gender:   document.getElementById('pref_gender').value,
     pref_occupation:document.getElementById('pref_occupation').value,
+    my_role: document.getElementById('my_role').value,
   });
 
   try{

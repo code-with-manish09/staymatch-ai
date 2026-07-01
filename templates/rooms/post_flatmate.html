@@ -473,6 +473,22 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
       </div>
       <div style="display:flex;flex-direction:column;gap:18px;">
 
+        <!-- ROLE SELECTOR — sabse pehle -->
+        <div class="field-group">
+          <label class="field-label">what are you looking for? *</label>
+          <div class="radio-group" id="roleGroup" style="margin-top:6px;">
+            <button type="button" class="radio-btn active" onclick="setRadio('roleGroup',this); updateRoleContext(this)">
+              <div class="radio-dot"></div>🔍 i am looking for a room as flatmate
+            </button>
+            <button type="button" class="radio-btn" onclick="setRadio('roleGroup',this); updateRoleContext(this)">
+              <div class="radio-dot"></div>🏠 i have room - need flatmate to share
+            </button>
+          </div>
+          <span class="field-hint" id="roleHint" style="margin-top:6px;">
+if you are a looking for flatmate who has a room, select "i have room - need flatmate to share". if you are looking for a room as flatmate, select "i am looking for a room as flatmate".
+          </span>
+        </div>
+
         <!-- ══ PROFILE PHOTO — NEW ══ -->
         <div class="field-group">
           <label class="field-label">Profile Photo <span style="color:var(--muted);font-weight:400;">(recommended)</span></label>
@@ -607,7 +623,7 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
       <div style="display:flex;flex-direction:column;gap:20px;">
 
         <div class="field-group">
-          <label class="field-label">Maximum Monthly Budget</label>
+       <label class="field-label" id="budgetContextLabel">Maximum Monthly Budget</label>
           <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:10px;">
             <span style="font-size:16px;color:var(--muted);font-weight:600;">₹</span>
             <span class="range-val" id="budgetVal">12,000</span>
@@ -1113,7 +1129,7 @@ textarea.field-input { resize: vertical; min-height: 100px; line-height: 1.6; }
 <input type="hidden" name="stay_duration"      id="stayVal"/>
 <input type="hidden" name="contact_visibility" id="visibilityVal"/>
 <input type="hidden" name="vibe_score"         id="vibeScoreInput"/>
-
+<input type="hidden" name="role"               id="roleVal" value="needs_room"/>
 </form>
 
 <script>
@@ -1516,6 +1532,17 @@ function submitForm() {
 
 // Init
 updateVibeScore();
+
+function updateRoleContext(btn) {
+  const isNeedsRoom = btn.textContent.includes('looking for a room');
+  document.getElementById('roleVal').value = isNeedsRoom ? 'needs_room' : 'has_room';
+  document.getElementById('roleHint').textContent = isNeedsRoom
+    ? 'You are looking for a room — budget = your max rent'
+    : 'You have a room — budget = what you will charge';
+  const budgetLabel = document.getElementById('budgetContextLabel');
+  if (budgetLabel) budgetLabel.textContent = isNeedsRoom ? 'Maximum Monthly Budget' : 'Monthly Rent (What You Charge)';
+  updatePreview();
+}
 </script>
 
 {% endblock %}

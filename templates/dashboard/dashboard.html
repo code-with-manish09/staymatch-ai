@@ -278,7 +278,13 @@
         {% endwith %}
         </div>
         <div class="fm-footer">
-          <div class="fm-budget">₹{{ profile.max_budget|default:"—" }} <small>/mo</small></div>
+          <div class="fm-budget">
+    <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1px;">
+      {% if profile.role == 'has_room' %}🏠 Rent{% else %}💰 Budget{% endif %}
+    </div>
+    {% if profile.role == 'has_room' %}₹{{ profile.max_budget|default:"—" }}{% else %}Upto ₹{{ profile.max_budget|default:"—" }}{% endif %}<small>/mo</small>
+  </div>
+
           <a href="{% url 'flatmate_detail' profile.id %}" class="btn-sm btn-sm-teal" style="text-decoration:none;font-size:11px;padding:6px 13px;">view details</a>
         </div>
       </div>
@@ -507,7 +513,12 @@
             {% endfor %}
           </div>
           <div class="fm-footer">
-            <div class="fm-budget">₹{{ item.profile.max_budget|default:"—" }} <small>/mo</small></div>
+      <div class="fm-budget">
+        <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1px;">
+          {% if item.profile.role == 'has_room' %}🏠 Rent{% else %}💰 Budget{% endif %}
+        </div>
+        {% if item.profile.role == 'has_room' %}₹{{ item.profile.max_budget|default:"—" }}{% else %}Upto ₹{{ item.profile.max_budget|default:"—" }}{% endif %}<small>/mo</small>
+      </div>
             <a href="{% url 'flatmate_detail' item.profile.id %}" class="btn-sm btn-sm-teal" style="text-decoration:none;font-size:11px;padding:6px 13px;">View</a>
           </div>
         </div>

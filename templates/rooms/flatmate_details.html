@@ -493,8 +493,14 @@
     <!-- Chips -->
     <div class="hero-chips">
       {% if post.max_budget %}
-        <span class="hero-chip teal">💰 ₹{{ post.max_budget|floatformat:0 }} / mo</span>
-      {% endif %}
+        <span class="hero-chip teal">
+        {% if post.role == 'has_room' %}
+          🏠 Rent: ₹{{ post.max_budget|floatformat:0 }}/mo
+        {% else %}
+          💰 Budget: Upto ₹{{ post.max_budget|floatformat:0 }}/mo
+        {% endif %}
+      </span>
+            {% endif %}
       {% if post.room_type_pref %}
         <span class="hero-chip">🏠 {{ post.room_type_pref }}</span>
       {% endif %}
@@ -983,8 +989,16 @@
         <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;">Quick Info</div>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--border);">
-            <span style="font-size:12px;color:var(--muted);">Budget</span>
-            <span style="font-size:13px;font-weight:700;color:var(--navy);">₹{{ post.max_budget|floatformat:0 }}/mo</span>
+            <span style="font-size:12px;color:var(--muted);">
+                {% if post.role == 'has_room' %}🏠 Rent{% else %}💰 Budget{% endif %}
+              </span>
+              <span style="font-size:13px;font-weight:700;color:var(--navy);">
+                {% if post.role == 'has_room' %}
+                  ₹{{ post.max_budget|floatformat:0 }}/mo
+                {% else %}
+                  Upto ₹{{ post.max_budget|floatformat:0 }}/mo
+                {% endif %}
+              </span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--border);">
             <span style="font-size:12px;color:var(--muted);">Move-in</span>

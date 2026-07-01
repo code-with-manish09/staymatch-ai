@@ -168,6 +168,15 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
           {% endif %}
         </div>
 
+        <!-- Role display (read-only, locked after creation) -->
+      <div class="field-group">
+        <label class="field-label">Looking For</label>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;background:var(--off);border:1.5px solid var(--border);font-size:13px;font-weight:600;color:var(--navy);width:fit-content;">
+          {% if post.role == 'has_room' %}🏠 Have Room — Need Flatmate{% else %}🔍 Looking For a Room{% endif %}
+        </div>
+        <span class="field-hint">Not editable after posting — delete and repost if this changed</span>
+      </div>
+
         <!-- Name + Age -->
         <div class="form-row-2">
           <div class="field-group">

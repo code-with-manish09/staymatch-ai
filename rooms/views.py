@@ -1,5 +1,6 @@
 from datetime import date
 import json
+import profile
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from httpx import request
@@ -435,7 +436,7 @@ def to_int(val, default=0):
     except:
         return default
 
-
+@login_required
 def post_flatmate(request):
     from .models import FlatmateProfile
 
@@ -445,9 +446,10 @@ def post_flatmate(request):
             tags_str = request.POST.get('interest_tags', '')
             tags_json = json.dumps([t.strip() for t in tags_str.split(',') if t.strip()])
 
-            FlatmateProfile.objects.create(
+            new_profile = FlatmateProfile.objects.create(
                 user            = request.user,
                 name            = request.POST.get('name', ''),
+                role            = request.POST.get('role', 'needs_room'),
                 age             = to_int(request.POST.get('age'), 22),
                 gender          = request.POST.get('gender', ''),
                 occupation      = request.POST.get('occupation', ''),
@@ -477,16 +479,20 @@ def post_flatmate(request):
                 contact_email   = request.POST.get('contact_email', ''),
                 contact_preference = request.POST.get('contact_preference', 'WhatsApp'),
                 contact_visibility = request.POST.get('contact_visibility', 'Show after connect only'),
-                vibe_score      = to_int(request.POST.get('vibe_score'), 0),
+                
+                
             )
-            print("Save ho gaya")
-            messages.success(request, 'Profile post ho gayi! 🎉')
+
+            new_profile.vibe_score = new_profile.calculate_vibe_score()
+            new_profile.save()
+            print("profile created successfully")
+            messages.success(request, 'Profile posted successfully! 🎉')
             return redirect('dashboard')
 
         except Exception as e:
             print("ERROR:", e)
 
-            messages.error(request, f'Kuch galat hua: {str(e)}')
+            messages.error(request, f'something went wrong: {str(e)}')
             return redirect('post_flatmate')
 
     return render(request, 'rooms/post_flatmate.html')
@@ -533,15 +539,15 @@ def edit_flatmate(request, pk):
             post.contact_email = request.POST.get('contact_email', '')
             post.contact_preference = request.POST.get('contact_preference', 'WhatsApp')
             post.contact_visibility = request.POST.get('contact_visibility', 'Show after connect only')
-            post.vibe_score = to_int(request.POST.get('vibe_score'), 0)
+
+            post.vibe_score = post.calculate_vibe_score()
             post.save()
-            messages.success(request, 'Profile update ho gayi! 🎉')
+            messages.success(request, 'Profile updated successfully! 🎉')
             return redirect('dashboard')
         except Exception as e:
-            messages.error(request, f'Kuch galat hua: {str(e)}')
+            messages.error(request, f'something went wrong: {str(e)}')
     
     return render(request, 'rooms/edit_flatmate.html', {'post': post})
-
 #===============flatmate details====================
 from django.shortcuts import render, get_object_or_404
 from .models import FlatmateProfile
@@ -569,7 +575,7 @@ def delete_flatmate(request, pk):
     from .models import FlatmateProfile
     post = get_object_or_404(FlatmateProfile, pk=pk, user=request.user)
     post.delete()
-    messages.success(request, 'Flatmate post delete ho gayi! 🗑️')
+    messages.success(request, 'Flatmate post deleted successfully! 🗑️')
     return redirect('dashboard')
 
 #===============saved flatmates====================
@@ -608,6 +614,12 @@ def ai_flatmate_match_view(request):
     pref_occ    = g.get('pref_occupation', '').strip()
 
     profiles = FlatmateProfile.objects.filter(is_active=True)
+
+    my_role = g.get('my_role', '').strip()
+    if my_role == 'has_room':
+     profiles = profiles.filter(role='needs_room')  
+    elif my_role == 'needs_room':
+     profiles = profiles.filter(role='has_room')
 
     if city:
         CITY_GROUPS = {
