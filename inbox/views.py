@@ -132,15 +132,23 @@ def send_message(request, listing_id):
             from django.contrib.auth.models import User
             recipient = get_object_or_404(User, id=int(other_user_id))
 
-        Message.objects.create(
+        msg = Message.objects.create(
             sender=request.user, recipient=recipient,
             listing=listing, body=body,
         )
+
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'body'       : msg.body,
+                'created_at' : msg.created_at.strftime('%H:%M'),
+                'sender_id'  : msg.sender.id,
+            })
+
         return redirect(
             reverse('chat_view', args=[listing_id]) + f'?user={other_user_id}'
         )
+
     else:
-        # ✅ Sirf pehli baar inquiry_count badhao
         already_messaged = Message.objects.filter(
             sender=request.user,
             listing=listing
@@ -152,11 +160,20 @@ def send_message(request, listing_id):
                 inquiry_count=F('inquiry_count') + 1
             )
 
-        Message.objects.create(
+        msg = Message.objects.create(
             sender=request.user, recipient=listing.owner,
             listing=listing, body=body,
         )
+
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'body'       : msg.body,
+                'created_at' : msg.created_at.strftime('%H:%M'),
+                'sender_id'  : msg.sender.id,
+            })
+
         return redirect(reverse('chat_view', args=[listing_id]))
+    
 
 
 # ─── flatmate:  (auto first message) ────────────────────────────
@@ -217,29 +234,38 @@ def flatmate_chat_view(request, profile_id):
     else:
         other_user = profile.user
 
-    # Dono ke beech messages
     chat_messages = Message.objects.filter(
         flatmate_profile__isnull=False
     ).filter(
         Q(sender=request.user, recipient=other_user) |
         Q(sender=other_user,   recipient=request.user)
     ).order_by('created_at')
-    # Read mark 
+
     chat_messages.filter(
         recipient=request.user, is_read=False
     ).update(is_read=True)
 
-   # POST — naya message
     if request.method == 'POST':
         body = request.POST.get('body', '').strip()
+        msg = None
         if body:
-            Message.objects.create(
+            msg = Message.objects.create(
                 sender           = request.user,
                 recipient        = other_user,
                 flatmate_profile = profile,
                 listing          = None,
                 body             = body,
             )
+
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            if msg:
+                return JsonResponse({
+                    'body'       : msg.body,
+                    'created_at' : msg.created_at.strftime('%H:%M'),
+                    'sender_id'  : msg.sender.id,
+                })
+            return JsonResponse({'error': 'empty body'}, status=400)
+
         return redirect(reverse('flatmate_chat', args=[profile_id]) + f'?user={other_user.id}')
 
     conversations = get_conversations(request.user)
@@ -251,7 +277,6 @@ def flatmate_chat_view(request, profile_id):
         'active_flatmate_profile': profile,
         'other_user'             : other_user,
     })
-
 
 # ─── unread count API ─────────────────────────────────────────────────────────
 @login_required

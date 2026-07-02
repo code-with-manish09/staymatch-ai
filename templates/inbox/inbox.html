@@ -319,6 +319,51 @@ function goBack() {
   document.querySelector('.chat').classList.remove('mobile-open');
 }
 
+// Room chat ke form ko AJAX banao
+var roomForm = document.querySelector('.chat form[action*="send-message"], .chat form[action*="send_message"]');
+if (!roomForm) {
+  roomForm = document.querySelector('.chat .inp-bar');
+}
+
+if (roomForm) {
+  roomForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    var inp = roomForm.querySelector('#inp');
+    var body = inp.value.trim();
+    if (!body) return;
+
+    var formData = new FormData(roomForm);
+
+    fetch(roomForm.action, {
+      method: 'POST',
+      body: formData,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      // naya message bubble banao
+      var mrow = document.createElement('div');
+      mrow.className = 'mrow out';
+      mrow.innerHTML =
+        '<div class="mrow-inner">' +
+          '<div class="mav me">' + '{{ request.user.username|slice:":1"|upper }}' + '</div>' +
+          '<div class="bub out">' + body.replace(/</g, '&lt;') + '</div>' +
+        '</div>' +
+        '<div class="mts">' + data.created_at + '</div>';
+
+      var msgsDiv = document.getElementById('msgs');
+      msgsDiv.appendChild(mrow);
+      msgsDiv.scrollTop = msgsDiv.scrollHeight;
+
+      inp.value = '';
+    })
+    .catch(function(err) {
+      console.error('Message send failed:', err);
+    });
+  });
+}
+
 // Agar active chat hai toh automatically open karo
 document.addEventListener('DOMContentLoaded', function() {
   var activeListing  = "{{ active_listing.id|default:'' }}";
