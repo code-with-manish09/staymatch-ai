@@ -485,6 +485,8 @@
       {% endif %}
     </div>
 
+    
+
     <!-- Sub line -->
     <div class="hero-sub">
       {{ post.occupation|default:"—" }} · {{ post.city|default:"—" }}{% if post.preferred_area %}, {{ post.preferred_area }}{% endif %}
@@ -513,6 +515,10 @@
       {% if post.work_style %}
         <span class="hero-chip">💼 {{ post.work_style }}</span>
       {% endif %}
+
+      <span class="hero-chip teal">
+    {% if post.role == 'has_room' %}🏠 Has Room-Need flatmate{% else %}🔍 Needs Room-available as a flatmate{% endif %}
+  </span>
     </div>
 
     <!-- Stats row -->

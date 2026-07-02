@@ -347,35 +347,37 @@ class FlatmateProfile(models.Model):
             'Creative / Media': 'linear-gradient(135deg,#F59E0B,#EF4444)',
         }
         return gradients.get(self.occupation, 'linear-gradient(135deg,#0EA5C9,#0F1F3D)')
+    
+    def calculate_vibe_score(self):
+        """Server-side vibe score, derived only from saved field state.
+        Mirrors the JS breakdown but never trusts client-submitted values."""
+        tag_pts = min(len(self.get_tags_list()) * 5, 40)
+
+        bio_len = len((self.bio or '').strip())
+        bio_pts = min(round((bio_len / 300) * 20), 20)
+
+        life_pts = 0
+        if self.sleep_schedule and self.sleep_schedule != 'No Preference':
+            life_pts += 5
+        if self.guest_policy:
+            life_pts += 5
+        if self.work_style:
+            life_pts += 5
+        if self.noise_tolerance:
+            life_pts += 5
+        if self.cleanliness_level and self.cleanliness_level > 1:
+            life_pts += 5
+
+        photo_pts = 15 if self.profile_photo else 0
+
+        return tag_pts + bio_pts + life_pts + photo_pts
 
     class Meta:
         ordering = ['-vibe_score', '-created_at']
 
     # models.py — add to FlatmateProfile
 
-def calculate_vibe_score(self):
-    """Server-side vibe score, derived only from saved field state.
-    Mirrors the JS breakdown but never trusts client-submitted values."""
-    tag_pts = min(len(self.get_tags_list()) * 5, 40)
-
-    bio_len = len((self.bio or '').strip())
-    bio_pts = min(round((bio_len / 300) * 20), 20)
-
-    life_pts = 0
-    if self.sleep_schedule and self.sleep_schedule != 'No Preference':
-        life_pts += 5
-    if self.guest_policy:
-        life_pts += 5
-    if self.work_style:
-        life_pts += 5
-    if self.noise_tolerance:
-        life_pts += 5
-    if self.cleanliness_level and self.cleanliness_level > 1:
-        life_pts += 5
-
-    photo_pts = 15 if self.profile_photo else 0
-
-    return tag_pts + bio_pts + life_pts + photo_pts
+    
 #================saved flatmates====================
 class SavedFlatmate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='saved_flatmates')
